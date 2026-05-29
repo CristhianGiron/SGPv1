@@ -1,0 +1,11 @@
+package com.sgp.systemsgp.enums;
+
+public enum RoleName {
+
+    ROLE_ESTUDIANTE,
+    ROLE_TUTOR_PRACTICAS,
+    ROLE_TUTOR_INSTITUCIONAL,
+    ROLE_DIRECTORA_INSTITUCION,
+    ROLE_DIRECTOR_PRACTICAS,
+    ROLE_ADMIN
+}
