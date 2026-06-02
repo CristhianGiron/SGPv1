@@ -18,6 +18,7 @@ import com.sgp.systemsgp.enums.RoleName;
 import com.sgp.systemsgp.exception.BadRequestException;
 import com.sgp.systemsgp.exception.NotFoundException;
 import com.sgp.systemsgp.model.Account;
+import com.sgp.systemsgp.model.Career;
 import com.sgp.systemsgp.model.Course;
 import com.sgp.systemsgp.model.Enrollment;
 import com.sgp.systemsgp.model.FinalReport;
@@ -118,7 +119,7 @@ public class FinalReportService {
         List<FinalReport> reports = finalReportRepository
                 .findByCourse_PracticeTutor_UsernameAndDeletedFalse(username)
                 .stream()
-                .filter(report -> report.getStatus() == FinalReportStatus.SUBMITTED)
+                .filter(report -> isVisibleToReviewers(report.getStatus()))
                 .toList();
 
         return mapReportsToResponses(reports);
@@ -129,7 +130,7 @@ public class FinalReportService {
         List<FinalReport> reports = finalReportRepository
                 .findByCourse_PracticeTutor_UsernameAndDeletedFalse(username)
                 .stream()
-                .filter(report -> report.getStatus() == FinalReportStatus.SUBMITTED)
+                .filter(report -> isVisibleToReviewers(report.getStatus()))
                 .toList();
 
         return mapReportsToSummaries(reports);
@@ -149,7 +150,7 @@ public class FinalReportService {
         List<FinalReport> visibleReports = uniqueReports
                 .values()
                 .stream()
-                .filter(report -> report.getStatus() == FinalReportStatus.SUBMITTED)
+                .filter(report -> isVisibleToReviewers(report.getStatus()))
                 .toList();
 
         return mapReportsToResponses(visibleReports);
@@ -169,24 +170,32 @@ public class FinalReportService {
         List<FinalReport> visibleReports = uniqueReports
                 .values()
                 .stream()
-                .filter(report -> report.getStatus() == FinalReportStatus.SUBMITTED)
+                .filter(report -> isVisibleToReviewers(report.getStatus()))
                 .toList();
 
         return mapReportsToSummaries(visibleReports);
     }
 
-    public List<FinalReportResponse> submittedDocuments() {
+    public List<FinalReportResponse> submittedDocuments(String username) {
 
+        Account account = getAccount(username);
         List<FinalReport> reports = finalReportRepository
-                .findByStatusInAndDeletedFalse(REVIEWER_VISIBLE_STATUSES);
+                .findByStatusInAndDeletedFalse(REVIEWER_VISIBLE_STATUSES)
+                .stream()
+                .filter(report -> canViewDirectorQueue(report.getCourse(), account))
+                .toList();
 
         return mapReportsToResponses(reports);
     }
 
-    public List<ReviewableDocumentSummaryResponse> submittedDocumentSummaries() {
+    public List<ReviewableDocumentSummaryResponse> submittedDocumentSummaries(String username) {
 
+        Account account = getAccount(username);
         List<FinalReport> reports = finalReportRepository
-                .findByStatusInAndDeletedFalse(REVIEWER_VISIBLE_STATUSES);
+                .findByStatusInAndDeletedFalse(REVIEWER_VISIBLE_STATUSES)
+                .stream()
+                .filter(report -> canViewDirectorQueue(report.getCourse(), account))
+                .toList();
 
         return mapReportsToSummaries(reports);
     }
@@ -242,17 +251,20 @@ public class FinalReportService {
         validateApprovedForExport(report.getStatus());
 
         return pdfExportService.createPdf(
-                "Informe final #" + report.getId(),
+                "Informe final de prácticas preprofesionales",
                 List.of(
                         pdfExportService.section(
                                 "Datos generales",
                                 List.of(
                                         pdfExportService.field("Estudiante", report.getStudentFullName()),
                                         pdfExportService.field("Cedula", report.getStudentIdentification()),
-                                        pdfExportService.field("Curso", report.getCourseName()),
+                                        pdfExportService.field("Ciclo", report.getCourseName()),
+                                        pdfExportService.field("Tutor Institucional", firstPresent(
+                                                report.getInstitutionalReviewedByName(),
+                                                report.getInstitutionalReviewedBy())),
                                         pdfExportService.field("Institucion", report.getEducationalInstitutionName()),
-                                        pdfExportService.field("Enviado", report.getSubmittedAt()),
-                                        pdfExportService.field("Aprobado", report.getApprovedAt())
+                                        pdfExportService.field("Codigo AMIE", report.getEducationalInstitutionCode()),
+                                        pdfExportService.field("Direccion", report.getEducationalInstitutionAddress())
                                 )),
                         pdfExportService.section(
                                 "Antecedentes y objetivo",
@@ -279,11 +291,12 @@ public class FinalReportService {
                                         pdfExportService.field("Recomendacion 3", report.getRecommendation3())
                                 )),
                         pdfExportService.section(
-                                "Aprobacion",
+                                "Firma tutor institucional",
                                 List.of(
-                                        pdfExportService.field("Tutor de practicas", report.getPracticeReviewedBy()),
-                                        pdfExportService.field("Tutor institucional", report.getInstitutionalReviewedBy()),
-                                        pdfExportService.field("Direccion", report.getDirectorReviewedBy())
+                                        pdfExportService.field("Tutor Institucional", firstPresent(
+                                                report.getInstitutionalReviewedByName(),
+                                                report.getInstitutionalReviewedBy())),
+                                        pdfExportService.field("Rol", "TUTOR INSTITUCIONAL")
                                 ))
                 ));
     }
@@ -418,7 +431,7 @@ public class FinalReportService {
         FinalReport report = getReport(id);
         Account director = getAccount(username);
 
-        validateDirectorCanReview(director);
+        validateDirectorCanReview(report, director);
         validateReviewable(report);
         applyDirectorFeedback(report, request);
         saveDirectorFeedbackComments(report, request, director);
@@ -597,7 +610,7 @@ public class FinalReportService {
                 && (isAssignedPracticeTutor(report, account)
                 || isAssignedInstitutionalTutor(report, account)
                 || hasRole(account, RoleName.ROLE_ADMIN)
-                || hasRole(account, RoleName.ROLE_DIRECTOR_PRACTICAS))) {
+                || isDirectorForCourse(report.getCourse(), account))) {
             return;
         }
 
@@ -632,9 +645,11 @@ public class FinalReportService {
         }
     }
 
-    private void validateDirectorCanReview(Account director) {
+    private void validateDirectorCanReview(
+            FinalReport report,
+            Account director) {
 
-        if (!hasRole(director, RoleName.ROLE_DIRECTOR_PRACTICAS)) {
+        if (!isDirectorForCourse(report.getCourse(), director)) {
             throw new AccessDeniedException(
                     "Solo el director de practicas puede revisar este informe final");
         }
@@ -648,6 +663,35 @@ public class FinalReportService {
 
         return course.getPracticeTutor() != null
                 && course.getPracticeTutor().getId().equals(account.getId());
+    }
+
+    private boolean isDirectorForCourse(
+            Course course,
+            Account account) {
+
+        if (!hasRole(account, RoleName.ROLE_DIRECTOR_PRACTICAS)
+                || course == null) {
+            return false;
+        }
+
+        Career directorCareer = account.getCareer();
+        Career courseCareer = course.getAcademicCycle() != null
+                ? course.getAcademicCycle().getCareer()
+                : course.getSubject() != null && course.getSubject().getAcademicCycle() != null
+                        ? course.getSubject().getAcademicCycle().getCareer()
+                        : null;
+
+        return directorCareer != null
+                && courseCareer != null
+                && directorCareer.getId().equals(courseCareer.getId());
+    }
+
+    private boolean canViewDirectorQueue(
+            Course course,
+            Account account) {
+
+        return hasRole(account, RoleName.ROLE_ADMIN)
+                || isDirectorForCourse(course, account);
     }
 
     private boolean isAssignedInstitutionalTutor(
@@ -860,13 +904,68 @@ public class FinalReportService {
             FinalReportActivityWeek week = FinalReportActivityWeek.builder()
                     .report(report)
                     .weekNumber(weekRequest.getWeekNumber())
-                    .startDate(weekRequest.getStartDate())
-                    .endDate(weekRequest.getEndDate())
+                    .startDate(activityWeekStartDate(report.getCourse(), weekRequest.getWeekNumber(), weekRequest.getStartDate()))
+                    .endDate(activityWeekEndDate(report.getCourse(), weekRequest.getWeekNumber(), weekRequest.getEndDate()))
                     .activities(weekRequest.getActivities())
                     .build();
 
             report.getActivityWeeks().add(week);
         }
+    }
+
+    private LocalDate activityWeekStartDate(
+            Course course,
+            Integer weekNumber,
+            LocalDate providedDate) {
+
+        if (providedDate != null) {
+            return providedDate;
+        }
+
+        return defaultActivityWeekStartDate(course, weekNumber);
+    }
+
+    private LocalDate activityWeekEndDate(
+            Course course,
+            Integer weekNumber,
+            LocalDate providedDate) {
+
+        if (providedDate != null) {
+            return providedDate;
+        }
+
+        return defaultActivityWeekEndDate(course, weekNumber);
+    }
+
+    private LocalDate defaultActivityWeekStartDate(
+            Course course,
+            Integer weekNumber) {
+
+        if (course == null || course.getStartDate() == null) {
+            return null;
+        }
+
+        return course.getStartDate()
+                .toLocalDate()
+                .plusDays((long) (weekNumber == null ? 0 : Math.max(weekNumber - 1, 0)) * 7L);
+    }
+
+    private LocalDate defaultActivityWeekEndDate(
+            Course course,
+            Integer weekNumber) {
+
+        LocalDate startDate = defaultActivityWeekStartDate(course, weekNumber);
+
+        if (startDate == null) {
+            return null;
+        }
+
+        LocalDate endDate = startDate.plusDays(4);
+
+        return course.getEndDate() != null
+                && endDate.isAfter(course.getEndDate().toLocalDate())
+                        ? course.getEndDate().toLocalDate()
+                        : endDate;
     }
 
     private void validateStudentSectionComplete(FinalReport report) {
@@ -1240,6 +1339,13 @@ public class FinalReportService {
         return account != null ? account.getUsername() : null;
     }
 
+    private String firstPresent(String firstValue, String secondValue) {
+
+        return firstValue != null && !firstValue.isBlank()
+                ? firstValue
+                : secondValue;
+    }
+
     private String accountFullName(Account account) {
 
         if (account == null || account.getPerson() == null) {
@@ -1363,14 +1469,17 @@ public class FinalReportService {
                         report.getPracticeReviewedBy() != null
                                 ? report.getPracticeReviewedBy().getUsername()
                                 : null)
+                .practiceReviewedByName(accountFullName(report.getPracticeReviewedBy()))
                 .institutionalReviewedBy(
                         report.getInstitutionalReviewedBy() != null
                                 ? report.getInstitutionalReviewedBy().getUsername()
                                 : null)
+                .institutionalReviewedByName(accountFullName(report.getInstitutionalReviewedBy()))
                 .directorReviewedBy(
                         report.getDirectorReviewedBy() != null
                                 ? report.getDirectorReviewedBy().getUsername()
                                 : null)
+                .directorReviewedByName(accountFullName(report.getDirectorReviewedBy()))
                 .submittedAt(report.getSubmittedAt())
                 .practiceReviewedAt(report.getPracticeReviewedAt())
                 .institutionalReviewedAt(report.getInstitutionalReviewedAt())
@@ -1417,8 +1526,8 @@ public class FinalReportService {
                 .map(week -> FinalReportActivityWeekResponse.builder()
                         .id(week.getId())
                         .weekNumber(week.getWeekNumber())
-                        .startDate(week.getStartDate())
-                        .endDate(week.getEndDate())
+                        .startDate(activityWeekStartDate(report.getCourse(), week.getWeekNumber(), week.getStartDate()))
+                        .endDate(activityWeekEndDate(report.getCourse(), week.getWeekNumber(), week.getEndDate()))
                         .activities(week.getActivities())
                         .build())
                 .toList();

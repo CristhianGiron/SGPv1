@@ -48,10 +48,13 @@ public class EnrollmentController {
         @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR_PRACTICAS')")
 
         public EnrollmentResponse approve(
+                        Authentication authentication,
 
                         @PathVariable Long id) {
 
-                return enrollmentService.approve(id);
+                return enrollmentService.approve(
+                                authentication.getName(),
+                                id);
         }
 
         /*
@@ -62,10 +65,13 @@ public class EnrollmentController {
         @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR_PRACTICAS')")
 
         public EnrollmentResponse reject(
+                        Authentication authentication,
 
                         @PathVariable Long id) {
 
-                return enrollmentService.reject(id);
+                return enrollmentService.reject(
+                                authentication.getName(),
+                                id);
         }
 
         /*

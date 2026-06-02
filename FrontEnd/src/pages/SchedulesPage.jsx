@@ -49,8 +49,8 @@ export function SchedulesPage() {
     <>
       <PageHeader
         eyebrow="Asistencia"
-        title="Horarios y asistencias"
-        description="Organiza jornadas de practica y registra la asistencia de estudiantes."
+        title="Jornadas y asistencias"
+        description="Organiza jornadas y registra la asistencia de estudiantes."
       />
       <EndpointConsole enableListFilters={canFilterSchedules} modules={SCHEDULE_MODULES} />
     </>
@@ -88,7 +88,7 @@ function StudentScheduleView() {
     <>
       <PageHeader
         eyebrow="Asistencia"
-        title="Mi horario"
+        title="Mis jornadas"
         description="Consulta tus jornadas, asistencias, faltas y tiempo acumulado."
         action={
           <SecondaryButton icon={RefreshCw} loading={loading} onClick={loadSchedules} type="button">
@@ -111,14 +111,14 @@ function StudentScheduleView() {
 
       <div className="space-y-5">
         {loading && !schedules.length ? (
-          <SectionCard title="Horario semanal">
-            <EmptyState text="Cargando horarios" />
+          <SectionCard title="Jornadas programadas">
+            <EmptyState text="Cargando jornadas" />
           </SectionCard>
         ) : schedules.length ? (
           schedules.map((schedule) => (
             <SectionCard
               key={schedule.id}
-              title={schedule.courseName || 'Horario de practicas'}
+              title={schedule.courseName || 'Jornada'}
               description={[
                 schedule.educationalInstitutionName,
                 formatDateRange(schedule.startDate, schedule.endDate),
@@ -130,8 +130,8 @@ function StudentScheduleView() {
             </SectionCard>
           ))
         ) : (
-          <SectionCard title="Horario semanal">
-            <EmptyState text="Aun no tienes horarios registrados." />
+          <SectionCard title="Jornadas programadas">
+            <EmptyState text="Aun no tienes jornadas registradas." />
           </SectionCard>
         )}
       </div>
@@ -196,7 +196,7 @@ function ScheduleMatrix({ periods }) {
                       <div className="space-y-2">
                         {row.byDay[day].map((period) => (
                           <div key={period.id || `${period.dayOfWeek}-${period.startTime}-${period.place}`}>
-                            <p className="font-bold text-[#20282d] dark:text-slate-100">{period.place || 'Practicas'}</p>
+                            <p className="font-bold text-[#20282d] dark:text-slate-100">{period.place || 'Jornada'}</p>
                             {period.notes && <p className="text-xs text-muted">{period.notes}</p>}
                           </div>
                         ))}
@@ -218,10 +218,10 @@ function ScheduleMatrix({ periods }) {
 const attendanceColumns = [
   { key: 'attendanceDate', header: 'Fecha', render: (row) => formatLocalDate(row.attendanceDate) },
   { key: 'day', header: 'Dia', render: (row) => DAY_LABELS[row.scheduledDayOfWeek] || '-' },
-  { key: 'courseName', header: 'Curso' },
+  { key: 'courseName', header: 'Paralelo' },
   {
     key: 'scheduledTime',
-    header: 'Horario',
+    header: 'Jornada',
     render: (row) => formatTimeRange(row.scheduledStartTime, row.scheduledEndTime),
   },
   {

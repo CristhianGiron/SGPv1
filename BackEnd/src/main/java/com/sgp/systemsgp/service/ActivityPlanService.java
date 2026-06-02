@@ -22,6 +22,7 @@ import com.sgp.systemsgp.model.Account;
 import com.sgp.systemsgp.model.ActivityPlan;
 import com.sgp.systemsgp.model.ActivityPlanActivityWeek;
 import com.sgp.systemsgp.model.ActivityPlanScheduleWeek;
+import com.sgp.systemsgp.model.Career;
 import com.sgp.systemsgp.model.Course;
 import com.sgp.systemsgp.model.Enrollment;
 import com.sgp.systemsgp.model.Institution;
@@ -116,7 +117,7 @@ public class ActivityPlanService {
         List<ActivityPlan> plans = activityPlanRepository
                 .findByCourse_PracticeTutor_UsernameAndDeletedFalse(username)
                 .stream()
-                .filter(plan -> plan.getStatus() == ActivityPlanStatus.SUBMITTED)
+                .filter(plan -> isVisibleToReviewers(plan.getStatus()))
                 .toList();
 
         return mapPlansToResponses(plans);
@@ -127,24 +128,32 @@ public class ActivityPlanService {
         List<ActivityPlan> plans = activityPlanRepository
                 .findByCourse_PracticeTutor_UsernameAndDeletedFalse(username)
                 .stream()
-                .filter(plan -> plan.getStatus() == ActivityPlanStatus.SUBMITTED)
+                .filter(plan -> isVisibleToReviewers(plan.getStatus()))
                 .toList();
 
         return mapPlansToSummaries(plans);
     }
 
-    public List<ActivityPlanResponse> submittedDocuments() {
+    public List<ActivityPlanResponse> submittedDocuments(String username) {
 
+        Account account = getAccount(username);
         List<ActivityPlan> plans = activityPlanRepository
-                .findByStatusInAndDeletedFalse(REVIEWER_VISIBLE_STATUSES);
+                .findByStatusInAndDeletedFalse(REVIEWER_VISIBLE_STATUSES)
+                .stream()
+                .filter(plan -> canViewDirectorQueue(plan.getCourse(), account))
+                .toList();
 
         return mapPlansToResponses(plans);
     }
 
-    public List<ReviewableDocumentSummaryResponse> submittedDocumentSummaries() {
+    public List<ReviewableDocumentSummaryResponse> submittedDocumentSummaries(String username) {
 
+        Account account = getAccount(username);
         List<ActivityPlan> plans = activityPlanRepository
-                .findByStatusInAndDeletedFalse(REVIEWER_VISIBLE_STATUSES);
+                .findByStatusInAndDeletedFalse(REVIEWER_VISIBLE_STATUSES)
+                .stream()
+                .filter(plan -> canViewDirectorQueue(plan.getCourse(), account))
+                .toList();
 
         return mapPlansToSummaries(plans);
     }
@@ -211,20 +220,25 @@ public class ActivityPlanService {
         validateApprovedForExport(plan.getStatus());
 
         return pdfExportService.createPdf(
-                "Plan de actividades #" + plan.getId(),
+                "Plan de actividades",
                 List.of(
                         pdfExportService.section(
                                 "Datos generales",
                                 List.of(
                                         pdfExportService.field("Estudiante", plan.getStudentFullName()),
                                         pdfExportService.field("Cedula", plan.getStudentIdentification()),
-                                        pdfExportService.field("Curso", plan.getCourseName()),
+                                        pdfExportService.field("Ciclo", plan.getCourseName()),
+                                        pdfExportService.field("Tutor Academico", firstPresent(
+                                                plan.getReviewedByName(),
+                                                plan.getReviewedBy())),
+                                        pdfExportService.field("Correo Electronico", plan.getStudentEmail()),
+                                        pdfExportService.field("Nro. de telefono", plan.getStudentPhone()),
                                         pdfExportService.field("Institucion", plan.getEducationalInstitutionName()),
+                                        pdfExportService.field("Codigo AMIE", plan.getEducationalInstitutionCode()),
+                                        pdfExportService.field("Direccion", plan.getEducationalInstitutionAddress()),
                                         pdfExportService.field("Tipo de practica", plan.getPracticeType()),
                                         pdfExportService.field("Unidad curricular", plan.getCurricularOrganizationUnit()),
-                                        pdfExportService.field("Proyecto integrador", plan.getIntegrativeKnowledgeProject()),
-                                        pdfExportService.field("Enviado", plan.getSubmittedAt()),
-                                        pdfExportService.field("Aprobado", plan.getApprovedAt())
+                                        pdfExportService.field("Proyecto integrador", plan.getIntegrativeKnowledgeProject())
                                 )),
                         pdfExportService.section(
                                 "Institucion",
@@ -259,10 +273,14 @@ public class ActivityPlanService {
                                         pdfExportService.field("Fisicos", plan.getPhysicalResources())
                                 )),
                         pdfExportService.section(
-                                "Aprobacion",
+                                "Legalizacion",
                                 List.of(
-                                        pdfExportService.field("Revisado por tutor", plan.getReviewedBy()),
-                                        pdfExportService.field("Revisado por direccion", plan.getDirectorReviewedBy())
+                                        pdfExportService.field("Tutor Academico", firstPresent(
+                                                plan.getReviewedByName(),
+                                                plan.getReviewedBy())),
+                                        pdfExportService.field(
+                                                "Rol",
+                                                "DOCENTE DE LA ASIGNATURA DE DISEÑO CURRICULAR EN INFORMÁTICA\nTUTOR ACADÉMICO")
                                 ))
                 ));
     }
@@ -445,7 +463,7 @@ public class ActivityPlanService {
         if (isVisibleToReviewers(plan.getStatus())
                 && (isAssignedPracticeTutor(plan, account)
                 || hasRole(account, RoleName.ROLE_ADMIN)
-                || hasRole(account, RoleName.ROLE_DIRECTOR_PRACTICAS))) {
+                || isDirectorForCourse(plan.getCourse(), account))) {
             return;
         }
 
@@ -462,7 +480,7 @@ public class ActivityPlanService {
             ActivityPlan plan,
             Account reviewer) {
 
-        if (hasRole(reviewer, RoleName.ROLE_DIRECTOR_PRACTICAS)) {
+        if (isDirectorForCourse(plan.getCourse(), reviewer)) {
             return;
         }
 
@@ -494,6 +512,35 @@ public class ActivityPlanService {
 
         return course.getPracticeTutor() != null
                 && course.getPracticeTutor().getId().equals(account.getId());
+    }
+
+    private boolean isDirectorForCourse(
+            Course course,
+            Account account) {
+
+        if (!hasRole(account, RoleName.ROLE_DIRECTOR_PRACTICAS)
+                || course == null) {
+            return false;
+        }
+
+        Career directorCareer = account.getCareer();
+        Career courseCareer = course.getAcademicCycle() != null
+                ? course.getAcademicCycle().getCareer()
+                : course.getSubject() != null && course.getSubject().getAcademicCycle() != null
+                        ? course.getSubject().getAcademicCycle().getCareer()
+                        : null;
+
+        return directorCareer != null
+                && courseCareer != null
+                && directorCareer.getId().equals(courseCareer.getId());
+    }
+
+    private boolean canViewDirectorQueue(
+            Course course,
+            Account account) {
+
+        return hasRole(account, RoleName.ROLE_ADMIN)
+                || isDirectorForCourse(course, account);
     }
 
     private boolean hasRole(
@@ -856,8 +903,8 @@ public class ActivityPlanService {
             ActivityPlanActivityWeek week = ActivityPlanActivityWeek.builder()
                     .plan(plan)
                     .weekNumber(weekRequest.getWeekNumber())
-                    .startDate(weekRequest.getStartDate())
-                    .endDate(weekRequest.getEndDate())
+                    .startDate(activityWeekStartDate(plan.getCourse(), weekRequest.getWeekNumber(), weekRequest.getStartDate()))
+                    .endDate(activityWeekEndDate(plan.getCourse(), weekRequest.getWeekNumber(), weekRequest.getEndDate()))
                     .activities(weekRequest.getActivities())
                     .build();
 
@@ -879,8 +926,8 @@ public class ActivityPlanService {
             ActivityPlanScheduleWeek week = ActivityPlanScheduleWeek.builder()
                     .plan(plan)
                     .weekNumber(weekRequest.getWeekNumber())
-                    .startDate(weekRequest.getStartDate())
-                    .endDate(weekRequest.getEndDate())
+                    .startDate(activityWeekStartDate(plan.getCourse(), weekRequest.getWeekNumber(), weekRequest.getStartDate()))
+                    .endDate(activityWeekEndDate(plan.getCourse(), weekRequest.getWeekNumber(), weekRequest.getEndDate()))
                     .scheduledActivities(weekRequest.getScheduledActivities())
                     .build();
 
@@ -962,6 +1009,61 @@ public class ActivityPlanService {
             throw new BadRequestException(
                     "La fecha final de una semana no puede ser anterior a la fecha inicial");
         }
+    }
+
+    private java.time.LocalDate activityWeekStartDate(
+            Course course,
+            Integer weekNumber,
+            java.time.LocalDate providedDate) {
+
+        if (providedDate != null) {
+            return providedDate;
+        }
+
+        return defaultActivityWeekStartDate(course, weekNumber);
+    }
+
+    private java.time.LocalDate activityWeekEndDate(
+            Course course,
+            Integer weekNumber,
+            java.time.LocalDate providedDate) {
+
+        if (providedDate != null) {
+            return providedDate;
+        }
+
+        return defaultActivityWeekEndDate(course, weekNumber);
+    }
+
+    private java.time.LocalDate defaultActivityWeekStartDate(
+            Course course,
+            Integer weekNumber) {
+
+        if (course == null || course.getStartDate() == null) {
+            return null;
+        }
+
+        return course.getStartDate()
+                .toLocalDate()
+                .plusDays((long) (weekNumber == null ? 0 : Math.max(weekNumber - 1, 0)) * 7L);
+    }
+
+    private java.time.LocalDate defaultActivityWeekEndDate(
+            Course course,
+            Integer weekNumber) {
+
+        java.time.LocalDate startDate = defaultActivityWeekStartDate(course, weekNumber);
+
+        if (startDate == null) {
+            return null;
+        }
+
+        java.time.LocalDate endDate = startDate.plusDays(4);
+
+        return course.getEndDate() != null
+                && endDate.isAfter(course.getEndDate().toLocalDate())
+                        ? course.getEndDate().toLocalDate()
+                        : endDate;
     }
 
     private void requireText(
@@ -1106,6 +1208,13 @@ public class ActivityPlanService {
         return account != null ? account.getUsername() : null;
     }
 
+    private String firstPresent(String firstValue, String secondValue) {
+
+        return firstValue != null && !firstValue.isBlank()
+                ? firstValue
+                : secondValue;
+    }
+
     private String accountFullName(Account account) {
 
         if (account == null || account.getPerson() == null) {
@@ -1225,10 +1334,12 @@ public class ActivityPlanService {
                         plan.getReviewedBy() != null
                                 ? plan.getReviewedBy().getUsername()
                                 : null)
+                .reviewedByName(accountFullName(plan.getReviewedBy()))
                 .directorReviewedBy(
                         plan.getDirectorReviewedBy() != null
                                 ? plan.getDirectorReviewedBy().getUsername()
                                 : null)
+                .directorReviewedByName(accountFullName(plan.getDirectorReviewedBy()))
                 .submittedAt(plan.getSubmittedAt())
                 .reviewedAt(plan.getReviewedAt())
                 .directorReviewedAt(plan.getDirectorReviewedAt())
@@ -1274,11 +1385,53 @@ public class ActivityPlanService {
                 .map(week -> ActivityPlanActivityWeekResponse.builder()
                         .id(week.getId())
                         .weekNumber(week.getWeekNumber())
-                        .startDate(week.getStartDate())
-                        .endDate(week.getEndDate())
+                        .startDate(resolveActivityWeekStartDate(plan, week))
+                        .endDate(resolveActivityWeekEndDate(plan, week))
                         .activities(week.getActivities())
                         .build())
                 .toList();
+    }
+
+    private java.time.LocalDate resolveActivityWeekStartDate(
+            ActivityPlan plan,
+            ActivityPlanActivityWeek week) {
+
+        if (week.getStartDate() != null) {
+            return week.getStartDate();
+        }
+
+        return matchingScheduleWeek(plan, week)
+                .map(ActivityPlanScheduleWeek::getStartDate)
+                .orElse(null);
+    }
+
+    private java.time.LocalDate resolveActivityWeekEndDate(
+            ActivityPlan plan,
+            ActivityPlanActivityWeek week) {
+
+        if (week.getEndDate() != null) {
+            return week.getEndDate();
+        }
+
+        return matchingScheduleWeek(plan, week)
+                .map(ActivityPlanScheduleWeek::getEndDate)
+                .orElse(null);
+    }
+
+    private java.util.Optional<ActivityPlanScheduleWeek> matchingScheduleWeek(
+            ActivityPlan plan,
+            ActivityPlanActivityWeek activityWeek) {
+
+        if (plan == null
+                || activityWeek == null
+                || activityWeek.getWeekNumber() == null) {
+            return java.util.Optional.empty();
+        }
+
+        return plan.getScheduleWeeks()
+                .stream()
+                .filter(scheduleWeek -> activityWeek.getWeekNumber().equals(scheduleWeek.getWeekNumber()))
+                .findFirst();
     }
 
     private List<ActivityPlanScheduleWeekResponse> mapScheduleWeeks(ActivityPlan plan) {

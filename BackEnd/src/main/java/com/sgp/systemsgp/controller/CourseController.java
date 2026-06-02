@@ -51,15 +51,18 @@ public class CourseController {
     public List<CourseResponse> getAll(
             Authentication authentication) {
 
-        return courseService.getAll(isAdmin(authentication));
+        return courseService.getAll(
+                authentication.getName(),
+                canManageCourses(authentication));
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR_PRACTICAS')")
     public CourseResponse getById(
+            Authentication authentication,
             @PathVariable Long id) {
 
-        return courseService.getById(id);
+        return courseService.getById(authentication.getName(), id);
     }
 
     @PatchMapping("/{id}/practice-profile")
@@ -152,6 +155,7 @@ public class CourseController {
     @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR_PRACTICAS')")
 
     public CourseResponse assignInstitutionalTutor(
+            Authentication authentication,
 
             @PathVariable Long id,
 
@@ -159,6 +163,7 @@ public class CourseController {
 
         return courseService
                 .assignInstitutionalTutor(
+                        authentication.getName(),
                         id,
                         accountId);
     }
@@ -168,6 +173,7 @@ public class CourseController {
     @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR_PRACTICAS')")
 
     public CourseResponse assignPracticeTutor(
+            Authentication authentication,
 
             @PathVariable Long id,
 
@@ -175,6 +181,7 @@ public class CourseController {
 
         return courseService
                 .assignPracticeTutor(
+                        authentication.getName(),
                         id,
                         accountId);
     }
@@ -184,9 +191,10 @@ public class CourseController {
     @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR_PRACTICAS')")
 
     public void disable(
+            Authentication authentication,
             @PathVariable Long id) {
 
-        courseService.disable(id);
+        courseService.disable(authentication.getName(), id);
     }
 
     @PatchMapping("/{id}/enable")
@@ -194,9 +202,10 @@ public class CourseController {
     @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR_PRACTICAS')")
 
     public void enable(
+            Authentication authentication,
             @PathVariable Long id) {
 
-        courseService.enable(id);
+        courseService.enable(authentication.getName(), id);
     }
 
     @PatchMapping("/{id}/lock")
@@ -204,9 +213,10 @@ public class CourseController {
     @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR_PRACTICAS')")
 
     public void lock(
+            Authentication authentication,
             @PathVariable Long id) {
 
-        courseService.lock(id);
+        courseService.lock(authentication.getName(), id);
     }
 
     @PatchMapping("/{id}/unlock")
@@ -214,9 +224,10 @@ public class CourseController {
     @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR_PRACTICAS')")
 
     public void unlock(
+            Authentication authentication,
             @PathVariable Long id) {
 
-        courseService.unlock(id);
+        courseService.unlock(authentication.getName(), id);
     }
 
     @DeleteMapping("/{id}")
@@ -224,9 +235,10 @@ public class CourseController {
     @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR_PRACTICAS')")
 
     public void delete(
+            Authentication authentication,
             @PathVariable Long id) {
 
-        courseService.softDelete(id);
+        courseService.softDelete(authentication.getName(), id);
     }
 
     @PatchMapping("/{id}/restore")
@@ -234,9 +246,10 @@ public class CourseController {
     @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR_PRACTICAS')")
 
     public void restore(
+            Authentication authentication,
             @PathVariable Long id) {
 
-        courseService.restore(id);
+        courseService.restore(authentication.getName(), id);
     }
 
     @DeleteMapping("/{id}/force")
@@ -268,11 +281,16 @@ public class CourseController {
 
             Pageable pageable) {
 
-        Boolean effectiveActive = isAdmin(authentication)
+        Boolean effectiveActive = canManageCourses(authentication)
                 ? active
                 : true;
+        String effectivePracticeTutor = isPracticeTutorOnly(authentication)
+                ? authentication.getName()
+                : practiceTutor;
 
         return courseService.search(
+
+                authentication.getName(),
 
                 name,
 
@@ -282,15 +300,25 @@ public class CourseController {
 
                 institutionalTutor,
 
-                practiceTutor,
+                effectivePracticeTutor,
 
                 pageable);
     }
 
-    private boolean isAdmin(Authentication authentication) {
+    private boolean canManageCourses(Authentication authentication) {
 
         return authentication.getAuthorities()
                 .stream()
-                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN")
+                        || authority.getAuthority().equals("ROLE_DIRECTOR_PRACTICAS"));
+    }
+
+    private boolean isPracticeTutorOnly(Authentication authentication) {
+
+        boolean practiceTutor = authentication.getAuthorities()
+                .stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_TUTOR_PRACTICAS"));
+
+        return practiceTutor && !canManageCourses(authentication);
     }
 }

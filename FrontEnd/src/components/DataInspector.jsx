@@ -1,17 +1,19 @@
 import { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { Clock3 } from 'lucide-react';
 import {
   extractNestedCollections,
   formatValue,
   labelFromKey,
 } from '../utils/format';
+import { getApiBaseUrl } from '../api/client';
 import { DataTable } from './ui/DataTable';
 import { EmptyState } from './ui/EmptyState';
+import { Modal } from './ui/Modal';
 
 const feedbackInlineClass = 'rounded-lg border-l-[3px] border-[#529914] bg-[#e4f0d8] p-3 dark:border-[#75c66a] dark:bg-[#75c66a]/10';
 const feedbackMetaClass = 'mt-2 text-xs leading-5 text-[#3f760f] dark:text-[#bbf7d0]';
 
-export function DataInspector({ data, moduleId }) {
+export function DataInspector({ data, moduleId, token }) {
   if (!data) {
     return <EmptyState text="Selecciona un documento para ver el detalle." />;
   }
@@ -80,7 +82,7 @@ export function DataInspector({ data, moduleId }) {
                         <ActivityPlanScheduleMatrix weeks={collection.rows} />
                       ) : (
                         <DataTable
-                          columns={makeColumns(collection.rows, data, moduleId)}
+                          columns={makeColumns(collection.rows, data, moduleId, token)}
                           emptyText="Aun no hay informacion agregada."
                           rows={collection.rows}
                         />
@@ -105,7 +107,7 @@ export function DataInspector({ data, moduleId }) {
               <ActivityPlanScheduleMatrix weeks={collection.rows} />
             ) : (
               <DataTable
-                columns={makeColumns(collection.rows, data, moduleId)}
+                columns={makeColumns(collection.rows, data, moduleId, token)}
                 emptyText="Aun no hay informacion agregada."
                 rows={collection.rows}
               />
@@ -337,34 +339,45 @@ function SectionFeedbackThread({ entries }) {
 }
 
 function DocumentTimeline({ events }) {
-  const [collapsed, setCollapsed] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  function handleGoToSection(targetId) {
+    setOpen(false);
+    window.setTimeout(() => scrollToDetailSection(targetId), 80);
+  }
 
   return (
     <section className="rounded-lg border border-zinc-200 bg-white p-3 dark:border-slate-700 dark:bg-surface">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h3 className="text-sm font-bold text-zinc-950 dark:text-slate-50">Linea de tiempo</h3>
+        <div className="min-w-0">
+          <h3 className="text-sm font-bold text-zinc-950 dark:text-slate-50">Linea de tiempo</h3>
+          <p className="mt-1 text-xs font-semibold text-muted">
+            Consulta los movimientos y revisiones del documento.
+          </p>
+        </div>
         <div className="flex items-center gap-2">
           <span className="rounded-full bg-zinc-100 px-2 py-1 text-xs font-bold text-zinc-600 dark:bg-slate-800 dark:text-slate-300">
             {timelineCountLabel(events.length)}
           </span>
           <button
-            aria-expanded={!collapsed}
-            className="grid h-8 w-8 place-items-center rounded-lg border border-[#c8d2cd] text-[#34443b] transition-colors hover:bg-[#eef3f2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#529914]/35 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
-            onClick={() => setCollapsed((current) => !current)}
-            title={collapsed ? 'Expandir linea de tiempo' : 'Contraer linea de tiempo'}
+            className="inline-flex min-h-[2.25rem] items-center gap-2 rounded-lg border border-[#529914] px-3 py-1.5 text-xs font-extrabold text-primary transition-colors hover:bg-primary hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#529914]/35 dark:border-[#75c66a] dark:text-[#bbf7d0] dark:hover:bg-[#203026] dark:hover:text-white"
+            onClick={() => setOpen(true)}
             type="button"
           >
-            <ChevronDown
-              aria-hidden="true"
-              className={`transition-transform ${collapsed ? '-rotate-90' : ''}`}
-              size={18}
-            />
+            <Clock3 aria-hidden="true" size={16} />
+            Ver linea de tiempo
           </button>
         </div>
       </div>
 
-      {!collapsed && (
-        <ol className="mt-3 space-y-3">
+      <Modal
+        description={`${timelineCountLabel(events.length)} registrados para este documento.`}
+        maxWidth="max-w-3xl"
+        onClose={() => setOpen(false)}
+        open={open}
+        title="Linea de tiempo"
+      >
+        <ol className="space-y-3">
           {events.map((event) => (
             <li className="grid gap-2 text-sm sm:grid-cols-[150px_1fr] sm:gap-3" key={event.id}>
               <time className="text-xs font-semibold text-muted sm:pt-3">
@@ -376,7 +389,7 @@ function DocumentTimeline({ events }) {
                   {event.targetId && (
                     <button
                       className="rounded-lg border border-[#529914] px-2.5 py-1 text-xs font-extrabold text-primary transition-colors hover:bg-primary hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#529914]/35 dark:border-[#75c66a] dark:text-[#bbf7d0] dark:hover:bg-[#203026]"
-                      onClick={() => scrollToDetailSection(event.targetId)}
+                      onClick={() => handleGoToSection(event.targetId)}
                       type="button"
                     >
                       Ver apartado
@@ -397,7 +410,7 @@ function DocumentTimeline({ events }) {
             </li>
           ))}
         </ol>
-      )}
+      </Modal>
     </section>
   );
 }
@@ -759,13 +772,13 @@ function timelineCountLabel(count) {
 function documentTimelineLabel(moduleId) {
   switch (moduleId) {
     case 'activity-plans':
-      return 'Plan de actividades';
+      return 'L.2. Plan de Actividades';
     case 'practice-reports':
-      return 'Informe de practica';
+      return 'L.1. Informe de Actividades Cumplidas';
     case 'final-reports':
-      return 'Informe final';
+      return 'L.3. Informe Tutor Institucional';
     case 'completed-records':
-      return 'Registro de actividades';
+      return 'L.6. Registro de Actividades Cumplidas';
     default:
       return 'Documento';
   }
@@ -1142,7 +1155,7 @@ const DETAIL_SECTIONS = [
     matches: (key) => /^(code|name|studentFullName|studentIdentification|studentEmail|studentPhone|email|phone)$/i.test(key),
   },
   {
-    title: 'Curso y practica',
+    title: 'Paralelo y practica',
     matches: (key) => /course|subject|academicPeriod|practiceType|developmentMode|curricularOrganizationUnit|integrativeKnowledgeProject|group/i.test(key),
   },
   {
@@ -1432,7 +1445,7 @@ function isTechnicalDocumentKey(key) {
     || /deleted/i.test(key);
 }
 
-function makeColumns(rows, parent, moduleId) {
+function makeColumns(rows, parent, moduleId, token) {
   const keys = Array.from(
     new Set(rows.flatMap((row) => Object.keys(row || {}).filter((key) => !isTechnicalDocumentKey(key))))
   );
@@ -1446,7 +1459,7 @@ function makeColumns(rows, parent, moduleId) {
   return visibleKeys.map((key) => ({
     key,
     header: isFeedbackKey(key) ? feedbackLabel(key, moduleId) : labelFromKey(key),
-    render: (row) => renderTableValue(row, key, parent, moduleId),
+    render: (row) => renderTableValue(row, key, parent, moduleId, token),
   }));
 }
 
@@ -1483,8 +1496,12 @@ function priorityIndex(key, keys) {
   return index >= 0 ? index : COLLECTION_KEY_PRIORITY.length + keys.indexOf(key);
 }
 
-function renderTableValue(row, key, parent, moduleId) {
+function renderTableValue(row, key, parent, moduleId, token) {
   const value = formatValue(row[key], key);
+
+  if (key === 'evidenceLink' && row[key]) {
+    return <EvidenceViewerLink url={row[key]} />;
+  }
 
   if (!isFeedbackKey(key) || row[key] === undefined || row[key] === null || row[key] === '') {
     return value;
@@ -1498,4 +1515,64 @@ function renderTableValue(row, key, parent, moduleId) {
       {meta && <div className={feedbackMetaClass}>{formatFeedbackMeta(meta)}</div>}
     </div>
   );
+}
+
+function EvidenceViewerLink({ url }) {
+  const viewerLink = evidenceDisplayLink(url);
+
+  return (
+    <a
+      className="break-all text-sm font-extrabold text-primary hover:underline dark:text-[#bbf7d0]"
+      href={viewerLink}
+      rel="noreferrer"
+      target="_blank"
+    >
+      {viewerLink}
+    </a>
+  );
+}
+
+function evidenceDisplayLink(url) {
+  if (!url) {
+    return '';
+  }
+
+  if (isPublicEvidenceUrl(url)) {
+    return publicEvidenceUrl(url);
+  }
+
+  if (/^https?:\/\//i.test(url)) {
+    return url;
+  }
+
+  return `${window.location.origin}${window.location.pathname}#/evidence-viewer?src=${encodeURIComponent(url)}`;
+}
+
+function isPublicEvidenceUrl(url) {
+  return String(url || '').includes('/api/public/practice-photos/');
+}
+
+function publicEvidenceUrl(path) {
+  if (!path) {
+    return '';
+  }
+
+  if (/^https?:\/\//i.test(path)) {
+    return path;
+  }
+
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  const apiBase = getApiBaseUrl();
+
+  if (/^https?:\/\//i.test(apiBase)) {
+    return `${apiBase}${normalizedPath}`;
+  }
+
+  const { protocol, hostname, port, origin } = window.location;
+
+  if ((hostname === 'localhost' || hostname === '127.0.0.1') && port === '3000') {
+    return `${protocol}//${hostname}:8080${normalizedPath}`;
+  }
+
+  return `${origin}${normalizedPath}`;
 }

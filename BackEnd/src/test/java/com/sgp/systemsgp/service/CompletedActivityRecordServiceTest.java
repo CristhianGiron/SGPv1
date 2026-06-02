@@ -23,6 +23,8 @@ import com.sgp.systemsgp.enums.InstitutionType;
 import com.sgp.systemsgp.enums.RoleName;
 import com.sgp.systemsgp.exception.BadRequestException;
 import com.sgp.systemsgp.model.Account;
+import com.sgp.systemsgp.model.AcademicCycle;
+import com.sgp.systemsgp.model.Career;
 import com.sgp.systemsgp.model.CompletedActivityRecord;
 import com.sgp.systemsgp.model.CompletedActivityRecordEntry;
 import com.sgp.systemsgp.model.Course;
@@ -30,10 +32,12 @@ import com.sgp.systemsgp.model.Enrollment;
 import com.sgp.systemsgp.model.Institution;
 import com.sgp.systemsgp.model.Person;
 import com.sgp.systemsgp.model.Role;
+import com.sgp.systemsgp.model.Subject;
 import com.sgp.systemsgp.repository.AccountRepository;
 import com.sgp.systemsgp.repository.CompletedActivityRecordRepository;
 import com.sgp.systemsgp.repository.EnrollmentRepository;
 import com.sgp.systemsgp.repository.InstitutionRepository;
+import com.sgp.systemsgp.repository.PracticePhotoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -59,6 +63,9 @@ class CompletedActivityRecordServiceTest {
     private InstitutionRepository institutionRepository;
 
     @Mock
+    private PracticePhotoRepository practicePhotoRepository;
+
+    @Mock
     private NotificationService notificationService;
 
     @Mock
@@ -79,6 +86,7 @@ class CompletedActivityRecordServiceTest {
                 enrollmentRepository,
                 accountRepository,
                 institutionRepository,
+                practicePhotoRepository,
                 notificationService,
                 feedbackCommentService,
                 pdfExportService);
@@ -508,6 +516,7 @@ class CompletedActivityRecordServiceTest {
                 .practiceType("DOCENTE")
                 .practiceTutor(practiceTutor)
                 .institutionalTutor(institutionalTutor)
+                .subject(subject())
                 .build();
     }
 
@@ -552,6 +561,26 @@ class CompletedActivityRecordServiceTest {
                 .id(40L)
                 .username("director.practicas")
                 .roles(Set.of(role(RoleName.ROLE_DIRECTOR_PRACTICAS)))
+                .career(career())
+                .build();
+    }
+
+    private Subject subject() {
+
+        return Subject.builder()
+                .id(1L)
+                .academicCycle(AcademicCycle.builder()
+                        .id(1L)
+                        .career(career())
+                        .build())
+                .build();
+    }
+
+    private Career career() {
+
+        return Career.builder()
+                .id(1L)
+                .name("Ingenieria Test")
                 .build();
     }
 

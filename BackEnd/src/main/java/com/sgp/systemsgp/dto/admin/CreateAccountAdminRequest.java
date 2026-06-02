@@ -44,6 +44,15 @@ public class CreateAccountAdminRequest {
     @Positive(message = "El ciclo académico seleccionado no es válido")
     private Long academicCycleId;
 
+    @Positive(message = "La carrera seleccionada no es válida")
+    private Long careerId;
+
+    @Positive(message = "El grado seleccionado no es válido")
+    private Long gradeId;
+
+    @Positive(message = "El paralelo seleccionado no es válido")
+    private Long gradeParallelId;
+
     @Positive(message = "La institución seleccionada no es válida")
     private Long institutionId;
 }

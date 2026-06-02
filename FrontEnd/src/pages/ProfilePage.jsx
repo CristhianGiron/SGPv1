@@ -1,19 +1,26 @@
-import { useState } from 'react';
-import { KeyRound, Save } from 'lucide-react';
-import { apiRequest } from '../api/client';
+import { useEffect, useMemo, useState } from 'react';
+import { BookOpen, Building2, GraduationCap, KeyRound, Layers, Save, UsersRound } from 'lucide-react';
+import { apiRequest, toQuery, unwrapPage } from '../api/client';
 import { useAuth } from '../auth/AuthContext';
 import { Alert } from '../components/ui/Alert';
 import { PrimaryButton } from '../components/ui/ActionBar';
 import { Field, FileInput, Input } from '../components/ui/FormControls';
+import { Modal } from '../components/ui/Modal';
 import { ModuleTab, ModuleTabs } from '../components/ui/ModuleTabs';
 import { PageHeader } from '../components/ui/PageHeader';
 import { SectionCard } from '../components/ui/SectionCard';
 import { DataInspector } from '../components/DataInspector';
 import { Avatar } from '../components/Avatar';
-import { formatRole, formatValue, joinText } from '../utils/format';
+import { formatRole, joinText } from '../utils/format';
 
 export function ProfilePage() {
   const { token, profile, refreshProfile } = useAuth();
+  const roles = useMemo(() => profile?.roles || [], [profile?.roles]);
+  const isStudent = roles.includes('ROLE_ESTUDIANTE');
+  const isPracticeTutor = roles.includes('ROLE_TUTOR_PRACTICAS');
+  const isInstitutionalTutor = roles.includes('ROLE_TUTOR_INSTITUCIONAL');
+  const isPracticeDirector = roles.includes('ROLE_DIRECTOR_PRACTICAS');
+  const isAdmin = roles.includes('ROLE_ADMIN');
   const [profileForm, setProfileForm] = useState({
     names: profile?.names || '',
     lastNames: profile?.lastNames || '',
@@ -30,6 +37,75 @@ export function ProfilePage() {
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
   const [activeView, setActiveView] = useState('summary');
+  const [membership, setMembership] = useState({ enrollments: [], courses: [] });
+  const [membershipError, setMembershipError] = useState('');
+  const currentEnrollment = useMemo(
+    () => resolveCurrentEnrollment(membership.enrollments),
+    [membership.enrollments]
+  );
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadMembership() {
+      if (!token || !profile) {
+        return;
+      }
+
+      setMembershipError('');
+
+      try {
+        if (isStudent) {
+          const payload = await apiRequest('/api/enrollments/me', { token });
+
+          if (active) {
+            setMembership({ enrollments: unwrapPage(payload), courses: [] });
+          }
+
+          return;
+        }
+
+        if (isPracticeTutor) {
+          const payload = await apiRequest(`/api/courses/search${toQuery({
+            active: true,
+            practiceTutor: profile.username,
+            size: 200,
+          })}`, { token });
+
+          if (active) {
+            setMembership({ enrollments: [], courses: unwrapPage(payload) });
+          }
+
+          return;
+        }
+
+        if (isInstitutionalTutor || isPracticeDirector || isAdmin) {
+          const payload = await apiRequest('/api/enrollments/managed', { token });
+
+          if (active) {
+            setMembership({ enrollments: unwrapPage(payload), courses: [] });
+          }
+
+          return;
+        }
+
+        if (active) {
+          setMembership({ enrollments: [], courses: [] });
+        }
+      } catch (requestError) {
+        if (active) {
+          setMembershipError(requestError.message);
+          setMembership({ enrollments: [], courses: [] });
+        }
+      }
+    }
+
+    loadMembership();
+
+    return () => {
+      active = false;
+    };
+  }, [isAdmin, isInstitutionalTutor, isPracticeDirector, isPracticeTutor, isStudent, profile, token]);
 
   async function updateProfile(event) {
     event.preventDefault();
@@ -51,6 +127,7 @@ export function ProfilePage() {
         body: formData,
       });
       await refreshProfile();
+      setActiveView('summary');
       setMessage('Perfil actualizado');
     } catch (requestError) {
       setError(requestError.message);
@@ -77,6 +154,7 @@ export function ProfilePage() {
         confirmPassword: '',
       });
       await refreshProfile();
+      setActiveView('summary');
       setMessage('Contraseña actualizada');
     } catch (requestError) {
       setError(requestError.message);
@@ -115,40 +193,56 @@ export function ProfilePage() {
         </ModuleTabs>
       </SectionCard>
 
-      {activeView === 'summary' && (
-        <SectionCard>
-          <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-4">
-              <Avatar profile={profile} size="lg" token={token} />
-              <div>
-                <p className="text-xl font-bold text-[#20282d] dark:text-slate-50">
-                  {joinText(profile?.names, profile?.lastNames) || profile?.username}
-                </p>
-                <p className="text-sm text-muted">{profile?.institutionalEmail || 'Sin correo registrado'}</p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {(profile?.roles || []).map((role) => (
-                    <span
-                      className="inline-flex items-center rounded-full border border-[#529914]/30 bg-accent-soft px-2.5 py-1 text-xs font-extrabold leading-none text-accent-strong dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300"
-                      key={role}
-                    >
-                      {formatRole(role)}
-                    </span>
-                  ))}
+      {activeView !== 'detail' && (
+        <>
+          <SectionCard>
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-4">
+                <Avatar profile={profile} size="lg" token={token} />
+                <div>
+                  <p className="text-xl font-bold text-[#20282d] dark:text-slate-50">
+                    {joinText(profile?.names, profile?.lastNames) || profile?.username}
+                  </p>
+                  <p className="text-sm text-muted">{profile?.institutionalEmail || 'Sin correo registrado'}</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {roles.map((role) => (
+                      <span
+                        className="inline-flex items-center rounded-full border border-[#529914]/30 bg-accent-soft px-2.5 py-1 text-xs font-extrabold leading-none text-accent-strong dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300"
+                        key={role}
+                      >
+                        {formatRole(role)}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
+              <div className="grid gap-3 text-sm sm:grid-cols-2">
+                <ProfileMetric label="Facultad" value={profile?.faculty} />
+                <ProfileMetric label="Carrera" value={profile?.career} />
+                <ProfileMetric label={profile?.academicCycle ? 'Ciclo' : 'Grado'} value={profile?.academicCycle || profile?.grade} />
+                <ProfileMetric label="Institucion" value={profile?.academicInstitution || profile?.institution} />
+              </div>
             </div>
-            <div className="grid gap-3 text-sm sm:grid-cols-2">
-              <ProfileMetric label="Ciclo" value={profile?.academicCycle} />
-              <ProfileMetric label="Institucion" value={profile?.institution} />
-              <ProfileMetric label="Estado" value={profile?.enabled ? 'Activo' : 'Inactivo'} />
-              <ProfileMetric label="Actualizado" value={formatValue(profile?.updatedAt, 'updatedAt')} />
-            </div>
-          </div>
-        </SectionCard>
+          </SectionCard>
+
+          <MembershipSummary
+            courses={membership.courses}
+            currentEnrollment={currentEnrollment}
+            enrollments={membership.enrollments}
+            error={membershipError}
+            profile={profile}
+            roles={roles}
+          />
+        </>
       )}
 
-      {activeView === 'profile' && (
-        <SectionCard title="Datos personales">
+      <Modal
+        description="Actualiza tus datos de contacto y tu imagen de perfil."
+        maxWidth="max-w-3xl"
+        onClose={() => setActiveView('summary')}
+        open={activeView === 'profile'}
+        title="Datos personales"
+      >
           <form className="grid gap-4 sm:grid-cols-2" onSubmit={updateProfile}>
             <Field label="Nombres">
               <Input
@@ -193,11 +287,15 @@ export function ProfilePage() {
               <PrimaryButton icon={Save} loading={saving} type="submit">Guardar perfil</PrimaryButton>
             </div>
           </form>
-        </SectionCard>
-      )}
+      </Modal>
 
-      {activeView === 'password' && (
-        <SectionCard title="Cambiar contraseña">
+      <Modal
+        description="Actualiza tu contraseña de acceso."
+        maxWidth="max-w-2xl"
+        onClose={() => setActiveView('summary')}
+        open={activeView === 'password'}
+        title="Cambiar contraseña"
+      >
           <form className="space-y-4" onSubmit={changePassword}>
             <div className='grid lg:grid-cols-2 grid-cols-1 gap-3'>
         <Field label="Actual">
@@ -243,8 +341,7 @@ export function ProfilePage() {
             
             <PrimaryButton icon={KeyRound} loading={saving} type="submit">Actualizar</PrimaryButton>
           </form>
-        </SectionCard>
-      )}
+      </Modal>
 
       {activeView === 'detail' && (
         <SectionCard title="Detalle de cuenta">
@@ -262,4 +359,132 @@ function ProfileMetric({ label, value }) {
       <p className="mt-1 font-semibold text-[#20282d] dark:text-slate-50">{value || '-'}</p>
     </div>
   );
+}
+
+function MembershipSummary({ courses, currentEnrollment, enrollments, error, profile, roles }) {
+  const isStudent = roles.includes('ROLE_ESTUDIANTE');
+  const isPracticeTutor = roles.includes('ROLE_TUTOR_PRACTICAS');
+  const isInstitutionalTutor = roles.includes('ROLE_TUTOR_INSTITUCIONAL');
+  const isInstitutionDirector = roles.includes('ROLE_DIRECTORA_INSTITUCION');
+  const isPracticeDirector = roles.includes('ROLE_DIRECTOR_PRACTICAS');
+  const isAdmin = roles.includes('ROLE_ADMIN');
+
+  if (error) {
+    return (
+      <SectionCard title="Pertenencia institucional">
+        <Alert tone="error">{error}</Alert>
+      </SectionCard>
+    );
+  }
+
+  if (isStudent) {
+    return (
+      <SectionCard title="Mi pertenencia academica y de practica">
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          <ProfileInfo icon={GraduationCap} label="Facultad" value={profile?.faculty} />
+          <ProfileInfo icon={GraduationCap} label="Carrera" value={profile?.career} />
+          <ProfileInfo icon={BookOpen} label="Asignatura" value={currentEnrollment?.subjectName} />
+          <ProfileInfo icon={BookOpen} label="Paralelo" value={currentEnrollment?.courseName} />
+          <ProfileInfo icon={Layers} label="Grupo" value={currentEnrollment?.groupName} />
+          <ProfileInfo icon={Building2} label="Institucion de practica" value={currentEnrollment?.educationalInstitutionName} />
+          <ProfileInfo icon={UsersRound} label="Tutor de practicas" value={currentEnrollment?.practiceTutor} />
+          <ProfileInfo icon={UsersRound} label="Tutor institucional" value={currentEnrollment?.institutionalTutor} />
+          <ProfileInfo label="Estado de inscripcion" value={formatEnrollmentStatus(currentEnrollment?.status)} />
+        </div>
+      </SectionCard>
+    );
+  }
+
+  if (isPracticeTutor) {
+    return (
+      <SectionCard title="Paralelos asignados">
+        {courses.length ? (
+          <div className="grid gap-3 md:grid-cols-2">
+            {courses.slice(0, 6).map((course) => (
+              <ProfileInfo
+                icon={BookOpen}
+                key={course.id}
+                label={course.subject || 'Paralelo'}
+                value={course.name}
+                meta={course.code}
+              />
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm font-semibold text-muted">Aun no tienes paralelos asignados.</p>
+        )}
+      </SectionCard>
+    );
+  }
+
+  if (isInstitutionalTutor || isInstitutionDirector || isPracticeDirector || isAdmin) {
+    return (
+      <SectionCard title="Alcance de practica">
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+          <ProfileInfo icon={Building2} label="Institucion vinculada" value={profile?.institution} />
+          <ProfileInfo icon={UsersRound} label="Estudiantes relacionados" value={enrollments.length || null} />
+          <ProfileInfo icon={BookOpen} label="Paralelos relacionados" value={countUnique(enrollments, 'courseId') || null} />
+          <ProfileInfo icon={Layers} label="Grupos relacionados" value={countUnique(enrollments, 'groupId') || null} />
+        </div>
+      </SectionCard>
+    );
+  }
+
+  return null;
+}
+
+function ProfileInfo({ icon: Icon, label, meta, value }) {
+  return (
+    <div className="min-w-0 rounded-lg border border-[#c8d2cd] bg-white p-3 dark:border-slate-700 dark:bg-surface">
+      <div className="flex items-center gap-2 text-xs font-bold uppercase text-muted">
+        {Icon && <Icon aria-hidden="true" size={15} />}
+        <span>{label}</span>
+      </div>
+      <p className="mt-2 break-words text-sm font-extrabold text-[#20282d] dark:text-slate-50">{value || '-'}</p>
+      {meta && <p className="mt-1 text-xs font-semibold text-muted">{meta}</p>}
+    </div>
+  );
+}
+
+function resolveCurrentEnrollment(enrollments) {
+  const items = enrollments || [];
+  const ranked = [...items].sort((left, right) => enrollmentScore(right) - enrollmentScore(left));
+
+  return ranked[0]
+    || null;
+}
+
+function enrollmentScore(enrollment) {
+  if (!enrollment) {
+    return 0;
+  }
+
+  const statusScore = enrollment.status === 'APPROVED'
+    ? 100
+    : enrollment.status === 'PENDING'
+      ? 40
+      : 10;
+  const completenessScore = [
+    enrollment.groupName,
+    enrollment.educationalInstitutionName,
+    enrollment.practiceTutor,
+    enrollment.institutionalTutor,
+  ].filter(Boolean).length * 10;
+  const dateScore = enrollment.enrolledAt ? new Date(enrollment.enrolledAt).getTime() / 1000000000000 : 0;
+
+  return statusScore + completenessScore + dateScore;
+}
+
+function formatEnrollmentStatus(status) {
+  const labels = {
+    APPROVED: 'Aprobada',
+    PENDING: 'Pendiente',
+    REJECTED: 'Rechazada',
+  };
+
+  return labels[status] || status;
+}
+
+function countUnique(rows, key) {
+  return new Set((rows || []).map((row) => row[key]).filter(Boolean)).size;
 }

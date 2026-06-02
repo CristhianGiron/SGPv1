@@ -50,6 +50,9 @@ public class Grade {
     @OneToMany(mappedBy = "grade")
     private List<Subject> subjects;
 
+    @OneToMany(mappedBy = "grade")
+    private List<GradeParallel> parallels;
+
     /*
      * CONTROL
      */

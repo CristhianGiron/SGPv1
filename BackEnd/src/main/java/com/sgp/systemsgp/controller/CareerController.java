@@ -17,7 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/careers")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR_PRACTICAS')")
 public class CareerController {
 
     private final CareerService careerService;

@@ -110,6 +110,135 @@ body {
   }
 }
 
+@media print {
+  @page {
+    size: A4;
+    margin: 16mm 14mm;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+    color: #111827 !important;
+  }
+
+  .practice-form-print-card {
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .practice-form-print-card > span,
+  .practice-form-print-card > div:first-of-type {
+    display: none !important;
+  }
+
+  .practice-form-print-card > div:last-child {
+    max-height: none !important;
+    overflow: visible !important;
+    opacity: 1 !important;
+  }
+
+  .practice-form-print-document {
+    max-width: 100% !important;
+    color: #111827 !important;
+    font-family: "Times New Roman", Times, serif !important;
+  }
+
+  .practice-form-print-header {
+    display: block !important;
+    border-bottom: 1.5px solid #111827 !important;
+    margin-bottom: 14pt !important;
+    padding-bottom: 10pt !important;
+    text-align: center !important;
+  }
+
+  .practice-form-print-header p,
+  .practice-form-print-header h2 {
+    color: #111827 !important;
+  }
+
+  .practice-form-print-meta {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    border-left: 1px solid #111827 !important;
+    border-top: 1px solid #111827 !important;
+  }
+
+  .practice-form-print-info-line {
+    min-height: 42pt !important;
+    border-right: 1px solid #111827 !important;
+    border-bottom: 1px solid #111827 !important;
+    padding: 7pt 8pt !important;
+    break-inside: avoid !important;
+  }
+
+  .practice-form-print-info-line p:first-child {
+    margin: 0 0 4pt !important;
+    color: #111827 !important;
+    font-size: 8.5pt !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+  }
+
+  .practice-form-print-info-line p:last-child {
+    margin: 0 !important;
+    color: #111827 !important;
+    font-size: 10.5pt !important;
+    font-weight: 400 !important;
+  }
+
+  .practice-form-print-question {
+    border: 1px solid #111827 !important;
+    border-radius: 0 !important;
+    margin-top: 12pt !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    break-inside: avoid !important;
+  }
+
+  .practice-form-print-question-header {
+    display: block !important;
+    border-bottom: 1px solid #111827 !important;
+    background: #e5e5e5 !important;
+    padding: 7pt 8pt !important;
+  }
+
+  .practice-form-print-question-header p {
+    margin: 0 0 4pt !important;
+    color: #111827 !important;
+    font-size: 8.5pt !important;
+    font-weight: 700 !important;
+  }
+
+  .practice-form-print-question-header h3 {
+    margin: 0 !important;
+    color: #111827 !important;
+    font-size: 11pt !important;
+    font-weight: 700 !important;
+  }
+
+  .practice-form-print-answer {
+    border: 0 !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    padding: 8pt !important;
+    background: #ffffff !important;
+  }
+
+  .practice-form-print-answer p:first-child {
+    color: #111827 !important;
+    font-size: 9pt !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+  }
+
+  .practice-form-print-answer p:last-child {
+    color: #111827 !important;
+    font-size: 10.5pt !important;
+    line-height: 1.45 !important;
+  }
+}
+
 html.dark {
   background: var(--color-page);
 }

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Eye, List, Plus, RefreshCw } from 'lucide-react';
+import { Eye, Plus, RefreshCw } from 'lucide-react';
 import { apiRequest } from '../api/client';
 import { useAuth } from '../auth/AuthContext';
 import { ENTITY_RELATIONS } from '../config/resources';
@@ -8,6 +8,7 @@ import { ActionBar, PrimaryButton, SecondaryButton } from '../components/ui/Acti
 import { DataTable } from '../components/ui/DataTable';
 import { EntitySelect } from '../components/ui/EntitySelect';
 import { Field, Input } from '../components/ui/FormControls';
+import { Modal } from '../components/ui/Modal';
 import { ModuleTab, ModuleTabs } from '../components/ui/ModuleTabs';
 import { PageHeader } from '../components/ui/PageHeader';
 import { SectionCard } from '../components/ui/SectionCard';
@@ -243,43 +244,23 @@ export function LocationsPage() {
         </ModuleTabs>
       </SectionCard>
 
-      <SectionCard>
-        <ModuleTabs>
-          {[
-            ['list', 'Listado'],
-            ['form', 'Agregar'],
-          ].map(([view, label]) => (
-            <ModuleTab
-              active={activeView === view}
-              key={view}
-              onClick={() => setActiveView(view)}
-            >
-              {label}
-            </ModuleTab>
-          ))}
-        </ModuleTabs>
-      </SectionCard>
+      <LocationListPanel
+        columns={simpleColumns}
+        control={activeConfig.listControl}
+        loading={loading}
+        onCreate={() => setActiveView('form')}
+        rows={activeConfig.rows}
+        title={activeConfig.title}
+      />
 
-      {activeView === 'list' && (
-        <LocationListPanel
-          columns={simpleColumns}
-          control={activeConfig.listControl}
-          loading={loading}
-          onCreate={() => setActiveView('form')}
-          rows={activeConfig.rows}
-          title={activeConfig.title}
-        />
-      )}
-
-      {activeView === 'form' && (
-        <LocationFormPanel
-          config={activeConfig}
-          loading={loading}
-          onCreate={() => create(activeKind, activeConfig.path)}
-          onField={(name, value) => setForm(activeKind, name, value)}
-          onList={() => setActiveView('list')}
-        />
-      )}
+      <LocationFormPanel
+        config={activeConfig}
+        loading={loading}
+        open={activeView === 'form'}
+        onClose={() => setActiveView('list')}
+        onCreate={() => create(activeKind, activeConfig.path)}
+        onField={(name, value) => setForm(activeKind, name, value)}
+      />
     </>
   );
 }
@@ -315,7 +296,7 @@ function LocationListPanel({
   );
 }
 
-function LocationFormPanel({ config, loading, onCreate, onField, onList }) {
+function LocationFormPanel({ config, loading, open, onClose, onCreate, onField }) {
   const {
     ancestorField,
     ancestorLabel,
@@ -337,13 +318,11 @@ function LocationFormPanel({ config, loading, onCreate, onField, onList }) {
       : parentPlaceholder || `Seleccionar ${parentLabel?.toLowerCase()}`;
 
   return (
-    <SectionCard
+    <Modal
+      maxWidth="max-w-3xl"
+      onClose={onClose}
+      open={open}
       title={`Agregar ${title.toLowerCase()}`}
-      action={
-        <SecondaryButton icon={List} onClick={onList} type="button">
-          Volver al listado
-        </SecondaryButton>
-      }
     >
       <div className="grid gap-3 md:grid-cols-2">
         <Field label="Codigo">
@@ -382,7 +361,7 @@ function LocationFormPanel({ config, loading, onCreate, onField, onList }) {
           </PrimaryButton>
         </ActionBar>
       </div>
-    </SectionCard>
+    </Modal>
   );
 }
 

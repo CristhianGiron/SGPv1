@@ -79,16 +79,18 @@ public class CompletedActivityRecordController {
 
     @GetMapping("/submitted")
     @PreAuthorize("hasAnyRole('ADMIN','DIRECTOR_PRACTICAS')")
-    public List<CompletedActivityRecordResponse> submittedDocuments() {
+    public List<CompletedActivityRecordResponse> submittedDocuments(
+            Authentication authentication) {
 
-        return completedActivityRecordService.submittedDocuments();
+        return completedActivityRecordService.submittedDocuments(authentication.getName());
     }
 
     @GetMapping("/submitted/summary")
     @PreAuthorize("hasAnyRole('ADMIN','DIRECTOR_PRACTICAS')")
-    public List<ReviewableDocumentSummaryResponse> submittedDocumentSummaries() {
+    public List<ReviewableDocumentSummaryResponse> submittedDocumentSummaries(
+            Authentication authentication) {
 
-        return completedActivityRecordService.submittedDocumentSummaries();
+        return completedActivityRecordService.submittedDocumentSummaries(authentication.getName());
     }
 
     @GetMapping("/defaults")
@@ -123,7 +125,7 @@ public class CompletedActivityRecordController {
                 completedActivityRecordService.exportApprovedPdf(
                         id,
                         authentication.getName()),
-                "completed-activity-record-" + id + ".pdf");
+                "L.6. Registro de Actividades Cumplidas.pdf");
     }
 
     @PutMapping("/{id}")

@@ -45,6 +45,7 @@ public class ActivityEvaluationService {
     private final EnrollmentRepository enrollmentRepository;
     private final AccountRepository accountRepository;
     private final InstitutionRepository institutionRepository;
+    private final PdfExportService pdfExportService;
 
     @Transactional
     public ActivityEvaluationResponse create(
@@ -145,6 +146,34 @@ public class ActivityEvaluationService {
         validateCanView(evaluation, account);
 
         return mapToResponse(evaluation);
+    }
+
+    public byte[] exportPdf(
+            Long id,
+            String username) {
+
+        ActivityEvaluation evaluation = getEvaluation(id);
+        Account account = getAccount(username);
+
+        validateCanView(evaluation, account);
+
+        ActivityEvaluationResponse response = mapToResponse(evaluation);
+
+        return pdfExportService.createActivityEvaluationPdf(
+                new PdfExportService.PdfActivityEvaluation(
+                        response.getEducationalInstitutionName(),
+                        response.getPracticeType(),
+                        response.getStudentFullName(),
+                        response.getStudentIdentification(),
+                        response.getCourseName(),
+                        response.getAcademicPeriod(),
+                        response.getDevelopmentMode(),
+                        response.getHoursCompleted(),
+                        response.getActivitiesCompletionPercentage(),
+                        response.getEvaluationDate(),
+                        accountFullName(evaluation.getEvaluatedBy()),
+                        "DOCENTE TUTOR DE PRACTICAS",
+                        evaluationAspects(response.getAspects())));
     }
 
     @Transactional
@@ -585,6 +614,35 @@ public class ActivityEvaluationService {
                 .trim();
 
         return joined.isBlank() ? null : joined;
+    }
+
+    private String accountFullName(Account account) {
+
+        if (account == null || account.getPerson() == null) {
+            return account != null ? account.getUsername() : null;
+        }
+
+        String fullName = joinNames(
+                account.getPerson().getNames(),
+                account.getPerson().getLastNames());
+
+        return fullName != null ? fullName : account.getUsername();
+    }
+
+    private List<PdfExportService.PdfActivityEvaluationAspect> evaluationAspects(
+            List<ActivityEvaluationAspectResponse> aspects) {
+
+        if (aspects == null) {
+            return List.of();
+        }
+
+        return aspects.stream()
+                .map(aspect -> new PdfExportService.PdfActivityEvaluationAspect(
+                        aspect.getAspectType(),
+                        aspect.getItem(),
+                        aspect.getLevel(),
+                        aspect.getScore()))
+                .toList();
     }
 
     private ActivityEvaluationResponse mapToResponse(

@@ -94,6 +94,7 @@ export function labelFromKey(key) {
     studentCount: 'Estudiantes',
     studentUsername: 'Usuario del estudiante',
     studentIdentification: 'Identificacion del estudiante',
+    courseName: 'Paralelo',
     academicPeriod: 'Periodo academico',
     subjectDenomination: 'Denominacion de la asignatura',
     mission: 'Mision',

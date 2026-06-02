@@ -7,6 +7,9 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.text.PDFTextStripper;
+
 import com.sgp.systemsgp.dto.practicefollowup.CreatePracticeFollowUpReportRequest;
 import com.sgp.systemsgp.dto.practicefollowup.PracticeFollowUpReportResponse;
 import com.sgp.systemsgp.dto.practicefollowup.PracticeFollowUpSessionRequest;
@@ -34,6 +37,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Optional;
@@ -64,7 +68,8 @@ class PracticeFollowUpReportServiceTest {
                 practiceFollowUpReportRepository,
                 enrollmentRepository,
                 accountRepository,
-                institutionRepository);
+                institutionRepository,
+                new PdfExportService());
     }
 
     @Test
@@ -168,6 +173,42 @@ class PracticeFollowUpReportServiceTest {
 
         assertThat(response.getSessions())
                 .hasSize(1);
+    }
+
+    @Test
+    void exportPdfUsesFollowUpTemplate() {
+
+        Account student = student();
+        Account tutor = practiceTutor();
+        PracticeFollowUpReport report = report(
+                student,
+                tutor,
+                institutionalTutor(school()));
+
+        when(accountRepository.findByUsernameAndDeletedFalse("tutor.practicas"))
+                .thenReturn(Optional.of(tutor));
+
+        when(practiceFollowUpReportRepository.findByIdAndDeletedFalse(1L))
+                .thenReturn(Optional.of(report));
+
+        byte[] pdf = practiceFollowUpReportService.exportPdf(
+                1L,
+                "tutor.practicas");
+
+        assertThat(pdfText(pdf))
+                .contains("REPORTE DE SEGUIMIENTO DE")
+                .contains("PRACTICA PREPROFESIONAL")
+                .contains("ACTIVIDADES SUPERVISADAS")
+                .contains("Actividades supervisadas");
+    }
+
+    private String pdfText(byte[] pdf) {
+
+        try (var document = Loader.loadPDF(pdf)) {
+            return new PDFTextStripper().getText(document);
+        } catch (IOException exception) {
+            throw new AssertionError("No se pudo leer el texto del PDF", exception);
+        }
     }
 
     private CreatePracticeFollowUpReportRequest completeRequest() {

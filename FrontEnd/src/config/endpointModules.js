@@ -36,7 +36,9 @@ const DOCUMENT_PREFILL_HIDDEN_FIELDS = ['courseId', 'educationalInstitutionId'];
 export const DOCUMENT_MODULES = [
   {
     id: 'activity-plans',
-    title: 'Planes de actividades',
+    title: 'L.2. Plan de Actividades',
+    documentOrder: 2,
+    pdfFilename: 'L.2. Plan de Actividades.pdf',
     roles: ['ROLE_ESTUDIANTE', 'ROLE_TUTOR_PRACTICAS', 'ROLE_DIRECTOR_PRACTICAS', 'ROLE_ADMIN'],
     listPath: '/api/activity-plans/me/summary',
     listRoles: STUDENT_ROLES,
@@ -74,7 +76,9 @@ export const DOCUMENT_MODULES = [
   },
   {
     id: 'practice-reports',
-    title: 'Informes de practicas',
+    title: 'L.1. Informe de Actividades Cumplidas',
+    documentOrder: 1,
+    pdfFilename: 'L.1. Informe de Actividades Cumplidas.pdf',
     roles: ['ROLE_ESTUDIANTE', 'ROLE_TUTOR_PRACTICAS', 'ROLE_DIRECTOR_PRACTICAS', 'ROLE_ADMIN'],
     listPath: '/api/practice-reports/me/summary',
     listRoles: STUDENT_ROLES,
@@ -113,7 +117,9 @@ export const DOCUMENT_MODULES = [
   },
   {
     id: 'final-reports',
-    title: 'Informes finales',
+    title: 'L.3. Informe Tutor Institucional',
+    documentOrder: 3,
+    pdfFilename: 'L.3. Informe Tutor Institucional.pdf',
     roles: [
       'ROLE_ESTUDIANTE',
       'ROLE_TUTOR_PRACTICAS',
@@ -195,7 +201,9 @@ export const DOCUMENT_MODULES = [
   },
   {
     id: 'activity-evaluations',
-    title: 'Evaluaciones',
+    title: 'L.4. Evaluación de Actividades.',
+    documentOrder: 4,
+    pdfFilename: 'L.4. Evaluación de Actividades..pdf',
     roles: ['ROLE_ESTUDIANTE', 'ROLE_TUTOR_PRACTICAS'],
     listPath: '/api/activity-evaluations/me',
     listRoles: STUDENT_ROLES,
@@ -210,6 +218,7 @@ export const DOCUMENT_MODULES = [
     updatePath: (id) => `/api/activity-evaluations/${id}`,
     updateRoles: PRACTICE_TUTOR_ROLES,
     getPath: (id) => `/api/activity-evaluations/${id}`,
+    pdfPath: (id) => `/api/activity-evaluations/${id}/pdf`,
     sample: {
       enrollmentId: '',
       courseId: '',
@@ -246,7 +255,9 @@ export const DOCUMENT_MODULES = [
   },
   {
     id: 'follow-up',
-    title: 'Seguimiento preprofesional',
+    title: 'L.5. Reporte de Seguimiento',
+    documentOrder: 5,
+    pdfFilename: 'L.5. Reporte de Seguimiento.pdf',
     roles: ['ROLE_ESTUDIANTE', 'ROLE_TUTOR_PRACTICAS'],
     listPath: '/api/practice-follow-up-reports/me',
     listRoles: STUDENT_ROLES,
@@ -261,6 +272,7 @@ export const DOCUMENT_MODULES = [
     updatePath: (id) => `/api/practice-follow-up-reports/${id}`,
     updateRoles: PRACTICE_TUTOR_ROLES,
     getPath: (id) => `/api/practice-follow-up-reports/${id}`,
+    pdfPath: (id) => `/api/practice-follow-up-reports/${id}/pdf`,
     sample: {
       enrollmentId: '',
       courseId: '',
@@ -291,7 +303,9 @@ export const DOCUMENT_MODULES = [
   },
   {
     id: 'completed-records',
-    title: 'Actividades cumplidas',
+    title: 'L.6. Registro de Actividades Cumplidas',
+    documentOrder: 6,
+    pdfFilename: 'L.6. Registro de Actividades Cumplidas.pdf',
     roles: ['ROLE_ESTUDIANTE', 'ROLE_TUTOR_PRACTICAS', 'ROLE_DIRECTOR_PRACTICAS', 'ROLE_ADMIN'],
     listPath: '/api/completed-activity-records/me/summary',
     listRoles: STUDENT_ROLES,
@@ -362,13 +376,13 @@ export const DOCUMENT_MODULES = [
 export const SCHEDULE_MODULES = [
   {
     id: 'schedules',
-    title: 'Horarios de practica',
+    title: 'Jornadas y asistencias',
     roles: ['ROLE_ESTUDIANTE', 'ROLE_TUTOR_INSTITUCIONAL', 'ROLE_DIRECTORA_INSTITUCION'],
     listPath: '/api/practice-schedules/me',
     listRoles: STUDENT_ROLES,
     altLists: [
-      { label: 'Mis horarios', path: '/api/practice-schedules/managed', roles: INSTITUTIONAL_TUTOR_ROLES },
-      { label: 'Horarios de mi institucion', path: '/api/practice-schedules/institution-review', roles: INSTITUTION_DIRECTOR_ROLES },
+      { label: 'Mis jornadas', path: '/api/practice-schedules/managed', roles: INSTITUTIONAL_TUTOR_ROLES },
+      { label: 'Jornadas de mi institucion', path: '/api/practice-schedules/institution-review', roles: INSTITUTION_DIRECTOR_ROLES },
     ],
     createPath: '/api/practice-schedules',
     createRoles: INSTITUTIONAL_TUTOR_ROLES,
@@ -401,14 +415,14 @@ export const SCHEDULE_MODULES = [
       enrollmentId: '',
       startDate: '2026-05-14',
       endDate: '2026-06-14',
-      observations: 'Horario semanal de practicas.',
+      observations: 'Jornada programada.',
       periods: [
         {
           dayOfWeek: 'MONDAY',
           startTime: '08:00',
           endTime: '12:00',
           place: 'Aula 1',
-          notes: 'Practica guiada',
+          notes: 'Jornada guiada',
         },
       ],
     },

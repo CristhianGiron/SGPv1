@@ -43,10 +43,20 @@ export const ENTITY_RELATIONS = {
     path: '/api/grades',
     placeholder: 'Seleccionar grado',
   },
+  gradeParallelId: {
+    label: 'Paralelo',
+    path: '/api/grade-parallels',
+    placeholder: 'Seleccionar paralelo',
+  },
   subjectId: {
     label: 'Asignatura',
     path: '/api/subjects',
     placeholder: 'Seleccionar asignatura',
+  },
+  courseId: {
+    label: 'Paralelo',
+    path: '/api/courses/search?page=0&size=200',
+    placeholder: 'Seleccionar paralelo',
   },
   enrollmentId: {
     label: 'Inscripcion',
@@ -223,20 +233,63 @@ export const CATALOG_RESOURCES = [
     ],
   },
   {
+    id: 'grade-parallels',
+    title: 'Paralelos',
+    listPath: '/api/grade-parallels',
+    createPath: '/api/grade-parallels',
+    updatePath: (id) => `/api/grade-parallels/${id}`,
+    deletePath: (id) => `/api/grade-parallels/${id}`,
+    fields: [
+      {
+        name: 'institutionId',
+        label: 'Institucion educativa',
+        relation: ENTITY_RELATIONS.institutionId,
+        rowFilter: schoolInstitutionFilter,
+        submit: false,
+        clearOnChange: ['gradeId'],
+        required: true,
+      },
+      {
+        name: 'gradeId',
+        label: 'Grado',
+        relation: ENTITY_RELATIONS.gradeId,
+        dependsOn: 'institutionId',
+        disabledPlaceholder: 'Selecciona primero una institucion educativa',
+        filterBy: { field: 'institutionId', rowKey: 'institutionId' },
+        required: true,
+      },
+      {
+        name: 'letter',
+        label: 'Letra',
+        type: 'select',
+        options: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''),
+        required: true,
+      },
+      { name: 'active', label: 'Activo', type: 'checkbox', defaultValue: true },
+    ],
+    columns: [
+      { key: 'name', header: 'Paralelo' },
+      { key: 'letter', header: 'Letra' },
+      { key: 'grade', header: 'Grado' },
+      { key: 'institution', header: 'Institucion' },
+      { key: 'active', header: 'Estado', type: 'status' },
+    ],
+  },
+  {
     id: 'subjects',
     title: 'Asignaturas',
     listPath: '/api/subjects',
     createPath: '/api/subjects',
     updatePath: (id) => `/api/subjects/${id}`,
     deletePath: (id) => `/api/subjects/${id}`,
-    mutuallyExclusiveFields: [['academicCycleId', 'gradeId']],
+    mutuallyExclusiveFields: [['courseId', 'gradeParallelId']],
     exclusiveFieldGroups: [
       {
-        fields: ['facultyId', 'careerId', 'academicCycleId'],
-        excludes: ['institutionId', 'gradeId'],
+        fields: ['facultyId', 'careerId', 'academicCycleId', 'courseId'],
+        excludes: ['institutionId', 'gradeId', 'gradeParallelId'],
       },
       {
-        fields: ['institutionId', 'gradeId'],
+        fields: ['institutionId', 'gradeId', 'gradeParallelId'],
         excludes: ['facultyId', 'careerId', 'academicCycleId'],
       },
     ],
@@ -267,7 +320,18 @@ export const CATALOG_RESOURCES = [
         dependsOn: 'careerId',
         disabledPlaceholder: 'Selecciona primero una carrera',
         filterBy: { field: 'careerId', rowKey: 'careerId' },
+        submit: false,
+        clearOnChange: ['courseId'],
         requiredWhen: (form) => Boolean(form.careerId),
+      },
+      {
+        name: 'courseId',
+        label: 'Paralelo',
+        relation: ENTITY_RELATIONS.courseId,
+        dependsOn: 'academicCycleId',
+        disabledPlaceholder: 'Selecciona primero un ciclo academico',
+        filterBy: { field: 'academicCycleId', rowKey: 'academicCycleId' },
+        requiredWhen: (form) => Boolean(form.academicCycleId),
       },
       {
         name: 'institutionId',
@@ -275,7 +339,7 @@ export const CATALOG_RESOURCES = [
         relation: ENTITY_RELATIONS.institutionId,
         submit: false,
         rowFilter: schoolInstitutionFilter,
-        clearOnChange: ['gradeId'],
+        clearOnChange: ['gradeId', 'gradeParallelId'],
       },
       {
         name: 'gradeId',
@@ -284,7 +348,18 @@ export const CATALOG_RESOURCES = [
         dependsOn: 'institutionId',
         disabledPlaceholder: 'Selecciona primero una institucion educativa',
         filterBy: { field: 'institutionId', rowKey: 'institutionId' },
+        submit: false,
+        clearOnChange: ['gradeParallelId'],
         requiredWhen: (form) => Boolean(form.institutionId),
+      },
+      {
+        name: 'gradeParallelId',
+        label: 'Paralelo',
+        relation: ENTITY_RELATIONS.gradeParallelId,
+        dependsOn: 'gradeId',
+        disabledPlaceholder: 'Selecciona primero un grado',
+        filterBy: { field: 'gradeId', rowKey: 'gradeId' },
+        requiredWhen: (form) => Boolean(form.gradeId),
       },
       { name: 'credits', label: 'Creditos', type: 'number' },
       { name: 'hours', label: 'Horas', type: 'number' },
@@ -295,7 +370,9 @@ export const CATALOG_RESOURCES = [
       { key: 'name', header: 'Nombre' },
       { key: 'code', header: 'Codigo' },
       { key: 'academicCycle', header: 'Ciclo' },
+      { key: 'course', header: 'Paralelo' },
       { key: 'grade', header: 'Grado' },
+      { key: 'gradeParallel', header: 'Paralelo' },
       { key: 'active', header: 'Estado', type: 'status' },
     ],
   },
@@ -309,9 +386,9 @@ const UNIVERSITY_SUBJECT_RESOURCE = {
   title: 'Asignaturas universitarias',
   rowFilter: (row) => Boolean(row.academicCycleId),
   fields: SUBJECT_RESOURCE.fields.filter(
-    (field) => !['institutionId', 'gradeId'].includes(field.name)
+    (field) => !['institutionId', 'gradeId', 'gradeParallelId'].includes(field.name)
   ),
-  columns: SUBJECT_RESOURCE.columns.filter((column) => column.key !== 'grade'),
+  columns: SUBJECT_RESOURCE.columns.filter((column) => !['grade', 'gradeParallel'].includes(column.key)),
 };
 
 const PRACTICE_SUBJECT_RESOURCE = {
@@ -320,9 +397,9 @@ const PRACTICE_SUBJECT_RESOURCE = {
   title: 'Asignaturas de practica',
   rowFilter: (row) => Boolean(row.gradeId),
   fields: SUBJECT_RESOURCE.fields.filter(
-    (field) => !['facultyId', 'careerId', 'academicCycleId'].includes(field.name)
+    (field) => !['facultyId', 'careerId', 'academicCycleId', 'courseId'].includes(field.name)
   ),
-  columns: SUBJECT_RESOURCE.columns.filter((column) => column.key !== 'academicCycle'),
+  columns: SUBJECT_RESOURCE.columns.filter((column) => !['academicCycle', 'course'].includes(column.key)),
 };
 
 export const UNIVERSITY_CATALOG_RESOURCES = [
@@ -333,6 +410,6 @@ export const UNIVERSITY_CATALOG_RESOURCES = [
 ];
 
 export const PRACTICE_CATALOG_RESOURCES = [
-  ...CATALOG_RESOURCES.filter((resource) => resource.id === 'grades'),
+  ...CATALOG_RESOURCES.filter((resource) => ['grades', 'grade-parallels'].includes(resource.id)),
   PRACTICE_SUBJECT_RESOURCE,
 ];

@@ -17,6 +17,7 @@ import com.sgp.systemsgp.enums.RoleName;
 import com.sgp.systemsgp.exception.BadRequestException;
 import com.sgp.systemsgp.exception.NotFoundException;
 import com.sgp.systemsgp.model.Account;
+import com.sgp.systemsgp.model.Career;
 import com.sgp.systemsgp.model.Course;
 import com.sgp.systemsgp.model.Enrollment;
 import com.sgp.systemsgp.model.Institution;
@@ -110,18 +111,26 @@ public class PracticeReportService {
         return mapReportsToSummaries(reports);
     }
 
-    public List<PracticeReportResponse> submittedDocuments() {
+    public List<PracticeReportResponse> submittedDocuments(String username) {
 
+        Account account = getAccount(username);
         List<PracticeReport> reports = practiceReportRepository
-                .findByStatusInAndDeletedFalse(REVIEWER_VISIBLE_STATUSES);
+                .findByStatusInAndDeletedFalse(REVIEWER_VISIBLE_STATUSES)
+                .stream()
+                .filter(report -> canViewDirectorQueue(report.getCourse(), account))
+                .toList();
 
         return mapReportsToResponses(reports);
     }
 
-    public List<ReviewableDocumentSummaryResponse> submittedDocumentSummaries() {
+    public List<ReviewableDocumentSummaryResponse> submittedDocumentSummaries(String username) {
 
+        Account account = getAccount(username);
         List<PracticeReport> reports = practiceReportRepository
-                .findByStatusInAndDeletedFalse(REVIEWER_VISIBLE_STATUSES);
+                .findByStatusInAndDeletedFalse(REVIEWER_VISIBLE_STATUSES)
+                .stream()
+                .filter(report -> canViewDirectorQueue(report.getCourse(), account))
+                .toList();
 
         return mapReportsToSummaries(reports);
     }
@@ -129,9 +138,9 @@ public class PracticeReportService {
     public List<PracticeReportResponse> reviewQueue(String username) {
 
         List<PracticeReport> reports = practiceReportRepository
-                .findByCourse_PracticeTutor_UsernameAndStatusAndCourse_ActiveTrueAndCourse_DeletedFalseAndDeletedFalse(
+                .findByCourse_PracticeTutor_UsernameAndStatusInAndCourse_ActiveTrueAndCourse_DeletedFalseAndDeletedFalse(
                         username,
-                        PracticeReportStatus.SUBMITTED);
+                        REVIEWER_VISIBLE_STATUSES);
 
         return mapReportsToResponses(reports);
     }
@@ -139,9 +148,9 @@ public class PracticeReportService {
     public List<ReviewableDocumentSummaryResponse> reviewQueueSummaries(String username) {
 
         List<PracticeReport> reports = practiceReportRepository
-                .findByCourse_PracticeTutor_UsernameAndStatusAndCourse_ActiveTrueAndCourse_DeletedFalseAndDeletedFalse(
+                .findByCourse_PracticeTutor_UsernameAndStatusInAndCourse_ActiveTrueAndCourse_DeletedFalseAndDeletedFalse(
                         username,
-                        PracticeReportStatus.SUBMITTED);
+                        REVIEWER_VISIBLE_STATUSES);
 
         return mapReportsToSummaries(reports);
     }
@@ -197,17 +206,22 @@ public class PracticeReportService {
         validateApprovedForExport(report.getStatus());
 
         return pdfExportService.createPdf(
-                "Informe de practicas #" + report.getId(),
+                "Informe de actividades cumplidas",
                 List.of(
                         pdfExportService.section(
                                 "Datos generales",
                                 List.of(
                                         pdfExportService.field("Estudiante", report.getStudentFullName()),
                                         pdfExportService.field("Cedula", report.getStudentIdentification()),
-                                        pdfExportService.field("Curso", report.getCourseName()),
+                                        pdfExportService.field("Ciclo", report.getCourseName()),
+                                        pdfExportService.field("Tutor Academico", firstPresent(
+                                                report.getReviewedByName(),
+                                                report.getReviewedBy())),
+                                        pdfExportService.field("Correo Electronico", report.getStudentEmail()),
+                                        pdfExportService.field("Nro. de telefono", report.getStudentPhone()),
                                         pdfExportService.field("Institucion", report.getEducationalInstitutionName()),
-                                        pdfExportService.field("Enviado", report.getSubmittedAt()),
-                                        pdfExportService.field("Aprobado", report.getApprovedAt())
+                                        pdfExportService.field("Codigo AMIE", report.getEducationalInstitutionCode()),
+                                        pdfExportService.field("Direccion", report.getEducationalInstitutionAddress())
                                 )),
                         pdfExportService.section(
                                 "Presentacion y objetivos",
@@ -242,10 +256,15 @@ public class PracticeReportService {
                                         pdfExportService.field("Recomendacion 3", report.getRecommendation3())
                                 )),
                         pdfExportService.section(
-                                "Aprobacion",
+                                "Elaboracion y aprobacion",
                                 List.of(
-                                        pdfExportService.field("Revisado por tutor", report.getReviewedBy()),
-                                        pdfExportService.field("Revisado por direccion", report.getDirectorReviewedBy())
+                                        pdfExportService.field("Estudiante", report.getStudentFullName()),
+                                        pdfExportService.field("Tutor Academico", firstPresent(
+                                                report.getReviewedByName(),
+                                                report.getReviewedBy())),
+                                        pdfExportService.field(
+                                                "Rol",
+                                                "DOCENTE DE LA ASIGNATURA DE DISEÑO CURRICULAR EN INFORMÁTICA\nTUTOR ACADÉMICO")
                                 ))
                 ));
     }
@@ -459,7 +478,7 @@ public class PracticeReportService {
         if (isVisibleToReviewers(report.getStatus())
                 && (isAssignedPracticeTutor(report, account)
                 || hasRole(account, RoleName.ROLE_ADMIN)
-                || hasRole(account, RoleName.ROLE_DIRECTOR_PRACTICAS))) {
+                || isDirectorForCourse(report.getCourse(), account))) {
             return;
         }
 
@@ -476,7 +495,7 @@ public class PracticeReportService {
             PracticeReport report,
             Account reviewer) {
 
-        if (hasRole(reviewer, RoleName.ROLE_DIRECTOR_PRACTICAS)) {
+        if (isDirectorForCourse(report.getCourse(), reviewer)) {
             return;
         }
 
@@ -497,6 +516,35 @@ public class PracticeReportService {
 
         return course.getPracticeTutor() != null
                 && course.getPracticeTutor().getId().equals(account.getId());
+    }
+
+    private boolean isDirectorForCourse(
+            Course course,
+            Account account) {
+
+        if (!hasRole(account, RoleName.ROLE_DIRECTOR_PRACTICAS)
+                || course == null) {
+            return false;
+        }
+
+        Career directorCareer = account.getCareer();
+        Career courseCareer = course.getAcademicCycle() != null
+                ? course.getAcademicCycle().getCareer()
+                : course.getSubject() != null && course.getSubject().getAcademicCycle() != null
+                        ? course.getSubject().getAcademicCycle().getCareer()
+                        : null;
+
+        return directorCareer != null
+                && courseCareer != null
+                && directorCareer.getId().equals(courseCareer.getId());
+    }
+
+    private boolean canViewDirectorQueue(
+            Course course,
+            Account account) {
+
+        return hasRole(account, RoleName.ROLE_ADMIN)
+                || isDirectorForCourse(course, account);
     }
 
     private boolean hasRole(
@@ -851,13 +899,68 @@ public class PracticeReportService {
             PracticeReportActivityWeek week = PracticeReportActivityWeek.builder()
                     .report(report)
                     .weekNumber(weekRequest.getWeekNumber())
-                    .startDate(weekRequest.getStartDate())
-                    .endDate(weekRequest.getEndDate())
+                    .startDate(activityWeekStartDate(report.getCourse(), weekRequest.getWeekNumber(), weekRequest.getStartDate()))
+                    .endDate(activityWeekEndDate(report.getCourse(), weekRequest.getWeekNumber(), weekRequest.getEndDate()))
                     .activities(weekRequest.getActivities())
                     .build();
 
             report.getActivityWeeks().add(week);
         }
+    }
+
+    private java.time.LocalDate activityWeekStartDate(
+            Course course,
+            Integer weekNumber,
+            java.time.LocalDate providedDate) {
+
+        if (providedDate != null) {
+            return providedDate;
+        }
+
+        return defaultActivityWeekStartDate(course, weekNumber);
+    }
+
+    private java.time.LocalDate activityWeekEndDate(
+            Course course,
+            Integer weekNumber,
+            java.time.LocalDate providedDate) {
+
+        if (providedDate != null) {
+            return providedDate;
+        }
+
+        return defaultActivityWeekEndDate(course, weekNumber);
+    }
+
+    private java.time.LocalDate defaultActivityWeekStartDate(
+            Course course,
+            Integer weekNumber) {
+
+        if (course == null || course.getStartDate() == null) {
+            return null;
+        }
+
+        return course.getStartDate()
+                .toLocalDate()
+                .plusDays((long) (weekNumber == null ? 0 : Math.max(weekNumber - 1, 0)) * 7L);
+    }
+
+    private java.time.LocalDate defaultActivityWeekEndDate(
+            Course course,
+            Integer weekNumber) {
+
+        java.time.LocalDate startDate = defaultActivityWeekStartDate(course, weekNumber);
+
+        if (startDate == null) {
+            return null;
+        }
+
+        java.time.LocalDate endDate = startDate.plusDays(4);
+
+        return course.getEndDate() != null
+                && endDate.isAfter(course.getEndDate().toLocalDate())
+                        ? course.getEndDate().toLocalDate()
+                        : endDate;
     }
 
     private void validateComplete(PracticeReport report) {
@@ -1012,6 +1115,13 @@ public class PracticeReportService {
         return account != null ? account.getUsername() : null;
     }
 
+    private String firstPresent(String firstValue, String secondValue) {
+
+        return firstValue != null && !firstValue.isBlank()
+                ? firstValue
+                : secondValue;
+    }
+
     private String accountFullName(Account account) {
 
         if (account == null || account.getPerson() == null) {
@@ -1106,10 +1216,12 @@ public class PracticeReportService {
                         report.getReviewedBy() != null
                                 ? report.getReviewedBy().getUsername()
                                 : null)
+                .reviewedByName(accountFullName(report.getReviewedBy()))
                 .directorReviewedBy(
                         report.getDirectorReviewedBy() != null
                                 ? report.getDirectorReviewedBy().getUsername()
                                 : null)
+                .directorReviewedByName(accountFullName(report.getDirectorReviewedBy()))
                 .submittedAt(report.getSubmittedAt())
                 .reviewedAt(report.getReviewedAt())
                 .directorReviewedAt(report.getDirectorReviewedAt())
@@ -1155,8 +1267,8 @@ public class PracticeReportService {
                 .map(week -> PracticeReportActivityWeekResponse.builder()
                         .id(week.getId())
                         .weekNumber(week.getWeekNumber())
-                        .startDate(week.getStartDate())
-                        .endDate(week.getEndDate())
+                        .startDate(activityWeekStartDate(report.getCourse(), week.getWeekNumber(), week.getStartDate()))
+                        .endDate(activityWeekEndDate(report.getCourse(), week.getWeekNumber(), week.getEndDate()))
                         .activities(week.getActivities())
                         .build())
                 .toList();

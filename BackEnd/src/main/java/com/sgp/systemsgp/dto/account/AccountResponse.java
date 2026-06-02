@@ -34,9 +34,29 @@ public class AccountResponse {
 
     private String academicCycle;
 
+    private Long careerId;
+
+    private String career;
+
+    private Long facultyId;
+
+    private String faculty;
+
+    private Long academicInstitutionId;
+
+    private String academicInstitution;
+
     private Long institutionId;
 
     private String institution;
+
+    private Long gradeId;
+
+    private String grade;
+
+    private Long gradeParallelId;
+
+    private String gradeParallel;
 
     private boolean enabled;
 

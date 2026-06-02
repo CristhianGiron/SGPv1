@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { CheckCircle2, SlidersHorizontal, XCircle } from 'lucide-react';
 import { EmptyState } from './EmptyState';
+import { Modal } from './Modal';
 import { formatValue } from '../../utils/format';
 
 const tableShellClass =
@@ -38,11 +39,14 @@ export function DataTable({
   const dataColumns = actionColumn
     ? visibleColumns.filter((column) => column.key !== 'actions')
     : visibleColumns;
+  const renderedColumns = actionColumn ? [...dataColumns, actionColumn] : visibleColumns;
   const mobileDataGridTemplateColumns = dataColumns
     .map((column) => (isParagraphColumn(column.key) ? 'minmax(18rem, 28rem)' : 'minmax(max-content, max-content)'))
+    .concat(actionColumn ? ['max-content'] : [])
     .join(' ');
   const desktopDataGridTemplateColumns = dataColumns
     .map((column) => (isParagraphColumn(column.key) ? 'minmax(16rem, 2fr)' : 'minmax(0, 1fr)'))
+    .concat(actionColumn ? ['max-content'] : [])
     .join(' ');
   const availableFilterFields = useMemo(
     () => (filterFields || buildDefaultFilterFields(rows)).filter((field) => fieldHasOptions(rows, field)),
@@ -117,75 +121,45 @@ export function DataTable({
         </div>
       ) : (
         <div className={tableShellClass} aria-busy={loading || undefined}>
-          <div className="grid min-w-0 max-w-full grid-cols-[minmax(0,1fr)_auto]">
-            <div className="min-w-0 max-w-full overflow-x-auto overscroll-x-contain">
-              <div
-                className="data-table-grid grid w-max min-w-full text-sm"
-                role="table"
-                style={{
-                  '--data-table-columns-mobile': mobileDataGridTemplateColumns,
-                  '--data-table-columns-desktop': desktopDataGridTemplateColumns,
-                }}
-              >
-                {dataColumns.map((column) => (
-                  <div
-                    className={`border-b border-[#dbe3ed] bg-[#d7e4e9] px-4 py-3 text-left text-xs font-extrabold uppercase text-[#475569] dark:border-slate-700 dark:bg-[#172033] dark:text-slate-300 ${isParagraphColumn(column.key) ? 'break-words' : 'whitespace-nowrap'}`}
-                    key={column.key}
-                    role="columnheader"
-                  >
-                    {column.header}
-                  </div>
-                ))}
-
-                {effectiveRows.flatMap((row, rowIndex) =>
-                  dataColumns.map((column) => {
-                    const rowKey = row[keyField] || `${keyField}-${rowIndex}`;
-                    const evenRow = rowIndex % 2 === 1;
-                    const cellTone = evenRow
-                      ? 'bg-[#e6efea] dark:bg-slate-950/40'
-                      : 'bg-white dark:bg-surface';
-
-                    return (
-                      <div
-                        className={`${tableCellClass} min-h-[3.25rem] min-w-0 ${cellTone} hover:bg-[#dbe8ed] dark:hover:bg-sky-300/10 ${isParagraphColumn(column.key) ? 'whitespace-pre-wrap break-words' : 'whitespace-nowrap'}`}
-                        key={`${rowKey}-${column.key}`}
-                        role="cell"
-                      >
-                        {column.render ? column.render(row) : formatValue(row[column.key], column.key)}
-                      </div>
-                    );
-                  })
-                )}
-              </div>
-            </div>
+          <div className="min-w-0 max-w-full overflow-x-auto overscroll-x-contain">
             <div
-              className="grid w-max text-sm shadow-[-10px_0_18px_rgba(15,23,42,0.08)]"
+              className="data-table-grid grid w-max min-w-full text-sm"
               role="table"
+              style={{
+                '--data-table-columns-mobile': mobileDataGridTemplateColumns,
+                '--data-table-columns-desktop': desktopDataGridTemplateColumns,
+              }}
             >
-              <div
-                className="border-b border-[#dbe3ed] bg-[#d7e4e9] px-4 py-3 text-left text-xs font-extrabold uppercase text-[#475569] dark:border-slate-700 dark:bg-[#172033] dark:text-slate-300"
-                role="columnheader"
-              >
-                {actionColumn.header}
-              </div>
+              {renderedColumns.map((column) => (
+                <div
+                  className={`border-b border-[#dbe3ed] bg-[#d7e4e9] px-4 py-3 text-left text-xs font-extrabold uppercase text-[#475569] dark:border-slate-700 dark:bg-[#172033] dark:text-slate-300 ${column.key === 'actions' ? 'sticky right-0 z-30 whitespace-nowrap shadow-[-10px_0_18px_rgba(15,23,42,0.08)]' : isParagraphColumn(column.key) ? 'break-words' : 'whitespace-nowrap'}`}
+                  key={column.key}
+                  role="columnheader"
+                >
+                  {column.header}
+                </div>
+              ))}
 
-              {effectiveRows.map((row, rowIndex) => {
+              {effectiveRows.flatMap((row, rowIndex) =>
+                renderedColumns.map((column) => {
                   const rowKey = row[keyField] || `${keyField}-${rowIndex}`;
                   const evenRow = rowIndex % 2 === 1;
+                  const isActionColumn = column.key === 'actions';
                   const cellTone = evenRow
                     ? 'bg-[#e6efea] dark:bg-slate-950/40'
                     : 'bg-white dark:bg-surface';
 
                   return (
                     <div
-                      className={`${tableCellClass} min-h-[3.25rem] whitespace-nowrap ${cellTone} hover:bg-[#dbe8ed] dark:hover:bg-sky-300/10`}
-                      key={`${rowKey}-${actionColumn.key}`}
+                      className={`${tableCellClass} min-h-[3.25rem] min-w-0 ${cellTone} hover:bg-[#dbe8ed] dark:hover:bg-sky-300/10 ${isActionColumn ? 'sticky right-0 z-20 whitespace-nowrap shadow-[-10px_0_18px_rgba(15,23,42,0.08)]' : isParagraphColumn(column.key) ? 'whitespace-pre-wrap break-words' : 'whitespace-nowrap'}`}
+                      key={`${rowKey}-${column.key}`}
                       role="cell"
                     >
-                      {actionColumn.render ? actionColumn.render(row) : formatValue(row[actionColumn.key], actionColumn.key)}
+                      {column.render ? column.render(row) : formatValue(row[column.key], column.key)}
                     </div>
                   );
-                })}
+                })
+              )}
             </div>
           </div>
         </div>
@@ -230,7 +204,7 @@ function TableFilters({ fields, filters, rows, totalCount, visibleCount, onChang
           <span className={fieldLabelClass}>Buscar</span>
           <input
             className={fieldClass}
-            placeholder="Texto, curso o estudiante"
+            placeholder="Texto, paralelo o estudiante"
             type="search"
             value={filters.search}
             onChange={(event) => setSearch(event.target.value)}
@@ -256,24 +230,12 @@ function TableFilters({ fields, filters, rows, totalCount, visibleCount, onChang
       <p className="mt-3 text-xs font-bold text-muted">
         {visibleCount} de {totalCount} resultados
       </p>
-      {filtersOpen && (
-        <div
-          aria-modal="true"
-          className="fixed inset-0 z-50 grid place-items-center bg-slate-950/35 p-4"
-          role="dialog"
-        >
-          <div className="w-full max-w-3xl rounded-lg border border-[#c8d2cd] bg-white p-4 shadow-[0_24px_60px_rgba(15,23,42,0.22)] dark:border-slate-700 dark:bg-surface">
-            <div className="mb-4 flex items-center justify-between gap-3">
-              <h3 className="text-base font-extrabold text-[#20282d] dark:text-slate-50">Filtros</h3>
-              <button
-                aria-label="Cerrar filtros"
-                className="grid h-9 w-9 place-items-center rounded-lg border border-[#c8d2cd] text-[#34443b] hover:bg-[#eef3f2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#529914]/35 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
-                onClick={() => setFiltersOpen(false)}
-                type="button"
-              >
-                <XCircle size={18} />
-              </button>
-            </div>
+      <Modal
+        maxWidth="max-w-3xl"
+        onClose={() => setFiltersOpen(false)}
+        open={filtersOpen}
+        title="Filtros"
+      >
             <div className="grid gap-3 sm:grid-cols-2">
               {fields.map((field) => (
                 <label className="block" key={field.key}>
@@ -307,9 +269,7 @@ function TableFilters({ fields, filters, rows, totalCount, visibleCount, onChang
                 </span>
               </button>
             </div>
-          </div>
-        </div>
-      )}
+      </Modal>
     </div>
   );
 }
@@ -328,7 +288,7 @@ function buildDefaultFilterFields(rows = []) {
   if (rows.some((row) => getCourseValue(row))) {
     fields.push({
       key: 'course',
-      label: 'Curso',
+      label: 'Paralelo',
       getValue: getCourseValue,
     });
   }

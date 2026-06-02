@@ -8,9 +8,19 @@ import com.sgp.systemsgp.exception.BadRequestException;
 import com.sgp.systemsgp.exception.NotFoundException;
 
 import com.sgp.systemsgp.model.Account;
+import com.sgp.systemsgp.model.AcademicCycle;
+import com.sgp.systemsgp.model.Career;
+import com.sgp.systemsgp.model.Course;
+import com.sgp.systemsgp.model.CourseGroup;
+import com.sgp.systemsgp.model.Faculty;
+import com.sgp.systemsgp.model.Grade;
+import com.sgp.systemsgp.model.GradeParallel;
+import com.sgp.systemsgp.model.Institution;
 import com.sgp.systemsgp.model.Person;
 
 import com.sgp.systemsgp.repository.AccountRepository;
+import com.sgp.systemsgp.repository.CourseGroupRepository;
+import com.sgp.systemsgp.repository.CourseRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -40,6 +50,8 @@ public class AccountService {
                         "image/webp");
 
         private final AccountRepository accountRepository;
+        private final CourseRepository courseRepository;
+        private final CourseGroupRepository courseGroupRepository;
         private final PasswordEncoder passwordEncoder;
 
         /*
@@ -216,6 +228,12 @@ public class AccountService {
                         Account account) {
 
                 Person person = account.getPerson();
+                AcademicCycle academicCycle = resolveAcademicCycle(account);
+                Career career = academicCycle != null ? academicCycle.getCareer() : account.getCareer();
+                Faculty faculty = career != null ? career.getFaculty() : null;
+                Institution academicInstitution = faculty != null ? faculty.getInstitution() : null;
+                Grade grade = account.getGrade();
+                GradeParallel gradeParallel = account.getGradeParallel();
 
                 String imageUrl = null;
 
@@ -248,13 +266,43 @@ public class AccountService {
                                 .profileImageUrl(imageUrl)
 
                                 .academicCycleId(
-                                                account.getAcademicCycle() != null
-                                                                ? account.getAcademicCycle().getId()
+                                                academicCycle != null
+                                                                ? academicCycle.getId()
                                                                 : null)
 
                                 .academicCycle(
-                                                account.getAcademicCycle() != null
-                                                                ? account.getAcademicCycle().getName()
+                                                academicCycle != null
+                                                                ? academicCycle.getName()
+                                                                : null)
+
+                                .careerId(
+                                                career != null
+                                                                ? career.getId()
+                                                                : null)
+
+                                .career(
+                                                career != null
+                                                                ? career.getName()
+                                                                : null)
+
+                                .facultyId(
+                                                faculty != null
+                                                                ? faculty.getId()
+                                                                : null)
+
+                                .faculty(
+                                                faculty != null
+                                                                ? faculty.getName()
+                                                                : null)
+
+                                .academicInstitutionId(
+                                                academicInstitution != null
+                                                                ? academicInstitution.getId()
+                                                                : null)
+
+                                .academicInstitution(
+                                                academicInstitution != null
+                                                                ? academicInstitution.getName()
                                                                 : null)
 
                                 .institutionId(
@@ -265,6 +313,26 @@ public class AccountService {
                                 .institution(
                                                 account.getInstitution() != null
                                                                 ? account.getInstitution().getName()
+                                                                : null)
+
+                                .gradeId(
+                                                grade != null
+                                                                ? grade.getId()
+                                                                : null)
+
+                                .grade(
+                                                grade != null
+                                                                ? grade.getName()
+                                                                : null)
+
+                                .gradeParallelId(
+                                                gradeParallel != null
+                                                                ? gradeParallel.getId()
+                                                                : null)
+
+                                .gradeParallel(
+                                                gradeParallel != null
+                                                                ? gradeParallel.getName()
                                                                 : null)
 
                                 .enabled(account.isEnabled())
@@ -343,6 +411,41 @@ public class AccountService {
                 account.setPasswordChangeRequired(false);
 
                 accountRepository.save(account);
+        }
+
+        private AcademicCycle resolveAcademicCycle(Account account) {
+
+                if (account.getAcademicCycle() != null) {
+                        return account.getAcademicCycle();
+                }
+
+                Course scopedCourse = resolveScopedCourse(account);
+
+                return scopedCourse != null
+                                ? scopedCourse.getAcademicCycle()
+                                : null;
+        }
+
+        private Course resolveScopedCourse(Account account) {
+
+                if (account == null || account.getCareer() != null) {
+                        return null;
+                }
+
+                return courseRepository
+                                .findByPracticeTutor_UsernameAndDeletedFalse(account.getUsername())
+                                .stream()
+                                .findFirst()
+                                .or(() -> courseRepository
+                                                .findByInstitutionalTutor_UsernameAndDeletedFalse(account.getUsername())
+                                                .stream()
+                                                .findFirst())
+                                .or(() -> courseGroupRepository
+                                                .findByInstitutionalTutor_UsernameAndDeletedFalse(account.getUsername())
+                                                .stream()
+                                                .map(CourseGroup::getCourse)
+                                                .findFirst())
+                                .orElse(null);
         }
 
         public Page<AccountResponse> search(

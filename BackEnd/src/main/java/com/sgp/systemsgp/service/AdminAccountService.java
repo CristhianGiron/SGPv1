@@ -7,11 +7,17 @@ import com.sgp.systemsgp.exception.BadRequestException;
 import com.sgp.systemsgp.exception.NotFoundException;
 import com.sgp.systemsgp.model.AcademicCycle;
 import com.sgp.systemsgp.model.Account;
+import com.sgp.systemsgp.model.Career;
+import com.sgp.systemsgp.model.Grade;
+import com.sgp.systemsgp.model.GradeParallel;
 import com.sgp.systemsgp.model.Institution;
 import com.sgp.systemsgp.model.Person;
 import com.sgp.systemsgp.model.Role;
 import com.sgp.systemsgp.repository.AcademicCycleRepository;
 import com.sgp.systemsgp.repository.AccountRepository;
+import com.sgp.systemsgp.repository.CareerRepository;
+import com.sgp.systemsgp.repository.GradeParallelRepository;
+import com.sgp.systemsgp.repository.GradeRepository;
 import com.sgp.systemsgp.repository.InstitutionRepository;
 import com.sgp.systemsgp.repository.RoleRepository;
 
@@ -31,9 +37,13 @@ public class AdminAccountService {
         private final AccountRepository accountRepository;
         private final RoleRepository roleRepository;
         private final AcademicCycleRepository academicCycleRepository;
+        private final CareerRepository careerRepository;
+        private final GradeRepository gradeRepository;
+        private final GradeParallelRepository gradeParallelRepository;
         private final InstitutionRepository institutionRepository;
         private final PasswordEncoder passwordEncoder;
 
+        @Transactional
         public Long createAccount(CreateAccountAdminRequest request) {
 
                 if (accountRepository.existsByUsername(request.getUsername())) {
@@ -55,9 +65,23 @@ public class AdminAccountService {
                                 role.getName(),
                                 request.getAcademicCycleId());
 
+                Career career = resolveCareer(
+                                role.getName(),
+                                request.getCareerId());
+
                 Institution institution = resolveInstitution(
                                 role.getName(),
                                 request.getInstitutionId());
+
+                Grade grade = resolveGrade(
+                                role.getName(),
+                                request.getGradeId(),
+                                institution);
+
+                GradeParallel gradeParallel = resolveGradeParallel(
+                                role.getName(),
+                                request.getGradeParallelId(),
+                                institution);
 
                 Person person = Person.builder()
                                 .names(request.getNames())
@@ -74,6 +98,9 @@ public class AdminAccountService {
                                 .person(person)
                                 .roles(Set.of(role))
                                 .academicCycle(academicCycle)
+                                .career(career)
+                                .grade(grade)
+                                .gradeParallel(gradeParallel)
                                 .institution(institution)
                                 .enabled(true)
                                 .passwordChangeRequired(requiresInitialPasswordChange(role.getName()))
@@ -216,6 +243,135 @@ public class AdminAccountService {
                 return RoleName.ROLE_ESTUDIANTE.name().equals(roleName);
         }
 
+        private Career resolveCareer(
+                        String roleName,
+                        Long careerId) {
+
+                if (!canHaveCareer(roleName)) {
+
+                        if (careerId != null) {
+                                throw new BadRequestException(
+                                                "Este rol no puede vincularse a una carrera");
+                        }
+
+                        return null;
+                }
+
+                if (careerId == null) {
+                        throw new BadRequestException(
+                                        "La carrera es obligatoria para este rol");
+                }
+
+                Career career = careerRepository
+                                .findByIdAndDeletedFalse(careerId)
+                                .orElseThrow(() -> new NotFoundException(
+                                                "Carrera no encontrada"));
+
+                if (!career.isActive() || career.isDeleted()) {
+                        throw new BadRequestException(
+                                        "La carrera no está activa");
+                }
+
+                return career;
+        }
+
+        private boolean canHaveCareer(String roleName) {
+
+                return RoleName.ROLE_DIRECTOR_PRACTICAS.name().equals(roleName);
+        }
+
+        private Grade resolveGrade(
+                        String roleName,
+                        Long gradeId,
+                        Institution institution) {
+
+                if (!canHaveGrade(roleName)) {
+
+                        if (gradeId != null) {
+                                throw new BadRequestException(
+                                                "Este rol no puede vincularse a un grado");
+                        }
+
+                        return null;
+                }
+
+                if (gradeId == null) {
+                        throw new BadRequestException(
+                                        "El grado es obligatorio para este rol");
+                }
+
+                Grade grade = gradeRepository
+                                .findByIdAndDeletedFalse(gradeId)
+                                .orElseThrow(() -> new NotFoundException(
+                                                "Grado no encontrado"));
+
+                validateGradeScope(grade, institution);
+
+                return grade;
+        }
+
+        private boolean canHaveGrade(String roleName) {
+
+                return RoleName.ROLE_DIRECTORA_INSTITUCION.name().equals(roleName);
+        }
+
+        private GradeParallel resolveGradeParallel(
+                        String roleName,
+                        Long gradeParallelId,
+                        Institution institution) {
+
+                if (!canHaveGradeParallel(roleName)) {
+
+                        if (gradeParallelId != null) {
+                                throw new BadRequestException(
+                                                "Este rol no puede vincularse a un paralelo");
+                        }
+
+                        return null;
+                }
+
+                if (gradeParallelId == null) {
+                        throw new BadRequestException(
+                                        "El paralelo es obligatorio para este rol");
+                }
+
+                GradeParallel parallel = gradeParallelRepository
+                                .findByIdAndDeletedFalse(gradeParallelId)
+                                .orElseThrow(() -> new NotFoundException(
+                                                "Paralelo no encontrado"));
+
+                if (!parallel.isActive() || parallel.isDeleted()) {
+                        throw new BadRequestException(
+                                        "El paralelo no está activo");
+                }
+
+                validateGradeScope(parallel.getGrade(), institution);
+
+                return parallel;
+        }
+
+        private boolean canHaveGradeParallel(String roleName) {
+
+                return RoleName.ROLE_TUTOR_INSTITUCIONAL.name().equals(roleName);
+        }
+
+        private void validateGradeScope(
+                        Grade grade,
+                        Institution institution) {
+
+                if (grade == null || grade.isDeleted() || !grade.isActive()) {
+                        throw new BadRequestException(
+                                        "El grado no está activo");
+                }
+
+                if (institution == null
+                                || grade.getInstitution() == null
+                                || !grade.getInstitution().getId().equals(institution.getId())) {
+                        throw new BadRequestException(
+                                        "El grado debe pertenecer a la institución seleccionada");
+                }
+        }
+
         private String resolveRoleName(String requestedRole) {
 
                 if (requestedRole == null || requestedRole.isBlank()) {
@@ -268,7 +424,6 @@ public class AdminAccountService {
                 return RoleName.ROLE_DIRECTORA_INSTITUCION.name().equals(roleName)
                                 || RoleName.ROLE_TUTOR_INSTITUCIONAL.name().equals(roleName)
                                 || RoleName.ROLE_ADMIN.name().equals(roleName)
-                                || RoleName.ROLE_DIRECTOR_PRACTICAS.name().equals(roleName)
                                 || RoleName.ROLE_TUTOR_PRACTICAS.name().equals(roleName);
         }
 
@@ -316,11 +471,10 @@ public class AdminAccountService {
         private void validateUniversityRole(String roleName) {
 
                 if (!RoleName.ROLE_ADMIN.name().equals(roleName)
-                                && !RoleName.ROLE_DIRECTOR_PRACTICAS.name().equals(roleName)
                                 && !RoleName.ROLE_TUTOR_PRACTICAS.name().equals(roleName)) {
 
                         throw new BadRequestException(
-                                        "Solo administradores, directores de prácticas o tutores de prácticas pueden vincularse a una universidad");
+                                        "Solo administradores o tutores de prácticas pueden vincularse a una universidad");
                 }
         }
 }

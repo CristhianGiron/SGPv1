@@ -19,8 +19,9 @@ import { ActionMenu } from "../components/ui/ActionMenu";
 import { useConfirm } from "../components/ui/ConfirmDialog";
 import { DataTable } from "../components/ui/DataTable";
 import { EntitySelect } from "../components/ui/EntitySelect";
+import { FilterPanel } from "../components/ui/FilterPanel";
 import { Field, Input, Select, Textarea } from "../components/ui/FormControls";
-import { ModuleTab, ModuleTabs } from "../components/ui/ModuleTabs";
+import { Modal } from "../components/ui/Modal";
 import { PageHeader } from "../components/ui/PageHeader";
 import { SectionCard } from "../components/ui/SectionCard";
 import { StatusBadge } from "../components/ui/StatusBadge";
@@ -312,33 +313,12 @@ export function InstitutionsPage({ scope = "practice", embedded = false } = {}) 
       {error && <Alert tone="error">{error}</Alert>}
       {message && <Alert tone="success">{message}</Alert>}
 
-      <SectionCard>
-        <ModuleTabs>
-          {[
-            ["list", pageCopy.listLabel],
-            ["form", `${editingId ? "Editar" : "Crear"} ${pageCopy.formNoun}`],
-          ].map(([id, label]) => (
-            <ModuleTab
-              active={activeView === id}
-              key={id}
-              onClick={() => {
-                if (id === "form" && activeView !== "form") {
-                  setEditingId("");
-                  setForm(buildInitialForm(defaultType));
-                }
-                setActiveView(id);
-              }}
-            >
-              {label}
-            </ModuleTab>
-          ))}
-        </ModuleTabs>
-      </SectionCard>
-
-      {activeView === "list" && (
-        <>
-          <SectionCard title={`Filtrar ${listLabelLower}`}>
-            <div className="grid gap-4 md:grid-cols-4">
+      <>
+          <FilterPanel
+            activeCount={countActiveFilters(filters, ["query"])}
+            hasActiveFilters={countActiveFilters(filters) > 0}
+            onClear={() => setFilters(INITIAL_FILTERS)}
+            search={(
               <Field label="Buscar">
                 <Input
                   placeholder="Nombre, codigo, correo o ubicacion"
@@ -352,6 +332,10 @@ export function InstitutionsPage({ scope = "practice", embedded = false } = {}) 
                   }
                 />
               </Field>
+            )}
+            summary={`${filteredRows.length} de ${rows.length} ${listLabelLower}`}
+            title={`Filtrar ${listLabelLower}`}
+          >
               {allowedTypes.length > 1 && (
                 <Field label="Tipo">
                   <Select
@@ -512,20 +496,35 @@ export function InstitutionsPage({ scope = "practice", embedded = false } = {}) 
                   </Select>
                 </Field>
               )}
-            </div>
-            <p className="mt-3 text-xs font-bold text-muted">
-              {filteredRows.length} de {rows.length} {listLabelLower}
-            </p>
-          </SectionCard>
+          </FilterPanel>
 
-          <SectionCard title={pageCopy.listLabel}>
+          <SectionCard
+            title={pageCopy.listLabel}
+            action={
+              <PrimaryButton
+                icon={Plus}
+                onClick={() => {
+                  setEditingId("");
+                  setForm(buildInitialForm(defaultType));
+                  setActiveView("form");
+                }}
+                type="button"
+              >
+                Crear
+              </PrimaryButton>
+            }
+          >
             <DataTable columns={columns} loading={loading} rows={filteredRows} />
           </SectionCard>
         </>
-      )}
 
-      {activeView === "form" && (
-        <SectionCard title={editingId ? `Editar ${pageCopy.formNoun}` : `Crear ${pageCopy.formNoun}`}>
+      <Modal
+        description="Edita la informacion en una ventana enfocada y regresa al listado al guardar."
+        maxWidth="max-w-5xl"
+        onClose={() => setActiveView("list")}
+        open={activeView === "form"}
+        title={editingId ? `Editar ${pageCopy.formNoun}` : `Crear ${pageCopy.formNoun}`}
+      >
           <form className="space-y-4" onSubmit={submit}>
             <div className="grid lg:grid-cols-2 gap-4">
               {[
@@ -726,8 +725,7 @@ export function InstitutionsPage({ scope = "practice", embedded = false } = {}) 
               )}
             </ActionBar>
           </form>
-        </SectionCard>
-      )}
+      </Modal>
     </>
   );
 }
@@ -851,4 +849,11 @@ function filterInstitutionRow(row, filters) {
   }
 
   return true;
+}
+
+function countActiveFilters(filters, excludeKeys = []) {
+  return Object.entries(filters || {})
+    .filter(([key]) => !excludeKeys.includes(key))
+    .filter(([, value]) => String(value || "").trim())
+    .length;
 }

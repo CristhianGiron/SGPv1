@@ -44,6 +44,8 @@ public class PracticePhotoResponse {
 
     private String contentUrl;
 
+    private String publicContentUrl;
+
     private String uploadedBy;
 
     private LocalDateTime uploadedAt;

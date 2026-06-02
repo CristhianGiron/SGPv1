@@ -6,6 +6,7 @@ import com.sgp.systemsgp.dto.practicefollowup.UpdatePracticeFollowUpReportReques
 import com.sgp.systemsgp.service.PracticeFollowUpReportService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -75,6 +76,19 @@ public class PracticeFollowUpReportController {
         return practiceFollowUpReportService.getById(
                 id,
                 authentication.getName());
+    }
+
+    @GetMapping("/{id}/pdf")
+    @PreAuthorize("hasAnyRole('ESTUDIANTE','TUTOR_PRACTICAS','DIRECTOR_PRACTICAS','ADMIN')")
+    public ResponseEntity<byte[]> exportPdf(
+            Authentication authentication,
+            @PathVariable Long id) {
+
+        return PdfResponseFactory.attachment(
+                practiceFollowUpReportService.exportPdf(
+                        id,
+                        authentication.getName()),
+                "L.5. Reporte de Seguimiento.pdf");
     }
 
     @PutMapping("/{id}")

@@ -27,9 +27,12 @@ public class CreateCourseRequest {
 
     private LocalDateTime endDate;
 
-    @NotNull(message = "La asignatura es obligatoria")
     @Positive(message = "La asignatura seleccionada no es válida")
     private Long subjectId;
+
+    @NotNull(message = "El ciclo académico es obligatorio")
+    @Positive(message = "El ciclo académico seleccionado no es válido")
+    private Long academicCycleId;
 
     @AssertTrue(message = "La fecha de fin no puede ser anterior a la fecha de inicio")
     public boolean isDateRangeValid() {

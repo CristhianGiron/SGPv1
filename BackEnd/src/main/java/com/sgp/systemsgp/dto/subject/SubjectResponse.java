@@ -30,6 +30,10 @@ public class SubjectResponse {
 
     private String academicCycle;
 
+    private Long courseId;
+
+    private String course;
+
     private Long careerId;
 
     private String career;
@@ -44,6 +48,10 @@ public class SubjectResponse {
     private Long gradeId;
 
     private String grade;
+
+    private Long gradeParallelId;
+
+    private String gradeParallel;
 
     private Long institutionId;
 

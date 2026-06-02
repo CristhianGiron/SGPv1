@@ -120,7 +120,15 @@ public class Course {
     private Account practiceTutor;
 
     /*
-     * ASIGNATURA
+     * Ciclo academico al que pertenece este paralelo.
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "academic_cycle_id")
+    private AcademicCycle academicCycle;
+
+    /*
+     * Asignatura heredada. Se mantiene para compatibilidad con datos previos;
+     * la jerarquia nueva cuelga asignaturas desde este paralelo.
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subject_id")

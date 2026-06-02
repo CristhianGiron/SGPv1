@@ -81,7 +81,7 @@ export default function AccessibilityWidget() {
           settings,
           fontScale,
           speechRate,
-        })
+        }),
       );
     } else {
       localStorage.removeItem(STORAGE_KEY);
@@ -200,7 +200,6 @@ export default function AccessibilityWidget() {
           aria-label="Herramientas de accesibilidad"
           className="
             absolute bottom-20 left-0
-            w-[285px] max-h-[calc(100vh-120px)] overflow-y-auto
             rounded-2xl border border-slate-200
             bg-white p-5 text-slate-900
             shadow-[0_24px_70px_rgba(15,23,42,0.25)]
@@ -208,16 +207,17 @@ export default function AccessibilityWidget() {
             dark:border-slate-700 dark:bg-surface dark:text-slate-100
           "
         >
-          <div className="mb-4 flex items-start justify-between gap-3">
-            <h2 className="text-[20px] font-bold leading-tight text-slate-700 dark:text-slate-100">
-              Herramientas de accesibilidad
-            </h2>
+          <div className="flex flex-col gap-4">
+            <div className="mb-4 flex items-start justify-between gap-3 ">
+              <h2 className="text-[16px] font-bold leading-tight text-green-500 dark:text-slate-100">
+                Herramientas de accesibilidad
+              </h2>
 
-            <button
-              type="button"
-              onClick={() => setOpen(false)}
-              aria-label="Cerrar herramientas de accesibilidad"
-              className="
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                aria-label="Cerrar herramientas de accesibilidad"
+                className="
                 grid h-8 w-8 place-items-center rounded-full
                 bg-slate-100 text-slate-600 transition
                 hover:bg-slate-200
@@ -225,12 +225,13 @@ export default function AccessibilityWidget() {
                 focus-visible:outline focus-visible:outline-3
                 focus-visible:outline-offset-2 focus-visible:outline-yellow-400
               "
-            >
-              <X size={18} />
-            </button>
+              >
+                <X size={18} />
+              </button>
+            </div>
           </div>
 
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1  w-[250px] max-h-[calc(100vh-250px)] overflow-y-auto overflow-x-hidden">
             <button
               type="button"
               onClick={increaseText}
@@ -274,7 +275,7 @@ export default function AccessibilityWidget() {
                 step="0.1"
                 value={speechRate}
                 onChange={(e) => setSpeechRate(Number(e.target.value))}
-                className="w-full cursor-pointer accent-blue-500"
+                className="w-full cursor-pointer accent-green-500  dark:accent-green-400"
               />
 
               <span className="mt-1 block text-sm text-slate-800 dark:text-slate-200">
@@ -312,8 +313,8 @@ export default function AccessibilityWidget() {
                 focus-visible:outline-offset-2 focus-visible:outline-yellow-400
               "
             >
-              <RotateCcw size={17} />
-              <span>Restablecer cambios</span>
+              <RotateCcw className="text-red-500" size={17} />
+              <span className="text-red-500">Restablecer cambios</span>
             </button>
           </div>
         </aside>
@@ -338,7 +339,7 @@ export default function AccessibilityWidget() {
         <Accessibility size={28} />
       </button>
     </div>,
-    portalRoot
+    portalRoot,
   );
 }
 
@@ -357,11 +358,15 @@ function optionClass(active) {
 }
 
 function hasVisualSettings(settings, fontScale) {
-  return Object.values(settings).some(Boolean) || fontScale !== DEFAULT_FONT_SCALE;
+  return (
+    Object.values(settings).some(Boolean) || fontScale !== DEFAULT_FONT_SCALE
+  );
 }
 
 function hasStoredSettings(settings, fontScale, speechRate) {
-  return hasVisualSettings(settings, fontScale) || speechRate !== DEFAULT_SPEECH_RATE;
+  return (
+    hasVisualSettings(settings, fontScale) || speechRate !== DEFAULT_SPEECH_RATE
+  );
 }
 
 function applyAccessibilityEffects(styleId, settings, fontScale) {
@@ -382,7 +387,10 @@ function applyAccessibilityEffects(styleId, settings, fontScale) {
 
   if (fontScale !== DEFAULT_FONT_SCALE) {
     html.classList.add("aw-font-scaled");
-    html.style.setProperty("--aw-font-scale", `${Math.round(fontScale * 100)}%`);
+    html.style.setProperty(
+      "--aw-font-scale",
+      `${Math.round(fontScale * 100)}%`,
+    );
   }
 }
 

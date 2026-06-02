@@ -3,9 +3,11 @@ import { Download, ImagePlus, Maximize2, RefreshCw, Trash2, X } from 'lucide-rea
 import { apiBlob, apiRequest, unwrapPage } from '../api/client';
 import { useAuth } from '../auth/AuthContext';
 import { Alert } from '../components/ui/Alert';
-import { ActionBar, DangerButton, PrimaryButton, SecondaryButton } from '../components/ui/ActionBar';
+import { ActionBar, PrimaryButton, SecondaryButton } from '../components/ui/ActionBar';
+import { ActionMenu } from '../components/ui/ActionMenu';
 import { useConfirm } from '../components/ui/ConfirmDialog';
 import { EmptyState } from '../components/ui/EmptyState';
+import { FilterPanel } from '../components/ui/FilterPanel';
 import { Field, FileInput, Input, Select, Textarea } from '../components/ui/FormControls';
 import { ModuleTab, ModuleTabs } from '../components/ui/ModuleTabs';
 import { PageHeader } from '../components/ui/PageHeader';
@@ -67,7 +69,7 @@ export function PhotosPage() {
         const approvedActiveEnrollments = loadedEnrollments.filter(isActiveApprovedEnrollment);
 
         setEnrollments(loadedEnrollments);
-        setMyPhotos(studentPhotos);
+        setMyPhotos(unwrapPage(studentPhotos));
         setSelectedEnrollmentId((current) =>
           approvedActiveEnrollments.some((enrollment) => String(enrollment.id) === String(current))
             ? current
@@ -103,6 +105,7 @@ export function PhotosPage() {
 
   async function handleUpload(event) {
     event.preventDefault();
+    const form = event.currentTarget;
     const enrollmentId = selectedEnrollmentId;
 
     if (!enrollmentId) {
@@ -132,7 +135,7 @@ export function PhotosPage() {
         formData.append('practiceDate', practiceDate);
       }
 
-      await apiRequest('/api/practice-photos', {
+      const uploadedPhoto = await apiRequest('/api/practice-photos', {
         method: 'POST',
         token,
         body: formData,
@@ -141,10 +144,11 @@ export function PhotosPage() {
       setSelectedFile(null);
       setDescription('');
       setPracticeDate('');
-      event.currentTarget.reset();
-      await loadPhotos();
+      form?.reset();
+      setMyPhotos((current) => [uploadedPhoto, ...current.filter((photo) => photo.id !== uploadedPhoto.id)]);
       setActiveView('mine');
       setMessage('Evidencia subida correctamente.');
+      await loadPhotos();
     } catch (requestError) {
       setError(requestError.message);
     } finally {
@@ -255,14 +259,14 @@ export function PhotosPage() {
       {isStudent && activeView === 'upload' && (
         <SectionCard
           title="Agregar evidencia"
-          action={<span className="text-sm text-muted">{approvedEnrollments.length} cursos activos</span>}
+          action={<span className="text-sm text-muted">{approvedEnrollments.length} paralelos activos</span>}
         >
           {approvedEnrollments.length === 0 && (
-            <Alert tone="info">Necesitas una inscripcion aprobada en un curso activo para subir evidencias.</Alert>
+            <Alert tone="info">Necesitas una inscripcion aprobada en un paralelo activo para subir evidencias.</Alert>
           )}
           {approvedEnrollments.length > 0 && (
             <form className="grid gap-4 lg:grid-cols-2" onSubmit={handleUpload}>
-              <Field label="Curso de practica">
+              <Field label="Paralelo de practica">
                 <Select
                   value={selectedEnrollmentId}
                   onChange={(event) => setSelectedEnrollmentId(event.target.value)}
@@ -377,8 +381,6 @@ function PhotoSection({ title, photos, token, emptyText, canDelete = false, onDe
 }
 
 function PhotoReviewFilters({ filters, options, totalCount, visibleCount, onChange }) {
-  const hasFilters = Boolean(filters.search.trim() || filters.course || filters.student || filters.enrollment);
-
   function setFilter(key, value) {
     onChange((current) => ({
       ...current,
@@ -387,17 +389,24 @@ function PhotoReviewFilters({ filters, options, totalCount, visibleCount, onChan
   }
 
   return (
-    <SectionCard title="Filtrar fotografias">
-      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto]">
+    <FilterPanel
+      activeCount={countActiveFilters(filters, ['search'])}
+      hasActiveFilters={countActiveFilters(filters) > 0}
+      onClear={() => onChange({ search: '', course: '', student: '', enrollment: '' })}
+      search={(
         <Field label="Buscar">
           <Input
-            placeholder="Descripcion, archivo, curso o estudiante"
+            placeholder="Descripcion, archivo, paralelo o estudiante"
             type="search"
             value={filters.search}
             onChange={(event) => setFilter('search', event.target.value)}
           />
         </Field>
-        <Field label="Curso">
+      )}
+      summary={`${visibleCount} de ${totalCount} fotografias`}
+      title="Filtrar fotografias"
+    >
+        <Field label="Paralelo">
           <Select value={filters.course} onChange={(event) => setFilter('course', event.target.value)}>
             <option value="">Todos</option>
             {options.courses.map((option) => (
@@ -427,20 +436,7 @@ function PhotoReviewFilters({ filters, options, totalCount, visibleCount, onChan
             ))}
           </Select>
         </Field>
-        <div className="flex items-end">
-          <SecondaryButton
-            disabled={!hasFilters}
-            onClick={() => onChange({ search: '', course: '', student: '', enrollment: '' })}
-            type="button"
-          >
-            Limpiar
-          </SecondaryButton>
-        </div>
-      </div>
-      <p className="mt-3 text-xs font-bold text-muted">
-        {visibleCount} de {totalCount} fotografias
-      </p>
-    </SectionCard>
+    </FilterPanel>
   );
 }
 
@@ -480,6 +476,13 @@ function filterPhotos(photos, filters) {
   });
 }
 
+function countActiveFilters(filters, excludeKeys = []) {
+  return Object.entries(filters || {})
+    .filter(([key]) => !excludeKeys.includes(key))
+    .filter(([, value]) => String(value || '').trim())
+    .length;
+}
+
 function buildOptions(items, getValue) {
   const options = new Map();
 
@@ -512,7 +515,7 @@ function enrollmentLabel(enrollment) {
     enrollment.groupName && `Grupo ${enrollment.groupName}`,
   ].filter(Boolean);
 
-  return parts.join(' - ') || 'Curso de practica';
+  return parts.join(' - ') || 'Paralelo de practica';
 }
 
 function enrollmentLabelFromPhoto(photo) {
@@ -585,6 +588,30 @@ function groupPhotosByEnrollment(photos) {
 }
 
 function PhotoCard({ photo, token, canDelete = false, onDelete, onDownload, onOpen }) {
+  const actions = [
+    {
+      key: 'view',
+      label: 'Ver',
+      icon: Maximize2,
+      onClick: () => onOpen?.(photo),
+    },
+    {
+      key: 'download',
+      label: 'Descargar',
+      icon: Download,
+      onClick: () => onDownload?.(photo),
+    },
+  ];
+
+  if (canDelete) {
+    actions.push({
+      key: 'delete',
+      label: 'Quitar',
+      icon: Trash2,
+      onClick: () => onDelete?.(photo),
+    });
+  }
+
   return (
     <article className="overflow-hidden rounded-lg border border-[#c8d2cd] bg-white dark:border-slate-700 dark:bg-surface">
       <PhotoPreview photo={photo} token={token} onOpen={onOpen} />
@@ -598,23 +625,13 @@ function PhotoCard({ photo, token, canDelete = false, onDelete, onDownload, onOp
           <StatusBadge status={photo.practiceDate ? 'COMPLETED' : 'DRAFT'} />
         </div>
         {photo.description && <p className="line-clamp-3 text-sm text-[#34443b] dark:text-slate-200">{photo.description}</p>}
-        <ActionBar>
-          <span className="text-xs text-muted">{photo.practiceDate || 'Sin fecha'}</span>
-          <span className="text-xs text-muted">{formatBytes(photo.fileSize)}</span>
-        </ActionBar>
-        <ActionBar>
-          <SecondaryButton icon={Maximize2} onClick={() => onOpen?.(photo)} type="button">
-            Ver
-          </SecondaryButton>
-          <SecondaryButton icon={Download} onClick={() => onDownload?.(photo)} type="button">
-            Descargar
-          </SecondaryButton>
-          {canDelete && (
-            <DangerButton icon={Trash2} onClick={() => onDelete?.(photo)} type="button">
-              Quitar
-            </DangerButton>
-          )}
-        </ActionBar>
+        <div className="flex items-center justify-between gap-3">
+          <ActionBar>
+            <span className="text-xs text-muted">{photo.practiceDate || 'Sin fecha'}</span>
+            <span className="text-xs text-muted">{formatBytes(photo.fileSize)}</span>
+          </ActionBar>
+          <ActionMenu actions={actions} label="Acciones de evidencia" />
+        </div>
       </div>
     </article>
   );

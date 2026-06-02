@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/academic-cycles")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR_PRACTICAS')")
 public class AcademicCycleController {
 
     private final AcademicCycleService academicCycleService;

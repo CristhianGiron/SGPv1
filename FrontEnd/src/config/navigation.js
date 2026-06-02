@@ -46,13 +46,16 @@ const DOCUMENT_MODULE_ICONS = {
   'completed-records': ListChecks,
 };
 
-export const DOCUMENT_NAV_ITEMS = DOCUMENT_MODULES.map((module) => ({
-  id: `documents/${module.id}`,
-  moduleId: module.id,
-  label: module.title,
-  Icon: DOCUMENT_MODULE_ICONS[module.id] || FileText,
-  roles: module.roles || [],
-}));
+export const DOCUMENT_NAV_ITEMS = DOCUMENT_MODULES
+  .slice()
+  .sort((left, right) => (left.documentOrder || 0) - (right.documentOrder || 0))
+  .map((module) => ({
+    id: `documents/${module.id}`,
+    moduleId: module.id,
+    label: module.title,
+    Icon: DOCUMENT_MODULE_ICONS[module.id] || FileText,
+    roles: module.roles || [],
+  }));
 
 export const PRACTICE_INSTITUTION_NAV_ITEMS = [
   {
@@ -77,14 +80,14 @@ export const UNIVERSITY_NAV_ITEMS = [
     moduleId: 'universities',
     label: 'Universidades',
     Icon: University,
-    roles: ['ROLE_ADMIN'],
+    roles: ['ROLE_ADMIN', 'ROLE_DIRECTOR_PRACTICAS'],
   },
   ...UNIVERSITY_CATALOG_RESOURCES.map((resource) => ({
     id: `universities/${resource.id}`,
     moduleId: resource.id,
     label: resource.title,
     Icon: GraduationCap,
-    roles: ['ROLE_ADMIN'],
+    roles: ['ROLE_ADMIN', 'ROLE_DIRECTOR_PRACTICAS'],
   })),
 ];
 
@@ -119,15 +122,15 @@ export const NAV_ITEMS = [
   },
   {
     id: 'forms',
-    label: 'Fichas de practica',
+    label: 'Entrevistas',
     Icon: FileQuestion,
     roles: ['ROLE_ESTUDIANTE', 'ROLE_TUTOR_INSTITUCIONAL', 'ROLE_DIRECTORA_INSTITUCION'],
   },
   {
     id: 'courses',
-    label: 'Cursos y grupos',
+    label: 'Paralelos y grupos',
     Icon: GraduationCap,
-    roles: ['ROLE_ESTUDIANTE', 'ROLE_TUTOR_PRACTICAS', 'ROLE_ADMIN', 'ROLE_DIRECTOR_PRACTICAS'],
+    roles: ['ROLE_TUTOR_PRACTICAS', 'ROLE_ADMIN', 'ROLE_DIRECTOR_PRACTICAS'],
   },
   {
     id: 'documents',
@@ -146,7 +149,7 @@ export const NAV_ITEMS = [
   },
   {
     id: 'schedules',
-    label: 'Horarios de practica',
+    label: 'Jornadas y asistencias',
     Icon: CalendarClock,
     roles: ['ROLE_ESTUDIANTE', 'ROLE_TUTOR_INSTITUCIONAL', 'ROLE_DIRECTORA_INSTITUCION'],
   },
@@ -165,7 +168,7 @@ export const NAV_ITEMS = [
     Icon: University,
     ToggleIcon: ChevronDown,
     isGroupHeader: true,
-    roles: ['ROLE_ADMIN'],
+    roles: ['ROLE_ADMIN', 'ROLE_DIRECTOR_PRACTICAS'],
     children: UNIVERSITY_NAV_ITEMS,
   },
   {

@@ -30,13 +30,27 @@ public class UpdateSubjectRequest {
     @Positive(message = "El ciclo académico seleccionado no es válido")
     private Long academicCycleId;
 
+    @Positive(message = "El paralelo seleccionado no es válido")
+    private Long courseId;
+
     @Positive(message = "El grado seleccionado no es válido")
     private Long gradeId;
 
+    @Positive(message = "El paralelo seleccionado no es válido")
+    private Long gradeParallelId;
+
     private Boolean active;
 
-    @AssertTrue(message = "No se puede seleccionar ciclo académico y grado al mismo tiempo")
+    @AssertTrue(message = "No se puede mezclar ciclo académico, grado y paralelo al mismo tiempo")
     public boolean isAcademicReferenceValid() {
-        return academicCycleId == null || gradeId == null;
+        if ((academicCycleId != null || courseId != null) && (gradeId != null || gradeParallelId != null)) {
+            return false;
+        }
+
+        if (academicCycleId != null && courseId != null) {
+            return false;
+        }
+
+        return gradeId == null || gradeParallelId == null;
     }
 }

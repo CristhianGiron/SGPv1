@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/faculties")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR_PRACTICAS')")
 public class FacultyController {
 
     private final FacultyService facultyService;

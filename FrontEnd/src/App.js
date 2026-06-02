@@ -20,6 +20,7 @@ import { CoursesPage } from "./pages/CoursesPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { DocumentsPage } from "./pages/DocumentsPage";
 import { ForcePasswordChangePage } from "./pages/ForcePasswordChangePage";
+import { EvidenceViewerPage } from "./pages/EvidenceViewerPage";
 import { LocationsPage } from "./pages/LocationsPage";
 import { LoginPage } from "./pages/LoginPage";
 import { NotificationsPage } from "./pages/NotificationsPage";
@@ -84,6 +85,21 @@ function AppShell() {
 
   if (!loadingProfile && profile?.passwordChangeRequired) {
     return <ForcePasswordChangePage />;
+  }
+
+  if (baseRoute === "evidence-viewer") {
+    return (
+      <AppLayout route="photos">
+        {profileError && <Alert tone="error">{profileError}</Alert>}
+        {loadingProfile ? (
+          <SectionCard>
+            <Skeleton lines={5} />
+          </SectionCard>
+        ) : (
+          <EvidenceViewerPage />
+        )}
+      </AppLayout>
+    );
   }
   // Verificar que el usuario tenga acceso a la ruta actual según sus roles
   // Si no tiene acceso, redirigir a dashboard

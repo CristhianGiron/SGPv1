@@ -19,12 +19,15 @@ import com.sgp.systemsgp.enums.PracticeReportStatus;
 import com.sgp.systemsgp.enums.RoleName;
 import com.sgp.systemsgp.exception.BadRequestException;
 import com.sgp.systemsgp.model.Account;
+import com.sgp.systemsgp.model.AcademicCycle;
+import com.sgp.systemsgp.model.Career;
 import com.sgp.systemsgp.model.Course;
 import com.sgp.systemsgp.model.Enrollment;
 import com.sgp.systemsgp.model.Institution;
 import com.sgp.systemsgp.model.Person;
 import com.sgp.systemsgp.model.PracticeReport;
 import com.sgp.systemsgp.model.Role;
+import com.sgp.systemsgp.model.Subject;
 import com.sgp.systemsgp.repository.AccountRepository;
 import com.sgp.systemsgp.repository.CourseRepository;
 import com.sgp.systemsgp.repository.EnrollmentRepository;
@@ -361,6 +364,7 @@ class PracticeReportServiceTest {
                 .specificObjective1("Objetivo especifico 1")
                 .specificObjective2("Objetivo especifico 2")
                 .specificObjective3("Objetivo especifico 3")
+                .subject(subject())
                 .build();
     }
 
@@ -397,6 +401,26 @@ class PracticeReportServiceTest {
                 .id(30L)
                 .username("director.practicas")
                 .roles(Set.of(role(RoleName.ROLE_DIRECTOR_PRACTICAS)))
+                .career(career())
+                .build();
+    }
+
+    private Subject subject() {
+
+        return Subject.builder()
+                .id(1L)
+                .academicCycle(AcademicCycle.builder()
+                        .id(1L)
+                        .career(career())
+                        .build())
+                .build();
+    }
+
+    private Career career() {
+
+        return Career.builder()
+                .id(1L)
+                .name("Ingenieria Test")
                 .build();
     }
 

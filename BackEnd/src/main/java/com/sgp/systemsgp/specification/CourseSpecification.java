@@ -2,6 +2,8 @@ package com.sgp.systemsgp.specification;
 
 import com.sgp.systemsgp.model.Course;
 
+import jakarta.persistence.criteria.JoinType;
+
 import org.springframework.data.jpa.domain.Specification;
 
 public class CourseSpecification {
@@ -16,7 +18,9 @@ public class CourseSpecification {
 
             String institutionalTutor,
 
-            String practiceTutor
+            String practiceTutor,
+
+            Long careerId
     ) {
 
         return (root, query, cb) -> {
@@ -102,6 +106,23 @@ public class CourseSpecification {
                                                 .get("username")
                                 ),
                                 "%" + practiceTutor.toLowerCase() + "%"
+                        )
+                );
+            }
+
+            if (careerId != null) {
+
+                var academicCycle = root.join("academicCycle", JoinType.LEFT);
+                var career = academicCycle.join("career", JoinType.LEFT);
+                var subject = root.join("subject", JoinType.LEFT);
+                var legacyAcademicCycle = subject.join("academicCycle", JoinType.LEFT);
+                var legacyCareer = legacyAcademicCycle.join("career", JoinType.LEFT);
+
+                predicate = cb.and(
+                        predicate,
+                        cb.or(
+                                cb.equal(career.get("id"), careerId),
+                                cb.equal(legacyCareer.get("id"), careerId)
                         )
                 );
             }

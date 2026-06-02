@@ -77,12 +77,14 @@ public class PracticePhotoService {
                 .data(readBytes(file))
                 .uploadedAt(LocalDateTime.now())
                 .build();
+        photo.ensurePublicToken();
 
         practicePhotoRepository.save(photo);
 
         return mapToResponse(photo);
     }
 
+    @Transactional
     public List<PracticePhotoResponse> myPhotos(String username) {
 
         return practicePhotoRepository
@@ -109,6 +111,7 @@ public class PracticePhotoService {
         practicePhotoRepository.save(photo);
     }
 
+    @Transactional
     public List<PracticePhotoResponse> reviewQueue(String username) {
 
         Account reviewer = getAccount(username);
@@ -151,6 +154,7 @@ public class PracticePhotoService {
                 "No puedes revisar fotografias de practicas");
     }
 
+    @Transactional
     public List<PracticePhotoResponse> enrollmentPhotos(
             Long enrollmentId,
             String username) {
@@ -167,6 +171,7 @@ public class PracticePhotoService {
                 .toList();
     }
 
+    @Transactional
     public PracticePhotoResponse getById(
             Long id,
             String username) {
@@ -187,6 +192,31 @@ public class PracticePhotoService {
         Account account = getAccount(username);
 
         validateCanView(photo, account);
+
+        if (photo.getData() == null) {
+            throw new NotFoundException(
+                    "La fotografia no tiene contenido");
+        }
+
+        return new PracticePhotoFileResponse(
+                photo.getData(),
+                photo.getContentType(),
+                photo.getOriginalFilename(),
+                photo.getFileSize());
+    }
+
+    @Transactional
+    public PracticePhotoFileResponse getPublicContent(String publicToken) {
+
+        if (!StringUtils.hasText(publicToken)) {
+            throw new NotFoundException(
+                    "Fotografia de practicas no encontrada");
+        }
+
+        PracticePhoto photo = practicePhotoRepository
+                .findByPublicTokenAndDeletedFalse(publicToken)
+                .orElseThrow(() -> new NotFoundException(
+                        "Fotografia de practicas no encontrada"));
 
         if (photo.getData() == null) {
             throw new NotFoundException(
@@ -425,6 +455,7 @@ public class PracticePhotoService {
         Account student = photo.getStudent();
         Person person = student.getPerson();
         Course course = resolveCourse(photo);
+        photo.ensurePublicToken();
 
         return PracticePhotoResponse.builder()
                 .id(photo.getId())
@@ -452,6 +483,12 @@ public class PracticePhotoService {
                         photo.getId() != null
                                 ? "/api/practice-photos/"
                                         + photo.getId()
+                                        + "/content"
+                                : null)
+                .publicContentUrl(
+                        StringUtils.hasText(photo.getPublicToken())
+                                ? "/api/public/practice-photos/"
+                                        + photo.getPublicToken()
                                         + "/content"
                                 : null)
                 .uploadedBy(

@@ -199,7 +199,14 @@ export function cloneStructuredValue(value) {
   return cloneValue(value);
 }
 
-export function StructuredForm({ value, onChange, relations = {}, readOnlyFields = [], hiddenFields = [] }) {
+export function StructuredForm({
+  value,
+  onChange,
+  relations = {},
+  readOnlyFields = [],
+  hiddenFields = [],
+  customFields = {},
+}) {
   const readOnlySet = new Set(readOnlyFields);
   const hiddenSet = new Set(hiddenFields);
 
@@ -209,6 +216,7 @@ export function StructuredForm({ value, onChange, relations = {}, readOnlyFields
         hiddenFields={hiddenSet}
         name="form"
         path={[]}
+        customFields={customFields}
         readOnlyFields={readOnlySet}
         relations={relations}
         value={value || {}}
@@ -219,10 +227,11 @@ export function StructuredForm({ value, onChange, relations = {}, readOnlyFields
   );
 }
 
-function FormNode({ name, path, readOnlyFields, hiddenFields, relations, value, onChange, root }) {
+function FormNode({ name, path, customFields, readOnlyFields, hiddenFields, relations, value, onChange, root }) {
   if (Array.isArray(value)) {
     return (
       <ArrayEditor
+        customFields={customFields}
         hiddenFields={hiddenFields}
         name={name}
         path={path}
@@ -238,6 +247,7 @@ function FormNode({ name, path, readOnlyFields, hiddenFields, relations, value, 
   if (isObject(value)) {
     return (
       <ObjectEditor
+        customFields={customFields}
         hiddenFields={hiddenFields}
         path={path}
         readOnlyFields={readOnlyFields}
@@ -252,6 +262,7 @@ function FormNode({ name, path, readOnlyFields, hiddenFields, relations, value, 
   return (
     <PrimitiveField
       name={name}
+      customFields={customFields}
       readOnly={readOnlyFields.has(name)}
       relations={relations}
       value={value}
@@ -260,7 +271,7 @@ function FormNode({ name, path, readOnlyFields, hiddenFields, relations, value, 
   );
 }
 
-function ObjectEditor({ path, readOnlyFields, hiddenFields, relations, value, onChange, root }) {
+function ObjectEditor({ path, customFields, readOnlyFields, hiddenFields, relations, value, onChange, root }) {
   const entries = Object.entries(value);
 
   if (entries.length === 0) {
@@ -282,6 +293,7 @@ function ObjectEditor({ path, readOnlyFields, hiddenFields, relations, value, on
               <FormGroup title={labelFromKey(key)}>
                 <FormNode
                   name={key}
+                  customFields={customFields}
                   hiddenFields={hiddenFields}
                   path={[...path, key]}
                   readOnlyFields={readOnlyFields}
@@ -294,6 +306,7 @@ function ObjectEditor({ path, readOnlyFields, hiddenFields, relations, value, on
             ) : (
               <PrimitiveField
                 name={key}
+                customFields={customFields}
                 readOnly={readOnlyFields.has(key)}
                 relations={relations}
                 value={item}
@@ -307,7 +320,7 @@ function ObjectEditor({ path, readOnlyFields, hiddenFields, relations, value, on
   );
 }
 
-function ArrayEditor({ name, path, readOnlyFields, hiddenFields, relations, value, onChange, root }) {
+function ArrayEditor({ name, path, customFields, readOnlyFields, hiddenFields, relations, value, onChange, root }) {
   const confirm = useConfirm();
   const template = value[0] || {};
 
@@ -348,6 +361,7 @@ function ArrayEditor({ name, path, readOnlyFields, hiddenFields, relations, valu
           </div>
           <FormNode
             name={`${name}-${index}`}
+            customFields={customFields}
             hiddenFields={hiddenFields}
             path={[...path, index]}
             readOnlyFields={readOnlyFields}
@@ -371,8 +385,19 @@ function ArrayEditor({ name, path, readOnlyFields, hiddenFields, relations, valu
   );
 }
 
-function PrimitiveField({ name, readOnly = false, relations, value, onChange }) {
+function PrimitiveField({ name, customFields = {}, readOnly = false, relations, value, onChange }) {
   const relation = relations[name] || ENTITY_RELATIONS[name];
+  const customField = customFields[name];
+
+  if (customField) {
+    return customField({
+      label: relation?.label || labelFromKey(name),
+      name,
+      onChange,
+      readOnly,
+      value,
+    });
+  }
 
   if (readOnly) {
     return (

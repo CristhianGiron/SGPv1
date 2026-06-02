@@ -5,6 +5,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
+import java.nio.charset.StandardCharsets;
+
 final class PdfResponseFactory {
 
     private PdfResponseFactory() {
@@ -19,7 +21,7 @@ final class PdfResponseFactory {
                 .header(
                         HttpHeaders.CONTENT_DISPOSITION,
                         ContentDisposition.attachment()
-                                .filename(filename)
+                                .filename(filename, StandardCharsets.UTF_8)
                                 .build()
                                 .toString())
                 .body(pdf);

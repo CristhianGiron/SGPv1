@@ -118,7 +118,11 @@ public class ActivityPlanResponse {
 
     private String reviewedBy;
 
+    private String reviewedByName;
+
     private String directorReviewedBy;
+
+    private String directorReviewedByName;
 
     private LocalDateTime submittedAt;
 

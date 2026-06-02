@@ -8,14 +8,17 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.sgp.systemsgp.enums.EnrollmentStatus;
+import com.sgp.systemsgp.enums.RoleName;
 import com.sgp.systemsgp.exception.BadRequestException;
 import com.sgp.systemsgp.model.Account;
 import com.sgp.systemsgp.model.Course;
 import com.sgp.systemsgp.model.Enrollment;
+import com.sgp.systemsgp.model.Role;
 import com.sgp.systemsgp.repository.AccountRepository;
 import com.sgp.systemsgp.repository.CourseGroupRepository;
 import com.sgp.systemsgp.repository.CourseRepository;
 import com.sgp.systemsgp.repository.EnrollmentRepository;
+import com.sgp.systemsgp.repository.SubjectRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -23,6 +26,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 class EnrollmentServiceTest {
 
@@ -39,6 +43,9 @@ class EnrollmentServiceTest {
     private CourseGroupRepository courseGroupRepository;
 
     @Mock
+    private SubjectRepository subjectRepository;
+
+    @Mock
     private NotificationService notificationService;
 
     private EnrollmentService enrollmentService;
@@ -53,6 +60,7 @@ class EnrollmentServiceTest {
                 accountRepository,
                 courseRepository,
                 courseGroupRepository,
+                subjectRepository,
                 notificationService);
     }
 
@@ -67,8 +75,10 @@ class EnrollmentServiceTest {
 
         when(enrollmentRepository.findById(1L))
                 .thenReturn(Optional.of(enrollment));
+        when(accountRepository.findByUsernameAndDeletedFalse("admin"))
+                .thenReturn(Optional.of(admin()));
 
-        assertThatThrownBy(() -> enrollmentService.approve(1L))
+        assertThatThrownBy(() -> enrollmentService.approve("admin", 1L))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessage("Solo se pueden gestionar inscripciones pendientes");
 
@@ -87,8 +97,10 @@ class EnrollmentServiceTest {
 
         when(enrollmentRepository.findById(1L))
                 .thenReturn(Optional.of(enrollment));
+        when(accountRepository.findByUsernameAndDeletedFalse("admin"))
+                .thenReturn(Optional.of(admin()));
 
-        assertThatThrownBy(() -> enrollmentService.reject(1L))
+        assertThatThrownBy(() -> enrollmentService.reject("admin", 1L))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessage("Solo se pueden gestionar inscripciones pendientes");
 
@@ -110,6 +122,8 @@ class EnrollmentServiceTest {
 
         when(enrollmentRepository.findById(1L))
                 .thenReturn(Optional.of(enrollment));
+        when(accountRepository.findByUsernameAndDeletedFalse("admin"))
+                .thenReturn(Optional.of(admin()));
 
         assertThatThrownBy(() -> enrollmentService.cancel(1L, "ana"))
                 .isInstanceOf(BadRequestException.class)
@@ -135,6 +149,8 @@ class EnrollmentServiceTest {
 
         when(enrollmentRepository.findById(1L))
                 .thenReturn(Optional.of(enrollment));
+        when(accountRepository.findByUsernameAndDeletedFalse("admin"))
+                .thenReturn(Optional.of(admin()));
 
         when(enrollmentRepository.findByAccount_IdAndStatusInAndCourse_ActiveTrueAndCourse_DeletedFalse(
                 10L,
@@ -144,7 +160,7 @@ class EnrollmentServiceTest {
         when(enrollmentRepository.countByCourse_IdAndStatus(1L, EnrollmentStatus.APPROVED))
                 .thenReturn(0L);
 
-        assertThat(enrollmentService.approve(1L).getStatus())
+        assertThat(enrollmentService.approve("admin", 1L).getStatus())
                 .isEqualTo(EnrollmentStatus.APPROVED.name());
 
         verify(enrollmentRepository)
@@ -161,6 +177,20 @@ class EnrollmentServiceTest {
                 .name("Curso Test")
                 .capacity(10)
                 .active(true)
+                .locked(false)
+                .deleted(false)
+                .build();
+    }
+
+    private Account admin() {
+
+        return Account.builder()
+                .id(99L)
+                .username("admin")
+                .roles(Set.of(Role.builder()
+                        .name(RoleName.ROLE_ADMIN.name())
+                        .build()))
+                .enabled(true)
                 .locked(false)
                 .deleted(false)
                 .build();

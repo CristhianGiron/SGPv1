@@ -59,6 +59,18 @@ public class CourseResponse {
 
     private String subject;
 
+    private Long academicCycleId;
+
+    private String academicCycle;
+
+    private Long careerId;
+
+    private String career;
+
+    private Long facultyId;
+
+    private String faculty;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;

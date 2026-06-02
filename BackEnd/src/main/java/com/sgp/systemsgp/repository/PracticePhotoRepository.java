@@ -11,6 +11,8 @@ public interface PracticePhotoRepository
 
     Optional<PracticePhoto> findByIdAndDeletedFalse(Long id);
 
+    Optional<PracticePhoto> findByPublicTokenAndDeletedFalse(String publicToken);
+
     List<PracticePhoto> findByStudent_UsernameAndDeletedFalseOrderByUploadedAtDesc(
             String username);
 

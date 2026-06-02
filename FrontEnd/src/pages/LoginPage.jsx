@@ -52,7 +52,7 @@ export function LoginPage() {
             <div>
               <h1 className="max-w-3xl text-[clamp(2rem,5vw,4rem)] font-black leading-tight text-[#20282d] dark:text-slate-50">Gestión académica institucional para prácticas preprofesionales.</h1>
               <p className="mt-4 max-w-2xl text-base leading-7 text-muted">
-                Consulta tus cursos, envía evidencias, completa documentos y revisa observaciones
+                Consulta tus paralelos, envia evidencias, completa documentos y revisa observaciones
                 desde un espacio claro y seguro.
               </p>
             </div>

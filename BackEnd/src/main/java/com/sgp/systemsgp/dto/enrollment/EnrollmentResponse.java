@@ -51,6 +51,8 @@ public class EnrollmentResponse {
 
     private String institutionalTutor;
 
+    private String institutionDirector;
+
     private String practiceTutor;
 
     private String studentAcademicCycle;

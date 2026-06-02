@@ -35,16 +35,22 @@ public class CreateSubjectRequest {
     @Positive(message = "El ciclo académico seleccionado no es válido")
     private Long academicCycleId;
 
+    @Positive(message = "El paralelo seleccionado no es válido")
+    private Long courseId;
+
     /*
      * ESCUELA / COLEGIO
      */
     @Positive(message = "El grado seleccionado no es válido")
     private Long gradeId;
 
+    @Positive(message = "El paralelo seleccionado no es válido")
+    private Long gradeParallelId;
+
     private Boolean active;
 
-    @AssertTrue(message = "Debe seleccionar un ciclo académico o un grado, pero no ambos")
+    @AssertTrue(message = "Debe seleccionar un paralelo universitario o un paralelo institucional, pero no ambos")
     public boolean isAcademicReferenceValid() {
-        return (academicCycleId == null) != (gradeId == null);
+        return (courseId == null) != (gradeParallelId == null || gradeId != null);
     }
 }

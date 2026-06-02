@@ -127,6 +127,7 @@ function navAccentStyle(itemId, isDark) {
 
 export function AppLayout({ route, routeChild, children }) {
   const menuRef = useRef(null);
+  const previousActiveRouteRef = useRef(null);
   const { profile, roles, logout, token } = useAuth();
   const { isDark } = useThemeMode();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -152,6 +153,18 @@ export function AppLayout({ route, routeChild, children }) {
   }, [activeGroupId]);
 
   useEffect(() => {
+    if (previousActiveRouteRef.current === null) {
+      previousActiveRouteRef.current = activeRoute;
+      return;
+    }
+
+    if (previousActiveRouteRef.current !== activeRoute) {
+      setSidebarCollapsed(true);
+      previousActiveRouteRef.current = activeRoute;
+    }
+  }, [activeRoute]);
+
+  useEffect(() => {
     if (!isDesplegableOpen) return;
 
     function handleOutsideClick(event) {
@@ -173,6 +186,7 @@ export function AppLayout({ route, routeChild, children }) {
     }
 
     setHashRoute(itemId);
+    setSidebarCollapsed(true);
     setMobileMenuOpen(false);
     setIsDesplegableOpen(false);
   }

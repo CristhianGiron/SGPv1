@@ -7,11 +7,15 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
+import org.apache.pdfbox.pdmodel.interactive.action.PDActionURI;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationLink;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDBorderStyleDictionary;
 import org.springframework.stereotype.Service;
 
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -31,10 +35,14 @@ public class PdfExportService {
     private static final float COVER_TITLE_SIZE = 14F;
     private static final float TABLE_SIZE = 11F;
     private static final float MATRIX_SIZE = 7.2F;
-    private static final float TABLE_LEADING = 15F;
-    private static final float BODY_LEADING = 18F;
-    private static final float SECTION_LEADING = 20F;
-    private static final float TITLE_LEADING = 16F;
+    private static final float TABLE_LEADING = 14F;
+    private static final float BODY_LEADING = 24F;
+    private static final float SECTION_LEADING = 24F;
+    private static final float TITLE_LEADING = 24F;
+    private static final float COVER_LEADING = 18F;
+    private static final float SECTION_GAP = 14F;
+    private static final float TABLE_GAP_BEFORE = 8F;
+    private static final float TABLE_GAP_AFTER = 18F;
     private static final Color TABLE_HEADER_GRAY = new Color(128, 128, 128);
     private static final Color TABLE_BORDER = Color.BLACK;
     private static final DateTimeFormatter DATE_FORMATTER =
@@ -122,7 +130,12 @@ public class PdfExportService {
                     document,
                     new PDType1Font(Standard14Fonts.FontName.TIMES_ROMAN),
                     new PDType1Font(Standard14Fonts.FontName.TIMES_BOLD));
-            writer.writeCover(title, sections);
+
+            if (isInstitutionalFinalReport(title)) {
+                writer.writeInstitutionalFinalHeader();
+            } else {
+                writer.writeCover(title, sections);
+            }
 
             int sectionNumber = 1;
 
@@ -132,6 +145,54 @@ public class PdfExportService {
                 }
             }
 
+            writer.close();
+            document.save(outputStream);
+            return outputStream.toByteArray();
+        } catch (IOException exception) {
+            throw new IllegalStateException("No se pudo generar el PDF", exception);
+        }
+    }
+
+    public byte[] createCompletedActivityRecordPdf(PdfCompletedActivityRecord record) {
+
+        try (PDDocument document = new PDDocument();
+             ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+
+            CompletedActivityRecordPdfWriter writer =
+                    new CompletedActivityRecordPdfWriter(document);
+            writer.write(record);
+            writer.close();
+            document.save(outputStream);
+            return outputStream.toByteArray();
+        } catch (IOException exception) {
+            throw new IllegalStateException("No se pudo generar el PDF", exception);
+        }
+    }
+
+    public byte[] createPracticeFollowUpReportPdf(PdfPracticeFollowUpReport report) {
+
+        try (PDDocument document = new PDDocument();
+             ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+
+            PracticeFollowUpReportPdfWriter writer =
+                    new PracticeFollowUpReportPdfWriter(document);
+            writer.write(report);
+            writer.close();
+            document.save(outputStream);
+            return outputStream.toByteArray();
+        } catch (IOException exception) {
+            throw new IllegalStateException("No se pudo generar el PDF", exception);
+        }
+    }
+
+    public byte[] createActivityEvaluationPdf(PdfActivityEvaluation evaluation) {
+
+        try (PDDocument document = new PDDocument();
+             ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+
+            ActivityEvaluationPdfWriter writer =
+                    new ActivityEvaluationPdfWriter(document);
+            writer.write(evaluation);
             writer.close();
             document.save(outputStream);
             return outputStream.toByteArray();
@@ -250,6 +311,77 @@ public class PdfExportService {
     public record PdfScheduleRow(Integer weekNumber, LocalDate startDate, LocalDate endDate, String activityText) {
     }
 
+    public record PdfCompletedActivityRecord(
+            String educationalInstitutionName,
+            String practiceType,
+            String studentFullName,
+            String studentIdentification,
+            String cycle,
+            String academicPeriod,
+            String developmentMode,
+            Integer totalMinutes,
+            LocalDate deliveryDate,
+            String studentSignatureName,
+            String institutionalTutorName,
+            List<PdfCompletedActivityEntry> entries) {
+    }
+
+    public record PdfCompletedActivityEntry(
+            LocalDate activityDate,
+            LocalTime startTime,
+            LocalTime endTime,
+            Integer totalMinutes,
+            String developedActivities,
+            String evidenceLink) {
+    }
+
+    public record PdfPracticeFollowUpReport(
+            String educationalInstitutionName,
+            String practiceType,
+            String studentFullName,
+            String studentIdentification,
+            String cycle,
+            String academicPeriod,
+            String developmentMode,
+            Integer totalMinutes,
+            LocalDate deliveryDate,
+            String academicTutorName,
+            String academicTutorRole,
+            List<PdfPracticeFollowUpSession> sessions) {
+    }
+
+    public record PdfPracticeFollowUpSession(
+            LocalDate supervisionDate,
+            LocalTime startTime,
+            LocalTime endTime,
+            Integer totalMinutes,
+            String supervisedActivities,
+            String observations) {
+    }
+
+    public record PdfActivityEvaluation(
+            String educationalInstitutionName,
+            String practiceType,
+            String studentFullName,
+            String studentIdentification,
+            String cycle,
+            String academicPeriod,
+            String developmentMode,
+            Integer hoursCompleted,
+            BigDecimal activitiesCompletionPercentage,
+            LocalDate evaluationDate,
+            String academicTutorName,
+            String academicTutorRole,
+            List<PdfActivityEvaluationAspect> aspects) {
+    }
+
+    public record PdfActivityEvaluationAspect(
+            String aspectType,
+            String item,
+            String level,
+            Integer score) {
+    }
+
     private record PdfScheduleColumn(String key, Integer weekNumber, String monthLabel) {
     }
 
@@ -257,6 +389,1375 @@ public class PdfExportService {
     }
 
     private record PdfScheduleMonthGroup(String label, int span) {
+    }
+
+    private class CompletedActivityRecordPdfWriter {
+
+        private static final float LEFT = 42F;
+        private static final float RIGHT = 42F;
+        private static final float TOP = 42F;
+        private static final float BOTTOM = 42F;
+        private static final float HEADER_SIZE = 11F;
+        private static final float NORMAL_SIZE = 10F;
+        private static final float SMALL_SIZE = 8F;
+        private static final float TABLE_HEADER_SIZE = 9F;
+        private static final float ROW_LEADING = 12F;
+        private static final float MIN_ROW_HEIGHT = 82F;
+        private static final Color HEADER_GRAY = new Color(128, 128, 128);
+
+        private final PDDocument document;
+        private final PDFont regularFont;
+        private final PDFont boldFont;
+        private PDPageContentStream contentStream;
+        private PDPage page;
+        private float width;
+        private float height;
+        private float y;
+
+        CompletedActivityRecordPdfWriter(PDDocument document) throws IOException {
+
+            this.document = document;
+            this.regularFont = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
+            this.boldFont = new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD);
+            addPage();
+        }
+
+        void write(PdfCompletedActivityRecord record) throws IOException {
+
+            writePageHeader();
+            writeDocumentHeader(record);
+            writeTable(record);
+            writeTotalAndSignatures(record);
+        }
+
+        private void writePageHeader() throws IOException {
+
+            writeText("unl", boldFont, 24F, LEFT + 42F, height - 70F);
+            writeText("Universidad", regularFont, 7F, LEFT + 82F, height - 62F);
+            writeText("Nacional", regularFont, 7F, LEFT + 82F, height - 71F);
+            writeText("de Loja", regularFont, 7F, LEFT + 82F, height - 80F);
+
+            drawLine(LEFT, height - 92F, width - RIGHT, height - 92F);
+            drawLine(width - 200F, height - 46F, width - 200F, height - 86F);
+            writeText("Carrera de", boldFont, 8.5F, width - 194F, height - 55F);
+            writeText("Pedagogia de las Ciencias Experimentales", boldFont, 8.5F, width - 194F, height - 67F);
+            writeText("Titulacion Pedagogia de la Informatica", boldFont, 8.5F, width - 194F, height - 79F);
+
+            y = height - 126F;
+        }
+
+        private void writeDocumentHeader(PdfCompletedActivityRecord record) throws IOException {
+
+            writeText("PRACTICA PREPROFESIONAL EN EL COMPONENTE LABORAL", boldFont, 14F, LEFT, y);
+            drawFilledRect(width - 310F, y - 22F, 268F, 30F, HEADER_GRAY);
+            writeText("REGISTRO DE LAS ACTIVIDADES", new PDType1Font(Standard14Fonts.FontName.TIMES_BOLD), 13F, width - 304F, y - 2F, Color.WHITE);
+            writeText("CUMPLIDAS", new PDType1Font(Standard14Fonts.FontName.TIMES_BOLD), 13F, width - 304F, y - 18F, Color.WHITE);
+            y -= 32F;
+
+            writeLabelValue("Institucion Educativa Receptora: ", record.educationalInstitutionName(), LEFT, y);
+            y -= 16F;
+
+            writeText("Tipo de Practica:", boldFont, HEADER_SIZE, LEFT, y);
+            writeText("OBSERVACION " + checkbox(isPracticeType(record, "OBSERVACION")), regularFont, HEADER_SIZE, LEFT + 120F, y);
+            writeText("ELABORACION " + checkbox(isPracticeType(record, "ELABORACION")), regularFont, HEADER_SIZE, LEFT + 275F, y);
+            writeText("DOCENTE " + checkbox(isPracticeType(record, "DOCENTE")), regularFont, HEADER_SIZE, LEFT + 430F, y);
+            y -= 16F;
+
+            writeLabelValue("Nombre del Estudiante: ", record.studentFullName(), LEFT, y);
+            writeLabelValue("Cedula: ", record.studentIdentification(), width - 300F, y);
+            writeLabelValue("Ciclo: ", record.cycle(), width - 110F, y);
+            y -= 16F;
+
+            writeLabelValue("Periodo Academico: ", record.academicPeriod(), LEFT, y);
+            writeText("Desarrollo de actividades:", boldFont, HEADER_SIZE, width - 390F, y);
+            writeText("on line " + checkbox(isMode(record, "ONLINE")), regularFont, HEADER_SIZE, width - 238F, y);
+            writeText("presencial " + checkbox(isMode(record, "PRESENCIAL")), regularFont, HEADER_SIZE, width - 125F, y);
+            y -= 20F;
+        }
+
+        private void writeTable(PdfCompletedActivityRecord record) throws IOException {
+
+            float[] columns = {68F, 50F, 50F, 55F, 370F, 165F};
+            String[] headers = {
+                    "Fecha",
+                    "Hora de\nInicio",
+                    "Hora de\nFin",
+                    "Total\nHoras\nMinutos",
+                    "Actividades desarrolladas",
+                    "Evidencia"
+            };
+
+            drawTableHeader(columns, headers);
+
+            List<PdfCompletedActivityEntry> entries =
+                    record.entries() == null ? List.of() : record.entries();
+
+            for (PdfCompletedActivityEntry entry : entries) {
+                List<String> activityLines = wrap(entry.developedActivities(), regularFont, NORMAL_SIZE, columns[4] - 12F);
+                List<String> evidenceLines = wrap(entry.evidenceLink(), regularFont, SMALL_SIZE, columns[5] - 12F);
+                float rowHeight = Math.max(
+                        MIN_ROW_HEIGHT,
+                        Math.max(activityLines.size() * ROW_LEADING + 24F,
+                                evidenceLines.size() * 10F + 28F));
+
+                if (y - rowHeight < BOTTOM + 70F) {
+                    addPage();
+                    writePageHeader();
+                    drawTableHeader(columns, headers);
+                }
+
+                drawActivityRow(columns, entry, activityLines, evidenceLines, rowHeight);
+            }
+        }
+
+        private void drawTableHeader(float[] columns, String[] headers) throws IOException {
+
+            float rowHeight = 38F;
+            float x = LEFT;
+            for (int index = 0; index < columns.length; index++) {
+                drawCell(x, y - rowHeight, columns[index], rowHeight);
+                writeCenteredCell(
+                        headers[index],
+                        boldFont,
+                        TABLE_HEADER_SIZE,
+                        x,
+                        y - rowHeight,
+                        columns[index],
+                        rowHeight);
+                x += columns[index];
+            }
+
+            y -= rowHeight;
+        }
+
+        private void drawActivityRow(
+                float[] columns,
+                PdfCompletedActivityEntry entry,
+                List<String> activityLines,
+                List<String> evidenceLines,
+                float rowHeight) throws IOException {
+
+            float x = LEFT;
+            float bottom = y - rowHeight;
+
+            for (float column : columns) {
+                drawCell(x, bottom, column, rowHeight);
+                x += column;
+            }
+
+            writeCenteredCell(formatDate(entry.activityDate()), regularFont, NORMAL_SIZE, LEFT, bottom, columns[0], rowHeight);
+            writeCenteredCell(formatTime(entry.startTime()), regularFont, NORMAL_SIZE, LEFT + columns[0], bottom, columns[1], rowHeight);
+            writeCenteredCell(formatTime(entry.endTime()), regularFont, NORMAL_SIZE, LEFT + columns[0] + columns[1], bottom, columns[2], rowHeight);
+            writeCenteredCell(formatTemplateMinutes(entry.totalMinutes()), regularFont, NORMAL_SIZE, LEFT + columns[0] + columns[1] + columns[2], bottom, columns[3], rowHeight);
+
+            writeLines(
+                    activityLines,
+                    regularFont,
+                    NORMAL_SIZE,
+                    LEFT + columns[0] + columns[1] + columns[2] + columns[3] + 6F,
+                    y - 28F,
+                    ROW_LEADING);
+
+            writeLines(
+                    evidenceLines,
+                    regularFont,
+                    SMALL_SIZE,
+                    LEFT + columns[0] + columns[1] + columns[2] + columns[3] + columns[4] + 6F,
+                    y - 42F,
+                    10F,
+                    Color.BLUE);
+
+            addEvidenceLinkAnnotation(
+                    entry.evidenceLink(),
+                    LEFT + columns[0] + columns[1] + columns[2] + columns[3] + columns[4],
+                    bottom,
+                    columns[5],
+                    rowHeight);
+
+            y = bottom;
+        }
+
+        private void addEvidenceLinkAnnotation(
+                String url,
+                float x,
+                float bottom,
+                float cellWidth,
+                float cellHeight) throws IOException {
+
+            if (!hasText(url) || !url.startsWith("http")) {
+                return;
+            }
+
+            PDActionURI action = new PDActionURI();
+            action.setURI(url);
+
+            PDBorderStyleDictionary border = new PDBorderStyleDictionary();
+            border.setWidth(0);
+
+            PDAnnotationLink link = new PDAnnotationLink();
+            link.setAction(action);
+            link.setBorderStyle(border);
+            link.setRectangle(new PDRectangle(x + 4F, bottom + 4F, cellWidth - 8F, cellHeight - 8F));
+            page.getAnnotations().add(link);
+        }
+
+        private void writeTotalAndSignatures(PdfCompletedActivityRecord record) throws IOException {
+
+            if (y < BOTTOM + 110F) {
+                addPage();
+                writePageHeader();
+            }
+
+            y -= 18F;
+            writeText("Total de horas ejecutadas", boldFont, NORMAL_SIZE, LEFT, y);
+            writeText(formatTemplateMinutes(record.totalMinutes()), boldFont, NORMAL_SIZE, LEFT + 150F, y);
+            y -= 28F;
+            writeLabelValue("Fecha: ", formatDate(record.deliveryDate()), LEFT, y);
+
+            y -= 72F;
+            float leftSignatureX = LEFT + 40F;
+            float rightSignatureX = width - RIGHT - 260F;
+            drawLine(leftSignatureX, y, leftSignatureX + 230F, y);
+            drawLine(rightSignatureX, y, rightSignatureX + 230F, y);
+            writeText("f.)", regularFont, NORMAL_SIZE, leftSignatureX - 22F, y);
+            writeText("f.)", regularFont, NORMAL_SIZE, rightSignatureX - 22F, y);
+            writeCenteredText(record.studentSignatureName(), boldFont, SMALL_SIZE + 1F, leftSignatureX, y - 16F, 230F);
+            writeCenteredText("ESTUDIANTE DE LA CPCEI-UNL", regularFont, SMALL_SIZE, leftSignatureX, y - 29F, 230F);
+            writeCenteredText(record.institutionalTutorName(), boldFont, SMALL_SIZE + 1F, rightSignatureX, y - 16F, 230F);
+            writeCenteredText("TUTOR INSTITUCIONAL", regularFont, SMALL_SIZE, rightSignatureX, y - 29F, 230F);
+        }
+
+        private void addPage() throws IOException {
+
+            if (contentStream != null) {
+                contentStream.close();
+            }
+
+            page = new PDPage(new PDRectangle(PDRectangle.A4.getHeight(), PDRectangle.A4.getWidth()));
+            document.addPage(page);
+            contentStream = new PDPageContentStream(document, page);
+            width = page.getMediaBox().getWidth();
+            height = page.getMediaBox().getHeight();
+            y = height - TOP;
+        }
+
+        private void close() throws IOException {
+
+            if (contentStream != null) {
+                contentStream.close();
+                contentStream = null;
+            }
+        }
+
+        private boolean isPracticeType(PdfCompletedActivityRecord record, String expected) {
+
+            return record.practiceType() != null
+                    && record.practiceType().equalsIgnoreCase(expected);
+        }
+
+        private boolean isMode(PdfCompletedActivityRecord record, String expected) {
+
+            return record.developmentMode() != null
+                    && record.developmentMode().equalsIgnoreCase(expected);
+        }
+
+        private String checkbox(boolean checked) {
+
+            return checked ? "( X )" : "(   )";
+        }
+
+        private void writeLabelValue(String label, String value, float x, float baseline) throws IOException {
+
+            writeText(label, boldFont, HEADER_SIZE, x, baseline);
+            writeText(nullSafeText(value), regularFont, HEADER_SIZE, x + textWidth(label, boldFont, HEADER_SIZE), baseline);
+        }
+
+        private void writeCenteredCell(
+                String text,
+                PDFont font,
+                float fontSize,
+                float x,
+                float bottom,
+                float cellWidth,
+                float cellHeight) throws IOException {
+
+            List<String> lines = wrap(text, font, fontSize, cellWidth - 8F);
+            float blockHeight = lines.size() * (fontSize + 2F);
+            float baseline = bottom + ((cellHeight + blockHeight) / 2F) - fontSize;
+            for (String line : lines) {
+                float lineWidth = textWidth(line, font, fontSize);
+                writeText(line, font, fontSize, x + ((cellWidth - lineWidth) / 2F), baseline);
+                baseline -= fontSize + 2F;
+            }
+        }
+
+        private void writeCenteredText(
+                String text,
+                PDFont font,
+                float fontSize,
+                float x,
+                float baseline,
+                float maxWidth) throws IOException {
+
+            List<String> lines = wrap(text, font, fontSize, maxWidth);
+            float currentY = baseline;
+            for (String line : lines) {
+                float lineWidth = textWidth(line, font, fontSize);
+                writeText(line, font, fontSize, x + ((maxWidth - lineWidth) / 2F), currentY);
+                currentY -= fontSize + 2F;
+            }
+        }
+
+        private void writeLines(
+                List<String> lines,
+                PDFont font,
+                float fontSize,
+                float x,
+                float baseline,
+                float leading) throws IOException {
+
+            writeLines(lines, font, fontSize, x, baseline, leading, Color.BLACK);
+        }
+
+        private void writeLines(
+                List<String> lines,
+                PDFont font,
+                float fontSize,
+                float x,
+                float baseline,
+                float leading,
+                Color color) throws IOException {
+
+            float currentY = baseline;
+            for (String line : lines) {
+                writeText(line, font, fontSize, x, currentY, color);
+                currentY -= leading;
+            }
+        }
+
+        private List<String> wrap(
+                String text,
+                PDFont font,
+                float fontSize,
+                float maxWidth) throws IOException {
+
+            List<String> lines = new ArrayList<>();
+            String normalized = nullSafeText(text).replace("\r\n", "\n").replace('\r', '\n');
+
+            for (String paragraph : normalized.split("\n", -1)) {
+                String[] words = paragraph.trim().split("\\s+");
+                String current = "";
+
+                for (String word : words) {
+                    if (word.isBlank()) {
+                        continue;
+                    }
+
+                    if (textWidth(word, font, fontSize) > maxWidth) {
+                        if (!current.isBlank()) {
+                            lines.add(current);
+                            current = "";
+                        }
+
+                        lines.addAll(splitLongWord(word, font, fontSize, maxWidth));
+                        continue;
+                    }
+
+                    String candidate = current.isBlank() ? word : current + " " + word;
+                    if (textWidth(candidate, font, fontSize) <= maxWidth) {
+                        current = candidate;
+                    } else {
+                        if (!current.isBlank()) {
+                            lines.add(current);
+                        }
+                        current = word;
+                    }
+                }
+
+                if (!current.isBlank()) {
+                    lines.add(current);
+                }
+            }
+
+            return lines.isEmpty() ? List.of("") : lines;
+        }
+
+        private List<String> splitLongWord(
+                String word,
+                PDFont font,
+                float fontSize,
+                float maxWidth) throws IOException {
+
+            List<String> chunks = new ArrayList<>();
+            StringBuilder current = new StringBuilder();
+
+            for (char character : word.toCharArray()) {
+                String candidate = current.toString() + character;
+
+                if (!current.isEmpty() && textWidth(candidate, font, fontSize) > maxWidth) {
+                    chunks.add(current.toString());
+                    current = new StringBuilder();
+                }
+
+                current.append(character);
+            }
+
+            if (!current.isEmpty()) {
+                chunks.add(current.toString());
+            }
+
+            return chunks;
+        }
+
+        private String formatDate(LocalDate date) {
+
+            return date == null ? "" : DateTimeFormatter.ofPattern("dd/MM/yyyy").format(date);
+        }
+
+        private String formatTime(LocalTime time) {
+
+            return time == null ? "" : DateTimeFormatter.ofPattern("HH'h':mm").format(time);
+        }
+
+        private String formatTemplateMinutes(Integer totalMinutes) {
+
+            if (totalMinutes == null) {
+                return "";
+            }
+
+            int hours = totalMinutes / 60;
+            int minutes = totalMinutes % 60;
+
+            return String.format("%02dh:%02d", hours, minutes);
+        }
+
+        private String nullSafeText(String value) {
+
+            return value == null ? "" : safeText(value);
+        }
+
+        private void drawCell(float x, float yPosition, float cellWidth, float cellHeight) throws IOException {
+
+            contentStream.setStrokingColor(Color.BLACK);
+            contentStream.setLineWidth(0.8F);
+            contentStream.addRect(x, yPosition, cellWidth, cellHeight);
+            contentStream.stroke();
+        }
+
+        private void drawLine(float x1, float y1, float x2, float y2) throws IOException {
+
+            contentStream.setStrokingColor(Color.BLACK);
+            contentStream.setLineWidth(0.8F);
+            contentStream.moveTo(x1, y1);
+            contentStream.lineTo(x2, y2);
+            contentStream.stroke();
+        }
+
+        private void drawFilledRect(
+                float x,
+                float yPosition,
+                float rectWidth,
+                float rectHeight,
+                Color fill) throws IOException {
+
+            contentStream.setNonStrokingColor(fill);
+            contentStream.addRect(x, yPosition, rectWidth, rectHeight);
+            contentStream.fill();
+            contentStream.setNonStrokingColor(Color.BLACK);
+        }
+
+        private void writeText(
+                String text,
+                PDFont font,
+                float fontSize,
+                float x,
+                float baseline) throws IOException {
+
+            writeText(text, font, fontSize, x, baseline, Color.BLACK);
+        }
+
+        private void writeText(
+                String text,
+                PDFont font,
+                float fontSize,
+                float x,
+                float baseline,
+                Color color) throws IOException {
+
+            if (text == null || text.isBlank()) {
+                return;
+            }
+
+            contentStream.beginText();
+            contentStream.setNonStrokingColor(color);
+            contentStream.setFont(font, fontSize);
+            contentStream.newLineAtOffset(x, baseline);
+            contentStream.showText(safeText(text));
+            contentStream.endText();
+            contentStream.setNonStrokingColor(Color.BLACK);
+        }
+
+        private float textWidth(String text, PDFont font, float fontSize) throws IOException {
+
+            return font.getStringWidth(safeText(text)) / 1000F * fontSize;
+        }
+    }
+
+    private class PracticeFollowUpReportPdfWriter {
+
+        private static final float LEFT = 42F;
+        private static final float RIGHT = 42F;
+        private static final float TOP = 42F;
+        private static final float BOTTOM = 42F;
+        private static final float HEADER_SIZE = 11F;
+        private static final float NORMAL_SIZE = 8F;
+        private static final float SMALL_SIZE = 8F;
+        private static final float TABLE_HEADER_SIZE = 8F;
+        private static final float ROW_LEADING = 9.5F;
+        private static final float MIN_ROW_HEIGHT = 22F;
+        private static final Color HEADER_GRAY = new Color(128, 128, 128);
+
+        private final PDDocument document;
+        private final PDFont regularFont;
+        private final PDFont boldFont;
+        private PDPageContentStream contentStream;
+        private PDPage page;
+        private float width;
+        private float height;
+        private float y;
+
+        PracticeFollowUpReportPdfWriter(PDDocument document) throws IOException {
+
+            this.document = document;
+            this.regularFont = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
+            this.boldFont = new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD);
+            addPage();
+        }
+
+        void write(PdfPracticeFollowUpReport report) throws IOException {
+
+            writePageHeader();
+            writeDocumentHeader(report);
+            writeTable(report);
+            writeTotalAndSignature(report);
+        }
+
+        private void writePageHeader() throws IOException {
+
+            writeText("unl", boldFont, 24F, LEFT + 42F, height - 70F);
+            writeText("Universidad", regularFont, 7F, LEFT + 82F, height - 62F);
+            writeText("Nacional", regularFont, 7F, LEFT + 82F, height - 71F);
+            writeText("de Loja", regularFont, 7F, LEFT + 82F, height - 80F);
+
+            drawLine(LEFT, height - 92F, width - RIGHT, height - 92F);
+            drawLine(width - 200F, height - 46F, width - 200F, height - 86F);
+            writeText("Carrera de", boldFont, 8.5F, width - 194F, height - 55F);
+            writeText("Pedagogia de las Ciencias Experimentales", boldFont, 8.5F, width - 194F, height - 67F);
+            writeText("Titulacion Pedagogia de la Informatica", boldFont, 8.5F, width - 194F, height - 79F);
+
+            y = height - 126F;
+        }
+
+        private void writeDocumentHeader(PdfPracticeFollowUpReport report) throws IOException {
+
+            writeText("PRACTICA PREPROFESIONAL EN EL COMPONENTE LABORAL", boldFont, 14F, LEFT, y);
+            drawFilledRect(width - 310F, y - 25F, 268F, 34F, HEADER_GRAY);
+            PDFont titleFont = new PDType1Font(Standard14Fonts.FontName.TIMES_BOLD);
+            writeText("REPORTE DE SEGUIMIENTO DE", titleFont, 13F, width - 292F, y - 2F, Color.WHITE);
+            writeText("PRACTICA PREPROFESIONAL", titleFont, 13F, width - 278F, y - 18F, Color.WHITE);
+            y -= 32F;
+
+            writeLabelValue("Institucion Educativa Receptora: ", report.educationalInstitutionName(), LEFT, y);
+            y -= 16F;
+
+            writeText("Tipo de Practica:", boldFont, HEADER_SIZE, LEFT, y);
+            writeText("OBSERVACION " + checkbox(isPracticeType(report, "OBSERVACION")), regularFont, HEADER_SIZE, LEFT + 120F, y);
+            writeText("ELABORACION " + checkbox(isPracticeType(report, "ELABORACION")), regularFont, HEADER_SIZE, LEFT + 275F, y);
+            writeText("DOCENTE " + checkbox(isPracticeType(report, "DOCENTE")), regularFont, HEADER_SIZE, LEFT + 430F, y);
+            y -= 16F;
+
+            writeLabelValue("Nombre del Estudiante: ", report.studentFullName(), LEFT, y);
+            writeLabelValue("Cedula: ", report.studentIdentification(), width - 300F, y);
+            writeLabelValue("Ciclo: ", report.cycle(), width - 110F, y);
+            y -= 16F;
+
+            writeLabelValue("Periodo Academico: ", report.academicPeriod(), LEFT, y);
+            writeText("Desarrollo de actividades:", boldFont, HEADER_SIZE, width - 390F, y);
+            writeText("on line " + checkbox(isMode(report, "ONLINE")), regularFont, HEADER_SIZE, width - 238F, y);
+            writeText("presencial " + checkbox(isMode(report, "PRESENCIAL")), regularFont, HEADER_SIZE, width - 125F, y);
+            y -= 12F;
+        }
+
+        private void writeTable(PdfPracticeFollowUpReport report) throws IOException {
+
+            float[] columns = {68F, 40F, 40F, 54F, 510F, 80F};
+            String[] headers = {
+                    "FECHA DE\nVISITA Y/O\nSUPERVISION",
+                    "HORA\nDE\nINICIO",
+                    "HORA\nDE FIN",
+                    "TOTAL\nHORAS\nMINUTOS",
+                    "ACTIVIDADES SUPERVISADAS",
+                    "OBSERVACIONES"
+            };
+
+            drawTableHeader(columns, headers);
+
+            List<PdfPracticeFollowUpSession> sessions =
+                    report.sessions() == null ? List.of() : report.sessions();
+
+            for (PdfPracticeFollowUpSession session : sessions) {
+                List<String> activityLines = wrap(session.supervisedActivities(), regularFont, NORMAL_SIZE, columns[4] - 8F);
+                List<String> observationLines = wrap(defaultObservation(session.observations()), regularFont, NORMAL_SIZE, columns[5] - 8F);
+                float rowHeight = Math.max(
+                        MIN_ROW_HEIGHT,
+                        Math.max(activityLines.size(), observationLines.size()) * ROW_LEADING + 7F);
+
+                if (y - rowHeight < BOTTOM + 70F) {
+                    addPage();
+                    writePageHeader();
+                    drawTableHeader(columns, headers);
+                }
+
+                drawSessionRow(columns, session, activityLines, observationLines, rowHeight);
+            }
+        }
+
+        private void drawTableHeader(float[] columns, String[] headers) throws IOException {
+
+            float rowHeight = 38F;
+            float x = LEFT;
+            for (int index = 0; index < columns.length; index++) {
+                drawCell(x, y - rowHeight, columns[index], rowHeight);
+                writeCenteredCell(headers[index], boldFont, TABLE_HEADER_SIZE, x, y - rowHeight, columns[index], rowHeight);
+                x += columns[index];
+            }
+
+            y -= rowHeight;
+        }
+
+        private void drawSessionRow(
+                float[] columns,
+                PdfPracticeFollowUpSession session,
+                List<String> activityLines,
+                List<String> observationLines,
+                float rowHeight) throws IOException {
+
+            float bottom = y - rowHeight;
+            float x = LEFT;
+            for (float column : columns) {
+                drawCell(x, bottom, column, rowHeight);
+                x += column;
+            }
+
+            writeCenteredCell(formatDate(session.supervisionDate()), regularFont, NORMAL_SIZE, LEFT, bottom, columns[0], rowHeight);
+            writeCenteredCell(formatTime(session.startTime()), regularFont, NORMAL_SIZE, LEFT + columns[0], bottom, columns[1], rowHeight);
+            writeCenteredCell(formatTime(session.endTime()), regularFont, NORMAL_SIZE, LEFT + columns[0] + columns[1], bottom, columns[2], rowHeight);
+            writeCenteredCell(formatFollowUpMinutes(session.totalMinutes()), regularFont, NORMAL_SIZE, LEFT + columns[0] + columns[1] + columns[2], bottom, columns[3], rowHeight);
+
+            writeLines(
+                    activityLines,
+                    regularFont,
+                    NORMAL_SIZE,
+                    LEFT + columns[0] + columns[1] + columns[2] + columns[3] + 4F,
+                    y - 11F,
+                    ROW_LEADING);
+            writeLines(
+                    observationLines,
+                    regularFont,
+                    NORMAL_SIZE,
+                    LEFT + columns[0] + columns[1] + columns[2] + columns[3] + columns[4] + 4F,
+                    y - 11F,
+                    ROW_LEADING);
+
+            y = bottom;
+        }
+
+        private void writeTotalAndSignature(PdfPracticeFollowUpReport report) throws IOException {
+
+            if (y < BOTTOM + 100F) {
+                addPage();
+                writePageHeader();
+            }
+
+            y -= 18F;
+            writeText("Total horas", boldFont, NORMAL_SIZE, LEFT, y);
+            writeText(formatFollowUpMinutes(report.totalMinutes()), boldFont, NORMAL_SIZE, LEFT + 130F, y);
+            y -= 30F;
+            writeLabelValue("Fecha: ", formatDate(report.deliveryDate()), LEFT, y);
+
+            y -= 62F;
+            float signatureX = LEFT + 125F;
+            drawLine(signatureX, y, signatureX + 270F, y);
+            writeText("f.)", regularFont, NORMAL_SIZE, signatureX - 22F, y);
+            writeCenteredText(report.academicTutorName(), boldFont, SMALL_SIZE + 1F, signatureX, y - 16F, 270F);
+            writeCenteredText(defaultAcademicTutorRole(report.academicTutorRole()), regularFont, SMALL_SIZE, signatureX, y - 29F, 270F);
+            writeCenteredText("TUTOR ACADEMICO DE LA CPCEI-UNL", regularFont, SMALL_SIZE, signatureX, y - 42F, 270F);
+        }
+
+        private void addPage() throws IOException {
+            if (contentStream != null) {
+                contentStream.close();
+            }
+
+            page = new PDPage(new PDRectangle(PDRectangle.A4.getHeight(), PDRectangle.A4.getWidth()));
+            document.addPage(page);
+            contentStream = new PDPageContentStream(document, page);
+            width = page.getMediaBox().getWidth();
+            height = page.getMediaBox().getHeight();
+            y = height - TOP;
+        }
+
+        private void close() throws IOException {
+            if (contentStream != null) {
+                contentStream.close();
+                contentStream = null;
+            }
+        }
+
+        private boolean isPracticeType(PdfPracticeFollowUpReport report, String expected) {
+            return report.practiceType() != null
+                    && report.practiceType().equalsIgnoreCase(expected);
+        }
+
+        private boolean isMode(PdfPracticeFollowUpReport report, String expected) {
+            return report.developmentMode() != null
+                    && report.developmentMode().equalsIgnoreCase(expected);
+        }
+
+        private String checkbox(boolean checked) {
+            return checked ? "( X )" : "(   )";
+        }
+
+        private String defaultObservation(String value) {
+            return value == null || value.isBlank() ? "Ninguna" : value;
+        }
+
+        private String defaultAcademicTutorRole(String value) {
+            return value == null || value.isBlank()
+                    ? "DOCENTE TUTOR DE PRACTICAS"
+                    : value;
+        }
+
+        private void writeLabelValue(String label, String value, float x, float baseline) throws IOException {
+            writeText(label, boldFont, HEADER_SIZE, x, baseline);
+            writeText(nullSafeText(value), regularFont, HEADER_SIZE, x + textWidth(label, boldFont, HEADER_SIZE), baseline);
+        }
+
+        private void writeCenteredCell(String text, PDFont font, float fontSize, float x, float bottom, float cellWidth, float cellHeight) throws IOException {
+            List<String> lines = wrap(text, font, fontSize, cellWidth - 6F);
+            float blockHeight = lines.size() * (fontSize + 1F);
+            float baseline = bottom + ((cellHeight + blockHeight) / 2F) - fontSize;
+            for (String line : lines) {
+                float lineWidth = textWidth(line, font, fontSize);
+                writeText(line, font, fontSize, x + ((cellWidth - lineWidth) / 2F), baseline);
+                baseline -= fontSize + 1F;
+            }
+        }
+
+        private void writeCenteredText(String text, PDFont font, float fontSize, float x, float baseline, float maxWidth) throws IOException {
+            List<String> lines = wrap(text, font, fontSize, maxWidth);
+            float currentY = baseline;
+            for (String line : lines) {
+                float lineWidth = textWidth(line, font, fontSize);
+                writeText(line, font, fontSize, x + ((maxWidth - lineWidth) / 2F), currentY);
+                currentY -= fontSize + 2F;
+            }
+        }
+
+        private void writeLines(List<String> lines, PDFont font, float fontSize, float x, float baseline, float leading) throws IOException {
+            float currentY = baseline;
+            for (String line : lines) {
+                writeText(line, font, fontSize, x, currentY);
+                currentY -= leading;
+            }
+        }
+
+        private List<String> wrap(String text, PDFont font, float fontSize, float maxWidth) throws IOException {
+            List<String> lines = new ArrayList<>();
+            String normalized = nullSafeText(text).replace("\r\n", "\n").replace('\r', '\n');
+            for (String paragraph : normalized.split("\n", -1)) {
+                String[] words = paragraph.trim().split("\\s+");
+                String current = "";
+                for (String word : words) {
+                    if (word.isBlank()) {
+                        continue;
+                    }
+                    if (textWidth(word, font, fontSize) > maxWidth) {
+                        if (!current.isBlank()) {
+                            lines.add(current);
+                            current = "";
+                        }
+                        lines.addAll(splitLongWord(word, font, fontSize, maxWidth));
+                        continue;
+                    }
+                    String candidate = current.isBlank() ? word : current + " " + word;
+                    if (textWidth(candidate, font, fontSize) <= maxWidth) {
+                        current = candidate;
+                    } else {
+                        if (!current.isBlank()) {
+                            lines.add(current);
+                        }
+                        current = word;
+                    }
+                }
+                if (!current.isBlank()) {
+                    lines.add(current);
+                }
+            }
+            return lines.isEmpty() ? List.of("") : lines;
+        }
+
+        private List<String> splitLongWord(String word, PDFont font, float fontSize, float maxWidth) throws IOException {
+            List<String> chunks = new ArrayList<>();
+            StringBuilder current = new StringBuilder();
+            for (char character : word.toCharArray()) {
+                String candidate = current.toString() + character;
+                if (!current.isEmpty() && textWidth(candidate, font, fontSize) > maxWidth) {
+                    chunks.add(current.toString());
+                    current = new StringBuilder();
+                }
+                current.append(character);
+            }
+            if (!current.isEmpty()) {
+                chunks.add(current.toString());
+            }
+            return chunks;
+        }
+
+        private String formatDate(LocalDate date) {
+            return date == null ? "" : DateTimeFormatter.ofPattern("dd/MM/yyyy").format(date);
+        }
+
+        private String formatTime(LocalTime time) {
+            return time == null ? "" : DateTimeFormatter.ofPattern("HH':'mm").format(time);
+        }
+
+        private String formatFollowUpMinutes(Integer totalMinutes) {
+            if (totalMinutes == null) {
+                return "";
+            }
+            int hours = totalMinutes / 60;
+            int minutes = totalMinutes % 60;
+            if (minutes == 0) {
+                return hours + (hours == 1 ? " Hora" : " Horas");
+            }
+            return String.format("%02dh:%02d", hours, minutes);
+        }
+
+        private String nullSafeText(String value) {
+            return value == null ? "" : safeText(value);
+        }
+
+        private void drawCell(float x, float yPosition, float cellWidth, float cellHeight) throws IOException {
+            contentStream.setStrokingColor(Color.BLACK);
+            contentStream.setLineWidth(0.8F);
+            contentStream.addRect(x, yPosition, cellWidth, cellHeight);
+            contentStream.stroke();
+        }
+
+        private void drawLine(float x1, float y1, float x2, float y2) throws IOException {
+            contentStream.setStrokingColor(Color.BLACK);
+            contentStream.setLineWidth(0.8F);
+            contentStream.moveTo(x1, y1);
+            contentStream.lineTo(x2, y2);
+            contentStream.stroke();
+        }
+
+        private void drawFilledRect(float x, float yPosition, float rectWidth, float rectHeight, Color fill) throws IOException {
+            contentStream.setNonStrokingColor(fill);
+            contentStream.addRect(x, yPosition, rectWidth, rectHeight);
+            contentStream.fill();
+            contentStream.setNonStrokingColor(Color.BLACK);
+        }
+
+        private void writeText(String text, PDFont font, float fontSize, float x, float baseline) throws IOException {
+            writeText(text, font, fontSize, x, baseline, Color.BLACK);
+        }
+
+        private void writeText(String text, PDFont font, float fontSize, float x, float baseline, Color color) throws IOException {
+            if (text == null || text.isBlank()) {
+                return;
+            }
+            contentStream.beginText();
+            contentStream.setNonStrokingColor(color);
+            contentStream.setFont(font, fontSize);
+            contentStream.newLineAtOffset(x, baseline);
+            contentStream.showText(safeText(text));
+            contentStream.endText();
+            contentStream.setNonStrokingColor(Color.BLACK);
+        }
+
+        private float textWidth(String text, PDFont font, float fontSize) throws IOException {
+            return font.getStringWidth(safeText(text)) / 1000F * fontSize;
+        }
+    }
+
+    private class ActivityEvaluationPdfWriter {
+
+        private static final float LEFT = 42F;
+        private static final float RIGHT = 42F;
+        private static final float TOP = 42F;
+        private static final float BOTTOM = 38F;
+        private static final float HEADER_SIZE = 11F;
+        private static final float NORMAL_SIZE = 8.2F;
+        private static final float SMALL_SIZE = 7.4F;
+        private static final float ROW_LEADING = 9.4F;
+        private static final Color HEADER_GRAY = new Color(128, 128, 128);
+
+        private final PDDocument document;
+        private final PDFont regularFont;
+        private final PDFont boldFont;
+        private PDPageContentStream contentStream;
+        private PDPage page;
+        private float width;
+        private float height;
+        private float y;
+
+        ActivityEvaluationPdfWriter(PDDocument document) throws IOException {
+
+            this.document = document;
+            this.regularFont = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
+            this.boldFont = new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD);
+            addPage();
+        }
+
+        void write(PdfActivityEvaluation evaluation) throws IOException {
+
+            writePageHeader();
+            writeDocumentHeader(evaluation);
+            writeEvaluationTable(evaluation);
+            writeSignature(evaluation);
+        }
+
+        private void writePageHeader() throws IOException {
+
+            writeText("unl", boldFont, 24F, LEFT + 42F, height - 70F);
+            writeText("Universidad", regularFont, 7F, LEFT + 82F, height - 62F);
+            writeText("Nacional", regularFont, 7F, LEFT + 82F, height - 71F);
+            writeText("de Loja", regularFont, 7F, LEFT + 82F, height - 80F);
+
+            drawLine(LEFT, height - 92F, width - RIGHT, height - 92F);
+            drawLine(width - 200F, height - 46F, width - 200F, height - 86F);
+            writeText("Carrera de", boldFont, 8.5F, width - 194F, height - 55F);
+            writeText("Pedagogia de las Ciencias Experimentales", boldFont, 8.5F, width - 194F, height - 67F);
+            writeText("Titulacion Pedagogia de la Informatica", boldFont, 8.5F, width - 194F, height - 79F);
+
+            y = height - 126F;
+        }
+
+        private void writeDocumentHeader(PdfActivityEvaluation evaluation) throws IOException {
+
+            writeText("PRÁCTICA PREPROFESIONAL EN EL COMPONENTE LABORAL", boldFont, 14F, LEFT, y);
+            drawFilledRect(width - 312F, y - 25F, 270F, 34F, HEADER_GRAY);
+            PDFont titleFont = new PDType1Font(Standard14Fonts.FontName.TIMES_BOLD);
+            writeText("EVALUACIÓN DE ACTIVIDADES", titleFont, 13F, width - 298F, y - 2F, Color.WHITE);
+            writeText("REALIZADAS", titleFont, 13F, width - 248F, y - 18F, Color.WHITE);
+            y -= 32F;
+
+            writeLabelValue("Institucion Educativa Receptora: ", evaluation.educationalInstitutionName(), LEFT, y);
+            y -= 16F;
+
+            writeText("Tipo de Practica:", boldFont, HEADER_SIZE, LEFT, y);
+            writeText("OBSERVACION " + checkbox(isPracticeType(evaluation, "OBSERVACION")), regularFont, HEADER_SIZE, LEFT + 120F, y);
+            writeText("ELABORACION " + checkbox(isPracticeType(evaluation, "ELABORACION")), regularFont, HEADER_SIZE, LEFT + 275F, y);
+            writeText("DOCENTE " + checkbox(isPracticeType(evaluation, "DOCENTE")), regularFont, HEADER_SIZE, LEFT + 430F, y);
+            y -= 16F;
+
+            writeLabelValue("Nombre del Estudiante: ", evaluation.studentFullName(), LEFT, y);
+            writeLabelValue("Cedula: ", evaluation.studentIdentification(), width - 300F, y);
+            writeLabelValue("Ciclo: ", evaluation.cycle(), width - 110F, y);
+            y -= 16F;
+
+            writeLabelValue("Periodo Academico: ", evaluation.academicPeriod(), LEFT, y);
+            writeText("Desarrollo de actividades:", boldFont, HEADER_SIZE, width - 390F, y);
+            writeText("on line " + checkbox(isMode(evaluation, "ONLINE")), regularFont, HEADER_SIZE, width - 238F, y);
+            writeText("presencial " + checkbox(isMode(evaluation, "PRESENCIAL")), regularFont, HEADER_SIZE, width - 125F, y);
+            y -= 12F;
+        }
+
+        private void writeEvaluationTable(PdfActivityEvaluation evaluation) throws IOException {
+
+            float[] columns = {28F, 532F, 66F, 66F, 66F};
+            drawTableHeader(columns);
+
+            List<PdfActivityEvaluationAspect> generalAspects = aspectsByType(evaluation, "GENERAL");
+            List<PdfActivityEvaluationAspect> specificAspects = aspectsByType(evaluation, "ESPECIFICO");
+
+            drawSectionRow(columns, "Aspectos Generales");
+            drawAspectRows(columns, generalAspects);
+            drawSectionRow(columns, "Aspectos Especificos");
+            drawAspectRows(columns, specificAspects);
+            drawAccreditationRows(columns, evaluation);
+        }
+
+        private void drawTableHeader(float[] columns) throws IOException {
+
+            float tableWidth = tableWidth(columns);
+            float x = LEFT;
+            float topHeight = 14F;
+            float headerHeight = 22F;
+
+            drawCell(LEFT, y - topHeight - headerHeight, columns[0] + columns[1], topHeight + headerHeight);
+            drawCell(LEFT + columns[0] + columns[1], y - topHeight, columns[2] + columns[3] + columns[4], topHeight);
+            writeCenteredText("ASPECTOS EVALUADOS", boldFont, HEADER_SIZE, LEFT, y - 22F, columns[0] + columns[1]);
+            writeCenteredText("NIVELES", regularFont, HEADER_SIZE, LEFT + columns[0] + columns[1], y - 10F, columns[2] + columns[3] + columns[4]);
+
+            x = LEFT + columns[0] + columns[1];
+            drawCell(x, y - topHeight - headerHeight, columns[2], headerHeight);
+            drawCell(x + columns[2], y - topHeight - headerHeight, columns[3], headerHeight);
+            drawCell(x + columns[2] + columns[3], y - topHeight - headerHeight, columns[4], headerHeight);
+            writeCenteredText("Alto\n(3)", regularFont, NORMAL_SIZE, x, y - topHeight - 8F, columns[2]);
+            writeCenteredText("Medio\n(2)", regularFont, NORMAL_SIZE, x + columns[2], y - topHeight - 8F, columns[3]);
+            writeCenteredText("Bajo\n(1)", regularFont, NORMAL_SIZE, x + columns[2] + columns[3], y - topHeight - 8F, columns[4]);
+
+            y -= topHeight + headerHeight;
+        }
+
+        private void drawSectionRow(float[] columns, String title) throws IOException {
+
+            ensureTableSpace(15F, columns);
+            drawCell(LEFT, y - 15F, tableWidth(columns), 15F);
+            writeText(title, boldFont, HEADER_SIZE - 1F, LEFT + 4F, y - 10F);
+            y -= 15F;
+        }
+
+        private void drawAspectRows(
+                float[] columns,
+                List<PdfActivityEvaluationAspect> aspects) throws IOException {
+
+            if (aspects.isEmpty()) {
+                drawAspectRow(columns, 1, "Sin aspectos registrados", null, null);
+                return;
+            }
+
+            int index = 1;
+            for (PdfActivityEvaluationAspect aspect : aspects) {
+                drawAspectRow(columns, index, aspect.item(), aspect.level(), aspect.score());
+                index++;
+            }
+        }
+
+        private void drawAspectRow(
+                float[] columns,
+                int number,
+                String item,
+                String level,
+                Integer score) throws IOException {
+
+            List<String> itemLines = wrap(item, regularFont, NORMAL_SIZE, columns[1] - 8F);
+            float rowHeight = Math.max(12F, itemLines.size() * ROW_LEADING + 5F);
+            ensureTableSpace(rowHeight, columns);
+
+            float bottom = y - rowHeight;
+            float x = LEFT;
+            for (float column : columns) {
+                drawCell(x, bottom, column, rowHeight);
+                x += column;
+            }
+
+            float centerBaseline = bottom + ((rowHeight - NORMAL_SIZE) / 2F) + 1F;
+            writeCenteredText(String.valueOf(number), regularFont, NORMAL_SIZE, LEFT, centerBaseline, columns[0]);
+            writeLines(itemLines, regularFont, NORMAL_SIZE, LEFT + columns[0] + 4F, y - 9F, ROW_LEADING);
+            writeScore(columns, bottom, rowHeight, level, score);
+            y = bottom;
+        }
+
+        private void drawAccreditationRows(
+                float[] columns,
+                PdfActivityEvaluation evaluation) throws IOException {
+
+            float tableWidth = tableWidth(columns);
+            ensureTableSpace(30F, columns);
+            drawCell(LEFT, y - 15F, tableWidth, 15F);
+            writeText("Evaluación y Acreditación", boldFont, HEADER_SIZE - 1F, LEFT + 4F, y - 10F);
+            y -= 15F;
+
+            float leftWidth = tableWidth / 2F;
+            drawCell(LEFT, y - 15F, leftWidth, 15F);
+            drawCell(LEFT + leftWidth, y - 15F, leftWidth, 15F);
+            writeLabelValue("Número de horas cumplidas: ", formatHours(evaluation.hoursCompleted()), LEFT + 4F, y - 10F);
+            writeLabelValue("Porcentaje de actividades cumplidas: ", formatPercentage(evaluation.activitiesCompletionPercentage()), LEFT + leftWidth + 4F, y - 10F);
+            y -= 15F;
+        }
+
+        private void writeSignature(PdfActivityEvaluation evaluation) throws IOException {
+
+            if (y < BOTTOM + 92F) {
+                addPage();
+                writePageHeader();
+            }
+
+            y -= 26F;
+            writeLabelValue("Fecha: ", formatDate(evaluation.evaluationDate()), LEFT, y);
+            y -= 10F;
+
+            float boxWidth = 374F;
+            float boxHeight = 78F;
+            float boxBottom = y - boxHeight;
+            drawCell(LEFT, boxBottom, boxWidth, boxHeight);
+            writeText("f.)", regularFont, NORMAL_SIZE, LEFT + 6F, boxBottom + 43F);
+            drawLine(LEFT, boxBottom + 39F, LEFT + boxWidth, boxBottom + 39F);
+            writeCenteredText(evaluation.academicTutorName(), regularFont, NORMAL_SIZE + 1F, LEFT, boxBottom + 28F, boxWidth);
+            writeCenteredText(defaultAcademicTutorRole(evaluation.academicTutorRole()), boldFont, NORMAL_SIZE, LEFT, boxBottom + 16F, boxWidth);
+            writeCenteredText("TUTOR ACADEMICO DE LA CPCEI-UNL", boldFont, NORMAL_SIZE, LEFT, boxBottom + 4F, boxWidth);
+        }
+
+        private void ensureTableSpace(float needed, float[] columns) throws IOException {
+
+            if (y - needed >= BOTTOM + 88F) {
+                return;
+            }
+
+            addPage();
+            writePageHeader();
+            drawTableHeader(columns);
+        }
+
+        private void addPage() throws IOException {
+            if (contentStream != null) {
+                contentStream.close();
+            }
+
+            page = new PDPage(new PDRectangle(PDRectangle.A4.getHeight(), PDRectangle.A4.getWidth()));
+            document.addPage(page);
+            contentStream = new PDPageContentStream(document, page);
+            width = page.getMediaBox().getWidth();
+            height = page.getMediaBox().getHeight();
+            y = height - TOP;
+        }
+
+        private void close() throws IOException {
+            if (contentStream != null) {
+                contentStream.close();
+                contentStream = null;
+            }
+        }
+
+        private List<PdfActivityEvaluationAspect> aspectsByType(
+                PdfActivityEvaluation evaluation,
+                String expected) {
+
+            if (evaluation.aspects() == null) {
+                return List.of();
+            }
+
+            return evaluation.aspects()
+                    .stream()
+                    .filter(aspect -> aspect.aspectType() != null
+                            && aspect.aspectType().equalsIgnoreCase(expected))
+                    .toList();
+        }
+
+        private boolean isPracticeType(PdfActivityEvaluation evaluation, String expected) {
+            return evaluation.practiceType() != null
+                    && evaluation.practiceType().equalsIgnoreCase(expected);
+        }
+
+        private boolean isMode(PdfActivityEvaluation evaluation, String expected) {
+            return evaluation.developmentMode() != null
+                    && evaluation.developmentMode().equalsIgnoreCase(expected);
+        }
+
+        private String checkbox(boolean checked) {
+            return checked ? "( X )" : "(   )";
+        }
+
+        private String defaultAcademicTutorRole(String value) {
+            return value == null || value.isBlank()
+                    ? "DOCENTE TUTOR DE PRACTICAS"
+                    : value;
+        }
+
+        private String formatDate(LocalDate date) {
+            return date == null ? "" : DateTimeFormatter.ofPattern("dd/MM/yyyy").format(date);
+        }
+
+        private String formatHours(Integer hours) {
+            if (hours == null) {
+                return "";
+            }
+            return hours + (hours == 1 ? " Hora" : " Horas");
+        }
+
+        private String formatPercentage(BigDecimal percentage) {
+            if (percentage == null) {
+                return "";
+            }
+            return percentage.stripTrailingZeros().toPlainString() + "%";
+        }
+
+        private void writeScore(
+                float[] columns,
+                float bottom,
+                float rowHeight,
+                String level,
+                Integer score) throws IOException {
+
+            int value = score != null ? score : scoreFromLevel(level);
+            if (value < 1 || value > 3) {
+                return;
+            }
+
+            int levelColumnIndex = switch (value) {
+                case 3 -> 2;
+                case 2 -> 3;
+                default -> 4;
+            };
+
+            float x = LEFT;
+            for (int index = 0; index < levelColumnIndex; index++) {
+                x += columns[index];
+            }
+
+            float centerBaseline = bottom + ((rowHeight - NORMAL_SIZE) / 2F) + 1F;
+            writeCenteredText(String.valueOf(value), regularFont, NORMAL_SIZE, x, centerBaseline, columns[levelColumnIndex]);
+        }
+
+        private int scoreFromLevel(String level) {
+            if (level == null) {
+                return 0;
+            }
+            if (level.equalsIgnoreCase("ALTO")) {
+                return 3;
+            }
+            if (level.equalsIgnoreCase("MEDIO")) {
+                return 2;
+            }
+            if (level.equalsIgnoreCase("BAJO")) {
+                return 1;
+            }
+            return 0;
+        }
+
+        private float tableWidth(float[] columns) {
+            float total = 0F;
+            for (float column : columns) {
+                total += column;
+            }
+            return total;
+        }
+
+        private void writeLabelValue(String label, String value, float x, float baseline) throws IOException {
+            writeText(label, boldFont, HEADER_SIZE, x, baseline);
+            writeText(nullSafeText(value), regularFont, HEADER_SIZE, x + textWidth(label, boldFont, HEADER_SIZE), baseline);
+        }
+
+        private void writeCenteredText(String text, PDFont font, float fontSize, float x, float baseline, float maxWidth) throws IOException {
+            List<String> lines = wrap(text, font, fontSize, maxWidth - 6F);
+            float currentY = baseline;
+            for (String line : lines) {
+                float lineWidth = textWidth(line, font, fontSize);
+                writeText(line, font, fontSize, x + ((maxWidth - lineWidth) / 2F), currentY);
+                currentY -= fontSize + 2F;
+            }
+        }
+
+        private void writeLines(List<String> lines, PDFont font, float fontSize, float x, float baseline, float leading) throws IOException {
+            float currentY = baseline;
+            for (String line : lines) {
+                writeText(line, font, fontSize, x, currentY);
+                currentY -= leading;
+            }
+        }
+
+        private List<String> wrap(String text, PDFont font, float fontSize, float maxWidth) throws IOException {
+            List<String> lines = new ArrayList<>();
+            String normalized = nullSafeText(text).replace("\r\n", "\n").replace('\r', '\n');
+            for (String paragraph : normalized.split("\n", -1)) {
+                String[] words = paragraph.trim().split("\\s+");
+                String current = "";
+                for (String word : words) {
+                    if (word.isBlank()) {
+                        continue;
+                    }
+                    if (textWidth(word, font, fontSize) > maxWidth) {
+                        if (!current.isBlank()) {
+                            lines.add(current);
+                            current = "";
+                        }
+                        lines.addAll(splitLongWord(word, font, fontSize, maxWidth));
+                        continue;
+                    }
+                    String candidate = current.isBlank() ? word : current + " " + word;
+                    if (textWidth(candidate, font, fontSize) <= maxWidth) {
+                        current = candidate;
+                    } else {
+                        if (!current.isBlank()) {
+                            lines.add(current);
+                        }
+                        current = word;
+                    }
+                }
+                if (!current.isBlank()) {
+                    lines.add(current);
+                }
+            }
+            return lines.isEmpty() ? List.of("") : lines;
+        }
+
+        private List<String> splitLongWord(String word, PDFont font, float fontSize, float maxWidth) throws IOException {
+            List<String> chunks = new ArrayList<>();
+            StringBuilder current = new StringBuilder();
+            for (char character : word.toCharArray()) {
+                String candidate = current.toString() + character;
+                if (!current.isEmpty() && textWidth(candidate, font, fontSize) > maxWidth) {
+                    chunks.add(current.toString());
+                    current = new StringBuilder();
+                }
+                current.append(character);
+            }
+            if (!current.isEmpty()) {
+                chunks.add(current.toString());
+            }
+            return chunks;
+        }
+
+        private String nullSafeText(String value) {
+            return value == null ? "" : safeText(value);
+        }
+
+        private void drawCell(float x, float yPosition, float cellWidth, float cellHeight) throws IOException {
+            contentStream.setStrokingColor(Color.BLACK);
+            contentStream.setLineWidth(0.8F);
+            contentStream.addRect(x, yPosition, cellWidth, cellHeight);
+            contentStream.stroke();
+        }
+
+        private void drawLine(float x1, float y1, float x2, float y2) throws IOException {
+            contentStream.setStrokingColor(Color.BLACK);
+            contentStream.setLineWidth(0.8F);
+            contentStream.moveTo(x1, y1);
+            contentStream.lineTo(x2, y2);
+            contentStream.stroke();
+        }
+
+        private void drawFilledRect(float x, float yPosition, float rectWidth, float rectHeight, Color fill) throws IOException {
+            contentStream.setNonStrokingColor(fill);
+            contentStream.addRect(x, yPosition, rectWidth, rectHeight);
+            contentStream.fill();
+            contentStream.setNonStrokingColor(Color.BLACK);
+        }
+
+        private void writeText(String text, PDFont font, float fontSize, float x, float baseline) throws IOException {
+            writeText(text, font, fontSize, x, baseline, Color.BLACK);
+        }
+
+        private void writeText(String text, PDFont font, float fontSize, float x, float baseline, Color color) throws IOException {
+            if (text == null || text.isBlank()) {
+                return;
+            }
+            contentStream.beginText();
+            contentStream.setNonStrokingColor(color);
+            contentStream.setFont(font, fontSize);
+            contentStream.newLineAtOffset(x, baseline);
+            contentStream.showText(safeText(text));
+            contentStream.endText();
+            contentStream.setNonStrokingColor(Color.BLACK);
+        }
+
+        private float textWidth(String text, PDFont font, float fontSize) throws IOException {
+            return font.getStringWidth(safeText(text)) / 1000F * fontSize;
+        }
     }
 
     private class PdfWriter {
@@ -283,48 +1784,58 @@ public class PdfExportService {
                 String title,
                 List<PdfSection> sections) throws IOException {
 
-            y = PDRectangle.LETTER.getHeight() - 92F;
+            y = pageHeight() - 104F;
+            writeCentered("unl", boldFont, 28F, 30F);
+            y -= 18F;
             writeCentered(
-                    "FACULTAD DE LA EDUCACION, EL ARTE Y LA COMUNICACION",
+                    "FACULTAD DE LA EDUCACIÓN, EL ARTE Y LA",
                     boldFont,
-                    TITLE_SIZE,
-                    TITLE_LEADING);
+                    15F,
+                    18F);
             writeCentered(
-                    "CARRERA DE PEDAGOGIA DE LAS CIENCIAS EXPERIMENTALES",
+                    "COMUNICACIÓN",
                     boldFont,
-                    TITLE_SIZE,
-                    TITLE_LEADING);
+                    15F,
+                    18F);
+            y -= 26F;
             writeCentered(
-                    "TITULACION EN PEDAGOGIA DE LA INFORMATICA",
+                    "CARRERA DE PEDAGOGÍA DE LAS CIENCIAS",
                     boldFont,
-                    TITLE_SIZE,
-                    TITLE_LEADING);
+                    15F,
+                    18F);
+            writeCentered(
+                    "EXPERIMENTALES",
+                    boldFont,
+                    15F,
+                    18F);
+            y -= 28F;
+            writeCentered(
+                    "TITULACIÓN EN PEDAGOGÍA DE LA INFORMÁTICA",
+                    boldFont,
+                    15F,
+                    18F);
 
-            y -= 52F;
-            writeCentered(
-                    safeText(academicTitle(title)),
-                    boldFont,
-                    COVER_TITLE_SIZE,
-                    20F);
-            writeCentered(
-                    "PRACTICA PREPROFESIONAL COMPONENTE LABORAL",
-                    boldFont,
-                    TITLE_SIZE,
-                    TITLE_LEADING);
+            y -= 28F;
+            writeCoverTitleBox(coverTitleLines(title));
 
-            y -= 48F;
+            y -= 54F;
             coverField("Estudiante", coverValue(sections, "Estudiante"));
-            coverField("Cedula", coverValue(sections, "Cedula"));
-            coverField("Curso", coverValue(sections, "Curso"));
-            coverField("Institucion", coverValue(sections, "Institucion"));
-
-            String submittedAt = coverValue(sections, "Enviado");
-
-            if (hasText(submittedAt)) {
-                coverField("Fecha de envio", submittedAt);
-            }
+            coverField("Tutor Académico", coverValue(sections, "Tutor Academico"));
+            coverField("Ciclo", firstPresentCoverValue(sections, "Ciclo", "Curso"));
+            coverField("Período Académico", coverValue(sections, "Periodo Academico"));
 
             addPage();
+        }
+
+        void writeInstitutionalFinalHeader() throws IOException {
+
+            y = pageHeight() - 76F;
+            writeCentered(
+                    "INFORME FINAL DE PRÁCTICAS PREPROFESIONALES",
+                    boldFont,
+                    14F,
+                    22F);
+            y -= 12F;
         }
 
         boolean writeSection(
@@ -344,8 +1855,23 @@ public class PdfExportService {
                 return false;
             }
 
-            ensureSpace(48F);
-            y -= 4F;
+            if (isLegalizationSection(section.title())) {
+                writeLegalizationSection(fields, sectionNumber);
+                return true;
+            }
+
+            if (isElaborationApprovalSection(section.title())) {
+                writeElaborationApprovalSection(fields, sectionNumber);
+                return true;
+            }
+
+            if (isInstitutionalSignatureSection(section.title())) {
+                writeInstitutionalSignatureSection(fields);
+                return true;
+            }
+
+            sectionBreak();
+            ensureSpace(SECTION_LEADING + BODY_LEADING);
             writeWrapped(
                     sectionNumber + ". " + safeText(section.title()).toUpperCase(),
                     boldFont,
@@ -365,6 +1891,111 @@ public class PdfExportService {
             }
 
             return true;
+        }
+
+        private void writeLegalizationSection(
+                List<PdfField> fields,
+                int sectionNumber) throws IOException {
+
+            String tutorName = fieldValue(fields, "Tutor Academico");
+            String role = fieldValue(fields, "Rol");
+
+            sectionBreak();
+            ensureSpace(180F);
+            writeWrapped(
+                    sectionNumber + ". LEGALIZACIÓN",
+                    boldFont,
+                    SECTION_SIZE,
+                    SECTION_LEADING);
+            verticalSpace(70F);
+
+            float x = MARGIN + 28F;
+            writeTextAt(tutorName, regularFont, BODY_SIZE, Color.BLACK, x, y);
+            y -= 18F;
+
+            for (String line : splitLines(role)) {
+                writeTextAt(line, boldFont, BODY_SIZE, Color.BLACK, x, y);
+                y -= 18F;
+            }
+        }
+
+        private void writeElaborationApprovalSection(
+                List<PdfField> fields,
+                int sectionNumber) throws IOException {
+
+            String studentName = fieldValue(fields, "Estudiante");
+            String tutorName = fieldValue(fields, "Tutor Academico");
+            String role = fieldValue(fields, "Rol");
+
+            sectionBreak();
+            ensureSpace(300F);
+            writeWrapped(
+                    sectionNumber + ". ELABORACIÓN Y APROBACIÓN",
+                    boldFont,
+                    SECTION_SIZE,
+                    SECTION_LEADING);
+            verticalSpace(8F);
+            writeSignatureBar("Elaboración");
+            verticalSpace(76F);
+            writeCentered(studentName, regularFont, BODY_SIZE, 18F);
+            writeCentered("ESTUDIANTE", boldFont, BODY_SIZE, 18F);
+            verticalSpace(6F);
+            writeSignatureBar("Aprobación");
+            verticalSpace(76F);
+            writeCentered(tutorName, regularFont, BODY_SIZE, 18F);
+
+            for (String line : splitLines(role)) {
+                writeCentered(line, boldFont, BODY_SIZE, 18F);
+            }
+        }
+
+        private void writeInstitutionalSignatureSection(List<PdfField> fields) throws IOException {
+
+            String tutorName = fieldValue(fields, "Tutor Institucional");
+            String role = fieldValue(fields, "Rol");
+
+            sectionBreak();
+            ensureSpace(180F);
+            verticalSpace(42F);
+
+            float x = MARGIN + 34F;
+            writeTextAt("Fecha: .............................", regularFont, BODY_SIZE, Color.BLACK, x, y);
+            y -= 72F;
+            writeTextAt("f)", regularFont, BODY_SIZE, Color.BLACK, x, y);
+            y -= 28F;
+            writeTextAt(tutorName, regularFont, BODY_SIZE, Color.BLACK, x, y);
+            y -= 24F;
+            writeTextAt(role, regularFont, BODY_SIZE, Color.BLACK, x, y);
+        }
+
+        private void writeSignatureBar(String label) throws IOException {
+
+            float width = 378F;
+            float height = 22F;
+            float x = (pageWidth() - width) / 2F;
+            float bottom = y - height;
+
+            drawFilledCell(x, bottom, width, height, TABLE_HEADER_GRAY);
+            writeCenteredLinesInCell(List.of(label), boldFont, BODY_SIZE, Color.WHITE, x, bottom, width, height);
+            y = bottom;
+        }
+
+        private String fieldValue(List<PdfField> fields, String label) {
+
+            return fields.stream()
+                    .filter(field -> field.label().equalsIgnoreCase(label))
+                    .map(PdfField::value)
+                    .filter(PdfExportService.this::hasText)
+                    .findFirst()
+                    .orElse("");
+        }
+
+        private List<String> splitLines(String value) {
+
+            return safeText(value).lines()
+                    .map(String::trim)
+                    .filter(line -> !line.isBlank())
+                    .toList();
         }
 
         void writeTitle(String title) throws IOException {
@@ -392,8 +2023,8 @@ public class PdfExportService {
                 return;
             }
 
-            ensureSpace(36F);
-            y -= 4F;
+            sectionBreak();
+            ensureSpace(SECTION_LEADING + BODY_LEADING);
             writeWrapped(
                     safeText(section.title()),
                     boldFont,
@@ -415,7 +2046,7 @@ public class PdfExportService {
 
         void writeField(PdfField field) throws IOException {
 
-            ensureSpace(42F);
+            ensureSpace(BODY_LEADING * 2F);
             writeWrapped(
                     safeText(field.label()),
                     boldFont,
@@ -426,7 +2057,6 @@ public class PdfExportService {
                     regularFont,
                     BODY_SIZE,
                     BODY_LEADING);
-            y -= 6F;
         }
 
         void writeWeekTable(PdfWeekTable table) throws IOException {
@@ -435,18 +2065,18 @@ public class PdfExportService {
                 return;
             }
 
-            y -= 6F;
+            verticalSpace(TABLE_GAP_BEFORE);
 
             for (PdfWeekRow row : table.rows()) {
                 writeWeekRow(row);
             }
 
-            y -= 4F;
+            verticalSpace(TABLE_GAP_AFTER);
         }
 
         private void writeWeekRow(PdfWeekRow row) throws IOException {
 
-            float tableWidth = PDRectangle.LETTER.getWidth() - (MARGIN * 2);
+            float tableWidth = pageWidth() - (MARGIN * 2);
             float weekColumnWidth = 108F;
             float detailColumnWidth = tableWidth - weekColumnWidth;
             float headerPadding = 8F;
@@ -518,7 +2148,7 @@ public class PdfExportService {
                 return;
             }
 
-            float tableWidth = PDRectangle.LETTER.getWidth() - (MARGIN * 2);
+            float tableWidth = pageWidth() - (MARGIN * 2);
             float activityColumnWidth = Math.max(245F, tableWidth - (columns.size() * 22F));
             float weekColumnWidth = (tableWidth - activityColumnWidth) / columns.size();
             float titleHeight = 18F;
@@ -528,8 +2158,9 @@ public class PdfExportService {
             int rowIndex = 0;
 
             while (rowIndex < activities.size()) {
-                ensureSpace(titleHeight + monthHeight + weekHeight + rowHeight + 8F);
-                float top = y - 4F;
+                verticalSpace(TABLE_GAP_BEFORE);
+                ensureSpace(titleHeight + monthHeight + weekHeight + rowHeight + TABLE_GAP_AFTER);
+                float top = y;
                 float currentY = top;
 
                 currentY = drawScheduleHeader(
@@ -556,10 +2187,12 @@ public class PdfExportService {
                     rowIndex++;
                 }
 
-                y = currentY - 4F;
+                y = currentY;
 
                 if (rowIndex < activities.size()) {
                     addPage();
+                } else {
+                    verticalSpace(TABLE_GAP_AFTER);
                 }
             }
         }
@@ -712,7 +2345,13 @@ public class PdfExportService {
                     continue;
                 }
 
-                for (String item : splitBulletItems(row.activityText())) {
+                List<String> items = splitBulletItems(row.activityText());
+
+                if (items.isEmpty() && hasScheduleReference(row)) {
+                    items = List.of("Actividades no especificadas");
+                }
+
+                for (String item : items) {
                     activities.add(new PdfScheduleActivity(item, key));
                 }
             }
@@ -944,11 +2583,13 @@ public class PdfExportService {
                 contentStream.close();
             }
 
-            PDPage page = new PDPage(PDRectangle.LETTER);
+            PDPage page = new PDPage(PDRectangle.A4);
             document.addPage(page);
             contentStream = new PDPageContentStream(document, page);
             pageNumber++;
-            writePageNumber(page);
+            if (pageNumber > 1) {
+                writePageNumber(page);
+            }
             y = page.getMediaBox().getHeight() - MARGIN;
         }
 
@@ -959,13 +2600,32 @@ public class PdfExportService {
             }
         }
 
+        private void sectionBreak() throws IOException {
+
+            float pageTop = pageHeight() - MARGIN;
+
+            if (y < pageTop - 1F) {
+                verticalSpace(SECTION_GAP);
+            }
+        }
+
+        private void verticalSpace(float space) throws IOException {
+
+            if (y - space < PAGE_BOTTOM) {
+                addPage();
+                return;
+            }
+
+            y -= space;
+        }
+
         private void writeWrapped(
                 String text,
                 PDFont font,
                 float fontSize,
                 float leading) throws IOException {
 
-            float maxWidth = PDRectangle.LETTER.getWidth() - (MARGIN * 2);
+            float maxWidth = pageWidth() - (MARGIN * 2);
             List<String> lines = wrapText(
                     text,
                     font,
@@ -1007,7 +2667,7 @@ public class PdfExportService {
                 float fontSize,
                 float leading) throws IOException {
 
-            float maxWidth = PDRectangle.LETTER.getWidth() - (MARGIN * 2);
+            float maxWidth = pageWidth() - (MARGIN * 2);
             List<String> lines = wrapText(
                     text,
                     font,
@@ -1017,7 +2677,7 @@ public class PdfExportService {
             for (String line : lines) {
                 ensureSpace(leading);
                 float textWidth = textWidth(line, font, fontSize);
-                float x = (PDRectangle.LETTER.getWidth() - textWidth) / 2F;
+                float x = (pageWidth() - textWidth) / 2F;
 
                 contentStream.beginText();
                 contentStream.setFont(font, fontSize);
@@ -1040,13 +2700,43 @@ public class PdfExportService {
                     label + ":",
                     boldFont,
                     BODY_SIZE,
-                    TITLE_LEADING);
+                    COVER_LEADING);
             writeCentered(
                     safeText(value),
                     regularFont,
                     BODY_SIZE,
-                    TITLE_LEADING);
-            y -= 8F;
+                    COVER_LEADING);
+        }
+
+        private void writeCoverTitleBox(List<String> lines) throws IOException {
+
+            float boxWidth = pageWidth() - 144F;
+            float boxHeight = 34F + (lines.size() * 22F);
+            float x = (pageWidth() - boxWidth) / 2F;
+            float bottom = y - boxHeight;
+
+            drawFilledCell(x, bottom, boxWidth, boxHeight, TABLE_HEADER_GRAY);
+
+            float currentY = y - 26F;
+            for (String line : lines) {
+                float textWidth = textWidth(line, boldFont, 18F);
+                writeTextAt(line, boldFont, 18F, Color.WHITE, (pageWidth() - textWidth) / 2F, currentY);
+                currentY -= 26F;
+            }
+
+            y = bottom;
+        }
+
+        private float pageWidth() {
+            return contentStream == null || document.getNumberOfPages() == 0
+                    ? PDRectangle.A4.getWidth()
+                    : document.getPage(document.getNumberOfPages() - 1).getMediaBox().getWidth();
+        }
+
+        private float pageHeight() {
+            return contentStream == null || document.getNumberOfPages() == 0
+                    ? PDRectangle.A4.getHeight()
+                    : document.getPage(document.getNumberOfPages() - 1).getMediaBox().getHeight();
         }
 
         private void writePageNumber(PDPage page) throws IOException {
@@ -1139,15 +2829,94 @@ public class PdfExportService {
             return "PLAN DE ACTIVIDADES";
         }
 
-        if (normalized.equalsIgnoreCase("Informe de practicas")) {
-            return "INFORME DE PRACTICAS";
+        if (normalized.equalsIgnoreCase("Informe de actividades cumplidas")
+                || normalized.equalsIgnoreCase("Informe de practicas")) {
+            return "INFORME DE ACTIVIDADES CUMPLIDAS";
         }
 
-        if (normalized.equalsIgnoreCase("Informe final")) {
-            return "INFORME FINAL DE PRACTICAS";
+        if (isInstitutionalFinalReport(normalized)
+                || normalized.equalsIgnoreCase("Informe final")) {
+            return "INFORME FINAL DE PRÁCTICAS PREPROFESIONALES";
         }
 
         return normalized.toUpperCase();
+    }
+
+    private boolean isInstitutionalFinalReport(String title) {
+
+        if (title == null) {
+            return false;
+        }
+
+        String normalized = title.replaceAll("\\s+#\\d+\\s*$", "").trim();
+        return normalized.equalsIgnoreCase("Informe final de practicas preprofesionales")
+                || normalized.equalsIgnoreCase("Informe final de prácticas preprofesionales");
+    }
+
+    private boolean isLegalizationSection(String title) {
+
+        return normalizedKey(title).equals("legalizacion");
+    }
+
+    private boolean isElaborationApprovalSection(String title) {
+
+        return normalizedKey(title).equals("elaboracion y aprobacion");
+    }
+
+    private boolean isInstitutionalSignatureSection(String title) {
+
+        return normalizedKey(title).equals("firma tutor institucional");
+    }
+
+    private String normalizedKey(String value) {
+
+        if (value == null) {
+            return "";
+        }
+
+        return value.trim()
+                .toLowerCase(Locale.ROOT)
+                .replace('á', 'a')
+                .replace('é', 'e')
+                .replace('í', 'i')
+                .replace('ó', 'o')
+                .replace('ú', 'u');
+    }
+
+    private List<String> coverTitleLines(String title) {
+
+        String academicTitle = academicTitle(title);
+
+        if (academicTitle.equals("PLAN DE ACTIVIDADES")) {
+            return List.of(
+                    "PLAN DE ACTIVIDADES",
+                    "PRÁCTICA PREPROFESIONAL",
+                    "COMPONENTE LABORAL");
+        }
+
+        if (academicTitle.equals("INFORME DE ACTIVIDADES CUMPLIDAS")) {
+            return List.of(
+                    "INFORME DE ACTIVIDADES",
+                    "CUMPLIDAS",
+                    "PRÁCTICAS PREPROFESIONALES",
+                    "COMPONENTE LABORAL");
+        }
+
+        return List.of(academicTitle);
+    }
+
+    private String firstPresentCoverValue(
+            List<PdfSection> sections,
+            String... labels) {
+
+        for (String label : labels) {
+            String value = coverValue(sections, label);
+            if (hasText(value)) {
+                return value;
+            }
+        }
+
+        return "";
     }
 
     private String coverValue(
@@ -1197,8 +2966,22 @@ public class PdfExportService {
                         && matrix.rows() != null
                         && matrix.rows()
                                 .stream()
-                                .anyMatch(row -> hasText(row.activityText())))
+                                .anyMatch(this::hasVisibleScheduleRow))
                 .toList();
+    }
+
+    private boolean hasVisibleScheduleRow(PdfScheduleRow row) {
+
+        return row != null
+                && (hasText(row.activityText()) || hasScheduleReference(row));
+    }
+
+    private boolean hasScheduleReference(PdfScheduleRow row) {
+
+        return row != null
+                && (row.weekNumber() != null
+                        || row.startDate() != null
+                        || row.endDate() != null);
     }
 
     private boolean hasText(String value) {

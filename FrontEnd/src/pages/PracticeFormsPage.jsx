@@ -42,7 +42,7 @@ const CHOICE_TYPES = new Set(['SINGLE_CHOICE', 'MULTIPLE_CHOICE']);
 const choiceLabelClass = 'inline-flex min-h-[2.45rem] cursor-pointer items-center gap-2 rounded-lg border border-[#cad8cf] bg-white px-3 py-2 text-sm font-[850] text-[#34443b] transition-colors hover:bg-[#f5faf7] dark:border-slate-600 dark:bg-surface dark:text-ink dark:hover:bg-[#203026]';
 const questionEditorCardClass = 'overflow-hidden rounded-lg border border-border bg-white shadow-card dark:border-slate-700 dark:bg-surface';
 const questionEditorHeaderClass = 'flex flex-wrap items-center justify-between gap-3 border-b border-[#edf2ee] bg-[#f7f3ef] px-4 py-3 dark:border-slate-700 dark:bg-[#172033]';
-const printableQuestionClass = 'rounded-lg border border-border bg-[#fbfaf7] p-4 dark:border-slate-700 dark:bg-surface print:break-inside-avoid print:[page-break-inside:avoid] print:bg-white print:shadow-none';
+const printableQuestionClass = 'rounded-lg border border-border bg-[#fbfaf7] p-4 dark:border-slate-700 dark:bg-surface practice-form-print-question print:break-inside-avoid print:[page-break-inside:avoid] print:bg-white print:shadow-none';
 
 function newQuestion(type = 'OPEN_TEXT') {
   return {
@@ -165,8 +165,8 @@ export function PracticeFormsPage() {
 
   const formColumns = useMemo(
     () => [
-      { key: 'title', header: 'Ficha' },
-      { key: 'courseName', header: 'Curso' },
+      { key: 'title', header: 'Entrevista' },
+      { key: 'courseName', header: 'Paralelo' },
       activeView === 'assigned'
         ? { key: 'studentFullName', header: 'Estudiante', render: (row) => row.studentFullName || row.student || '-' }
         : { key: 'target', header: 'Asignado a', render: (row) => row.target || targetRoleLabel(row.targetRole) },
@@ -197,10 +197,10 @@ export function PracticeFormsPage() {
     event.preventDefault();
 
     const accepted = await confirm({
-      title: 'Crear y asignar ficha',
-      description: 'La ficha quedara disponible para la institucion receptora seleccionada.',
-      details: draft.title || 'Ficha de practica',
-      confirmLabel: 'Crear ficha',
+      title: 'Crear y asignar entrevista',
+      description: 'La entrevista quedara disponible para la institucion receptora seleccionada.',
+      details: draft.title || 'Entrevista',
+      confirmLabel: 'Crear entrevista',
       tone: 'warning',
     });
 
@@ -220,7 +220,7 @@ export function PracticeFormsPage() {
         body: payload,
       });
 
-      setMessage('Ficha creada y asignada correctamente.');
+      setMessage('Entrevista creada y asignada correctamente.');
       setDraft(emptyDraft());
       setActiveView('mine');
       await loadData();
@@ -241,7 +241,7 @@ export function PracticeFormsPage() {
 
     const accepted = await confirm({
       title: 'Enviar respuestas',
-      description: 'Tus respuestas quedaran registradas para la ficha seleccionada.',
+      description: 'Tus respuestas quedaran registradas para la entrevista seleccionada.',
       details: selectedForm.title,
       confirmLabel: 'Enviar respuestas',
       tone: 'warning',
@@ -304,8 +304,8 @@ export function PracticeFormsPage() {
     <>
       <PageHeader
         eyebrow="Practicas"
-        title="Fichas de practica"
-        description="Crea fichas para la institucion receptora, registra respuestas y guarda la interpretacion del estudiante."
+        title="Entrevistas"
+        description="Crea entrevistas para la institucion receptora, registra respuestas y guarda la interpretacion del estudiante."
         action={
           <SecondaryButton icon={RefreshCw} loading={loading} onClick={loadData} type="button">
             Actualizar
@@ -319,9 +319,9 @@ export function PracticeFormsPage() {
       <SectionCard className="print:hidden">
         <ModuleTabs>
           {[
-            isStudent && ['mine', 'Mis fichas'],
+            isStudent && ['mine', 'Mis entrevistas'],
             canResolveForms && ['assigned', 'Por responder'],
-            isStudent && ['create', 'Crear ficha'],
+            isStudent && ['create', 'Crear entrevista'],
           ]
             .filter(Boolean)
             .map(([id, label]) => (
@@ -346,19 +346,19 @@ export function PracticeFormsPage() {
           onSubmit={handleCreate}
         />
       ) : (
-        <div className="grid gap-5 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.2fr)]">
+        <div className="grid grid-cols-1 gap-5">
           <SectionCard
             className="print:hidden"
-            title={activeView === 'assigned' ? 'Fichas por responder' : 'Fichas creadas'}
+            title={activeView === 'assigned' ? 'Entrevistas por responder' : 'Entrevistas creadas'}
             description={
               activeView === 'assigned'
-                ? 'Selecciona una ficha para revisar sus preguntas y responder.'
-                : 'Selecciona una ficha para ver respuestas e interpretaciones.'
+                ? 'Selecciona una entrevista para revisar sus preguntas y responder.'
+                : 'Selecciona una entrevista para ver respuestas e interpretaciones.'
             }
           >
             <DataTable
               columns={formColumns}
-              emptyText={loading ? 'Cargando fichas' : 'Aun no hay fichas registradas.'}
+              emptyText={loading ? 'Cargando entrevistas' : 'Aun no hay entrevistas registradas.'}
               loading={loading}
               rows={visibleForms}
             />
@@ -387,6 +387,34 @@ export function PracticeFormsPage() {
 function PracticeFormBuilder({ draft, enrollments, loading, saving, setDraft, onSubmit }) {
   const confirm = useConfirm();
   const selectedEnrollment = enrollments.find((enrollment) => String(enrollment.id) === String(draft.enrollmentId));
+  const defaultEnrollment = useMemo(() => resolveDefaultEnrollment(enrollments), [enrollments]);
+  const targetOptions = useMemo(() => targetOptionsForEnrollment(selectedEnrollment), [selectedEnrollment]);
+
+  useEffect(() => {
+    if (!defaultEnrollment) {
+      return;
+    }
+
+    setDraft((current) => {
+      const selectedStillValid = enrollments.some((enrollment) => String(enrollment.id) === String(current.enrollmentId));
+      const nextEnrollmentId = selectedStillValid ? current.enrollmentId : String(defaultEnrollment.id);
+      const nextEnrollment = enrollments.find((enrollment) => String(enrollment.id) === String(nextEnrollmentId)) || defaultEnrollment;
+      const options = targetOptionsForEnrollment(nextEnrollment);
+      const nextTargetRole = options.some((option) => option.value === current.targetRole && !option.disabled)
+        ? current.targetRole
+        : options.find((option) => !option.disabled)?.value || current.targetRole;
+
+      if (String(current.enrollmentId) === String(nextEnrollmentId) && current.targetRole === nextTargetRole) {
+        return current;
+      }
+
+      return {
+        ...current,
+        enrollmentId: String(nextEnrollmentId),
+        targetRole: nextTargetRole,
+      };
+    });
+  }, [defaultEnrollment, enrollments, setDraft]);
 
   function updateDraft(field, value) {
     setDraft((current) => ({
@@ -426,7 +454,7 @@ function PracticeFormBuilder({ draft, enrollments, loading, saving, setDraft, on
   async function removeQuestion(index) {
     const accepted = await confirm({
       title: 'Quitar pregunta',
-      description: 'La pregunta se retirara de la ficha en edicion.',
+      description: 'La pregunta se retirara de la entrevista en edicion.',
       details: `Pregunta ${index + 1}`,
       confirmLabel: 'Quitar pregunta',
       tone: 'danger',
@@ -507,34 +535,32 @@ function PracticeFormBuilder({ draft, enrollments, loading, saving, setDraft, on
   return (
     <form className="space-y-5" onSubmit={onSubmit}>
       <SectionCard
-        title="Datos de la ficha"
-        description="Selecciona el curso de practica para completar la informacion necesaria."
+        title="Datos de la entrevista"
+        description="La pertenencia academica y de practica se toma de tu inscripcion aprobada."
       >
         <div className="grid gap-4 lg:grid-cols-2">
-          <Field label="Curso de practica aprobado">
-            <Select
-              disabled={loading || !enrollments.length}
-              required
-              value={draft.enrollmentId}
-              onChange={(event) => updateDraft('enrollmentId', event.target.value)}
-            >
-              <option value="">Selecciona un curso aprobado</option>
-              {enrollments.map((enrollment) => (
-                <option key={enrollment.id} value={enrollment.id}>
-                  {[enrollment.courseName, enrollment.educationalInstitutionName].filter(Boolean).join(' | ')}
-                </option>
-              ))}
-            </Select>
+          <Field label="Paralelo de practica aprobado">
+            <Input
+              disabled
+              value={
+                selectedEnrollment
+                  ? [selectedEnrollment.courseName, selectedEnrollment.educationalInstitutionName].filter(Boolean).join(' | ')
+                  : loading
+                    ? 'Cargando inscripcion aprobada'
+                    : 'No tienes una inscripcion aprobada activa'
+              }
+            />
           </Field>
 
           <Field label="Quien respondera">
             <Select
+              disabled={!selectedEnrollment}
               required
               value={draft.targetRole}
               onChange={(event) => updateDraft('targetRole', event.target.value)}
             >
-              {TARGET_ROLES.map(([value, label]) => (
-                <option key={value} value={value}>
+              {targetOptions.map(({ disabled, label, value }) => (
+                <option disabled={disabled} key={value} value={value}>
                   {label}
                 </option>
               ))}
@@ -561,9 +587,14 @@ function PracticeFormBuilder({ draft, enrollments, loading, saving, setDraft, on
 
         {selectedEnrollment && (
           <div className="mt-4 grid gap-3 rounded-lg border border-[#c8d2cd] bg-[#eef3f2] p-3 text-sm text-[#34443b] dark:border-slate-700 dark:bg-surface-soft dark:text-slate-200 md:grid-cols-2">
-            <InfoLine label="Curso" value={selectedEnrollment.courseName} />
+            <InfoLine label="Paralelo" value={selectedEnrollment.courseName} />
             <InfoLine label="Institucion" value={selectedEnrollment.educationalInstitutionName} />
             <InfoLine label="Tutor institucional" value={selectedEnrollment.institutionalTutor} />
+            <InfoLine
+              fallback="Sin directora asignada"
+              label="Directora de institucion"
+              value={selectedEnrollment.institutionDirector}
+            />
             <InfoLine label="Estado" value={formatEnum(selectedEnrollment.status)} />
           </div>
         )}
@@ -739,7 +770,7 @@ function PracticeFormDetail({
   if (!form) {
     return (
       <SectionCard title="Detalle">
-        <EmptyState text="Selecciona una ficha para ver el detalle." />
+        <EmptyState text="Selecciona una entrevista para ver el detalle." />
       </SectionCard>
     );
   }
@@ -775,7 +806,8 @@ function PracticeFormDetail({
 
   return (
     <SectionCard
-      title="Detalle de la ficha"
+      className="practice-form-print-card print:border-0 print:bg-white print:p-0 print:shadow-none"
+      title="Detalle de la entrevista"
       action={
         <ActionBar>
           <SecondaryButton className="print:hidden" icon={Printer} onClick={onPrint} type="button">
@@ -785,21 +817,24 @@ function PracticeFormDetail({
       }
     >
       <form onSubmit={onSubmitAnswers}>
-        <div className="space-y-5 print:text-[11pt] print:text-[#111827]">
-          <header className="flex items-start justify-between gap-4 border-b border-border pb-4">
+        <div className="practice-form-print-document space-y-5 print:text-[11pt] print:text-[#111827]">
+          <header className="practice-form-print-header flex items-start justify-between gap-4 border-b border-border pb-4">
             <div>
-              <p className="text-xs font-extrabold uppercase leading-tight tracking-normal text-primary dark:text-sky-200">Ficha de practica</p>
-              <h2 className="text-2xl font-black leading-tight text-zinc-950 dark:text-slate-50">{form.title}</h2>
+              <p className="text-xs font-extrabold uppercase leading-tight tracking-normal text-primary dark:text-sky-200 print:text-[10pt] print:text-black">Entrevista</p>
+              <h2 className="text-2xl font-black leading-tight text-zinc-950 dark:text-slate-50 print:text-[18pt] print:uppercase print:text-black">{form.title}</h2>
               {form.description && <p className="mt-2 text-sm leading-6 text-zinc-600 dark:text-slate-300">{form.description}</p>}
             </div>
-            <StatusBadge status={form.status} />
+            <span className="print:hidden">
+              <StatusBadge status={form.status} />
+            </span>
           </header>
 
-          <div className="grid gap-3 rounded-lg border border-zinc-200 bg-zinc-50 p-3 text-sm dark:border-slate-700 dark:bg-surface-soft md:grid-cols-2">
-            <InfoLine label="Curso" value={form.courseName} />
+          <div className="practice-form-print-meta grid gap-3 rounded-lg border border-zinc-200 bg-zinc-50 p-3 text-sm dark:border-slate-700 dark:bg-surface-soft md:grid-cols-2 print:grid-cols-2 print:gap-0 print:rounded-none print:border-black print:bg-white print:p-0">
+            <InfoLine label="Paralelo" value={form.courseName} />
             <InfoLine label="Estudiante" value={form.studentFullName || form.student} />
             <InfoLine label="Institucion" value={form.educationalInstitutionName} />
             <InfoLine label="Asignado a" value={form.target || targetRoleLabel(form.targetRole)} />
+            <InfoLine label="Estado" value={formatEnum(form.status)} />
             <InfoLine label="Creado" value={formatDateTime(form.createdAt)} />
             <InfoLine label="Respondido" value={formatDateTime(form.answeredAt)} />
             {form.response?.respondent && <InfoLine label="Respondido por" value={form.response.respondent} />}
@@ -850,14 +885,14 @@ function QuestionDetail({
 }) {
   return (
     <article className={printableQuestionClass}>
-      <div className="flex flex-wrap items-start justify-between gap-3">
+      <div className="practice-form-print-question-header flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="text-xs font-black uppercase text-zinc-500 dark:text-slate-400">
             Pregunta {question.order} | {questionTypeLabel(question.type)}
           </p>
           <h3 className="mt-1 text-base font-black text-zinc-950 dark:text-slate-50">{question.prompt}</h3>
         </div>
-        <span className="inline-flex items-center rounded-full border border-slate-300 bg-slate-50 px-2.5 py-1 text-xs font-extrabold leading-none text-slate-600 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300">
+        <span className="inline-flex items-center rounded-full border border-slate-300 bg-slate-50 px-2.5 py-1 text-xs font-extrabold leading-none text-slate-600 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 print:hidden">
           {question.required ? 'Obligatoria' : 'Opcional'}
         </span>
       </div>
@@ -874,7 +909,7 @@ function QuestionDetail({
       )}
 
       {question.answer && (
-        <div className="mt-4 rounded-lg border border-zinc-200 bg-white p-3 dark:border-slate-700 dark:bg-[#111827]">
+        <div className="practice-form-print-answer mt-4 rounded-lg border border-zinc-200 bg-white p-3 dark:border-slate-700 dark:bg-[#111827]">
           <p className="mb-1.5 text-[0.82rem] font-extrabold text-[#34443b] dark:text-slate-300">Respuesta</p>
           <p className="whitespace-pre-wrap text-sm leading-6 text-zinc-800 dark:text-slate-100">{formatAnswer(question)}</p>
         </div>
@@ -883,7 +918,7 @@ function QuestionDetail({
       {question.tabulable && question.tabulation && <Tabulation question={question} />}
 
       {question.type === 'OPEN_TEXT' && question.answer && (
-        <div className="mt-4 rounded-lg border border-zinc-200 bg-zinc-50 p-3 dark:border-slate-700 dark:bg-surface-soft">
+        <div className="practice-form-print-answer mt-4 rounded-lg border border-zinc-200 bg-zinc-50 p-3 dark:border-slate-700 dark:bg-surface-soft">
           <div className="mb-2 flex items-center justify-between gap-3">
             <p className="mb-0 text-[0.82rem] font-extrabold text-[#34443b] dark:text-slate-300">Interpretacion del estudiante</p>
             {canInterpret && (
@@ -1069,11 +1104,11 @@ function Tabulation({ question }) {
   );
 }
 
-function InfoLine({ label, value }) {
+function InfoLine({ fallback = '-', label, value }) {
   return (
-    <div>
+    <div className="practice-form-print-info-line">
       <p className="text-xs font-black uppercase text-muted">{label}</p>
-      <p className="mt-1 font-semibold text-[#20282d] dark:text-slate-50">{value || '-'}</p>
+      <p className="mt-1 font-semibold text-[#20282d] dark:text-slate-50">{value || fallback}</p>
     </div>
   );
 }
@@ -1099,11 +1134,11 @@ function normalizeQuestion(question) {
 
 function buildCreatePayload(draft) {
   if (!draft.enrollmentId) {
-    throw new Error('Selecciona un curso de practica aprobado.');
+    throw new Error('No tienes una inscripcion aprobada activa para crear la entrevista.');
   }
 
   if (!draft.title.trim()) {
-    throw new Error('El titulo de la ficha es obligatorio.');
+    throw new Error('El titulo de la entrevista es obligatorio.');
   }
 
   const questions = draft.questions.map((question, index) => {
@@ -1163,6 +1198,48 @@ function buildCreatePayload(draft) {
     description: draft.description.trim() || null,
     questions,
   };
+}
+
+function resolveDefaultEnrollment(enrollments) {
+  const ranked = [...(enrollments || [])].sort((left, right) => enrollmentScore(right) - enrollmentScore(left));
+
+  return ranked[0] || null;
+}
+
+function enrollmentScore(enrollment) {
+  if (!enrollment) {
+    return 0;
+  }
+
+  const completenessScore = [
+    enrollment.groupName,
+    enrollment.educationalInstitutionName,
+    enrollment.institutionalTutor,
+    enrollment.institutionDirector,
+    enrollment.practiceTutor,
+  ].filter(Boolean).length * 10;
+  const dateScore = enrollment.enrolledAt ? new Date(enrollment.enrolledAt).getTime() / 1000000000000 : 0;
+
+  return completenessScore + dateScore;
+}
+
+function targetOptionsForEnrollment(enrollment) {
+  return [
+    {
+      value: 'INSTITUTIONAL_TUTOR',
+      label: enrollment?.institutionalTutor
+        ? `Tutor institucional: ${enrollment.institutionalTutor}`
+        : 'Tutor institucional no asignado',
+      disabled: !enrollment?.institutionalTutor,
+    },
+    {
+      value: 'INSTITUTION_DIRECTOR',
+      label: enrollment?.institutionDirector
+        ? `Directora de la institucion: ${enrollment.institutionDirector}`
+        : 'Directora de la institucion no asignada',
+      disabled: !enrollment?.institutionDirector,
+    },
+  ];
 }
 
 function buildResponsePayload(questions, responseDraft) {

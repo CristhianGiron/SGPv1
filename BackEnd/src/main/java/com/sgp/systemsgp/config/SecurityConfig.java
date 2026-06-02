@@ -89,6 +89,7 @@ public class SecurityConfig {
                                                                 "/api/careers", "/api/careers/**",
                                                                 "/api/academic-cycles", "/api/academic-cycles/**",
                                                                 "/api/grades", "/api/grades/**",
+                                                                "/api/grade-parallels", "/api/grade-parallels/**",
                                                                 "/api/subjects", "/api/subjects/**")
                                                 .hasAnyRole("ADMIN", "DIRECTOR_PRACTICAS")
 
@@ -96,6 +97,7 @@ public class SecurityConfig {
                                                 .requestMatchers("/api/careers", "/api/careers/**").hasRole("ADMIN")
                                                 .requestMatchers("/api/academic-cycles", "/api/academic-cycles/**").hasRole("ADMIN")
                                                 .requestMatchers("/api/grades", "/api/grades/**").hasRole("ADMIN")
+                                                .requestMatchers("/api/grade-parallels", "/api/grade-parallels/**").hasRole("ADMIN")
                                                 .requestMatchers("/api/subjects", "/api/subjects/**").hasRole("ADMIN")
 
                                                 /*
@@ -123,7 +125,8 @@ public class SecurityConfig {
                                                 .requestMatchers(HttpMethod.PATCH, "/api/enrollments/*/group/*")
                                                 .hasAnyRole("ADMIN", "TUTOR_PRACTICAS")
                                                 .requestMatchers("/api/enrollments/**")
-                                                .hasAnyRole("ADMIN", "DIRECTOR_PRACTICAS")
+                                                .hasAnyRole("ADMIN", "DIRECTOR_PRACTICAS", "TUTOR_PRACTICAS",
+                                                                "TUTOR_INSTITUCIONAL")
 
                                                 .requestMatchers(HttpMethod.POST, "/api/activity-plans")
                                                 .hasRole("ESTUDIANTE")
@@ -224,6 +227,9 @@ public class SecurityConfig {
                                                 .hasRole("TUTOR_PRACTICAS")
                                                 .requestMatchers(HttpMethod.PUT, "/api/activity-evaluations/*")
                                                 .hasRole("TUTOR_PRACTICAS")
+                                                .requestMatchers(HttpMethod.GET, "/api/activity-evaluations/*/pdf")
+                                                .hasAnyRole("ESTUDIANTE", "TUTOR_PRACTICAS", "DIRECTOR_PRACTICAS",
+                                                                "ADMIN")
                                                 .requestMatchers(HttpMethod.GET, "/api/activity-evaluations/*")
                                                 .hasAnyRole("ESTUDIANTE", "TUTOR_PRACTICAS", "DIRECTOR_PRACTICAS",
                                                                 "ADMIN")
@@ -236,6 +242,9 @@ public class SecurityConfig {
                                                 .hasRole("TUTOR_PRACTICAS")
                                                 .requestMatchers(HttpMethod.PUT, "/api/practice-follow-up-reports/*")
                                                 .hasRole("TUTOR_PRACTICAS")
+                                                .requestMatchers(HttpMethod.GET, "/api/practice-follow-up-reports/*/pdf")
+                                                .hasAnyRole("ESTUDIANTE", "TUTOR_PRACTICAS", "DIRECTOR_PRACTICAS",
+                                                                "ADMIN")
                                                 .requestMatchers(HttpMethod.GET, "/api/practice-follow-up-reports/*")
                                                 .hasAnyRole("ESTUDIANTE", "TUTOR_PRACTICAS", "DIRECTOR_PRACTICAS",
                                                                 "ADMIN")

@@ -20,7 +20,9 @@ import { ActionMenu } from '../components/ui/ActionMenu';
 import { useConfirm } from '../components/ui/ConfirmDialog';
 import { DataTable } from '../components/ui/DataTable';
 import { EntitySelect } from '../components/ui/EntitySelect';
+import { FilterPanel } from '../components/ui/FilterPanel';
 import { Field, Input, Select, Textarea } from '../components/ui/FormControls';
+import { Modal } from '../components/ui/Modal';
 import { ModuleTab, ModuleTabs } from '../components/ui/ModuleTabs';
 import { PageHeader } from '../components/ui/PageHeader';
 import { SectionCard } from '../components/ui/SectionCard';
@@ -62,6 +64,7 @@ export function CoursesPage() {
     practiceTutor: '',
   });
   const [activeView, setActiveView] = useState('courses');
+  const [managementModal, setManagementModal] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -85,7 +88,7 @@ export function CoursesPage() {
     [enrollments]
   );
 
-  // Calcular inscritos pendientes por curso
+  // Calcular inscritos pendientes por paralelo
   const pendingEnrollmentsByCourse = useMemo(() => {
     const map = new Map();
     enrollments.forEach((enrollment) => {
@@ -119,7 +122,9 @@ export function CoursesPage() {
         { token }
       );
 
-      const loadedCourses = filterInactiveForNonAdmin(unwrapPage(coursePayload), roles);
+      const loadedCourses = canManage
+        ? unwrapPage(coursePayload)
+        : filterInactiveForNonAdmin(unwrapPage(coursePayload), roles);
       setCourses(canPracticeTutor && !canManage ? filterPracticeTutorCourses(loadedCourses, profile?.username) : loadedCourses);
 
       if (isStudent) {
@@ -188,8 +193,8 @@ export function CoursesPage() {
   async function createCourse(event) {
     event.preventDefault();
 
-    if (!form.subjectId) {
-      setError('Selecciona la ruta academica y la asignatura del curso');
+    if (!form.academicCycleId) {
+      setError('Selecciona la carrera y el ciclo academico del paralelo');
       setMessage('');
       return;
     }
@@ -206,7 +211,8 @@ export function CoursesPage() {
       });
       setForm(emptyCourseForm());
       await loadData();
-      setMessage('Curso creado');
+      setActiveView('courses');
+      setMessage('Paralelo creado');
     } catch (requestError) {
       setError(requestError.message);
     } finally {
@@ -273,7 +279,7 @@ export function CoursesPage() {
 
     const accepted = await confirm(courseActionConfirmation({
       title: enrollment.groupId ? 'Cambiar grupo del estudiante' : 'Asignar estudiante a grupo',
-      description: 'Esta accion actualizara la organizacion del estudiante dentro del curso.',
+      description: 'Esta accion actualizara la organizacion del estudiante dentro del paralelo.',
       details: enrollment.student || enrollment.studentFullName || enrollment.courseName || '',
       confirmLabel: enrollment.groupId ? 'Cambiar grupo' : 'Asignar grupo',
       tone: 'warning',
@@ -308,7 +314,7 @@ export function CoursesPage() {
     event.preventDefault();
 
     if (!courseId) {
-      setError('Selecciona un curso antes de crear el grupo');
+      setError('Selecciona un paralelo antes de crear el grupo');
       setMessage('');
       return;
     }
@@ -328,6 +334,7 @@ export function CoursesPage() {
       if (!refreshed) {
         return;
       }
+      setManagementModal('');
       setMessage('Grupo creado');
     } catch (requestError) {
       setError(requestError.message);
@@ -340,7 +347,7 @@ export function CoursesPage() {
     event.preventDefault();
 
     if (!courseId) {
-      setError('Selecciona un curso antes de guardar los datos comunes');
+      setError('Selecciona un paralelo antes de guardar los datos comunes');
       setMessage('');
       return;
     }
@@ -357,7 +364,8 @@ export function CoursesPage() {
       });
       setCourseProfileForm(profileFromCourse(updatedCourse));
       await loadData();
-      setMessage('Datos comunes del curso guardados');
+      setManagementModal('');
+      setMessage('Datos comunes del paralelo guardados');
     } catch (requestError) {
       setError(requestError.message);
     } finally {
@@ -372,7 +380,7 @@ export function CoursesPage() {
 
   const columns = [
     { key: 'id', header: 'ID' },
-    { key: 'name', header: 'Curso' },
+    { key: 'name', header: 'Paralelo' },
     { key: 'code', header: 'Codigo' },
     { key: 'capacity', header: 'Cupos' },
     {
@@ -438,10 +446,10 @@ export function CoursesPage() {
                 `/api/courses/${row.id}/${row.active ? 'disable' : 'enable'}`,
                 'PATCH',
                 courseActionConfirmation({
-                  title: row.active ? 'Desactivar curso' : 'Activar curso',
+                  title: row.active ? 'Desactivar paralelo' : 'Activar paralelo',
                   description: row.active
-                    ? 'El curso dejara de estar disponible para nuevos procesos.'
-                    : 'El curso volvera a estar disponible.',
+                    ? 'El paralelo dejara de estar disponible para nuevos procesos.'
+                    : 'El paralelo volvera a estar disponible.',
                   details: row.name,
                   confirmLabel: row.active ? 'Desactivar' : 'Activar',
                   tone: row.active ? 'danger' : 'warning',
@@ -458,10 +466,10 @@ export function CoursesPage() {
                 `/api/courses/${row.id}/${row.locked ? 'unlock' : 'lock'}`,
                 'PATCH',
                 courseActionConfirmation({
-                  title: row.locked ? 'Desbloquear curso' : 'Bloquear curso',
+                  title: row.locked ? 'Desbloquear paralelo' : 'Bloquear paralelo',
                   description: row.locked
-                    ? 'El curso podra recibir cambios nuevamente.'
-                    : 'El curso quedara protegido contra cambios operativos.',
+                    ? 'El paralelo podra recibir cambios nuevamente.'
+                    : 'El paralelo quedara protegido contra cambios operativos.',
                   details: row.name,
                   confirmLabel: row.locked ? 'Desbloquear' : 'Bloquear',
                   tone: row.locked ? 'warning' : 'danger',
@@ -481,7 +489,7 @@ export function CoursesPage() {
                 'POST',
                 courseActionConfirmation({
                   title: 'Confirmar inscripcion',
-                  description: 'Se enviara tu solicitud de inscripcion a este curso.',
+                  description: 'Se enviara tu solicitud de inscripcion a este paralelo.',
                   details: row.name,
                   confirmLabel: 'Inscribirme',
                   tone: 'warning',
@@ -515,7 +523,7 @@ export function CoursesPage() {
   const enrollmentColumns = [
     { key: 'id', header: 'ID' },
     { key: 'student', header: 'Estudiante' },
-    { key: 'courseName', header: 'Curso' },
+    { key: 'courseName', header: 'Paralelo' },
     { key: 'groupName', header: 'Grupo', render: (row) => row.groupName || '-' },
     { key: 'status', header: 'Estado', render: (row) => <StatusBadge status={row.status} /> },
   ];
@@ -533,7 +541,7 @@ export function CoursesPage() {
     const sameGroup = selectedGroupId && row.groupId && String(selectedGroupId) === String(row.groupId);
     const groupOptions = getGroupOptionsForEnrollment(row, groups, assignableGroups);
 
-    // Cambio solicitado: el tutor de practicas asigna manualmente el grupo por estudiante.
+    // El tutor de practicas asigna manualmente el grupo por estudiante.
     return (
       <div className="flex min-w-64 flex-col gap-2 sm:flex-row sm:items-center">
         <Select
@@ -587,7 +595,7 @@ export function CoursesPage() {
                   'PATCH',
                   courseActionConfirmation({
                     title: 'Aprobar inscripcion',
-                    description: 'El estudiante quedara aprobado en el curso seleccionado.',
+                    description: 'El estudiante quedara aprobado en el paralelo seleccionado.',
                     details: row.student || row.studentFullName || row.courseName,
                     confirmLabel: 'Aprobar',
                     tone: 'success',
@@ -646,7 +654,7 @@ export function CoursesPage() {
   async function refreshCourseManagement(id = null) {
     const targetId = id || courseId;
     if (!targetId) {
-      setError('Selecciona un curso antes de consultar inscritos');
+      setError('Selecciona un paralelo antes de consultar inscritos');
       return false;
     }
 
@@ -704,7 +712,7 @@ export function CoursesPage() {
 
   const needsCourse = {
     value: courseId,
-    message: 'Selecciona un curso antes de ejecutar esta accion',
+    message: 'Selecciona un paralelo antes de ejecutar esta accion',
   };
   const needsTutorAccount = {
     value: accountId,
@@ -720,8 +728,8 @@ export function CoursesPage() {
     <>
       <PageHeader
         eyebrow="Practicas"
-        title="Cursos y grupos"
-        description="Busca cursos, organiza grupos, asigna tutores y revisa inscripciones."
+        title="Paralelos y grupos"
+        description="Busca paralelos, organiza grupos, asigna tutores y revisa inscripciones."
         action={
           <SecondaryButton icon={RefreshCw} loading={loading} onClick={loadData} type="button">
             Actualizar
@@ -735,10 +743,10 @@ export function CoursesPage() {
       <SectionCard>
         <ModuleTabs>
           {[
-            ['courses', 'Cursos'],
-            canManage && ['create', 'Crear curso'],
-            // Mostrar 'Gestion' y 'Inscripciones' solo si se seleccionó un curso (se pulsó 'Usar')
-            courseId && canUseCourse && ['manage', 'Gestion del curso'],
+            ['courses', 'Paralelos'],
+            canManage && ['create', 'Crear paralelo'],
+            // Mostrar 'Gestion' e 'Inscripciones' solo si se seleccionó un paralelo.
+            courseId && canUseCourse && ['manage', 'Gestion del paralelo'],
             courseId && ['enrollments', isStudent ? 'Mis inscripciones' : 'Inscripciones'],
           ]
             .filter(Boolean)
@@ -748,7 +756,7 @@ export function CoursesPage() {
                 key={id}
                 onClick={() => {
                   setActiveView(id);
-                  // Si volvemos a 'Cursos' o 'Crear curso', limpiar la selección de curso
+                  // Si volvemos a 'Paralelos' o 'Crear paralelo', limpiar la selección.
                   if (id === 'courses' || id === 'create') {
                     setCourseId('');
                     setEnrollments([]);
@@ -765,26 +773,41 @@ export function CoursesPage() {
         </ModuleTabs>
       </SectionCard>
 
-      {/* Mostrar aviso para gestores cuando no hay curso seleccionado */}
+      {/* Mostrar aviso para gestores cuando no hay paralelo seleccionado */}
       {!courseId && canUseCourse && (activeView === 'courses' || activeView === 'create') && (
         <SectionCard>
-          <Alert tone="info">Abre la gestion de un curso para ver sus grupos e inscripciones.</Alert>
+          <Alert tone="info">Abre la gestion de un paralelo para ver sus grupos e inscripciones.</Alert>
         </SectionCard>
       )}
 
-      {activeView === 'courses' && (
+      {(activeView === 'courses' || activeView === 'create') && (
         <>
-          <SectionCard title="Filtrar cursos">
-            <div className="grid gap-4 md:grid-cols-3 xl:grid-cols-6">
+          <FilterPanel
+            activeCount={countActiveFilters(courseFilters, ['query'])}
+            hasActiveFilters={countActiveFilters(courseFilters) > 0}
+            onClear={() => setCourseFilters({
+              query: '',
+              course: '',
+              subject: '',
+              active: '',
+              locked: '',
+              institutionalTutor: '',
+              practiceTutor: '',
+            })}
+            search={(
               <Field label="Buscar">
                 <Input
-                  placeholder="Curso, codigo, tutor o asignatura"
+                  placeholder="Paralelo, codigo, tutor o asignatura"
                   type="search"
                   value={courseFilters.query}
                   onChange={(event) => setCourseFilters((current) => ({ ...current, query: event.target.value }))}
                 />
               </Field>
-              <Field label="Curso">
+            )}
+            summary={`${filteredCourses.length} de ${courses.length} paralelos`}
+            title="Filtrar paralelos"
+          >
+              <Field label="Paralelo">
                 <Select
                   value={courseFilters.course}
                   onChange={(event) => setCourseFilters((current) => ({ ...current, course: event.target.value }))}
@@ -863,20 +886,21 @@ export function CoursesPage() {
                   </Select>
                 </Field>
               )}
-            </div>
-            <p className="mt-3 text-xs font-bold text-muted">
-              {filteredCourses.length} de {courses.length} cursos
-            </p>
-          </SectionCard>
+          </FilterPanel>
 
-          <SectionCard title="Cursos">
+          <SectionCard title="Paralelos">
             <DataTable columns={columns} loading={loading} rows={filteredCourses} />
           </SectionCard>
         </>
       )}
 
-      {activeView === 'create' && canManage && (
-        <SectionCard title="Crear curso">
+      <Modal
+        description="Completa la informacion basica del paralelo sin salir del listado."
+        maxWidth="max-w-5xl"
+        onClose={() => setActiveView('courses')}
+        open={activeView === 'create' && canManage}
+        title="Crear paralelo"
+      >
           <form className="grid gap-4 md:grid-cols-3" onSubmit={createCourse}>
             <Field label="Nombre">
               <Input
@@ -895,7 +919,6 @@ export function CoursesPage() {
             </Field>
             <Field label="Facultad">
               <EntitySelect
-                disabled={hasCourseSchoolSelection(form)}
                 path={ENTITY_RELATIONS.facultyId.path}
                 placeholder={ENTITY_RELATIONS.facultyId.placeholder}
                 value={form.facultyId}
@@ -904,7 +927,7 @@ export function CoursesPage() {
             </Field>
             <Field label="Carrera">
               <EntitySelect
-                disabled={!form.facultyId || hasCourseSchoolSelection(form)}
+                disabled={!form.facultyId}
                 path={ENTITY_RELATIONS.careerId.path}
                 placeholder={form.facultyId ? ENTITY_RELATIONS.careerId.placeholder : 'Selecciona primero una facultad'}
                 value={form.careerId}
@@ -914,47 +937,12 @@ export function CoursesPage() {
             </Field>
             <Field label="Ciclo academico">
               <EntitySelect
-                disabled={!form.careerId || hasCourseSchoolSelection(form)}
+                disabled={!form.careerId}
                 path={ENTITY_RELATIONS.academicCycleId.path}
                 placeholder={form.careerId ? ENTITY_RELATIONS.academicCycleId.placeholder : 'Selecciona primero una carrera'}
                 value={form.academicCycleId}
                 rowFilter={(row) => hasMatchingId(row.careerId, form.careerId)}
                 onChange={(value) => setCourseFormField('academicCycleId', value)}
-              />
-            </Field>
-            <Field label="Institucion educativa">
-              <EntitySelect
-                disabled={hasCourseUniversitySelection(form)}
-                path={ENTITY_RELATIONS.institutionId.path}
-                placeholder="Seleccionar escuela o colegio"
-                value={form.institutionId}
-                rowFilter={isSchoolInstitution}
-                onChange={(value) => setCourseFormField('institutionId', value)}
-              />
-            </Field>
-            <Field label="Grado">
-              <EntitySelect
-                disabled={!form.institutionId || hasCourseUniversitySelection(form)}
-                path={ENTITY_RELATIONS.gradeId.path}
-                placeholder={form.institutionId ? ENTITY_RELATIONS.gradeId.placeholder : 'Selecciona primero una institucion educativa'}
-                value={form.gradeId}
-                rowFilter={(row) => hasMatchingId(row.institutionId, form.institutionId)}
-                onChange={(value) => setCourseFormField('gradeId', value)}
-              />
-            </Field>
-            <Field label="Asignatura">
-              <EntitySelect
-                disabled={!form.academicCycleId && !form.gradeId}
-                path={ENTITY_RELATIONS.subjectId.path}
-                placeholder={
-                  form.academicCycleId || form.gradeId
-                    ? ENTITY_RELATIONS.subjectId.placeholder
-                    : 'Selecciona primero un ciclo academico o grado'
-                }
-                value={form.subjectId}
-                rowFilter={subjectFilterForCourse(form)}
-                onChange={(value) => setCourseFormField('subjectId', value)}
-                required
               />
             </Field>
             <Field label="Inicio">
@@ -979,19 +967,18 @@ export function CoursesPage() {
               />
             </Field>
             <div className="md:col-span-3">
-              <PrimaryButton icon={Plus} loading={loading} type="submit">Crear curso</PrimaryButton>
+            <PrimaryButton icon={Plus} loading={loading} type="submit">Crear paralelo</PrimaryButton>
             </div>
           </form>
-        </SectionCard>
-      )}
+      </Modal>
 
       {activeView === 'manage' && canUseCourse && (
-        <SectionCard title="Gestion del curso">
+        <SectionCard title="Gestion del paralelo">
           <div className="grid gap-4 md:grid-cols-2">
-            <Field label="Curso">
+            <Field label="Paralelo">
               <EntitySelect
                 rows={courses}
-                placeholder="Seleccionar curso"
+                placeholder="Seleccionar paralelo"
                 value={courseId}
                 onChange={(value) => {
                   const course = courses.find((item) => String(item.id) === String(value));
@@ -1022,7 +1009,7 @@ export function CoursesPage() {
                 <Field label="Grupo">
                   <EntitySelect
                     rows={groups}
-                    placeholder={groups.length ? 'Seleccionar grupo' : 'Crea un grupo para este curso'}
+                    placeholder={groups.length ? 'Seleccionar grupo' : 'Crea un grupo para este paralelo'}
                     getOptionLabel={groupLabel}
                     value={groupId}
                     onChange={setGroupId}
@@ -1051,10 +1038,10 @@ export function CoursesPage() {
 	                      runQuickCourseAction(`/api/courses/${courseId}/${selectedCourseIsActive ? 'disable' : 'enable'}`, [
 	                        needsCourse,
 	                      ], courseActionConfirmation({
-                          title: selectedCourseIsActive ? 'Desactivar curso' : 'Activar curso',
+                          title: selectedCourseIsActive ? 'Desactivar paralelo' : 'Activar paralelo',
                           description: selectedCourseIsActive
-                            ? 'El curso dejara de estar disponible para nuevos procesos.'
-                            : 'El curso volvera a estar disponible.',
+                            ? 'El paralelo dejara de estar disponible para nuevos procesos.'
+                            : 'El paralelo volvera a estar disponible.',
                           details: selectedCourse?.name,
                           confirmLabel: selectedCourseIsActive ? 'Desactivar' : 'Activar',
                           tone: selectedCourseIsActive ? 'danger' : 'warning',
@@ -1071,10 +1058,10 @@ export function CoursesPage() {
 	                      runQuickCourseAction(`/api/courses/${courseId}/${selectedCourseIsLocked ? 'unlock' : 'lock'}`, [
 	                        needsCourse,
 	                      ], courseActionConfirmation({
-                          title: selectedCourseIsLocked ? 'Desbloquear curso' : 'Bloquear curso',
+                          title: selectedCourseIsLocked ? 'Desbloquear paralelo' : 'Bloquear paralelo',
                           description: selectedCourseIsLocked
-                            ? 'El curso podra recibir cambios nuevamente.'
-                            : 'El curso quedara protegido contra cambios operativos.',
+                            ? 'El paralelo podra recibir cambios nuevamente.'
+                            : 'El paralelo quedara protegido contra cambios operativos.',
                           details: selectedCourse?.name,
                           confirmLabel: selectedCourseIsLocked ? 'Desbloquear' : 'Bloquear',
                           tone: selectedCourseIsLocked ? 'warning' : 'danger',
@@ -1093,7 +1080,7 @@ export function CoursesPage() {
                         needsTutorAccount,
                       ], courseActionConfirmation({
                         title: 'Asignar tutor de practicas',
-                        description: 'El curso quedara asociado al tutor de practicas seleccionado.',
+                        description: 'El paralelo quedara asociado al tutor de practicas seleccionado.',
                         details: selectedCourse?.name,
                         confirmLabel: 'Asignar tutor',
                         tone: 'warning',
@@ -1148,113 +1135,146 @@ export function CoursesPage() {
 	                  </SecondaryButton>
                 </>
               )}
+              {canPracticeTutor && (
+                <SecondaryButton
+                  disabled={loading || !courseId}
+                  icon={CheckCircle2}
+                  onClick={() => setManagementModal('practiceProfile')}
+                  type="button"
+                >
+                  Datos comunes
+                </SecondaryButton>
+              )}
               <SecondaryButton disabled={loading || !courseId} icon={Eye} onClick={() => loadCourseEnrollments()} type="button">
                 Ver inscritos
               </SecondaryButton>
             </ActionBar>
           </div>
-          {canPracticeTutor && (
-            <div className="mt-5 border-t border-[#c8d2cd] pt-4 dark:border-slate-700">
-              <h3 className="text-sm font-extrabold text-[#20282d] dark:text-slate-50">Datos comunes del curso</h3>
-              {/* Cambio solicitado: estos campos salen del documento y se administran desde el curso. */}
-              <form className="mt-3 grid gap-4 md:grid-cols-2" onSubmit={updatePracticeProfile}>
-                <Field label="Unidad de organizacion curricular">
-                  <Input
-                    value={courseProfileForm.curricularOrganizationUnit}
-                    onChange={(event) =>
-                      setCourseProfileForm((current) => ({ ...current, curricularOrganizationUnit: event.target.value }))
-                    }
-                  />
-                </Field>
-                <Field label="Tipo de practica">
-                  <Select
-                    value={courseProfileForm.practiceType}
-                    onChange={(event) => setCourseProfileForm((current) => ({ ...current, practiceType: event.target.value }))}
-                  >
-                    <option value="">Seleccionar tipo</option>
-                    <option value="OBSERVACION">Observacion</option>
-                    <option value="ELABORACION">Elaboracion</option>
-                    <option value="DOCENTE">Docente</option>
-                  </Select>
-                </Field>
-                <Field className="md:col-span-2" label="Proyecto integrador de saberes">
-                  <Textarea
-                    value={courseProfileForm.integrativeKnowledgeProject}
-                    onChange={(event) =>
-                      setCourseProfileForm((current) => ({ ...current, integrativeKnowledgeProject: event.target.value }))
-                    }
-                  />
-                </Field>
-                <Field className="md:col-span-2" label="Objetivo general">
-                  <Textarea
-                    value={courseProfileForm.generalObjective}
-                    onChange={(event) => setCourseProfileForm((current) => ({ ...current, generalObjective: event.target.value }))}
-                  />
-                </Field>
-                <Field label="Objetivo especifico 1">
-                  <Textarea
-                    value={courseProfileForm.specificObjective1}
-                    onChange={(event) => setCourseProfileForm((current) => ({ ...current, specificObjective1: event.target.value }))}
-                  />
-                </Field>
-                <Field label="Objetivo especifico 2">
-                  <Textarea
-                    value={courseProfileForm.specificObjective2}
-                    onChange={(event) => setCourseProfileForm((current) => ({ ...current, specificObjective2: event.target.value }))}
-                  />
-                </Field>
-                <Field className="md:col-span-2" label="Objetivo especifico 3">
-                  <Textarea
-                    value={courseProfileForm.specificObjective3}
-                    onChange={(event) => setCourseProfileForm((current) => ({ ...current, specificObjective3: event.target.value }))}
-                  />
-                </Field>
-                <div className="md:col-span-2">
-                  <PrimaryButton disabled={loading || !courseId} icon={CheckCircle2} loading={loading} type="submit">
-                    Guardar datos comunes
-                  </PrimaryButton>
-                </div>
-              </form>
-            </div>
-          )}
           <div className="mt-5 border-t border-[#c8d2cd] pt-4 dark:border-slate-700">
-            <h3 className="text-sm font-extrabold text-[#20282d] dark:text-slate-50">Grupos del curso</h3>
-            {/* Cambio solicitado: el tutor institucional ahora se gestiona desde grupos del curso. */}
-            {canManageGroups && (
-              <form className="mt-3 grid gap-4 md:grid-cols-4" onSubmit={createCourseGroup}>
-                <Field label="Nombre del grupo">
-                  <Input
-                    value={groupForm.name}
-                    onChange={(event) => setGroupForm((current) => ({ ...current, name: event.target.value }))}
-                    required
-                  />
-                </Field>
-                <Field label="Cupos del grupo">
-                  <Input
-                    type="number"
-                    value={groupForm.capacity}
-                    onChange={(event) => setGroupForm((current) => ({ ...current, capacity: event.target.value }))}
-                  />
-                </Field>
-                <Field className="md:col-span-2" label="Descripcion">
-                  <Input
-                    value={groupForm.description}
-                    onChange={(event) => setGroupForm((current) => ({ ...current, description: event.target.value }))}
-                  />
-                </Field>
-                <div className="md:col-span-4">
-                  <PrimaryButton disabled={loading || !courseId} icon={Plus} loading={loading} type="submit">
-                    Crear grupo
-                  </PrimaryButton>
-                </div>
-              </form>
-            )}
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <h3 className="text-sm font-extrabold text-[#20282d] dark:text-slate-50">Grupos del paralelo</h3>
+              {canManageGroups && (
+                <SecondaryButton disabled={loading || !courseId} icon={Plus} onClick={() => setManagementModal('group')} type="button">
+                  Crear grupo
+                </SecondaryButton>
+              )}
+            </div>
             <div className="mt-4">
               <DataTable columns={groupColumns} enableFilters={canUseCourse} loading={loading} rows={groups} />
             </div>
           </div>
         </SectionCard>
       )}
+
+      <Modal
+        description="Estos datos alimentan los documentos del estudiante para el paralelo seleccionado."
+        maxWidth="max-w-5xl"
+        onClose={() => setManagementModal('')}
+        open={managementModal === 'practiceProfile'}
+        title="Datos comunes del paralelo"
+      >
+        <form className="grid gap-4 md:grid-cols-2" onSubmit={updatePracticeProfile}>
+          <Field label="Unidad de organizacion curricular">
+            <Input
+              value={courseProfileForm.curricularOrganizationUnit}
+              onChange={(event) =>
+                setCourseProfileForm((current) => ({ ...current, curricularOrganizationUnit: event.target.value }))
+              }
+            />
+          </Field>
+          <Field label="Tipo de practica">
+            <Select
+              value={courseProfileForm.practiceType}
+              onChange={(event) => setCourseProfileForm((current) => ({ ...current, practiceType: event.target.value }))}
+            >
+              <option value="">Seleccionar tipo</option>
+              <option value="OBSERVACION">Observacion</option>
+              <option value="ELABORACION">Elaboracion</option>
+              <option value="DOCENTE">Docente</option>
+            </Select>
+          </Field>
+          <Field className="md:col-span-2" label="Proyecto integrador de saberes">
+            <Textarea
+              value={courseProfileForm.integrativeKnowledgeProject}
+              onChange={(event) =>
+                setCourseProfileForm((current) => ({ ...current, integrativeKnowledgeProject: event.target.value }))
+              }
+            />
+          </Field>
+          <Field className="md:col-span-2" label="Objetivo general">
+            <Textarea
+              value={courseProfileForm.generalObjective}
+              onChange={(event) => setCourseProfileForm((current) => ({ ...current, generalObjective: event.target.value }))}
+            />
+          </Field>
+          <Field label="Objetivo especifico 1">
+            <Textarea
+              value={courseProfileForm.specificObjective1}
+              onChange={(event) => setCourseProfileForm((current) => ({ ...current, specificObjective1: event.target.value }))}
+            />
+          </Field>
+          <Field label="Objetivo especifico 2">
+            <Textarea
+              value={courseProfileForm.specificObjective2}
+              onChange={(event) => setCourseProfileForm((current) => ({ ...current, specificObjective2: event.target.value }))}
+            />
+          </Field>
+          <Field className="md:col-span-2" label="Objetivo especifico 3">
+            <Textarea
+              value={courseProfileForm.specificObjective3}
+              onChange={(event) => setCourseProfileForm((current) => ({ ...current, specificObjective3: event.target.value }))}
+            />
+          </Field>
+          <div className="md:col-span-2">
+            <PrimaryButton disabled={loading || !courseId} icon={CheckCircle2} loading={loading} type="submit">
+              Guardar datos comunes
+            </PrimaryButton>
+          </div>
+        </form>
+      </Modal>
+
+      <Modal
+        description="Crea un grupo dentro del paralelo seleccionado y luego asígnale estudiantes desde inscripciones."
+        maxWidth="max-w-4xl"
+        onClose={() => setManagementModal('')}
+        open={managementModal === 'group'}
+        title="Crear grupo"
+      >
+        <form className="grid gap-4 md:grid-cols-2" onSubmit={createCourseGroup}>
+          <Field label="Letra del grupo">
+            <Select
+              value={groupForm.name}
+              onChange={(event) => setGroupForm((current) => ({ ...current, name: event.target.value }))}
+              required
+            >
+              <option value="">Seleccionar letra</option>
+              {'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map((letter) => (
+                <option key={letter} value={letter}>
+                  {letter}
+                </option>
+              ))}
+            </Select>
+          </Field>
+          <Field label="Cupos del grupo">
+            <Input
+              type="number"
+              value={groupForm.capacity}
+              onChange={(event) => setGroupForm((current) => ({ ...current, capacity: event.target.value }))}
+            />
+          </Field>
+          <Field className="md:col-span-2" label="Descripcion">
+            <Input
+              value={groupForm.description}
+              onChange={(event) => setGroupForm((current) => ({ ...current, description: event.target.value }))}
+            />
+          </Field>
+          <div className="md:col-span-2">
+            <PrimaryButton disabled={loading || !courseId} icon={Plus} loading={loading} type="submit">
+              Crear grupo
+            </PrimaryButton>
+          </div>
+        </form>
+      </Modal>
 
       {activeView === 'enrollments' && (
       <SectionCard title={isStudent ? 'Mis inscripciones' : 'Inscripciones'}>
@@ -1268,7 +1288,7 @@ export function CoursesPage() {
 function courseActionConfirmation(options = {}) {
   return {
     title: 'Confirmar accion',
-    description: 'Esta accion modificara informacion importante del curso o de una inscripcion.',
+    description: 'Esta accion modificara informacion importante del paralelo o de una inscripcion.',
     confirmLabel: 'Confirmar',
     tone: 'warning',
     ...options,
@@ -1285,9 +1305,6 @@ function emptyCourseForm() {
     facultyId: '',
     careerId: '',
     academicCycleId: '',
-    institutionId: '',
-    gradeId: '',
-    subjectId: '',
   };
 }
 
@@ -1297,83 +1314,13 @@ function applyCourseFormChange(form, name, value) {
   if (name === 'facultyId') {
     next.careerId = '';
     next.academicCycleId = '';
-    next.subjectId = '';
-
-    if (value) {
-      clearCourseSchoolFields(next);
-    }
   }
 
   if (name === 'careerId') {
     next.academicCycleId = '';
-    next.subjectId = '';
-
-    if (value) {
-      clearCourseSchoolFields(next);
-    }
-  }
-
-  if (name === 'academicCycleId') {
-    next.subjectId = '';
-
-    if (value) {
-      clearCourseSchoolFields(next);
-    }
-  }
-
-  if (name === 'institutionId') {
-    next.gradeId = '';
-    next.subjectId = '';
-
-    if (value) {
-      clearCourseUniversityFields(next);
-    }
-  }
-
-  if (name === 'gradeId') {
-    next.subjectId = '';
-
-    if (value) {
-      clearCourseUniversityFields(next);
-    }
   }
 
   return next;
-}
-
-function clearCourseSchoolFields(form) {
-  form.institutionId = '';
-  form.gradeId = '';
-}
-
-function clearCourseUniversityFields(form) {
-  form.facultyId = '';
-  form.careerId = '';
-  form.academicCycleId = '';
-}
-
-function hasCourseUniversitySelection(form) {
-  return Boolean(form.facultyId || form.careerId || form.academicCycleId);
-}
-
-function hasCourseSchoolSelection(form) {
-  return Boolean(form.institutionId || form.gradeId);
-}
-
-function subjectFilterForCourse(form) {
-  if (form.academicCycleId) {
-    return (row) => hasMatchingId(row.academicCycleId, form.academicCycleId);
-  }
-
-  if (form.gradeId) {
-    return (row) => hasMatchingId(row.gradeId, form.gradeId);
-  }
-
-  return () => false;
-}
-
-function isSchoolInstitution(row) {
-  return row?.type === 'ESCUELA' || row?.type === 'COLEGIO';
 }
 
 function hasMatchingId(left, right) {
@@ -1387,7 +1334,7 @@ function cleanCoursePayload(form) {
     capacity: Number(form.capacity),
     startDate: form.startDate || null,
     endDate: form.endDate || null,
-    subjectId: Number(form.subjectId),
+    academicCycleId: Number(form.academicCycleId),
   };
 }
 
@@ -1485,6 +1432,13 @@ function filterPracticeTutorCourses(courses, username) {
   }
 
   return courses.filter((course) => String(course.practiceTutor || '') === String(username));
+}
+
+function countActiveFilters(filters, excludeKeys = []) {
+  return Object.entries(filters || {})
+    .filter(([key]) => !excludeKeys.includes(key))
+    .filter(([, value]) => String(value || '').trim())
+    .length;
 }
 
 function groupLabel(group) {

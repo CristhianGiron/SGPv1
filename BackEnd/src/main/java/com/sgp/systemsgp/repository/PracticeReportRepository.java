@@ -54,6 +54,18 @@ public interface PracticeReportRepository
             "reviewedBy",
             "directorReviewedBy"
     })
+    List<PracticeReport> findByCourse_PracticeTutor_UsernameAndStatusInAndCourse_ActiveTrueAndCourse_DeletedFalseAndDeletedFalse(
+            String username,
+            List<PracticeReportStatus> statuses);
+
+    @EntityGraph(attributePaths = {
+            "enrollment",
+            "student",
+            "course",
+            "educationalInstitution",
+            "reviewedBy",
+            "directorReviewedBy"
+    })
     List<PracticeReport> findByStatusInAndDeletedFalse(
             List<PracticeReportStatus> statuses);
 

@@ -77,6 +77,19 @@ public class ActivityEvaluationController {
                 authentication.getName());
     }
 
+    @GetMapping("/{id}/pdf")
+    @PreAuthorize("hasAnyRole('ESTUDIANTE','TUTOR_PRACTICAS','DIRECTOR_PRACTICAS','ADMIN')")
+    public org.springframework.http.ResponseEntity<byte[]> exportPdf(
+            Authentication authentication,
+            @PathVariable Long id) {
+
+        return PdfResponseFactory.attachment(
+                activityEvaluationService.exportPdf(
+                        id,
+                        authentication.getName()),
+                "L.4. Evaluación de Actividades..pdf");
+    }
+
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('TUTOR_PRACTICAS')")
     public ActivityEvaluationResponse update(

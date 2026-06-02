@@ -79,16 +79,18 @@ public class PracticeReportController {
 
     @GetMapping("/submitted")
     @PreAuthorize("hasAnyRole('ADMIN','DIRECTOR_PRACTICAS')")
-    public List<PracticeReportResponse> submittedDocuments() {
+    public List<PracticeReportResponse> submittedDocuments(
+            Authentication authentication) {
 
-        return practiceReportService.submittedDocuments();
+        return practiceReportService.submittedDocuments(authentication.getName());
     }
 
     @GetMapping("/submitted/summary")
     @PreAuthorize("hasAnyRole('ADMIN','DIRECTOR_PRACTICAS')")
-    public List<ReviewableDocumentSummaryResponse> submittedDocumentSummaries() {
+    public List<ReviewableDocumentSummaryResponse> submittedDocumentSummaries(
+            Authentication authentication) {
 
-        return practiceReportService.submittedDocumentSummaries();
+        return practiceReportService.submittedDocumentSummaries(authentication.getName());
     }
 
     @GetMapping("/defaults")
@@ -123,7 +125,7 @@ public class PracticeReportController {
                 practiceReportService.exportApprovedPdf(
                         id,
                         authentication.getName()),
-                "practice-report-" + id + ".pdf");
+                "L.1. Informe de Actividades Cumplidas.pdf");
     }
 
     @PutMapping("/{id}")

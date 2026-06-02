@@ -18,6 +18,10 @@ public interface CourseRepository
 
     List<Course> findByDeletedFalse();
 
+    List<Course> findByPracticeTutor_UsernameAndDeletedFalse(String username);
+
+    List<Course> findByInstitutionalTutor_UsernameAndDeletedFalse(String username);
+
     Optional<Course> findByIdAndDeletedFalse(Long id);
 
     @Query("""

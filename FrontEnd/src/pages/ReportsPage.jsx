@@ -112,12 +112,12 @@ export function ReportsPage() {
           </SectionCard>
 
           <SectionCard
-            description="Pendientes, correcciones y aprobaciones organizadas por curso."
-            title="Revision por curso"
+            description="Pendientes, correcciones y aprobaciones organizadas por paralelo."
+            title="Revision por paralelo"
           >
             <DataTable
               columns={COURSE_COLUMNS}
-              emptyText="Aun no hay cursos con documentos revisables."
+              emptyText="Aun no hay paralelos con documentos revisables."
               rows={report?.approvalsByCourse || []}
             />
           </SectionCard>
@@ -148,7 +148,7 @@ const DOCUMENT_STATUS_COLUMNS = [
 ];
 
 const COURSE_COLUMNS = [
-  { key: 'courseName', header: 'Curso' },
+  { key: 'courseName', header: 'Paralelo' },
   { key: 'pending', header: 'Pendientes' },
   { key: 'needsCorrection', header: 'Correcciones' },
   { key: 'approved', header: 'Aprobados' },

@@ -50,12 +50,20 @@ public class Subject {
     @JoinColumn(name = "academic_cycle_id")
     private AcademicCycle academicCycle;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "course_id")
+    private Course course;
+
     /*
      * RELACIONES ESCUELA/COLEGIO
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "grade_id")
     private Grade grade;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "grade_parallel_id")
+    private GradeParallel gradeParallel;
 
     /*
      * CONTROL

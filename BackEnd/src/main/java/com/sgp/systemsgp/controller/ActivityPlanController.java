@@ -79,16 +79,18 @@ public class ActivityPlanController {
 
     @GetMapping("/submitted")
     @PreAuthorize("hasAnyRole('ADMIN','DIRECTOR_PRACTICAS')")
-    public List<ActivityPlanResponse> submittedDocuments() {
+    public List<ActivityPlanResponse> submittedDocuments(
+            Authentication authentication) {
 
-        return activityPlanService.submittedDocuments();
+        return activityPlanService.submittedDocuments(authentication.getName());
     }
 
     @GetMapping("/submitted/summary")
     @PreAuthorize("hasAnyRole('ADMIN','DIRECTOR_PRACTICAS')")
-    public List<ReviewableDocumentSummaryResponse> submittedDocumentSummaries() {
+    public List<ReviewableDocumentSummaryResponse> submittedDocumentSummaries(
+            Authentication authentication) {
 
-        return activityPlanService.submittedDocumentSummaries();
+        return activityPlanService.submittedDocumentSummaries(authentication.getName());
     }
 
     @GetMapping("/defaults")
@@ -123,7 +125,7 @@ public class ActivityPlanController {
                 activityPlanService.exportApprovedPdf(
                         id,
                         authentication.getName()),
-                "activity-plan-" + id + ".pdf");
+                "L.2. Plan de Actividades.pdf");
     }
 
     @PutMapping("/{id}")

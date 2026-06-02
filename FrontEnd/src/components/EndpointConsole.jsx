@@ -3,6 +3,7 @@ import {
   CheckCircle2,
   Download,
   Eye,
+  Image,
   SlidersHorizontal,
   List,
   MessageCircle,
@@ -13,7 +14,7 @@ import {
   Send,
   XCircle,
 } from "lucide-react";
-import { apiBlob, apiRequest, unwrapPage } from "../api/client";
+import { apiBlob, apiRequest, getApiBaseUrl, unwrapPage } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
 import { Alert } from "./ui/Alert";
 import { ActionBar, PrimaryButton, SecondaryButton } from "./ui/ActionBar";
@@ -22,6 +23,7 @@ import { useConfirm } from "./ui/ConfirmDialog";
 import { DataTable } from "./ui/DataTable";
 import { EntitySelect } from "./ui/EntitySelect";
 import { Field, Input, Select, Textarea } from "./ui/FormControls";
+import { Modal } from "./ui/Modal";
 import { ModuleTab, ModuleTabs } from "./ui/ModuleTabs";
 import { SectionCard } from "./ui/SectionCard";
 import { StatusBadge } from "./ui/StatusBadge";
@@ -134,8 +136,6 @@ const reviewChoiceBaseClass =
   "inline-flex min-h-[2.45rem] items-center gap-2 rounded-lg border border-[#cad8cf] bg-white px-3 py-2 text-sm font-[850] text-[#34443b] transition-colors hover:bg-[#f5faf7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#529914]/35 dark:border-slate-600 dark:bg-surface dark:text-ink dark:hover:bg-[#203026]";
 const reviewChoiceActiveClass =
   "border-[#529914] bg-[#e4f0d8] text-primary-strong hover:bg-[#d8ecc8] dark:border-[#75c66a] dark:bg-[#203026] dark:text-[#bbf7d0] dark:hover:bg-[#2b3f31]";
-const reviewChoiceWarningClass =
-  "border-[#fde68a] bg-[#fffbeb] text-[#92400e] hover:bg-[#fef3c7] dark:border-amber-400/40 dark:bg-amber-950/25 dark:text-amber-200 dark:hover:bg-amber-950/35";
 const reviewSectionClass =
   "overflow-hidden rounded-lg border border-border bg-white shadow-card dark:border-slate-700 dark:bg-surface dark:text-ink";
 const reviewSectionHeaderClass =
@@ -211,6 +211,8 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
   );
   const [rows, setRows] = useState([]);
   const [enrollmentRows, setEnrollmentRows] = useState([]);
+  const [evidencePhotos, setEvidencePhotos] = useState([]);
+  const [evidencePhotosLoading, setEvidencePhotosLoading] = useState(false);
   const [selected, setSelected] = useState(null);
   const [id, setId] = useState("");
   const [secondaryId, setSecondaryId] = useState("");
@@ -317,9 +319,43 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
 
     return relations;
   }, [enrollmentRows, module.prefillFromEnrollment, selected, isStudent]);
+  const availableEvidencePhotos = useMemo(() => {
+    if (module.id !== "completed-records") {
+      return [];
+    }
+
+    if (!body?.enrollmentId) {
+      return evidencePhotos;
+    }
+
+    return evidencePhotos.filter(
+      (photo) => String(photo.enrollmentId || "") === String(body.enrollmentId),
+    );
+  }, [body?.enrollmentId, evidencePhotos, module.id]);
+  const customFormFields = useMemo(() => {
+    if (module.id !== "completed-records") {
+      return {};
+    }
+
+    return {
+      evidenceLink: ({ value, onChange, readOnly }) => (
+        <EvidenceLinkPicker
+          loading={evidencePhotosLoading}
+          photos={availableEvidencePhotos}
+          readOnly={readOnly}
+          token={token}
+          value={value}
+          onChange={onChange}
+        />
+      ),
+    };
+  }, [availableEvidencePhotos, evidencePhotosLoading, module.id, token]);
   const filteredRows = useMemo(
     () => filterListRows(rows, listFilters),
     [rows, listFilters],
+  );
+  const selectedExtraActions = visibleExtraActions.filter((action) =>
+    canRunExtraAction(selected, action),
   );
   const listFilterOptions = useMemo(
     () => ({
@@ -525,6 +561,43 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
   ]);
 
   useEffect(() => {
+    let active = true;
+
+    if (module.id !== "completed-records" || activeOperation !== "form") {
+      setEvidencePhotos([]);
+      setEvidencePhotosLoading(false);
+      return undefined;
+    }
+
+    async function loadEvidencePhotos() {
+      setEvidencePhotosLoading(true);
+
+      try {
+        const payload = await apiRequest("/api/practice-photos/me", { token });
+
+        if (active) {
+          setEvidencePhotos(Array.isArray(payload) ? payload : unwrapPage(payload));
+        }
+      } catch (requestError) {
+        if (active) {
+          setEvidencePhotos([]);
+          setError(requestError.message);
+        }
+      } finally {
+        if (active) {
+          setEvidencePhotosLoading(false);
+        }
+      }
+    }
+
+    loadEvidencePhotos();
+
+    return () => {
+      active = false;
+    };
+  }, [activeOperation, module.id, token]);
+
+  useEffect(() => {
     if (!operationTabs.some((tab) => tab.id === activeOperation)) {
       setActiveOperation(operationTabs[0]?.id || "list");
     }
@@ -707,6 +780,8 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
       return;
     }
 
+    const readiness = getDocumentReadiness(module.id, record);
+
     if (confirmingSubmitId === record.id) {
       return;
     }
@@ -716,9 +791,14 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
     try {
       const accepted = await confirm({
         title: "Enviar documento",
-        description:
-          "El documento se enviara a revision. Despues de enviarlo, los revisores autorizados podran revisarlo.",
-        details: module.title || "Documento de practica",
+        description: readiness.complete
+          ? "El documento se enviara a revision. Despues de enviarlo, los revisores autorizados podran revisarlo."
+          : "El documento se enviara a revision con informacion pendiente. Podras completarlo despues si el revisor solicita ajustes o si el flujo lo devuelve a borrador.",
+        details: readiness.complete
+          ? module.title || "Documento de practica"
+          : `${module.title || "Documento de practica"} | Pendiente: ${readiness.missing
+            .slice(0, 4)
+            .join(", ")}${readiness.missing.length > 4 ? "..." : ""}`,
         confirmLabel: "Enviar a revision",
         tone: "warning",
       });
@@ -749,7 +829,7 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `${module.id}-${record.id}.pdf`;
+      link.download = module.pdfFilename || `${module.id}-${record.id}.pdf`;
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -897,7 +977,7 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
     { key: "id", header: "ID" },
     {
       key: "courseName",
-      header: "Curso",
+      header: "Paralelo",
       render: (row) => row.courseName || row.name || "-",
     },
     {
@@ -937,7 +1017,7 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
               ? [
                   {
                     key: "submit",
-                    label: "Enviar",
+                    label: "Enviar a revision",
                     icon: Send,
                     onClick: () => {
                       window.setTimeout(() => {
@@ -961,13 +1041,15 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
               ? [
                   {
                     key: "pdf",
-                    label: "PDF",
+                    label: "Descargar PDF",
                     icon: Download,
                     onClick: () => downloadPdf(row),
                   },
                 ]
               : []),
-            ...(visibleExtraActions.length > 0
+            ...(visibleExtraActions.some((action) =>
+              canRunExtraAction(row, action),
+            )
               ? [
                   {
                     key: "extra-actions",
@@ -1112,7 +1194,12 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
 
             {activeOperation === "detail" && (
               <div className="min-w-0 max-w-full space-y-4">
-                <DataInspector data={selected} moduleId={module.id} />
+                <DataInspector data={selected} moduleId={module.id} token={token} />
+                {canSubmit && canSubmitRecord(selected) && (
+                  <DocumentDraftStatus
+                    readiness={getDocumentReadiness(module.id, selected)}
+                  />
+                )}
                 {((canUpdate && canEditRecord(selected)) ||
                   (canSubmit && canSubmitRecord(selected)) ||
                   (canExportPdf && canExportPdfRecord(selected))) && (
@@ -1137,7 +1224,7 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
                         onClick={() => submitRecord(selected)}
                         type="button"
                       >
-                        Enviar
+                        Enviar a revision
                       </SecondaryButton>
                     )}
                     {canExportPdf && canExportPdfRecord(selected) && (
@@ -1148,7 +1235,7 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
                         onClick={() => downloadPdf(selected)}
                         type="button"
                       >
-                        PDF
+                        Descargar PDF
                       </SecondaryButton>
                     )}
                   </ActionBar>
@@ -1161,14 +1248,14 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
                 {selected && <DocumentApprovalStatus data={selected} />}
                 {studentCreateNeedsEnrollment && enrollmentLoading && (
                   <Alert tone="info">
-                    Preparando los datos del curso activo...
+                    Preparando los datos del paralelo activo...
                   </Alert>
                 )}
                 {studentCreateNeedsEnrollment &&
                   !enrollmentLoading &&
                   enrollmentRows.length === 0 && (
                     <Alert tone="info">
-                      No tienes una inscripcion aprobada en un curso activo para
+                      No tienes una inscripcion aprobada en un paralelo activo para
                       completar este documento.
                     </Alert>
                   )}
@@ -1176,18 +1263,32 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
                   !enrollmentLoading &&
                   enrollmentRows.length > 1 && (
                     <Alert tone="warning">
-                      Hay mas de una inscripcion aprobada en cursos activos.
+                      Hay mas de una inscripcion aprobada en paralelos activos.
                       Revisa las inscripciones para completar este documento.
                     </Alert>
                   )}
                 {studentEnrollmentResolved && (
-                  <StructuredForm
-                    hiddenFields={formHiddenFields}
-                    readOnlyFields={module.readOnlyFields || []}
-                    relations={formRelations}
-                    value={body}
-                    onChange={setBody}
-                  />
+                  <>
+                    {module.submitPath && (
+                      <>
+                        <Alert tone="info">
+                          Guarda como borrador las veces que necesites. Cuando quieras una revision, usa "Enviar a revision" desde el detalle del documento.
+                        </Alert>
+                        <DocumentDraftStatus
+                          editable
+                          readiness={getDocumentReadiness(module.id, body)}
+                        />
+                      </>
+                    )}
+                    <StructuredForm
+                      customFields={customFormFields}
+                      hiddenFields={formHiddenFields}
+                      readOnlyFields={module.readOnlyFields || []}
+                      relations={formRelations}
+                      value={body}
+                      onChange={setBody}
+                    />
+                  </>
                 )}
 
                 <ActionBar>
@@ -1208,11 +1309,15 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
                           result = await submitStructured(
                             module.updatePath(id),
                             module.updateMethod || "PUT",
+                            body,
+                            "Borrador guardado. Puedes seguir completandolo cuando tengas mas informacion.",
                           );
                         } else if (!id && canCreate) {
                           result = await submitStructured(
                             module.createPath,
                             "POST",
+                            body,
+                            "Borrador creado. Puedes seguir completandolo cuando tengas mas informacion.",
                           );
                         }
 
@@ -1222,7 +1327,7 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
                       }}
                       type="button"
                     >
-                      {id ? "Guardar cambios" : "Guardar"}
+                      {id ? "Guardar borrador" : "Crear borrador"}
                     </PrimaryButton>
                   )}
                 </ActionBar>
@@ -1259,7 +1364,7 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
 
             {activeOperation === "actions" && (
               <div className="space-y-4">
-                {visibleExtraActions.map((action) => (
+                {selectedExtraActions.map((action) => (
                   <div
                     className="border-t border-[#c8d2cd] pt-4 first:border-t-0 first:pt-0 dark:border-slate-700"
                     key={action.label}
@@ -1387,7 +1492,7 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
                     )}
                   </div>
                 ))}
-                {!visibleExtraActions.length && (
+                {!selectedExtraActions.length && (
                   <Alert tone="info">
                     No hay acciones adicionales disponibles.
                   </Alert>
@@ -1428,6 +1533,417 @@ function importantActionConfirmation(label = "Confirmar accion", detail = "") {
     confirmLabel: label,
     tone: destructive ? "danger" : "warning",
   };
+}
+
+function DocumentDraftStatus({ editable = false, readiness }) {
+  if (!readiness) {
+    return null;
+  }
+
+  const visibleMissing = readiness.missing.slice(0, 6);
+
+  if (readiness.complete) {
+    return (
+      <Alert tone="success">
+        Documento completo segun las reglas actuales. Puedes enviarlo a revision o guardar cambios.
+      </Alert>
+    );
+  }
+
+  return (
+    <Alert tone={editable ? "info" : "warning"}>
+      <div className="space-y-2">
+        <p className="font-extrabold">
+          Borrador parcial: {readiness.completed} de {readiness.total} apartados completos.
+        </p>
+        <p>
+          Puedes guardar este avance ahora, enviarlo a revision si necesitas una revision preliminar, y completar lo pendiente despues:
+        </p>
+        <ul className="list-disc space-y-1 pl-5">
+          {visibleMissing.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+        {readiness.missing.length > visibleMissing.length && (
+          <p className="text-xs font-bold">
+            Y {readiness.missing.length - visibleMissing.length} pendiente(s) mas.
+          </p>
+        )}
+      </div>
+    </Alert>
+  );
+}
+
+const DOCUMENT_READINESS_RULES = {
+  "activity-plans": {
+    fields: [
+      ["studentFullName", "datos del estudiante"],
+      ["curricularOrganizationUnit", "unidad de organizacion curricular"],
+      ["subjectDenomination", "denominacion de la asignatura"],
+      ["integrativeKnowledgeProject", "proyecto integrador de saberes"],
+      ["practiceType", "tipo de practica"],
+      ["educationalInstitutionName", "institucion educativa"],
+      ["teacherCount", "numero de docentes"],
+      ["studentCount", "numero de estudiantes"],
+      ["mission", "mision institucional"],
+      ["vision", "vision institucional"],
+      ["institutionalValues", "valores institucionales"],
+      ["presentation", "presentacion"],
+      ["generalObjective", "objetivo general"],
+      ["specificObjective1", "objetivo especifico 1"],
+      ["specificObjective2", "objetivo especifico 2"],
+      ["specificObjective3", "objetivo especifico 3"],
+      ["legalResources", "recursos legales"],
+      ["humanResources", "recursos humanos"],
+      ["technologicalResources", "recursos tecnologicos"],
+      ["physicalResources", "recursos fisicos"],
+    ],
+    arrays: [
+      {
+        key: "activityWeeks",
+        label: "actividades por semana",
+        fields: ["weekNumber", "startDate", "endDate", "activities"],
+      },
+      {
+        key: "scheduleWeeks",
+        label: "cronograma",
+        fields: ["weekNumber", "startDate", "endDate", "scheduledActivities"],
+      },
+    ],
+  },
+  "practice-reports": {
+    fields: [
+      ["studentFullName", "datos del estudiante"],
+      ["educationalInstitutionName", "institucion educativa"],
+      ["presentation", "presentacion"],
+      ["generalObjective", "objetivo general"],
+      ["specificObjective1", "objetivo especifico 1"],
+      ["specificObjective2", "objetivo especifico 2"],
+      ["specificObjective3", "objetivo especifico 3"],
+      ["methodology", "metodologia"],
+      ["conclusion1", "conclusion 1"],
+      ["conclusion2", "conclusion 2"],
+      ["conclusion3", "conclusion 3"],
+      ["recommendation1", "recomendacion 1"],
+      ["recommendation2", "recomendacion 2"],
+      ["recommendation3", "recomendacion 3"],
+    ],
+    arrays: [
+      {
+        key: "activityWeeks",
+        label: "actividades por semana",
+        fields: ["weekNumber", "startDate", "endDate", "activities"],
+      },
+    ],
+  },
+  "final-reports": {
+    fields: [
+      ["educationalInstitutionName", "institucion educativa"],
+      ["studentFullName", "datos del estudiante"],
+      ["antecedents", "antecedentes"],
+      ["objective", "objetivo"],
+    ],
+    arrays: [
+      {
+        key: "activityWeeks",
+        label: "actividades por semana",
+        fields: ["weekNumber", "startDate", "endDate", "activities"],
+      },
+    ],
+  },
+  "completed-records": {
+    fields: [
+      ["educationalInstitutionName", "institucion educativa receptora"],
+      ["studentFullName", "nombre del estudiante"],
+      ["studentIdentification", "cedula del estudiante"],
+      ["academicPeriod", "periodo academico"],
+      ["practiceType", "tipo de practica"],
+      ["developmentMode", "desarrollo de actividades"],
+      ["deliveryDate", "fecha de entrega"],
+    ],
+    arrays: [
+      {
+        key: "entries",
+        label: "actividades cumplidas",
+        fields: ["activityDate", "startTime", "endTime", "developedActivities", "evidenceLink"],
+      },
+    ],
+  },
+};
+
+function getDocumentReadiness(moduleId, record = {}) {
+  const rules = DOCUMENT_READINESS_RULES[moduleId];
+
+  if (!rules) {
+    return { complete: true, completed: 0, missing: [], total: 0 };
+  }
+
+  const missing = [];
+  let total = 0;
+  let completed = 0;
+
+  (rules.fields || []).forEach(([key, label]) => {
+    total += 1;
+
+    if (hasDraftValue(record?.[key])) {
+      completed += 1;
+    } else {
+      missing.push(label);
+    }
+  });
+
+  (rules.arrays || []).forEach((rule) => {
+    total += 1;
+
+    if (hasCompleteRows(record?.[rule.key], rule.fields)) {
+      completed += 1;
+    } else {
+      missing.push(rule.label);
+    }
+  });
+
+  return {
+    complete: missing.length === 0,
+    completed,
+    missing,
+    total,
+  };
+}
+
+function hasCompleteRows(rows, fields) {
+  return Array.isArray(rows)
+    && rows.length > 0
+    && rows.every((row) => fields.every((field) => hasDraftValue(row?.[field])));
+}
+
+function hasDraftValue(value) {
+  if (value === undefined || value === null) {
+    return false;
+  }
+
+  if (typeof value === "string") {
+    return value.trim().length > 0;
+  }
+
+  if (Array.isArray(value)) {
+    return value.length > 0;
+  }
+
+  return true;
+}
+
+function EvidenceLinkPicker({
+  loading = false,
+  photos = [],
+  readOnly = false,
+  token,
+  value,
+  onChange,
+}) {
+  const [open, setOpen] = useState(false);
+  const selectedPhoto = photos.find(
+    (photo) => publicEvidenceUrl(photo.publicContentUrl) === value || photo.contentUrl === value,
+  );
+  const directLink = value ? evidenceDisplayLink(value) : "";
+
+  return (
+    <Field label="Evidencia">
+      <div className="space-y-2">
+        <div className="min-h-[2.75rem] rounded-lg border border-[#c8d2cd] bg-[#eef3f2] px-3 py-2 text-sm dark:border-slate-700 dark:bg-surface-soft">
+          <p className="font-semibold text-[#20282d] dark:text-slate-50">
+            {selectedPhoto
+              ? selectedPhoto.description ||
+                selectedPhoto.originalFilename ||
+                "Evidencia seleccionada"
+              : value
+                ? "Evidencia seleccionada"
+                : "Sin evidencia seleccionada"}
+          </p>
+          {value && (
+            <div className="mt-1 space-y-1">
+              {directLink ? (
+                <a
+                  className="break-all text-xs font-extrabold text-primary hover:underline dark:text-[#bbf7d0]"
+                  href={directLink}
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  {directLink}
+                </a>
+              ) : (
+                <p className="break-all text-xs text-muted">{value}</p>
+              )}
+            </div>
+          )}
+        </div>
+        {!readOnly && (
+          <ActionBar>
+            <SecondaryButton
+              icon={Image}
+              loading={loading}
+              onClick={() => setOpen(true)}
+              type="button"
+            >
+              Elegir evidencia
+            </SecondaryButton>
+            {value && (
+              <SecondaryButton onClick={() => onChange("")} type="button">
+                Quitar
+              </SecondaryButton>
+            )}
+          </ActionBar>
+        )}
+      </div>
+
+      <Modal
+        description="Selecciona una imagen cargada en Evidencias. En el registro se guardara solo el enlace de la imagen."
+        maxWidth="max-w-5xl"
+        onClose={() => setOpen(false)}
+        open={open}
+        title="Seleccionar evidencia"
+      >
+        {loading ? (
+          <p className="text-sm text-muted">Cargando evidencias...</p>
+        ) : photos.length === 0 ? (
+          <p className="text-sm text-muted">
+            No hay evidencias fotograficas disponibles para esta inscripcion.
+          </p>
+        ) : (
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {photos.map((photo) => (
+              <button
+                className={cx(
+                  "overflow-hidden rounded-lg border bg-white text-left shadow-card transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-[#529914] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#529914]/35 dark:bg-surface",
+                  publicEvidenceUrl(photo.publicContentUrl) === value || photo.contentUrl === value
+                    ? "border-[#529914] ring-2 ring-[#529914]/25"
+                    : "border-[#c8d2cd] dark:border-slate-700",
+                )}
+                key={photo.id || photo.contentUrl}
+                onClick={() => {
+                  onChange(publicEvidenceUrl(photo.publicContentUrl || photo.contentUrl || ""));
+                  setOpen(false);
+                }}
+                type="button"
+              >
+                <EvidencePhotoPreview photo={photo} token={token} />
+                <div className="space-y-1 p-3">
+                  <p className="text-sm font-extrabold text-[#20282d] dark:text-slate-50">
+                    {photo.description || photo.originalFilename || "Evidencia"}
+                  </p>
+                  <p className="text-xs text-muted">
+                    {[photo.practiceDate, photo.courseName]
+                      .filter(Boolean)
+                      .join(" | ") || "Sin detalles"}
+                  </p>
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
+      </Modal>
+    </Field>
+  );
+}
+
+function evidenceDisplayLink(url) {
+  if (!url) {
+    return "";
+  }
+
+  if (isPublicEvidenceUrl(url)) {
+    return publicEvidenceUrl(url);
+  }
+
+  if (/^https?:\/\//i.test(url)) {
+    return url;
+  }
+
+  return `${window.location.origin}${window.location.pathname}#/evidence-viewer?src=${encodeURIComponent(url)}`;
+}
+
+function isPublicEvidenceUrl(url) {
+  return String(url || "").includes("/api/public/practice-photos/");
+}
+
+function publicEvidenceUrl(path) {
+  if (!path) {
+    return "";
+  }
+
+  if (/^https?:\/\//i.test(path)) {
+    return path;
+  }
+
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  const apiBase = getApiBaseUrl();
+
+  if (/^https?:\/\//i.test(apiBase)) {
+    return `${apiBase}${normalizedPath}`;
+  }
+
+  const { protocol, hostname, port, origin } = window.location;
+
+  if ((hostname === "localhost" || hostname === "127.0.0.1") && port === "3000") {
+    return `${protocol}//${hostname}:8080${normalizedPath}`;
+  }
+
+  return `${origin}${normalizedPath}`;
+}
+
+function EvidencePhotoPreview({ photo, token }) {
+  const [source, setSource] = useState("");
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    let objectUrl = "";
+
+    setSource("");
+    setFailed(false);
+
+    if (!photo.contentUrl) {
+      setFailed(true);
+      return undefined;
+    }
+
+    apiBlob(photo.contentUrl, token)
+      .then((blob) => {
+        objectUrl = URL.createObjectURL(blob);
+
+        if (active) {
+          setSource(objectUrl);
+        }
+      })
+      .catch(() => {
+        if (active) {
+          setFailed(true);
+        }
+      });
+
+    return () => {
+      active = false;
+
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+      }
+    };
+  }, [photo.contentUrl, token]);
+
+  if (!source || failed) {
+    return (
+      <div className="flex aspect-[4/3] items-center justify-center bg-[#eef3f2] text-sm font-semibold text-muted dark:bg-surface-soft">
+        {failed ? "Vista no disponible" : "Cargando imagen"}
+      </div>
+    );
+  }
+
+  return (
+    <img
+      alt={photo.description || photo.originalFilename || "Evidencia de practica"}
+      className="aspect-[4/3] w-full object-cover"
+      src={source}
+    />
+  );
 }
 
 function ReviewFeedbackForm({
@@ -1482,16 +1998,6 @@ function ReviewFeedbackForm({
           >
             <CheckCircle2 size={16} />
             Aprobar
-          </button>
-          <button
-            aria-pressed={reviewValue.approved === false}
-            className={`${reviewChoiceBaseClass} ${reviewValue.approved === false ? reviewChoiceWarningClass : ""}`}
-            onClick={() => submitDecision(false)}
-            title="Solicitar correcciones"
-            type="button"
-          >
-            <XCircle size={16} />
-            Solicitar correcciones
           </button>
         </div>
 
@@ -1556,9 +2062,9 @@ function reviewDecisionState(approved) {
   if (approved === false) {
     return {
       tone: "warning",
-      title: "Correcciones listas para confirmar",
+      title: "Correcciones solicitadas",
       description:
-        "La accion Solicitar correcciones abre la confirmacion y devuelve el documento.",
+        "El documento fue devuelto mediante recomendaciones por apartado.",
     };
   }
 
@@ -1566,7 +2072,7 @@ function reviewDecisionState(approved) {
     tone: "info",
     title: "Sin decision final",
     description:
-      "Puedes enviar recomendaciones por apartado sin aprobar ni solicitar correcciones.",
+      "Puedes enviar recomendaciones por apartado o aprobar el documento cuando este listo.",
   };
 }
 
@@ -1665,6 +2171,18 @@ function canReviewRecord(record) {
   );
 }
 
+function canRunExtraAction(record, action) {
+  if (!record?.id) {
+    return false;
+  }
+
+  if (typeof action?.visibleWhen === "function") {
+    return action.visibleWhen(record);
+  }
+
+  return canReviewRecord(record);
+}
+
 function canExportPdfRecord(record) {
   return (
     Boolean(record?.id) &&
@@ -1689,7 +2207,7 @@ function ListFilters({
       <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
         <Field label="Buscar">
           <Input
-            placeholder="Texto, estudiante, curso o tutor"
+            placeholder="Texto, estudiante, paralelo o tutor"
             type="search"
             value={filters.search}
             onChange={(event) => onChange("search", event.target.value)}
@@ -1716,26 +2234,12 @@ function ListFilters({
       <p className="mt-3 text-xs font-bold text-muted">
         {visibleCount} de {totalCount} registros
       </p>
-      {filtersOpen && (
-        <div
-          aria-modal="true"
-          className="fixed inset-0 z-50 grid place-items-center bg-slate-950/35 p-4"
-          role="dialog"
-        >
-          <div className="w-full max-w-3xl rounded-lg border border-[#c8d2cd] bg-white p-4 shadow-[0_24px_60px_rgba(15,23,42,0.22)] dark:border-slate-700 dark:bg-surface">
-            <div className="mb-4 flex items-center justify-between gap-3">
-              <h3 className="text-base font-extrabold text-[#20282d] dark:text-slate-50">
-                Filtros
-              </h3>
-              <button
-                aria-label="Cerrar filtros"
-                className="grid h-9 w-9 place-items-center rounded-lg border border-[#c8d2cd] text-[#34443b] hover:bg-[#eef3f2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#529914]/35 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
-                onClick={() => setFiltersOpen(false)}
-                type="button"
-              >
-                <XCircle size={18} />
-              </button>
-            </div>
+      <Modal
+        maxWidth="max-w-3xl"
+        onClose={() => setFiltersOpen(false)}
+        open={filtersOpen}
+        title="Filtros"
+      >
             <div className="grid gap-3 sm:grid-cols-2">
               <DocumentSelectFilter
                 label="Estado"
@@ -1750,7 +2254,7 @@ function ListFilters({
                 onChange={(value) => onChange("student", value)}
               />
               <DocumentSelectFilter
-                label="Curso"
+                label="Paralelo"
                 options={options.courses}
                 value={filters.course}
                 onChange={(value) => onChange("course", value)}
@@ -1785,9 +2289,7 @@ function ListFilters({
                 Aplicar
               </PrimaryButton>
             </div>
-          </div>
-        </div>
-      )}
+      </Modal>
     </div>
   );
 }

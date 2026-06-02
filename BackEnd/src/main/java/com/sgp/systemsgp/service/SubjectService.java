@@ -12,9 +12,13 @@ import com.sgp.systemsgp.dto.subject.UpdateSubjectRequest;
 import com.sgp.systemsgp.exception.BadRequestException;
 import com.sgp.systemsgp.exception.NotFoundException;
 import com.sgp.systemsgp.model.AcademicCycle;
+import com.sgp.systemsgp.model.Course;
 import com.sgp.systemsgp.model.Grade;
+import com.sgp.systemsgp.model.GradeParallel;
 import com.sgp.systemsgp.model.Subject;
 import com.sgp.systemsgp.repository.AcademicCycleRepository;
+import com.sgp.systemsgp.repository.CourseRepository;
+import com.sgp.systemsgp.repository.GradeParallelRepository;
 import com.sgp.systemsgp.repository.GradeRepository;
 import com.sgp.systemsgp.repository.SubjectRepository;
 
@@ -29,7 +33,11 @@ public class SubjectService {
 
     private final AcademicCycleRepository academicCycleRepository;
 
+    private final CourseRepository courseRepository;
+
     private final GradeRepository gradeRepository;
+
+    private final GradeParallelRepository gradeParallelRepository;
 
     /*
      * CREAR
@@ -55,10 +63,14 @@ public class SubjectService {
          */
         if (
                 request.getAcademicCycleId() == null
+                        &&
+                        request.getCourseId() == null
 
                         &&
 
                         request.getGradeId() == null
+                        &&
+                        request.getGradeParallelId() == null
         ) {
 
             throw new BadRequestException(
@@ -66,11 +78,11 @@ public class SubjectService {
         }
 
         if (
-                request.getAcademicCycleId() != null
+                (request.getAcademicCycleId() != null || request.getCourseId() != null)
 
                         &&
 
-                        request.getGradeId() != null
+                        (request.getGradeId() != null || request.getGradeParallelId() != null)
         ) {
 
             throw new BadRequestException(
@@ -78,13 +90,25 @@ public class SubjectService {
         }
 
         AcademicCycle academicCycle = null;
+        Course course = null;
 
         Grade grade = null;
+        GradeParallel gradeParallel = null;
 
         /*
          * UNIVERSIDAD
          */
-        if (request.getAcademicCycleId() != null) {
+        if (request.getCourseId() != null) {
+
+            course = courseRepository
+
+                    .findByIdAndDeletedFalse(request.getCourseId())
+
+                    .orElseThrow(() -> new NotFoundException(
+                            "Paralelo no encontrado"));
+
+            academicCycle = resolveCourseAcademicCycle(course);
+        } else if (request.getAcademicCycleId() != null) {
 
             academicCycle = academicCycleRepository
 
@@ -97,7 +121,17 @@ public class SubjectService {
         /*
          * ESCUELA / COLEGIO
          */
-        if (request.getGradeId() != null) {
+        if (request.getGradeParallelId() != null) {
+
+            gradeParallel = gradeParallelRepository
+
+                    .findByIdAndDeletedFalse(request.getGradeParallelId())
+
+                    .orElseThrow(() -> new NotFoundException(
+                            "Paralelo no encontrado"));
+
+            grade = gradeParallel.getGrade();
+        } else if (request.getGradeId() != null) {
 
             grade = gradeRepository
 
@@ -121,7 +155,11 @@ public class SubjectService {
 
                 .academicCycle(academicCycle)
 
+                .course(course)
+
                 .grade(grade)
+
+                .gradeParallel(gradeParallel)
 
                 .active(
                         request.getActive() != null
@@ -208,12 +246,49 @@ public class SubjectService {
 
             subject.setAcademicCycle(academicCycle);
 
+            subject.setCourse(null);
+
             subject.setGrade(null);
+        }
+
+        if (request.getCourseId() != null) {
+
+            Course course = courseRepository
+
+                    .findByIdAndDeletedFalse(request.getCourseId())
+
+                    .orElseThrow(() -> new NotFoundException(
+                            "Paralelo no encontrado"));
+
+            subject.setCourse(course);
+
+            subject.setAcademicCycle(resolveCourseAcademicCycle(course));
+
+            subject.setGrade(null);
+
+            subject.setGradeParallel(null);
         }
 
         /*
          * GRADO
          */
+        if (request.getGradeParallelId() != null) {
+
+            GradeParallel parallel = gradeParallelRepository
+
+                    .findByIdAndDeletedFalse(request.getGradeParallelId())
+
+                    .orElseThrow(() -> new NotFoundException(
+                            "Paralelo no encontrado"));
+
+            subject.setGradeParallel(parallel);
+
+            subject.setGrade(parallel.getGrade());
+
+            subject.setAcademicCycle(null);
+            subject.setCourse(null);
+        }
+
         if (request.getGradeId() != null) {
 
             Grade grade = gradeRepository
@@ -225,7 +300,10 @@ public class SubjectService {
 
             subject.setGrade(grade);
 
+            subject.setGradeParallel(null);
+
             subject.setAcademicCycle(null);
+            subject.setCourse(null);
         }
 
         subjectRepository.save(subject);
@@ -268,6 +346,13 @@ public class SubjectService {
     private SubjectResponse mapToResponse(
             Subject subject) {
 
+        Grade grade = resolveGrade(subject);
+        GradeParallel gradeParallel = subject.getGradeParallel();
+        Course course = subject.getCourse();
+        AcademicCycle academicCycle = course != null
+                ? resolveCourseAcademicCycle(course)
+                : subject.getAcademicCycle();
+
         return SubjectResponse.builder()
 
                 .id(subject.getId())
@@ -286,55 +371,65 @@ public class SubjectService {
                  * UNIVERSIDAD
                  */
                 .academicCycleId(
-                        subject.getAcademicCycle() != null
-                                ? subject.getAcademicCycle().getId()
+                        academicCycle != null
+                                ? academicCycle.getId()
                                 : null)
 
                 .academicCycle(
-                        subject.getAcademicCycle() != null
-                                ? subject.getAcademicCycle().getName()
+                        academicCycle != null
+                                ? academicCycle.getName()
+                                : null)
+
+                .courseId(
+                        course != null
+                                ? course.getId()
+                                : null)
+
+                .course(
+                        course != null
+                                ? course.getName()
                                 : null)
 
                 .careerId(
-                        subject.getAcademicCycle() != null
+                        academicCycle != null
 
                                 &&
 
-                                subject.getAcademicCycle().getCareer() != null
+                                academicCycle.getCareer() != null
 
-                                        ? subject.getAcademicCycle()
+                                        ? academicCycle
                                                 .getCareer()
                                                 .getId()
 
                                         : null)
 
                 .career(
-                        subject.getAcademicCycle() != null
+                        academicCycle != null
 
                                 &&
 
-                                subject.getAcademicCycle().getCareer() != null
+                                academicCycle.getCareer() != null
 
-                                        ? subject.getAcademicCycle()
+                                        ? academicCycle
                                                 .getCareer()
                                                 .getName()
 
                                         : null)
 
                 .facultyId(
-                        subject.getAcademicCycle() != null
+                        academicCycle != null
 
                                 &&
 
-                                subject.getAcademicCycle().getCareer() != null
+                                academicCycle.getCareer() != null
 
                                 &&
 
-                                subject.getAcademicCycle()
+                                academicCycle
                                         .getCareer()
                                         .getFaculty() != null
 
-                                                ? subject.getAcademicCycle()
+                                                ? academicCycle
                                                         .getCareer()
                                                         .getFaculty()
                                                         .getId()
@@ -342,19 +437,19 @@ public class SubjectService {
                                                 : null)
 
                 .faculty(
-                        subject.getAcademicCycle() != null
+                        academicCycle != null
 
                                 &&
 
-                                subject.getAcademicCycle().getCareer() != null
+                                academicCycle.getCareer() != null
 
                                 &&
 
-                                subject.getAcademicCycle()
+                                academicCycle
                                         .getCareer()
                                         .getFaculty() != null
 
-                                                ? subject.getAcademicCycle()
+                                                ? academicCycle
                                                         .getCareer()
                                                         .getFaculty()
                                                         .getName()
@@ -365,38 +460,48 @@ public class SubjectService {
                  * ESCUELA / COLEGIO
                  */
                 .gradeId(
-                        subject.getGrade() != null
-                                ? subject.getGrade().getId()
+                        grade != null
+                                ? grade.getId()
                                 : null)
 
                 .grade(
-                        subject.getGrade() != null
-                                ? subject.getGrade().getName()
+                        grade != null
+                                ? grade.getName()
+                                : null)
+
+                .gradeParallelId(
+                        gradeParallel != null
+                                ? gradeParallel.getId()
+                                : null)
+
+                .gradeParallel(
+                        gradeParallel != null
+                                ? gradeParallel.getName()
                                 : null)
 
                 .institutionId(
-                        subject.getGrade() != null
+                        grade != null
 
                                 &&
 
-                                subject.getGrade()
+                                grade
                                         .getInstitution() != null
 
-                                                ? subject.getGrade()
+                                                ? grade
                                                         .getInstitution()
                                                         .getId()
 
                                                 : null)
 
                 .institution(
-                        subject.getGrade() != null
+                        grade != null
 
                                 &&
 
-                                subject.getGrade()
+                                grade
                                         .getInstitution() != null
 
-                                                ? subject.getGrade()
+                                                ? grade
                                                         .getInstitution()
                                                         .getName()
 
@@ -409,5 +514,29 @@ public class SubjectService {
                 .updatedAt(subject.getUpdatedAt())
 
                 .build();
+    }
+
+    private Grade resolveGrade(Subject subject) {
+
+        if (subject.getGradeParallel() != null) {
+            return subject.getGradeParallel().getGrade();
+        }
+
+        return subject.getGrade();
+    }
+
+    private AcademicCycle resolveCourseAcademicCycle(Course course) {
+
+        if (course == null) {
+            return null;
+        }
+
+        if (course.getAcademicCycle() != null) {
+            return course.getAcademicCycle();
+        }
+
+        return course.getSubject() != null
+                ? course.getSubject().getAcademicCycle()
+                : null;
     }
 }

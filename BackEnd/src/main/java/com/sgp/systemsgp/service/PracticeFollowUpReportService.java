@@ -42,6 +42,7 @@ public class PracticeFollowUpReportService {
     private final EnrollmentRepository enrollmentRepository;
     private final AccountRepository accountRepository;
     private final InstitutionRepository institutionRepository;
+    private final PdfExportService pdfExportService;
 
     @Transactional
     public PracticeFollowUpReportResponse create(
@@ -142,6 +143,33 @@ public class PracticeFollowUpReportService {
         validateCanView(report, account);
 
         return mapToResponse(report);
+    }
+
+    public byte[] exportPdf(
+            Long id,
+            String username) {
+
+        PracticeFollowUpReport report = getReport(id);
+        Account account = getAccount(username);
+
+        validateCanView(report, account);
+
+        PracticeFollowUpReportResponse response = mapToResponse(report);
+
+        return pdfExportService.createPracticeFollowUpReportPdf(
+                new PdfExportService.PdfPracticeFollowUpReport(
+                        response.getEducationalInstitutionName(),
+                        response.getPracticeType(),
+                        response.getStudentFullName(),
+                        response.getStudentIdentification(),
+                        response.getCourseName(),
+                        response.getAcademicPeriod(),
+                        response.getDevelopmentMode(),
+                        response.getTotalMinutes(),
+                        response.getDeliveryDate(),
+                        accountFullName(report.getReportedBy()),
+                        "DOCENTE TUTOR DE PRACTICAS",
+                        followUpSessions(response.getSessions())));
     }
 
     @Transactional
@@ -603,6 +631,37 @@ public class PracticeFollowUpReportService {
                 .trim();
 
         return joined.isBlank() ? null : joined;
+    }
+
+    private String accountFullName(Account account) {
+
+        if (account == null || account.getPerson() == null) {
+            return account != null ? account.getUsername() : null;
+        }
+
+        String fullName = joinNames(
+                account.getPerson().getNames(),
+                account.getPerson().getLastNames());
+
+        return fullName != null ? fullName : account.getUsername();
+    }
+
+    private List<PdfExportService.PdfPracticeFollowUpSession> followUpSessions(
+            List<PracticeFollowUpSessionResponse> sessions) {
+
+        if (sessions == null) {
+            return List.of();
+        }
+
+        return sessions.stream()
+                .map(session -> new PdfExportService.PdfPracticeFollowUpSession(
+                        session.getSupervisionDate(),
+                        session.getStartTime(),
+                        session.getEndTime(),
+                        session.getTotalMinutes(),
+                        session.getSupervisedActivities(),
+                        null))
+                .toList();
     }
 
     private PracticeFollowUpReportResponse mapToResponse(

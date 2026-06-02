@@ -93,5 +93,26 @@ public class Account {
     @JoinColumn(name = "academic_cycle_id")
     private AcademicCycle academicCycle;
 
+    /*
+     * Carrera que delimita la gestión del director de prácticas.
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "career_id")
+    private Career career;
+
+    /*
+     * Grado que delimita la gestión de la directora institucional.
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "grade_id")
+    private Grade grade;
+
+    /*
+     * Paralelo que delimita la gestión del tutor institucional.
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "grade_parallel_id")
+    private GradeParallel gradeParallel;
+
     
 }

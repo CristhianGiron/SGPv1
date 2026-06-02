@@ -19,6 +19,7 @@ import com.sgp.systemsgp.enums.RoleName;
 import com.sgp.systemsgp.exception.BadRequestException;
 import com.sgp.systemsgp.exception.NotFoundException;
 import com.sgp.systemsgp.model.Account;
+import com.sgp.systemsgp.model.Career;
 import com.sgp.systemsgp.model.CompletedActivityRecord;
 import com.sgp.systemsgp.model.CompletedActivityRecordEntry;
 import com.sgp.systemsgp.model.Course;
@@ -29,11 +30,15 @@ import com.sgp.systemsgp.repository.AccountRepository;
 import com.sgp.systemsgp.repository.CompletedActivityRecordRepository;
 import com.sgp.systemsgp.repository.EnrollmentRepository;
 import com.sgp.systemsgp.repository.InstitutionRepository;
+import com.sgp.systemsgp.repository.PracticePhotoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.URI;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -42,6 +47,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,11 +58,14 @@ public class CompletedActivityRecordService {
 
     private static final List<CompletedActivityRecordStatus> REVIEWER_VISIBLE_STATUSES =
             List.of(CompletedActivityRecordStatus.SUBMITTED, CompletedActivityRecordStatus.APPROVED);
+    private static final Pattern PRIVATE_PHOTO_CONTENT_PATTERN =
+            Pattern.compile("/api/practice-photos/(\\d+)/content");
 
     private final CompletedActivityRecordRepository completedActivityRecordRepository;
     private final EnrollmentRepository enrollmentRepository;
     private final AccountRepository accountRepository;
     private final InstitutionRepository institutionRepository;
+    private final PracticePhotoRepository practicePhotoRepository;
     private final NotificationService notificationService;
     private final FeedbackCommentService feedbackCommentService;
     private final PdfExportService pdfExportService;
@@ -119,7 +129,7 @@ public class CompletedActivityRecordService {
         List<CompletedActivityRecord> records = completedActivityRecordRepository
                 .findByCourse_PracticeTutor_UsernameAndDeletedFalse(username)
                 .stream()
-                .filter(record -> record.getStatus() == CompletedActivityRecordStatus.SUBMITTED)
+                .filter(record -> isVisibleToReviewers(record.getStatus()))
                 .toList();
 
         return mapRecordsToResponses(records);
@@ -130,24 +140,32 @@ public class CompletedActivityRecordService {
         List<CompletedActivityRecord> records = completedActivityRecordRepository
                 .findByCourse_PracticeTutor_UsernameAndDeletedFalse(username)
                 .stream()
-                .filter(record -> record.getStatus() == CompletedActivityRecordStatus.SUBMITTED)
+                .filter(record -> isVisibleToReviewers(record.getStatus()))
                 .toList();
 
         return mapRecordsToSummaries(records);
     }
 
-    public List<CompletedActivityRecordResponse> submittedDocuments() {
+    public List<CompletedActivityRecordResponse> submittedDocuments(String username) {
 
+        Account account = getAccount(username);
         List<CompletedActivityRecord> records = completedActivityRecordRepository
-                .findByStatusInAndDeletedFalse(REVIEWER_VISIBLE_STATUSES);
+                .findByStatusInAndDeletedFalse(REVIEWER_VISIBLE_STATUSES)
+                .stream()
+                .filter(record -> canViewDirectorQueue(record.getCourse(), account))
+                .toList();
 
         return mapRecordsToResponses(records);
     }
 
-    public List<ReviewableDocumentSummaryResponse> submittedDocumentSummaries() {
+    public List<ReviewableDocumentSummaryResponse> submittedDocumentSummaries(String username) {
 
+        Account account = getAccount(username);
         List<CompletedActivityRecord> records = completedActivityRecordRepository
-                .findByStatusInAndDeletedFalse(REVIEWER_VISIBLE_STATUSES);
+                .findByStatusInAndDeletedFalse(REVIEWER_VISIBLE_STATUSES)
+                .stream()
+                .filter(record -> canViewDirectorQueue(record.getCourse(), account))
+                .toList();
 
         return mapRecordsToSummaries(records);
     }
@@ -195,43 +213,37 @@ public class CompletedActivityRecordService {
         return mapToResponse(record);
     }
 
+    @Transactional
     public byte[] exportApprovedPdf(
             Long id,
             String username) {
 
-        CompletedActivityRecordResponse record = getById(id, username);
+        CompletedActivityRecord entity = getRecord(id);
+        Account account = getAccount(username);
+
+        validateCanView(entity, account);
+
+        CompletedActivityRecordResponse record = mapToResponse(entity);
         validateApprovedForExport(record.getStatus());
 
-        return pdfExportService.createPdf(
-                "Registro de actividades cumplidas #" + record.getId(),
-                List.of(
-                        pdfExportService.section(
-                                "Datos generales",
-                                List.of(
-                                        pdfExportService.field("Estudiante", record.getStudentFullName()),
-                                        pdfExportService.field("Cedula", record.getStudentIdentification()),
-                                        pdfExportService.field("Curso", record.getCourseName()),
-                                        pdfExportService.field("Institucion", record.getEducationalInstitutionName()),
-                                        pdfExportService.field("Periodo academico", record.getAcademicPeriod()),
-                                        pdfExportService.field("Tipo de practica", record.getPracticeType()),
-                                        pdfExportService.field("Modalidad", record.getDevelopmentMode()),
-                                        pdfExportService.field("Fecha de entrega", record.getDeliveryDate()),
-                                        pdfExportService.field("Total de tiempo", record.getTotalTime()),
-                                        pdfExportService.field("Enviado", record.getSubmittedAt()),
-                                        pdfExportService.field("Aprobado", record.getApprovedAt())
-                                )),
-                        pdfExportService.section(
-                                "Actividades registradas",
-                                List.of(
-                                        pdfExportService.field("Registros", entriesText(record.getEntries()))
-                                )),
-                        pdfExportService.section(
-                                "Aprobacion",
-                                List.of(
-                                        pdfExportService.field("Revisado por tutor", record.getReviewedBy()),
-                                        pdfExportService.field("Revisado por direccion", record.getDirectorReviewedBy())
-                                ))
-                ));
+        Account institutionalTutor = institutionalTutorFor(
+                entity.getEnrollment(),
+                entity.getCourse());
+
+        return pdfExportService.createCompletedActivityRecordPdf(
+                new PdfExportService.PdfCompletedActivityRecord(
+                        record.getEducationalInstitutionName(),
+                        record.getPracticeType(),
+                        record.getStudentFullName(),
+                        record.getStudentIdentification(),
+                        record.getCourseName(),
+                        record.getAcademicPeriod(),
+                        record.getDevelopmentMode(),
+                        record.getTotalMinutes(),
+                        record.getDeliveryDate(),
+                        record.getStudentFullName(),
+                        accountFullName(institutionalTutor),
+                        completedActivityEntries(record.getEntries())));
     }
 
     @Transactional
@@ -424,7 +436,7 @@ public class CompletedActivityRecordService {
         if (isVisibleToReviewers(record.getStatus())
                 && (isAssignedPracticeTutor(record, account)
                 || hasRole(account, RoleName.ROLE_ADMIN)
-                || hasRole(account, RoleName.ROLE_DIRECTOR_PRACTICAS))) {
+                || isDirectorForCourse(record.getCourse(), account))) {
             return;
         }
 
@@ -441,7 +453,7 @@ public class CompletedActivityRecordService {
             CompletedActivityRecord record,
             Account reviewer) {
 
-        if (hasRole(reviewer, RoleName.ROLE_DIRECTOR_PRACTICAS)) {
+        if (isDirectorForCourse(record.getCourse(), reviewer)) {
             return;
         }
 
@@ -462,6 +474,35 @@ public class CompletedActivityRecordService {
 
         return course.getPracticeTutor() != null
                 && course.getPracticeTutor().getId().equals(account.getId());
+    }
+
+    private boolean isDirectorForCourse(
+            Course course,
+            Account account) {
+
+        if (!hasRole(account, RoleName.ROLE_DIRECTOR_PRACTICAS)
+                || course == null) {
+            return false;
+        }
+
+        Career directorCareer = account.getCareer();
+        Career courseCareer = course.getAcademicCycle() != null
+                ? course.getAcademicCycle().getCareer()
+                : course.getSubject() != null && course.getSubject().getAcademicCycle() != null
+                        ? course.getSubject().getAcademicCycle().getCareer()
+                        : null;
+
+        return directorCareer != null
+                && courseCareer != null
+                && directorCareer.getId().equals(courseCareer.getId());
+    }
+
+    private boolean canViewDirectorQueue(
+            Course course,
+            Account account) {
+
+        return hasRole(account, RoleName.ROLE_ADMIN)
+                || isDirectorForCourse(course, account);
     }
 
     private boolean hasRole(
@@ -1037,6 +1078,98 @@ public class CompletedActivityRecordService {
                         + nullSafe(entry.getDevelopedActivities())
                         + evidenceText(entry.getEvidenceLink()))
                 .collect(Collectors.joining("\n"));
+    }
+
+    private List<PdfExportService.PdfCompletedActivityEntry> completedActivityEntries(
+            List<CompletedActivityRecordEntryResponse> entries) {
+
+        if (entries == null) {
+            return List.of();
+        }
+
+        return entries.stream()
+                .map(entry -> new PdfExportService.PdfCompletedActivityEntry(
+                        entry.getActivityDate(),
+                        entry.getStartTime(),
+                        entry.getEndTime(),
+                        entry.getTotalMinutes(),
+                        entry.getDevelopedActivities(),
+                        publicEvidenceLink(entry.getEvidenceLink())))
+                .toList();
+    }
+
+    private String publicEvidenceLink(String evidenceLink) {
+
+        if (evidenceLink == null || evidenceLink.isBlank()) {
+            return evidenceLink;
+        }
+
+        if (evidenceLink.contains("/api/public/practice-photos/")) {
+            return evidenceLink;
+        }
+
+        String decodedLink = URLDecoder.decode(
+                evidenceLink,
+                StandardCharsets.UTF_8);
+        Matcher matcher = PRIVATE_PHOTO_CONTENT_PATTERN.matcher(decodedLink);
+
+        if (!matcher.find()) {
+            return evidenceLink;
+        }
+
+        Long photoId;
+        try {
+            photoId = Long.valueOf(matcher.group(1));
+        } catch (NumberFormatException exception) {
+            return evidenceLink;
+        }
+
+        return practicePhotoRepository
+                .findByIdAndDeletedFalse(photoId)
+                .map(photo -> {
+                    photo.ensurePublicToken();
+                    String publicPath = "/api/public/practice-photos/"
+                            + photo.getPublicToken()
+                            + "/content";
+                    String origin = linkOrigin(decodedLink);
+                    return origin != null ? origin + publicPath : publicPath;
+                })
+                .orElse(evidenceLink);
+    }
+
+    private String linkOrigin(String url) {
+
+        if (url == null || !url.startsWith("http")) {
+            return null;
+        }
+
+        try {
+            URI uri = URI.create(url);
+            String host = uri.getHost();
+
+            if (host == null) {
+                return null;
+            }
+
+            int port = uri.getPort();
+
+            if (("localhost".equals(host) || "127.0.0.1".equals(host)) && port == 3000) {
+                port = 8080;
+            }
+
+            StringBuilder origin = new StringBuilder()
+                    .append(uri.getScheme())
+                    .append("://")
+                    .append(host);
+
+            if (port > -1) {
+                origin.append(":").append(port);
+            }
+
+            return origin.toString();
+        } catch (IllegalArgumentException exception) {
+            return null;
+        }
     }
 
     private String evidenceText(String evidenceLink) {

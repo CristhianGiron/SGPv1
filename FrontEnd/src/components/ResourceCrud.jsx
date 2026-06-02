@@ -23,7 +23,7 @@
  * - Manejo de errores y mensajes de éxito
  */
 import { useEffect, useState } from 'react';
-import { List, Pencil, Plus, RefreshCw, Save, Trash2, Zap } from 'lucide-react';
+import { Pencil, Plus, RefreshCw, Save, Trash2, Zap } from 'lucide-react';
 import { apiRequest, unwrapPage } from '../api/client';
 import { useAuth } from '../auth/AuthContext';
 import { Alert } from './ui/Alert';
@@ -33,7 +33,7 @@ import { useConfirm } from './ui/ConfirmDialog';
 import { DataTable } from './ui/DataTable';
 import { EntitySelect } from './ui/EntitySelect';
 import { Field, Input, Select, Textarea } from './ui/FormControls';
-import { ModuleTab, ModuleTabs } from './ui/ModuleTabs';
+import { Modal } from './ui/Modal';
 import { SectionCard } from './ui/SectionCard';
 import { StatusBadge } from './ui/StatusBadge';
 import { filterInactiveForNonAdmin } from '../utils/visibility';
@@ -171,7 +171,7 @@ export function ResourceCrud({ resource }) {
         token,
         body,
       });
-      // Resetear formulario y cambiar a vista de lista
+      // Resetear formulario y cerrar modal
       resetForm();
       await loadRows();
       setMessage(selectedId ? 'Cambios guardados.' : 'Elemento creado correctamente.');
@@ -260,102 +260,72 @@ export function ResourceCrud({ resource }) {
 
   return (
     <div className="space-y-5">
-      <SectionCard>
-        <ModuleTabs>
-          {[
-            ['list', 'Listado'],
-            ['form', selectedId ? 'Editar' : 'Agregar'],
-          ].map(([id, label]) => (
-            <ModuleTab
-              active={activeView === id}
-              key={id}
-              onClick={() => {
-                if (id === 'form' && activeView !== 'form' && !selectedId) {
-                  startCreate();
-                  return;
-                }
-
-                setActiveView(id);
-              }}
-            >
-              {label}
-            </ModuleTab>
-          ))}
-        </ModuleTabs>
+      <SectionCard
+        title={resource.title}
+        action={
+          <ActionBar>
+            <PrimaryButton icon={Plus} onClick={startCreate} type="button">
+              Agregar
+            </PrimaryButton>
+            <SecondaryButton icon={RefreshCw} loading={loading} onClick={loadRows} type="button">
+              Actualizar
+            </SecondaryButton>
+          </ActionBar>
+        }
+      >
+        <div className="space-y-3">
+          {error && activeView !== 'form' && <Alert tone="error">{error}</Alert>}
+          {message && <Alert tone="success">{message}</Alert>}
+          <DataTable
+            columns={columns}
+            emptyText={`Aun no hay ${resource.title.toLowerCase()} para mostrar.`}
+            enableFilters={canFilterRows}
+            loading={loading}
+            rows={rows}
+          />
+        </div>
       </SectionCard>
 
-      {activeView === 'list' && (
-        <SectionCard
-          title={resource.title}
-          action={
-            <ActionBar>
-              <PrimaryButton icon={Plus} onClick={startCreate} type="button">
-                Agregar
-              </PrimaryButton>
-              <SecondaryButton icon={RefreshCw} loading={loading} onClick={loadRows} type="button">
-                Actualizar
+      <Modal
+        description="Completa solo los campos necesarios y guarda para volver al listado."
+        maxWidth="max-w-3xl"
+        onClose={() => setActiveView('list')}
+        open={activeView === 'form'}
+        title={selectedId ? `Editar ${resource.title.toLowerCase()}` : `Agregar ${resource.title.toLowerCase()}`}
+      >
+        <form className="space-y-4" onSubmit={handleSubmit}>
+          {error && <Alert tone="error">{error}</Alert>}
+          {resource.fields.map((field) => (
+            <Field key={field.name} label={field.label}>
+              <ResourceInput
+                disabled={isFieldDisabled(resource, form, field)}
+                field={field}
+                form={form}
+                resource={resource}
+                required={isFieldRequired(field, form)}
+                setField={setField}
+                value={form[field.name]}
+              />
+            </Field>
+          ))}
+
+          <ActionBar>
+            <PrimaryButton icon={selectedId ? Save : Plus} loading={saving} type="submit">
+              {selectedId ? 'Guardar cambios' : 'Guardar'}
+            </PrimaryButton>
+            {selectedId && (
+              <SecondaryButton icon={Plus} onClick={startCreate} type="button">
+                Nuevo
               </SecondaryButton>
-            </ActionBar>
-          }
-        >
-          <div className="space-y-3">
-            {error && <Alert tone="error">{error}</Alert>}
-            {message && <Alert tone="success">{message}</Alert>}
-            <DataTable
-              columns={columns}
-              emptyText={`Aun no hay ${resource.title.toLowerCase()} para mostrar.`}
-              enableFilters={canFilterRows}
-              loading={loading}
-              rows={rows}
-            />
-          </div>
-        </SectionCard>
-      )}
-
-      {activeView === 'form' && (
-        <SectionCard
-          title={selectedId ? `Editar ${resource.title.toLowerCase()}` : `Agregar ${resource.title.toLowerCase()}`}
-          action={
-            <SecondaryButton icon={List} onClick={() => setActiveView('list')} type="button">
-              Volver al listado
-            </SecondaryButton>
-          }
-        >
-          <form className="space-y-4" onSubmit={handleSubmit}>
-            {error && <Alert tone="error">{error}</Alert>}
-            {message && <Alert tone="success">{message}</Alert>}
-            {resource.fields.map((field) => (
-              <Field key={field.name} label={field.label}>
-                <ResourceInput
-                  disabled={isFieldDisabled(resource, form, field)}
-                  field={field}
-                  form={form}
-                  resource={resource}
-                  required={isFieldRequired(field, form)}
-                  setField={setField}
-                  value={form[field.name]}
-                />
-              </Field>
-            ))}
-
-            <ActionBar>
-              <PrimaryButton icon={selectedId ? Save : Plus} loading={saving} type="submit">
-                {selectedId ? 'Guardar cambios' : 'Guardar'}
-              </PrimaryButton>
-              {selectedId && (
-                <SecondaryButton icon={Plus} onClick={startCreate} type="button">
-                  Nuevo
-                </SecondaryButton>
-              )}
-              {selectedId && resource.deletePath && (
-                <DangerButton icon={Trash2} loading={saving} onClick={handleDelete} type="button">
-                  Eliminar
-                </DangerButton>
-              )}
-            </ActionBar>
-          </form>
-        </SectionCard>
-      )}
+            )}
+            {selectedId && resource.deletePath && (
+              <DangerButton icon={Trash2} loading={saving} onClick={handleDelete} type="button">
+                Eliminar
+              </DangerButton>
+            )}
+          </ActionBar>
+        </form>
+      </Modal>
     </div>
   );
 }

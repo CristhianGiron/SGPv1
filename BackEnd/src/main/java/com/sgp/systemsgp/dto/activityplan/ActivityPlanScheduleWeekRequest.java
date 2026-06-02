@@ -1,5 +1,7 @@
 package com.sgp.systemsgp.dto.activityplan;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,6 +19,7 @@ public class ActivityPlanScheduleWeekRequest {
 
     private LocalDate endDate;
 
+    @JsonAlias("activities")
     @Size(max = 2500, message = "Las actividades planificadas no pueden superar 2500 caracteres")
     private String scheduledActivities;
 

@@ -7,15 +7,18 @@ import com.sgp.systemsgp.exception.BadRequestException;
 import com.sgp.systemsgp.exception.NotFoundException;
 import com.sgp.systemsgp.model.AcademicCycle;
 import com.sgp.systemsgp.model.Account;
+import com.sgp.systemsgp.model.Career;
 import com.sgp.systemsgp.model.Course;
 import com.sgp.systemsgp.model.CourseGroup;
 import com.sgp.systemsgp.model.Enrollment;
 import com.sgp.systemsgp.model.Institution;
 import com.sgp.systemsgp.model.Person;
+import com.sgp.systemsgp.model.Subject;
 import com.sgp.systemsgp.repository.AccountRepository;
 import com.sgp.systemsgp.repository.CourseGroupRepository;
 import com.sgp.systemsgp.repository.CourseRepository;
 import com.sgp.systemsgp.repository.EnrollmentRepository;
+import com.sgp.systemsgp.repository.SubjectRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -36,6 +39,7 @@ public class EnrollmentService {
     private final AccountRepository accountRepository;
     private final CourseRepository courseRepository;
     private final CourseGroupRepository courseGroupRepository;
+    private final SubjectRepository subjectRepository;
     private final NotificationService notificationService;
 
     @Transactional
@@ -67,9 +71,11 @@ public class EnrollmentService {
     }
 
     @Transactional
-    public EnrollmentResponse approve(Long id) {
+    public EnrollmentResponse approve(String username, Long id) {
 
+        Account account = getAccount(username);
         Enrollment enrollment = getEnrollment(id);
+        validateEnrollmentManagerCanManage(enrollment, account);
 
         validateCourseAvailable(enrollment.getCourse());
         requirePending(enrollment);
@@ -84,9 +90,11 @@ public class EnrollmentService {
     }
 
     @Transactional
-    public EnrollmentResponse reject(Long id) {
+    public EnrollmentResponse reject(String username, Long id) {
 
+        Account account = getAccount(username);
         Enrollment enrollment = getEnrollment(id);
+        validateEnrollmentManagerCanManage(enrollment, account);
 
         requirePending(enrollment);
 
@@ -161,6 +169,8 @@ public class EnrollmentService {
         if (!hasRole(account, RoleName.ROLE_ADMIN)
                 && !hasRole(account, RoleName.ROLE_DIRECTOR_PRACTICAS)) {
             validatePracticeTutorCanManage(course, account);
+        } else if (hasRole(account, RoleName.ROLE_DIRECTOR_PRACTICAS)) {
+            validateDirectorCanManageCourse(course, account);
         }
 
         return enrollmentRepository
@@ -215,6 +225,7 @@ public class EnrollmentService {
                 .values()
                 .stream()
                 .filter(this::isActiveCourseEnrollment)
+                .filter(enrollment -> canViewEnrollment(enrollment, account))
                 .map(this::mapToResponse)
                 .toList();
     }
@@ -406,6 +417,57 @@ public class EnrollmentService {
         validatePracticeTutorCanManage(course, account);
     }
 
+    private void validateEnrollmentManagerCanManage(
+            Enrollment enrollment,
+            Account account) {
+
+        if (hasRole(account, RoleName.ROLE_ADMIN)) {
+            return;
+        }
+
+        validateDirectorCanManageCourse(enrollment.getCourse(), account);
+    }
+
+    private void validateDirectorCanManageCourse(
+            Course course,
+            Account account) {
+
+        if (!hasRole(account, RoleName.ROLE_DIRECTOR_PRACTICAS)) {
+            throw new BadRequestException(
+                    "No tienes permisos para gestionar esta inscripción");
+        }
+
+        Career directorCareer = account.getCareer();
+        Career courseCareer = getCourseCareer(course);
+
+        if (directorCareer == null
+                || courseCareer == null
+                || !directorCareer.getId().equals(courseCareer.getId())) {
+            throw new BadRequestException(
+                    "El director de practicas solo puede gestionar inscripciones de su carrera");
+        }
+    }
+
+    private boolean canViewEnrollment(
+            Enrollment enrollment,
+            Account account) {
+
+        if (hasRole(account, RoleName.ROLE_ADMIN)) {
+            return true;
+        }
+
+        if (hasRole(account, RoleName.ROLE_DIRECTOR_PRACTICAS)) {
+            Career directorCareer = account.getCareer();
+            Career courseCareer = getCourseCareer(enrollment.getCourse());
+
+            return directorCareer != null
+                    && courseCareer != null
+                    && directorCareer.getId().equals(courseCareer.getId());
+        }
+
+        return true;
+    }
+
     private void validateSingleActiveEnrollment(
             Account account,
             Long currentEnrollmentId) {
@@ -462,12 +524,25 @@ public class EnrollmentService {
 
     private AcademicCycle getCourseAcademicCycle(Course course) {
 
+        if (course.getAcademicCycle() != null) {
+            return course.getAcademicCycle();
+        }
+
         if (course.getSubject() == null
                 || course.getSubject().getAcademicCycle() == null) {
             return null;
         }
 
         return course.getSubject().getAcademicCycle();
+    }
+
+    private Career getCourseCareer(Course course) {
+
+        AcademicCycle academicCycle = getCourseAcademicCycle(course);
+
+        return academicCycle != null
+                ? academicCycle.getCareer()
+                : null;
     }
 
     private String getCourseAcademicCycleName(Course course) {
@@ -482,8 +557,11 @@ public class EnrollmentService {
     private EnrollmentResponse mapToResponse(Enrollment enrollment) {
         Account student = enrollment.getAccount();
         Course course = enrollment.getCourse();
+        CourseGroup group = resolveEnrollmentGroup(enrollment);
+        Subject subject = resolveCourseSubject(course);
         Person person = student.getPerson();
         Institution educationalInstitution = getEnrollmentEducationalInstitution(enrollment);
+        Account institutionDirector = getInstitutionDirector(educationalInstitution);
 
         return EnrollmentResponse.builder()
                 .id(enrollment.getId())
@@ -508,20 +586,20 @@ public class EnrollmentService {
                 .courseName(course.getName())
                 .courseActive(course.isActive())
                 .groupId(
-                        enrollment.getGroup() != null
-                                ? enrollment.getGroup().getId()
+                        group != null
+                                ? group.getId()
                                 : null)
                 .groupName(
-                        enrollment.getGroup() != null
-                                ? enrollment.getGroup().getName()
+                        group != null
+                                ? group.getName()
                                 : null)
                 .subjectId(
-                        course.getSubject() != null
-                                ? course.getSubject().getId()
+                        subject != null
+                                ? subject.getId()
                                 : null)
                 .subjectName(
-                        course.getSubject() != null
-                                ? course.getSubject().getName()
+                        subject != null
+                                ? subject.getName()
                                 : null)
                 .educationalInstitutionId(
                         educationalInstitution != null
@@ -548,6 +626,7 @@ public class EnrollmentService {
                                 ? educationalInstitution.getEmail()
                                 : null)
                 .institutionalTutor(fullNameOrUsername(getEnrollmentInstitutionalTutor(enrollment)))
+                .institutionDirector(fullNameOrUsername(institutionDirector))
                 .practiceTutor(fullNameOrUsername(course.getPracticeTutor()))
                 .studentAcademicCycle(
                         student.getAcademicCycle() != null
@@ -558,6 +637,22 @@ public class EnrollmentService {
                 .status(enrollment.getStatus().name())
                 .enrolledAt(enrollment.getEnrolledAt())
                 .build();
+    }
+
+    private Subject resolveCourseSubject(Course course) {
+
+        if (course == null) {
+            return null;
+        }
+
+        if (course.getSubject() != null) {
+            return course.getSubject();
+        }
+
+        return subjectRepository.findByCourse_IdAndDeletedFalse(course.getId())
+                .stream()
+                .findFirst()
+                .orElse(null);
     }
 
     private Institution getCourseEducationalInstitution(Course course) {
@@ -585,13 +680,52 @@ public class EnrollmentService {
 
     private Account getEnrollmentInstitutionalTutor(Enrollment enrollment) {
 
-        if (enrollment.getGroup() != null
-                && enrollment.getGroup().getInstitutionalTutor() != null) {
-            return enrollment.getGroup().getInstitutionalTutor();
+        CourseGroup group = resolveEnrollmentGroup(enrollment);
+
+        if (group != null
+                && group.getInstitutionalTutor() != null) {
+            return group.getInstitutionalTutor();
         }
 
         return enrollment.getCourse() != null
                 ? enrollment.getCourse().getInstitutionalTutor()
+                : null;
+    }
+
+    private Account getInstitutionDirector(Institution institution) {
+
+        if (institution == null || institution.getId() == null) {
+            return null;
+        }
+
+        return accountRepository
+                .findByInstitution_IdAndRoles_NameAndDeletedFalseAndEnabledTrueAndLockedFalse(
+                        institution.getId(),
+                        RoleName.ROLE_DIRECTORA_INSTITUCION.name())
+                .stream()
+                .min((left, right) -> left.getId().compareTo(right.getId()))
+                .orElse(null);
+    }
+
+    private CourseGroup resolveEnrollmentGroup(Enrollment enrollment) {
+
+        if (enrollment.getGroup() != null) {
+            return enrollment.getGroup();
+        }
+
+        if (enrollment.getCourse() == null
+                || enrollment.getCourse().getId() == null) {
+            return null;
+        }
+
+        List<CourseGroup> activeGroups = courseGroupRepository
+                .findByCourse_IdAndDeletedFalse(enrollment.getCourse().getId())
+                .stream()
+                .filter(CourseGroup::isActive)
+                .toList();
+
+        return activeGroups.size() == 1
+                ? activeGroups.get(0)
                 : null;
     }
 

@@ -98,16 +98,18 @@ public class FinalReportController {
 
     @GetMapping("/submitted")
     @PreAuthorize("hasAnyRole('ADMIN','DIRECTOR_PRACTICAS')")
-    public List<FinalReportResponse> submittedDocuments() {
+    public List<FinalReportResponse> submittedDocuments(
+            Authentication authentication) {
 
-        return finalReportService.submittedDocuments();
+        return finalReportService.submittedDocuments(authentication.getName());
     }
 
     @GetMapping("/submitted/summary")
     @PreAuthorize("hasAnyRole('ADMIN','DIRECTOR_PRACTICAS')")
-    public List<ReviewableDocumentSummaryResponse> submittedDocumentSummaries() {
+    public List<ReviewableDocumentSummaryResponse> submittedDocumentSummaries(
+            Authentication authentication) {
 
-        return finalReportService.submittedDocumentSummaries();
+        return finalReportService.submittedDocumentSummaries(authentication.getName());
     }
 
     @GetMapping("/defaults")
@@ -142,7 +144,7 @@ public class FinalReportController {
                 finalReportService.exportApprovedPdf(
                         id,
                         authentication.getName()),
-                "final-report-" + id + ".pdf");
+                "L.3. Informe Tutor Institucional.pdf");
     }
 
     @PutMapping("/{id}")

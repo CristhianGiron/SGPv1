@@ -11,12 +11,15 @@ import com.sgp.systemsgp.enums.RoleName;
 import com.sgp.systemsgp.exception.BadRequestException;
 import com.sgp.systemsgp.exception.NotFoundException;
 import com.sgp.systemsgp.model.Account;
+import com.sgp.systemsgp.model.AcademicCycle;
+import com.sgp.systemsgp.model.Career;
 import com.sgp.systemsgp.model.Course;
 import com.sgp.systemsgp.model.CourseGroup;
 import com.sgp.systemsgp.model.Institution;
 import com.sgp.systemsgp.model.Person;
 import com.sgp.systemsgp.model.Subject;
 import com.sgp.systemsgp.repository.AccountRepository;
+import com.sgp.systemsgp.repository.AcademicCycleRepository;
 import com.sgp.systemsgp.repository.CourseGroupRepository;
 import com.sgp.systemsgp.repository.CourseRepository;
 import com.sgp.systemsgp.repository.SubjectRepository;
@@ -41,6 +44,7 @@ public class CourseService {
     private final CourseGroupRepository courseGroupRepository;
     private final AccountRepository accountRepository;
     private final SubjectRepository subjectRepository;
+    private final AcademicCycleRepository academicCycleRepository;
 
     @Transactional
     public CourseResponse createCourse(
@@ -52,13 +56,22 @@ public class CourseService {
                 .orElseThrow(() -> new NotFoundException(
                         "Cuenta no encontrada"));
 
-        Subject subject = null;
+        AcademicCycle academicCycle = academicCycleRepository
+                .findByIdAndDeletedFalse(request.getAcademicCycleId())
+                .orElseThrow(() -> new NotFoundException(
+                        "Ciclo académico no encontrado"));
 
+        validateDirectorCanManageAcademicCycle(creator, academicCycle);
+
+        Subject subject = null;
         if (request.getSubjectId() != null) {
             subject = subjectRepository
                     .findByIdAndDeletedFalse(request.getSubjectId())
                     .orElseThrow(() -> new NotFoundException(
                             "Asignatura no encontrada"));
+
+            validateUniversitySubject(subject);
+            validateDirectorCanManageSubject(creator, subject);
         }
 
         Course course = Course.builder()
@@ -68,6 +81,7 @@ public class CourseService {
                 .capacity(request.getCapacity())
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
+                .academicCycle(academicCycle)
                 .subject(subject)
                 .createdBy(creator)
                 .active(true)
@@ -78,18 +92,25 @@ public class CourseService {
         return mapToResponse(course);
     }
 
-    public List<CourseResponse> getAll(boolean includeInactive) {
+    public List<CourseResponse> getAll(String username, boolean includeInactive) {
+
+        Account account = getAccount(username);
 
         return courseRepository.findByDeletedFalse()
                 .stream()
                 .filter(course -> includeInactive || course.isActive())
+                .filter(course -> canViewCourse(course, account))
                 .map(this::mapToResponse)
                 .toList();
     }
 
-    public CourseResponse getById(Long id) {
+    public CourseResponse getById(String username, Long id) {
 
-        return mapToResponse(getCourse(id));
+        Account account = getAccount(username);
+        Course course = getCourse(id);
+        validateCourseManagerCanManage(course, account);
+
+        return mapToResponse(course);
     }
 
     @Transactional
@@ -127,6 +148,8 @@ public class CourseService {
         if (!hasRole(account, RoleName.ROLE_ADMIN)
                 && !hasRole(account, RoleName.ROLE_DIRECTOR_PRACTICAS)) {
             validatePracticeTutorCanManage(course, account);
+        } else if (hasRole(account, RoleName.ROLE_DIRECTOR_PRACTICAS)) {
+            validateDirectorCanManageCourse(course, account);
         }
 
         return courseGroupRepository
@@ -254,10 +277,13 @@ public class CourseService {
 
     @Transactional
     public CourseResponse assignInstitutionalTutor(
+            String username,
             Long courseId,
             Long accountId) {
 
+        Account manager = getAccount(username);
         Course course = getCourse(courseId);
+        validateCourseManagerCanManage(course, manager);
         Account tutor = getAccount(accountId);
 
         validateAssignableAccount(tutor);
@@ -272,10 +298,13 @@ public class CourseService {
 
     @Transactional
     public CourseResponse assignPracticeTutor(
+            String username,
             Long courseId,
             Long accountId) {
 
+        Account manager = getAccount(username);
         Course course = getCourse(courseId);
+        validateCourseManagerCanManage(course, manager);
         Account tutor = getAccount(accountId);
 
         validateAssignableAccount(tutor);
@@ -289,50 +318,56 @@ public class CourseService {
     }
 
     @Transactional
-    public void disable(Long id) {
+    public void disable(String username, Long id) {
 
         Course course = getCourse(id);
+        validateCourseManagerCanManage(course, getAccount(username));
         course.setActive(false);
         courseRepository.save(course);
     }
 
     @Transactional
-    public void enable(Long id) {
+    public void enable(String username, Long id) {
 
         Course course = getCourse(id);
+        validateCourseManagerCanManage(course, getAccount(username));
         course.setActive(true);
         courseRepository.save(course);
     }
 
     @Transactional
-    public void lock(Long id) {
+    public void lock(String username, Long id) {
 
         Course course = getCourse(id);
+        validateCourseManagerCanManage(course, getAccount(username));
         course.setLocked(true);
         courseRepository.save(course);
     }
 
     @Transactional
-    public void unlock(Long id) {
+    public void unlock(String username, Long id) {
 
         Course course = getCourse(id);
+        validateCourseManagerCanManage(course, getAccount(username));
         course.setLocked(false);
         courseRepository.save(course);
     }
 
     @Transactional
-    public void softDelete(Long id) {
+    public void softDelete(String username, Long id) {
 
         Course course = getCourse(id);
+        validateCourseManagerCanManage(course, getAccount(username));
         course.setDeleted(true);
         course.setActive(false);
         courseRepository.save(course);
     }
 
     @Transactional
-    public void restore(Long id) {
+    public void restore(String username, Long id) {
 
         Course course = getExistingCourse(id);
+        validateCourseManagerCanManage(course, getAccount(username));
         course.setDeleted(false);
         course.setDeletedAt(null);
         course.setActive(true);
@@ -347,12 +382,15 @@ public class CourseService {
     }
 
     public Page<CourseResponse> search(
+            String username,
             String name,
             Boolean active,
             Boolean locked,
             String institutionalTutor,
             String practiceTutor,
             Pageable pageable) {
+
+        Account account = getAccount(username);
 
         return courseRepository
                 .findAll(
@@ -361,7 +399,8 @@ public class CourseService {
                                 active,
                                 locked,
                                 institutionalTutor,
-                                practiceTutor),
+                                practiceTutor,
+                                getDirectorCareerId(account)),
                         pageable)
                 .map(this::mapToResponse);
     }
@@ -415,6 +454,151 @@ public class CourseService {
         validateInstitutionalTutor(tutor);
 
         return tutor;
+    }
+
+    private void validateUniversitySubject(Subject subject) {
+
+        if (subject.getAcademicCycle() == null && subject.getCourse() == null) {
+            throw new BadRequestException(
+                    "La asignatura debe pertenecer a un paralelo universitario o a un ciclo académico");
+        }
+
+        if (!subject.isActive()) {
+            throw new BadRequestException(
+                    "La asignatura seleccionada está inactiva");
+        }
+    }
+
+    private void validateCourseManagerCanManage(
+            Course course,
+            Account account) {
+
+        if (hasRole(account, RoleName.ROLE_ADMIN)) {
+            return;
+        }
+
+        validateDirectorCanManageCourse(course, account);
+    }
+
+    private void validateDirectorCanManageSubject(
+            Account account,
+            Subject subject) {
+
+        if (!hasRole(account, RoleName.ROLE_DIRECTOR_PRACTICAS)) {
+            return;
+        }
+
+        Career directorCareer = account.getCareer();
+        Career subjectCareer = getSubjectCareer(subject);
+
+        if (directorCareer == null
+                || subjectCareer == null
+                || !directorCareer.getId().equals(subjectCareer.getId())) {
+            throw new BadRequestException(
+                    "El director de practicas solo puede gestionar cursos de su carrera");
+        }
+    }
+
+    private void validateDirectorCanManageAcademicCycle(
+            Account account,
+            AcademicCycle academicCycle) {
+
+        if (!hasRole(account, RoleName.ROLE_DIRECTOR_PRACTICAS)) {
+            return;
+        }
+
+        Career directorCareer = account.getCareer();
+        Career cycleCareer = academicCycle != null ? academicCycle.getCareer() : null;
+
+        if (directorCareer == null
+                || cycleCareer == null
+                || !directorCareer.getId().equals(cycleCareer.getId())) {
+            throw new BadRequestException(
+                    "El director de practicas solo puede gestionar paralelos de su carrera");
+        }
+    }
+
+    private void validateDirectorCanManageCourse(
+            Course course,
+            Account account) {
+
+        if (!hasRole(account, RoleName.ROLE_DIRECTOR_PRACTICAS)) {
+            throw new BadRequestException(
+                    "No tienes permisos para gestionar este curso");
+        }
+
+        Career directorCareer = account.getCareer();
+        Career courseCareer = getCourseCareer(course);
+
+        if (directorCareer == null
+                || courseCareer == null
+                || !directorCareer.getId().equals(courseCareer.getId())) {
+            throw new BadRequestException(
+                    "El director de practicas solo puede gestionar cursos de su carrera");
+        }
+    }
+
+    private boolean canViewCourse(
+            Course course,
+            Account account) {
+
+        if (hasRole(account, RoleName.ROLE_ADMIN)) {
+            return true;
+        }
+
+        if (hasRole(account, RoleName.ROLE_DIRECTOR_PRACTICAS)) {
+            Career directorCareer = account.getCareer();
+            Career courseCareer = getCourseCareer(course);
+
+            return directorCareer != null
+                    && courseCareer != null
+                    && directorCareer.getId().equals(courseCareer.getId());
+        }
+
+        return true;
+    }
+
+    private Long getDirectorCareerId(Account account) {
+
+        if (!hasRole(account, RoleName.ROLE_DIRECTOR_PRACTICAS)) {
+            return null;
+        }
+
+        return account.getCareer() != null
+                ? account.getCareer().getId()
+                : -1L;
+    }
+
+    private Career getCourseCareer(Course course) {
+
+        AcademicCycle academicCycle = getCourseAcademicCycle(course);
+
+        return academicCycle != null ? academicCycle.getCareer() : null;
+    }
+
+    private AcademicCycle getCourseAcademicCycle(Course course) {
+
+        if (course.getAcademicCycle() != null) {
+            return course.getAcademicCycle();
+        }
+
+        if (course.getSubject() != null
+                && course.getSubject().getAcademicCycle() != null) {
+            return course.getSubject().getAcademicCycle();
+        }
+
+        return null;
+    }
+
+    private Career getSubjectCareer(Subject subject) {
+
+        if (subject.getCourse() != null) {
+            return getCourseCareer(subject.getCourse());
+        }
+
+        return subject.getAcademicCycle() != null
+                ? subject.getAcademicCycle().getCareer()
+                : null;
     }
 
     private void validateAssignableAccount(Account account) {
@@ -659,6 +843,10 @@ public class CourseService {
 
     private CourseResponse mapToResponse(Course course) {
 
+        AcademicCycle academicCycle = getCourseAcademicCycle(course);
+        Career career = academicCycle != null ? academicCycle.getCareer() : null;
+        Subject subject = resolveCourseSubject(course);
+
         return CourseResponse.builder()
                 .id(course.getId())
                 .name(course.getName())
@@ -689,15 +877,55 @@ public class CourseService {
                                 ? course.getPracticeTutor().getUsername()
                                 : null)
                 .subjectId(
-                        course.getSubject() != null
-                                ? course.getSubject().getId()
+                        subject != null
+                                ? subject.getId()
                                 : null)
                 .subject(
-                        course.getSubject() != null
-                                ? course.getSubject().getName()
+                        subject != null
+                                ? subject.getName()
+                                : null)
+                .academicCycleId(
+                        academicCycle != null
+                                ? academicCycle.getId()
+                                : null)
+                .academicCycle(
+                        academicCycle != null
+                                ? academicCycle.getName()
+                                : null)
+                .careerId(
+                        career != null
+                                ? career.getId()
+                                : null)
+                .career(
+                        career != null
+                                ? career.getName()
+                                : null)
+                .facultyId(
+                        career != null && career.getFaculty() != null
+                                ? career.getFaculty().getId()
+                                : null)
+                .faculty(
+                        career != null && career.getFaculty() != null
+                                ? career.getFaculty().getName()
                                 : null)
                 .createdAt(course.getCreatedAt())
                 .updatedAt(course.getUpdatedAt())
                 .build();
+    }
+
+    private Subject resolveCourseSubject(Course course) {
+
+        if (course == null) {
+            return null;
+        }
+
+        if (course.getSubject() != null) {
+            return course.getSubject();
+        }
+
+        return subjectRepository.findByCourse_IdAndDeletedFalse(course.getId())
+                .stream()
+                .findFirst()
+                .orElse(null);
     }
 }

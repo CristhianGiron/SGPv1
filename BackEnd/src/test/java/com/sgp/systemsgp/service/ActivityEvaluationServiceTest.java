@@ -31,11 +31,14 @@ import com.sgp.systemsgp.repository.AccountRepository;
 import com.sgp.systemsgp.repository.ActivityEvaluationRepository;
 import com.sgp.systemsgp.repository.EnrollmentRepository;
 import com.sgp.systemsgp.repository.InstitutionRepository;
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
@@ -66,7 +69,8 @@ class ActivityEvaluationServiceTest {
                 activityEvaluationRepository,
                 enrollmentRepository,
                 accountRepository,
-                institutionRepository);
+                institutionRepository,
+                new PdfExportService());
     }
 
     @Test
@@ -170,6 +174,36 @@ class ActivityEvaluationServiceTest {
                 .hasSize(2);
     }
 
+    @Test
+    void exportPdfUsesActivityEvaluationTemplate() throws IOException {
+
+        Account student = student();
+        Account tutor = practiceTutor();
+        ActivityEvaluation evaluation = evaluation(
+                student,
+                tutor,
+                institutionalTutor(school()));
+
+        when(accountRepository.findByUsernameAndDeletedFalse("student01"))
+                .thenReturn(Optional.of(student));
+
+        when(activityEvaluationRepository.findByIdAndDeletedFalse(1L))
+                .thenReturn(Optional.of(evaluation));
+
+        byte[] pdf = activityEvaluationService.exportPdf(
+                1L,
+                "student01");
+
+        String text = pdfText(pdf);
+
+        assertThat(text)
+                .contains("EVALUACIÓN DE ACTIVIDADES")
+                .contains("ASPECTOS EVALUADOS")
+                .contains("Aspectos Generales")
+                .contains("Evaluación y Acreditación")
+                .contains("Puntualidad");
+    }
+
     private CreateActivityEvaluationRequest completeRequest() {
 
         CreateActivityEvaluationRequest request = new CreateActivityEvaluationRequest();
@@ -256,6 +290,13 @@ class ActivityEvaluationServiceTest {
                 .build());
 
         return evaluation;
+    }
+
+    private String pdfText(byte[] pdf) throws IOException {
+
+        try (var document = Loader.loadPDF(pdf)) {
+            return new PDFTextStripper().getText(document);
+        }
     }
 
     private Enrollment enrollment(

@@ -24,4 +24,6 @@ public interface SubjectRepository
 
     List<Subject> findByAcademicCycleId(Long academicCycleId);
 
+    List<Subject> findByCourse_IdAndDeletedFalse(Long courseId);
+
 }

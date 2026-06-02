@@ -9,8 +9,9 @@ import { PrimaryButton, SecondaryButton } from '../components/ui/ActionBar';
 import { useConfirm } from '../components/ui/ConfirmDialog';
 import { DataTable } from '../components/ui/DataTable';
 import { EntitySelect } from '../components/ui/EntitySelect';
+import { FilterPanel } from '../components/ui/FilterPanel';
 import { Field, Input, Select } from '../components/ui/FormControls';
-import { ModuleTab, ModuleTabs } from '../components/ui/ModuleTabs';
+import { Modal } from '../components/ui/Modal';
 import { PageHeader } from '../components/ui/PageHeader';
 import { SectionCard } from '../components/ui/SectionCard';
 import { StatusBadge } from '../components/ui/StatusBadge';
@@ -31,6 +32,8 @@ const INITIAL_FORM = {
   careerId: '',
   academicCycleId: '',
   institutionId: '',
+  gradeId: '',
+  gradeParallelId: '',
 };
 
 export function AccountsPage() {
@@ -213,27 +216,12 @@ export function AccountsPage() {
       {error && <Alert tone="error">{error}</Alert>}
       {message && <Alert tone="success">{message}</Alert>}
 
-      <SectionCard>
-        <ModuleTabs>
-          {[
-            ['list', 'Usuarios'],
-            ['create', 'Crear usuario'],
-          ].map(([id, label]) => (
-            <ModuleTab
-              active={activeView === id}
-              key={id}
-              onClick={() => setActiveView(id)}
-            >
-              {label}
-            </ModuleTab>
-          ))}
-        </ModuleTabs>
-      </SectionCard>
-
-      {activeView === 'list' && (
-        <>
-          <SectionCard title="Filtrar usuarios">
-            <div className="grid gap-4 md:grid-cols-3">
+      <>
+          <FilterPanel
+            activeCount={countActiveFilters(filters, ['query'])}
+            hasActiveFilters={countActiveFilters(filters) > 0}
+            onClear={() => setFilters({ query: '', role: '', enabled: '', locked: '', academicCycle: '', institution: '' })}
+            search={(
               <Field label="Buscar">
                 <Input
                   placeholder="Usuario, nombre, cedula, correo o institucion"
@@ -242,6 +230,10 @@ export function AccountsPage() {
                   onChange={(event) => setFilters((current) => ({ ...current, query: event.target.value }))}
                 />
               </Field>
+            )}
+            summary={`${filteredRows.length} de ${rows.length} usuarios`}
+            title="Filtrar usuarios"
+          >
               <Field label="Rol">
                 <Select
                   value={filters.role}
@@ -301,13 +293,16 @@ export function AccountsPage() {
                   ))}
                 </Select>
               </Field>
-            </div>
-            <p className="mt-3 text-xs font-bold text-muted">
-              {filteredRows.length} de {rows.length} usuarios
-            </p>
-          </SectionCard>
+          </FilterPanel>
 
-          <SectionCard title="Usuarios">
+          <SectionCard
+            title="Usuarios"
+            action={
+              <PrimaryButton icon={UserPlus} onClick={() => setActiveView('create')} type="button">
+                Crear usuario
+              </PrimaryButton>
+            }
+          >
             <DataTable
               columns={columns}
               emptyText="Aun no hay usuarios registrados."
@@ -316,10 +311,14 @@ export function AccountsPage() {
             />
           </SectionCard>
         </>
-      )}
 
-      {activeView === 'create' && (
-      <SectionCard title="Crear usuario">
+      <Modal
+        description="Registra la cuenta y vuelve al listado sin cambiar de pagina."
+        maxWidth="max-w-5xl"
+        onClose={() => setActiveView('list')}
+        open={activeView === 'create'}
+        title="Crear usuario"
+      >
         <form className="grid gap-4 md:grid-cols-3" onSubmit={createAccount}>
           {[
             ['username', 'Usuario'],
@@ -348,7 +347,7 @@ export function AccountsPage() {
               ))}
             </Select>
           </Field>
-          {accountRoleUsesAcademicCycle(form.role) && (
+          {accountRoleUsesAcademicPath(form.role) && (
             <>
               <Field label="Facultad">
                 <EntitySelect
@@ -370,37 +369,66 @@ export function AccountsPage() {
                   required
                 />
               </Field>
-              <Field label="Ciclo academico">
-                <EntitySelect
-                  disabled={!form.careerId}
-                  path={ENTITY_RELATIONS.academicCycleId.path}
-                  placeholder={form.careerId ? ENTITY_RELATIONS.academicCycleId.placeholder : 'Selecciona primero una carrera'}
-                  value={form.academicCycleId}
-                  rowFilter={(row) => hasMatchingId(row.careerId, form.careerId)}
-                  onChange={(value) => setFormField('academicCycleId', value)}
-                  required
-                />
-              </Field>
+              {accountRoleUsesAcademicCycle(form.role) && (
+                <Field label="Ciclo academico">
+                  <EntitySelect
+                    disabled={!form.careerId}
+                    path={ENTITY_RELATIONS.academicCycleId.path}
+                    placeholder={form.careerId ? ENTITY_RELATIONS.academicCycleId.placeholder : 'Selecciona primero una carrera'}
+                    value={form.academicCycleId}
+                    rowFilter={(row) => hasMatchingId(row.careerId, form.careerId)}
+                    onChange={(value) => setFormField('academicCycleId', value)}
+                    required
+                  />
+                </Field>
+              )}
             </>
           )}
           {accountRoleUsesInstitution(form.role) && (
-            <Field label={accountInstitutionLabel(form.role)}>
-              <EntitySelect
-                path={ENTITY_RELATIONS.institutionId.path}
-                placeholder={accountInstitutionPlaceholder(form.role)}
-                value={form.institutionId}
-                rowFilter={accountInstitutionFilter(form.role)}
-                onChange={(value) => setFormField('institutionId', value)}
-                required
-              />
-            </Field>
+            <>
+              <Field label={accountInstitutionLabel(form.role)}>
+                <EntitySelect
+                  path={ENTITY_RELATIONS.institutionId.path}
+                  placeholder={accountInstitutionPlaceholder(form.role)}
+                  value={form.institutionId}
+                  rowFilter={accountInstitutionFilter(form.role)}
+                  onChange={(value) => setFormField('institutionId', value)}
+                  required
+                />
+              </Field>
+              {accountRoleUsesGrade(form.role) && (
+                <Field label="Grado">
+                  <EntitySelect
+                    disabled={!form.institutionId}
+                    path={ENTITY_RELATIONS.gradeId.path}
+                    placeholder={form.institutionId ? ENTITY_RELATIONS.gradeId.placeholder : 'Selecciona primero una institucion educativa'}
+                    value={form.gradeId}
+                    rowFilter={(row) => hasMatchingId(row.institutionId, form.institutionId)}
+                    onChange={(value) => setFormField('gradeId', value)}
+                    required
+                  />
+                </Field>
+              )}
+              {accountRoleUsesGradeParallel(form.role) && (
+                <Field label="Paralelo">
+                  <EntitySelect
+                    disabled={!form.gradeId}
+                    path={ENTITY_RELATIONS.gradeParallelId.path}
+                    placeholder={form.gradeId ? ENTITY_RELATIONS.gradeParallelId.placeholder : 'Selecciona primero un grado'}
+                    value={form.gradeParallelId}
+                    rowFilter={(row) => hasMatchingId(row.gradeId, form.gradeId)}
+                    onChange={(value) => setFormField('gradeParallelId', value)}
+                    required
+                  />
+                </Field>
+              )}
+            </>
           )}
           <div className="md:col-span-3">
             <PrimaryButton icon={UserPlus} loading={loading} type="submit">Crear usuario</PrimaryButton>
           </div>
         </form>
-      </SectionCard>
-      )}
+      </Modal>
     </>
   );
 }
@@ -413,6 +441,8 @@ function applyAccountFormChange(form, name, value) {
     next.careerId = '';
     next.academicCycleId = '';
     next.institutionId = '';
+    next.gradeId = '';
+    next.gradeParallelId = '';
     return next;
   }
 
@@ -441,6 +471,12 @@ function applyAccountFormChange(form, name, value) {
     next.facultyId = '';
     next.careerId = '';
     next.academicCycleId = '';
+    next.gradeId = '';
+    next.gradeParallelId = '';
+  }
+
+  if (name === 'gradeId') {
+    next.gradeParallelId = '';
   }
 
   return next;
@@ -450,10 +486,13 @@ function accountRoleUsesAcademicCycle(role) {
   return role === 'ROLE_ESTUDIANTE';
 }
 
+function accountRoleUsesAcademicPath(role) {
+  return accountRoleUsesAcademicCycle(role) || role === 'ROLE_DIRECTOR_PRACTICAS';
+}
+
 function accountRoleUsesInstitution(role) {
   return [
     'ROLE_ADMIN',
-    'ROLE_DIRECTOR_PRACTICAS',
     'ROLE_TUTOR_PRACTICAS',
     'ROLE_DIRECTORA_INSTITUCION',
     'ROLE_TUTOR_INSTITUCIONAL',
@@ -480,6 +519,18 @@ function accountRoleUsesSchoolInstitution(role) {
   return role === 'ROLE_DIRECTORA_INSTITUCION' || role === 'ROLE_TUTOR_INSTITUCIONAL';
 }
 
+function accountRoleUsesGrade(role) {
+  return role === 'ROLE_DIRECTORA_INSTITUCION' || role === 'ROLE_TUTOR_INSTITUCIONAL';
+}
+
+function accountRoleSubmitsGrade(role) {
+  return role === 'ROLE_DIRECTORA_INSTITUCION';
+}
+
+function accountRoleUsesGradeParallel(role) {
+  return role === 'ROLE_TUTOR_INSTITUCIONAL';
+}
+
 function hasMatchingId(left, right) {
   return Boolean(right) && String(left ?? '') === String(right ?? '');
 }
@@ -487,7 +538,12 @@ function hasMatchingId(left, right) {
 function cleanAccountPayload(form) {
   return Object.fromEntries(
     Object.entries(form)
-      .filter(([key]) => key !== 'facultyId' && key !== 'careerId')
+      .filter(([key]) => key !== 'facultyId')
+      .filter(([key]) => key !== 'careerId' || form.role === 'ROLE_DIRECTOR_PRACTICAS')
+      .filter(([key]) => key !== 'academicCycleId' || accountRoleUsesAcademicCycle(form.role))
+      .filter(([key]) => key !== 'institutionId' || accountRoleUsesInstitution(form.role))
+      .filter(([key]) => key !== 'gradeId' || accountRoleSubmitsGrade(form.role))
+      .filter(([key]) => key !== 'gradeParallelId' || accountRoleUsesGradeParallel(form.role))
       .map(([key, value]) => [
         key,
         key.endsWith('Id') ? (value ? Number(value) : null) : value || null,
@@ -532,4 +588,11 @@ function filterAccountRow(row, filters) {
   }
 
   return true;
+}
+
+function countActiveFilters(filters, excludeKeys = []) {
+  return Object.entries(filters || {})
+    .filter(([key]) => !excludeKeys.includes(key))
+    .filter(([, value]) => String(value || '').trim())
+    .length;
 }

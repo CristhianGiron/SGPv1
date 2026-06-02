@@ -126,9 +126,15 @@ public class FinalReportResponse {
 
     private String practiceReviewedBy;
 
+    private String practiceReviewedByName;
+
     private String institutionalReviewedBy;
 
+    private String institutionalReviewedByName;
+
     private String directorReviewedBy;
+
+    private String directorReviewedByName;
 
     private LocalDateTime submittedAt;
 

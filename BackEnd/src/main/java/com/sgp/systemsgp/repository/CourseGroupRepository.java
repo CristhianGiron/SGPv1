@@ -10,6 +10,8 @@ public interface CourseGroupRepository extends JpaRepository<CourseGroup, Long> 
 
     List<CourseGroup> findByCourse_IdAndDeletedFalse(Long courseId);
 
+    List<CourseGroup> findByInstitutionalTutor_UsernameAndDeletedFalse(String username);
+
     Optional<CourseGroup> findByIdAndDeletedFalse(Long id);
 
     boolean existsByCourse_IdAndNameIgnoreCaseAndDeletedFalse(Long courseId, String name);

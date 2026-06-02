@@ -4,10 +4,10 @@ import { apiRequest } from '../api/client';
 import { useAuth } from '../auth/AuthContext';
 import { PageHeader } from '../components/ui/PageHeader';
 import { Alert } from '../components/ui/Alert';
-import { PrimaryButton, SecondaryButton } from '../components/ui/ActionBar';
+import { ActionBar, PrimaryButton, SecondaryButton } from '../components/ui/ActionBar';
 import { useConfirm } from '../components/ui/ConfirmDialog';
 import { Field, Input, Textarea } from '../components/ui/FormControls';
-import { SectionCard } from '../components/ui/SectionCard';
+import { Modal } from '../components/ui/Modal';
 import { useNotifications } from '../hooks/useNotifications';
 import { NotificationItem } from '../components/notifications/NotificationItem';
 import { ROLES } from '../config/resources';
@@ -40,6 +40,7 @@ export function NotificationsPage() {
   const [sendingAnnouncement, setSendingAnnouncement] = useState(false);
   const [announcementError, setAnnouncementError] = useState('');
   const [announcementMessage, setAnnouncementMessage] = useState('');
+  const [announcementOpen, setAnnouncementOpen] = useState(false);
   const isAdmin = roles.includes('ROLE_ADMIN');
 
   function updateAnnouncementField(field, value) {
@@ -104,6 +105,7 @@ export function NotificationsPage() {
 
       const sent = Number(response?.sent || 0);
       setAnnouncement(EMPTY_ANNOUNCEMENT);
+      setAnnouncementOpen(false);
       setAnnouncementMessage(`Aviso enviado a ${sent} usuario${sent === 1 ? '' : 's'}.`);
       await refresh();
     } catch (err) {
@@ -120,29 +122,41 @@ export function NotificationsPage() {
         title="Tus notificaciones"
         description="Recibe avisos sobre envíos, revisiones, comentarios y actualizaciones relevantes de la plataforma."
         action={
-          <SecondaryButton
-            type="button"
-            onClick={async () => {
-              const accepted = await confirm({
-                title: 'Marcar notificaciones como leidas',
-                description: 'Todas tus notificaciones pendientes quedaran marcadas como leidas.',
-                confirmLabel: 'Marcar como leidas',
-                tone: 'warning',
-              });
+          <ActionBar>
+            {isAdmin && (
+              <PrimaryButton icon={Send} onClick={() => setAnnouncementOpen(true)} type="button">
+                Enviar aviso
+              </PrimaryButton>
+            )}
+            <SecondaryButton
+              type="button"
+              onClick={async () => {
+                const accepted = await confirm({
+                  title: 'Marcar notificaciones como leidas',
+                  description: 'Todas tus notificaciones pendientes quedaran marcadas como leidas.',
+                  confirmLabel: 'Marcar como leidas',
+                  tone: 'warning',
+                });
 
-              if (accepted) {
-                markAllAsRead();
-              }
-            }}
-            icon={CheckCheck}
-          >
-            Marcar todas como leídas
-          </SecondaryButton>
+                if (accepted) {
+                  markAllAsRead();
+                }
+              }}
+              icon={CheckCheck}
+            >
+              Marcar todas como leídas
+            </SecondaryButton>
+          </ActionBar>
         }
       />
 
-      {isAdmin && (
-        <SectionCard title="Enviar aviso">
+      <Modal
+        description="Envía una comunicación general o segmentada por rol."
+        maxWidth="max-w-4xl"
+        onClose={() => setAnnouncementOpen(false)}
+        open={isAdmin && announcementOpen}
+        title="Enviar aviso"
+      >
           <form className="space-y-4" onSubmit={sendAnnouncement}>
             {announcementError && <Alert tone="error">{announcementError}</Alert>}
             {announcementMessage && <Alert tone="success">{announcementMessage}</Alert>}
@@ -214,8 +228,7 @@ export function NotificationsPage() {
               </PrimaryButton>
             </div>
           </form>
-        </SectionCard>
-      )}
+      </Modal>
 
       <div className="rounded-lg border border-[#bdcbd0] bg-white p-4 shadow-card dark:border-slate-700 dark:bg-surface dark:shadow-[0_18px_42px_rgba(0,0,0,0.34)]">
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
