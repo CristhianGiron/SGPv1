@@ -10,8 +10,8 @@ import { DataTable } from './ui/DataTable';
 import { EmptyState } from './ui/EmptyState';
 import { Modal } from './ui/Modal';
 
-const feedbackInlineClass = 'rounded-lg border-l-[3px] border-[#529914] bg-[#e4f0d8] p-3 dark:border-[#75c66a] dark:bg-[#75c66a]/10';
-const feedbackMetaClass = 'mt-2 text-xs leading-5 text-[#3f760f] dark:text-[#bbf7d0]';
+const feedbackInlineClass = 'rounded-lg border-l-[3px] border-accent bg-accent-soft p-3 dark:border-accent dark:bg-accent-soft';
+const feedbackMetaClass = 'mt-2 text-xs leading-5 text-accent-strong dark:text-accent-strong';
 
 export function DataInspector({ data, moduleId, token }) {
   if (!data) {
@@ -42,12 +42,12 @@ export function DataInspector({ data, moduleId, token }) {
 
             return (
               <section
-                className="scroll-mt-24 min-w-0 max-w-full rounded-lg border border-zinc-200 bg-zinc-50 p-3 dark:border-slate-700 dark:bg-surface-soft"
+                className="scroll-mt-24 min-w-0 max-w-full rounded-lg border border-line bg-panel-soft p-3 dark:border-line dark:bg-surface-soft"
                 id={detailGroupDomId(group)}
                 key={group.title}
               >
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <h3 className="text-sm font-bold text-zinc-950 dark:text-slate-50">{group.title}</h3>
+                  <h3 className="text-sm font-bold text-heading dark:text-heading">{group.title}</h3>
                   {feedbackStatus && (
                     <span className={`rounded-full px-2 py-1 text-xs font-bold ${sectionStatusClass(feedbackStatus.tone)}`}>
                       {feedbackStatus.label}
@@ -61,8 +61,8 @@ export function DataInspector({ data, moduleId, token }) {
                         className={`grid min-w-0 grid-cols-[minmax(0,7.5rem)_minmax(0,1fr)] gap-3 text-sm max-sm:grid-cols-1 ${item.feedback ? feedbackInlineClass : ''}`}
                         key={item.key}
                       >
-                        <dt className="min-w-0 break-words text-zinc-500 dark:text-slate-400">{item.label}</dt>
-                        <dd className="min-w-0 whitespace-pre-wrap break-words font-medium text-zinc-900 dark:text-slate-100">
+                        <dt className="min-w-0 break-words text-muted dark:text-muted">{item.label}</dt>
+                        <dd className="min-w-0 whitespace-pre-wrap break-words font-medium text-heading dark:text-heading">
                           <div className="min-w-0 break-words">{item.value}</div>
                           {item.feedbackMeta && (
                             <div className={feedbackMetaClass}>{formatFeedbackMeta(item.feedbackMeta)}</div>
@@ -74,7 +74,7 @@ export function DataInspector({ data, moduleId, token }) {
                 )}
                 {group.collections?.map((collection) => (
                   <div className="mt-3 min-w-0 max-w-full" key={collection.key}>
-                    <h4 className="text-xs font-extrabold uppercase text-zinc-500 dark:text-slate-400">{collection.title}</h4>
+                    <h4 className="text-xs font-extrabold uppercase text-muted dark:text-muted">{collection.title}</h4>
                     <div className="mt-2 min-w-0 max-w-full">
                       {isActivityWeeksCollection(collection.key) ? (
                         <ActivityWeeksAcademicTable weeks={collection.rows} />
@@ -98,8 +98,8 @@ export function DataInspector({ data, moduleId, token }) {
       )}
 
       {standaloneCollections.map((collection) => (
-        <section className="min-w-0 max-w-full rounded-lg border border-zinc-200 bg-white p-3 dark:border-slate-700 dark:bg-surface" key={collection.key}>
-          <h3 className="text-sm font-bold text-zinc-950 dark:text-slate-50">{collection.title}</h3>
+        <section className="min-w-0 max-w-full rounded-lg border border-line bg-panel p-3 dark:border-line dark:bg-surface" key={collection.key}>
+          <h3 className="text-sm font-bold text-heading dark:text-heading">{collection.title}</h3>
           <div className="mt-3 min-w-0 max-w-full">
             {isActivityWeeksCollection(collection.key) ? (
               <ActivityWeeksAcademicTable weeks={collection.rows} />
@@ -136,9 +136,9 @@ export function DocumentApprovalStatus({ data }) {
   }
 
   return (
-    <section className="rounded-lg border border-[#c8d2cd] bg-white p-3 dark:border-slate-700 dark:bg-surface">
+    <section className="rounded-lg border border-line bg-panel p-3 dark:border-line dark:bg-surface">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h3 className="text-sm font-bold text-zinc-950 dark:text-slate-50">Estado de aprobacion</h3>
+        <h3 className="text-sm font-bold text-heading dark:text-heading">Estado de aprobacion</h3>
         <span className={`rounded-full px-2.5 py-1 text-xs font-extrabold ${approvalToneClass(documentApprovalTone(data))}`}>
           {formatValue(data.status || 'DRAFT', 'status')}
         </span>
@@ -147,11 +147,11 @@ export function DocumentApprovalStatus({ data }) {
       <div className="mt-3 grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
         {reviews.map((review) => (
           <article
-            className="rounded-lg border border-[#edf2ee] bg-[#fbfdfb] p-3 dark:border-slate-700 dark:bg-[#111827]"
+            className="rounded-lg border border-line-soft bg-field-hover p-3 dark:border-line dark:bg-surface"
             key={review.key}
           >
             <div className="flex items-center justify-between gap-2">
-              <p className="m-0 text-sm font-extrabold text-[#20282d] dark:text-slate-50">{review.label}</p>
+              <p className="m-0 text-sm font-extrabold text-heading dark:text-heading">{review.label}</p>
               <span className={`rounded-full px-2 py-0.5 text-[0.7rem] font-extrabold ${approvalToneClass(review.tone)}`}>
                 {review.status}
               </span>
@@ -159,11 +159,11 @@ export function DocumentApprovalStatus({ data }) {
             <dl className="mt-2 grid gap-1 text-xs leading-5">
               <div className="grid grid-cols-[4.5rem_minmax(0,1fr)] gap-2">
                 <dt className="font-bold text-muted">Por</dt>
-                <dd className="min-w-0 break-words text-[#20282d] dark:text-slate-100">{review.author || '-'}</dd>
+                <dd className="min-w-0 break-words text-heading dark:text-heading">{review.author || '-'}</dd>
               </div>
               <div className="grid grid-cols-[4.5rem_minmax(0,1fr)] gap-2">
                 <dt className="font-bold text-muted">Fecha</dt>
-                <dd className="min-w-0 break-words text-[#20282d] dark:text-slate-100">{review.at ? formatValue(review.at, 'reviewedAt') : '-'}</dd>
+                <dd className="min-w-0 break-words text-heading dark:text-heading">{review.at ? formatValue(review.at, 'reviewedAt') : '-'}</dd>
               </div>
             </dl>
           </article>
@@ -171,7 +171,7 @@ export function DocumentApprovalStatus({ data }) {
       </div>
 
       {data.approvedAt && (
-        <p className="mt-3 text-xs font-bold text-[#3f760f] dark:text-[#bbf7d0]">
+        <p className="mt-3 text-xs font-bold text-accent-strong dark:text-accent-strong">
           Aprobacion final: {formatValue(data.approvedAt, 'approvedAt')}
         </p>
       )}
@@ -187,9 +187,9 @@ export function ActivityPlanScheduleMatrix({ weeks = [] }) {
   }
 
   return (
-    <div className="min-w-0 max-w-full overflow-hidden rounded-sm border border-[#1f2933] bg-white dark:border-slate-600 dark:bg-surface">
+    <div className="min-w-0 max-w-full overflow-hidden rounded-sm border border-table-border bg-panel dark:border-line dark:bg-surface">
       <div className="min-w-0 max-w-full overflow-x-auto overscroll-x-contain">
-        <table className="w-max min-w-full border-collapse text-[11px] leading-tight text-black dark:text-slate-100">
+        <table className="w-max min-w-full border-collapse text-[11px] leading-tight text-table-ink dark:text-heading">
           <colgroup>
             <col className="w-[52%]" />
             {schedule.weekColumns.map((week) => (
@@ -199,19 +199,19 @@ export function ActivityPlanScheduleMatrix({ weeks = [] }) {
           <thead>
             <tr>
               <th
-                className="border border-[#1f2933] bg-[#7f7f7c] px-2 py-2 text-center font-serif text-[12px] font-bold uppercase text-white dark:border-slate-600 dark:bg-slate-700"
+                className="border border-table-border bg-table-header px-2 py-2 text-center font-serif text-[12px] font-bold uppercase text-inverse dark:border-line dark:bg-table-header"
                 colSpan={schedule.weekColumns.length + 1}
               >
                 CRONOGRAMA DE ACTIVIDADES PRACTICAS PARA EL DESARROLLO DEL PIS
               </th>
             </tr>
             <tr>
-              <th className="border border-[#1f2933] bg-[#858582] px-2 py-1.5 text-center font-serif font-bold text-white dark:border-slate-600 dark:bg-slate-700">
+              <th className="border border-table-border bg-table-header px-2 py-1.5 text-center font-serif font-bold text-inverse dark:border-line dark:bg-table-header">
                 Actividades
               </th>
               {schedule.monthGroups.map((month) => (
                 <th
-                  className="border border-[#1f2933] bg-[#858582] px-2 py-1.5 text-center font-serif font-bold text-white dark:border-slate-600 dark:bg-slate-700"
+                  className="border border-table-border bg-table-header px-2 py-1.5 text-center font-serif font-bold text-inverse dark:border-line dark:bg-table-header"
                   colSpan={month.span}
                   key={month.key}
                 >
@@ -220,12 +220,12 @@ export function ActivityPlanScheduleMatrix({ weeks = [] }) {
               ))}
             </tr>
             <tr>
-              <th className="border border-[#1f2933] bg-[#858582] px-2 py-1.5 text-center font-serif font-bold text-white dark:border-slate-600 dark:bg-slate-700">
+              <th className="border border-table-border bg-table-header px-2 py-1.5 text-center font-serif font-bold text-inverse dark:border-line dark:bg-table-header">
                 Semanas
               </th>
               {schedule.weekColumns.map((week) => (
                 <th
-                  className="border border-[#1f2933] bg-[#858582] px-1 py-1.5 text-center font-serif font-bold text-white dark:border-slate-600 dark:bg-slate-700"
+                  className="border border-table-border bg-table-header px-1 py-1.5 text-center font-serif font-bold text-inverse dark:border-line dark:bg-table-header"
                   key={week.key}
                 >
                   {week.weekNumber}
@@ -236,7 +236,7 @@ export function ActivityPlanScheduleMatrix({ weeks = [] }) {
           <tbody>
             {schedule.rows.map((row, rowIndex) => (
               <tr key={`${row.weekKey}-${rowIndex}`}>
-                <td className="break-words border border-[#1f2933] px-1.5 py-1 font-serif text-[10.5px] leading-snug text-black dark:border-slate-600 dark:text-slate-100">
+                <td className="break-words border border-table-border px-1.5 py-1 font-serif text-[10.5px] leading-snug text-table-ink dark:border-line dark:text-heading">
                   {row.activity}
                 </td>
                 {schedule.weekColumns.map((week) => {
@@ -245,7 +245,7 @@ export function ActivityPlanScheduleMatrix({ weeks = [] }) {
                   return (
                     <td
                       aria-label={active ? `Semana ${week.weekNumber}: ${row.activity}` : `Semana ${week.weekNumber}`}
-                      className="h-6 border border-[#1f2933] p-0 dark:border-slate-600"
+                      className="h-6 border border-table-border p-0 dark:border-line"
                       key={week.key}
                     >
                       {active && (
@@ -274,9 +274,9 @@ export function ActivityWeeksAcademicTable({ weeks = [] }) {
   }
 
   return (
-    <div className="min-w-0 max-w-full overflow-hidden rounded-sm border border-[#1f2933] bg-white dark:border-slate-600 dark:bg-surface">
+    <div className="min-w-0 max-w-full overflow-hidden rounded-sm border border-table-border bg-panel dark:border-line dark:bg-surface">
       <div className="min-w-0 max-w-full overflow-x-auto overscroll-x-contain">
-        <table className="w-max min-w-full border-collapse font-serif text-[12px] leading-relaxed text-black dark:text-slate-100 lg:w-full">
+        <table className="w-max min-w-full border-collapse font-serif text-[12px] leading-relaxed text-table-ink dark:text-heading lg:w-full">
           <colgroup>
             <col className="w-[7.5rem]" />
             <col />
@@ -284,10 +284,10 @@ export function ActivityWeeksAcademicTable({ weeks = [] }) {
           <tbody>
             {rows.map((week) => (
               <tr key={week.key}>
-                <th className="border border-[#1f2933] bg-[#858582] px-2 py-4 text-center font-bold uppercase text-white dark:border-slate-600 dark:bg-slate-700">
+                <th className="border border-table-border bg-table-header px-2 py-4 text-center font-bold uppercase text-inverse dark:border-line dark:bg-table-header">
                   SEMANA {week.weekNumber}
                 </th>
-                <th className="border border-[#1f2933] bg-[#858582] px-4 py-3 text-center font-bold uppercase text-white dark:border-slate-600 dark:bg-slate-700">
+                <th className="border border-table-border bg-table-header px-4 py-3 text-center font-bold uppercase text-inverse dark:border-line dark:bg-table-header">
                   {week.dateRange}
                 </th>
               </tr>
@@ -297,10 +297,10 @@ export function ActivityWeeksAcademicTable({ weeks = [] }) {
               return [
                 headerRow,
                 <tr key={`${week.key}-body`}>
-                  <th className="border border-[#1f2933] px-2 py-8 text-center font-bold text-black dark:border-slate-600 dark:text-slate-100">
+                  <th className="border border-table-border px-2 py-8 text-center font-bold text-table-ink dark:border-line dark:text-heading">
                     Actividad
                   </th>
-                  <td className="border border-[#1f2933] px-6 py-4 align-top dark:border-slate-600">
+                  <td className="border border-table-border px-6 py-4 align-top dark:border-line">
                     <ul className="m-0 list-disc space-y-3 pl-5">
                       {week.activities.map((activity, activityIndex) => (
                         <li className="pl-2" key={`${week.key}-activity-${activityIndex}`}>
@@ -321,16 +321,16 @@ export function ActivityWeeksAcademicTable({ weeks = [] }) {
 
 function SectionFeedbackThread({ entries }) {
   return (
-    <div className="mt-4 rounded-lg border-l-[3px] border-[#529914] bg-[#f0fdf4] p-3 dark:border-[#75c66a] dark:bg-[#75c66a]/10">
-      <h4 className="m-0 mb-2 text-xs font-black uppercase text-[#3f760f] dark:text-[#bbf7d0]">Retroalimentacion de la seccion</h4>
+    <div className="mt-4 rounded-lg border-l-[3px] border-accent bg-success-soft p-3 dark:border-accent dark:bg-accent-soft">
+      <h4 className="m-0 mb-2 text-xs font-black uppercase text-accent-strong dark:text-accent-strong">Retroalimentacion de la seccion</h4>
       <ol className="grid list-none gap-2 p-0 m-0">
         {entries.map((entry) => (
-          <li className="border-t border-[#166534]/15 pt-2 first:border-t-0 first:pt-0 dark:border-[#75c66a]/20" key={entry.id}>
-            <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs font-extrabold leading-5 text-[#166534] dark:text-[#bbf7d0]">
-              <span>{entry.meta ? formatFeedbackMeta(entry.meta) : 'Feedback registrado'}</span>
+          <li className="border-t border-success/15 pt-2 first:border-t-0 first:pt-0 dark:border-accent/20" key={entry.id}>
+            <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs font-extrabold leading-5 text-success-strong dark:text-accent-strong">
+              <span>{entry.meta ? formatFeedbackMeta(entry.meta) : 'Retroalimentación registrada'}</span>
               {entry.entryLabel && <span>{entry.entryLabel}</span>}
             </div>
-            <p className="m-0 mt-1 whitespace-pre-wrap break-words text-sm leading-6 text-[#1f2f27] dark:text-slate-50">{entry.message}</p>
+            <p className="m-0 mt-1 whitespace-pre-wrap break-words text-sm leading-6 text-body dark:text-heading">{entry.message}</p>
           </li>
         ))}
       </ol>
@@ -347,20 +347,20 @@ function DocumentTimeline({ events }) {
   }
 
   return (
-    <section className="rounded-lg border border-zinc-200 bg-white p-3 dark:border-slate-700 dark:bg-surface">
+    <section className="rounded-lg border border-line bg-panel p-3 dark:border-line dark:bg-surface">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="min-w-0">
-          <h3 className="text-sm font-bold text-zinc-950 dark:text-slate-50">Linea de tiempo</h3>
+          <h3 className="text-sm font-bold text-heading dark:text-heading">Linea de tiempo</h3>
           <p className="mt-1 text-xs font-semibold text-muted">
             Consulta los movimientos y revisiones del documento.
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <span className="rounded-full bg-zinc-100 px-2 py-1 text-xs font-bold text-zinc-600 dark:bg-slate-800 dark:text-slate-300">
+          <span className="rounded-full bg-panel-soft px-2 py-1 text-xs font-bold text-muted dark:bg-surface-soft dark:text-muted">
             {timelineCountLabel(events.length)}
           </span>
           <button
-            className="inline-flex min-h-[2.25rem] items-center gap-2 rounded-lg border border-[#529914] px-3 py-1.5 text-xs font-extrabold text-primary transition-colors hover:bg-primary hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#529914]/35 dark:border-[#75c66a] dark:text-[#bbf7d0] dark:hover:bg-[#203026] dark:hover:text-white"
+            className="inline-flex min-h-[2.25rem] items-center gap-2 rounded-lg border border-accent px-3 py-1.5 text-xs font-extrabold text-primary transition-colors hover:bg-primary hover:text-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-accent dark:text-accent-strong dark:hover:bg-hover-soft dark:hover:text-inverse"
             onClick={() => setOpen(true)}
             type="button"
           >
@@ -385,10 +385,10 @@ function DocumentTimeline({ events }) {
               </time>
               <div className={`rounded-md border p-3 ${timelineToneClass(event.tone)}`}>
                 <div className="flex flex-wrap items-start justify-between gap-2">
-                  <div className="font-bold text-[#20282d] dark:text-slate-50">{event.title}</div>
+                  <div className="font-bold text-heading dark:text-heading">{event.title}</div>
                   {event.targetId && (
                     <button
-                      className="rounded-lg border border-[#529914] px-2.5 py-1 text-xs font-extrabold text-primary transition-colors hover:bg-primary hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#529914]/35 dark:border-[#75c66a] dark:text-[#bbf7d0] dark:hover:bg-[#203026]"
+                      className="rounded-lg border border-accent px-2.5 py-1 text-xs font-extrabold text-primary transition-colors hover:bg-primary hover:text-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-accent dark:text-accent-strong dark:hover:bg-hover-soft"
                       onClick={() => handleGoToSection(event.targetId)}
                       type="button"
                     >
@@ -397,7 +397,7 @@ function DocumentTimeline({ events }) {
                   )}
                 </div>
                 {event.description && (
-                  <p className="mt-1 whitespace-pre-wrap text-sm font-medium text-[#34443b] dark:text-slate-200">
+                  <p className="mt-1 whitespace-pre-wrap text-sm font-medium text-body dark:text-body">
                     {event.description}
                   </p>
                 )}
@@ -513,13 +513,13 @@ function documentApprovalTone(data) {
 function approvalToneClass(tone) {
   switch (tone) {
     case 'approved':
-      return 'bg-[#e4f0d8] text-[#3f760f] dark:bg-[#75c66a]/15 dark:text-[#bbf7d0]';
+      return 'bg-accent-soft text-accent-strong dark:bg-accent-soft dark:text-accent-strong';
     case 'observed':
-      return 'bg-amber-100 text-amber-800 dark:bg-amber-400/15 dark:text-amber-200';
+      return 'bg-warning-soft text-warning-strong dark:bg-warning-soft dark:text-warning-strong';
     case 'corrected':
-      return 'bg-sky-100 text-sky-800 dark:bg-sky-400/15 dark:text-sky-200';
+      return 'bg-info-soft text-info-strong dark:bg-info-soft dark:text-info-strong';
     default:
-      return 'bg-zinc-100 text-zinc-600 dark:bg-slate-800 dark:text-slate-300';
+      return 'bg-panel-soft text-muted dark:bg-surface-soft dark:text-muted';
   }
 }
 
@@ -605,18 +605,18 @@ const SCHEDULE_MONTH_LABELS = [
 ];
 
 const SCHEDULE_CELL_COLORS = [
-  '#00f010',
-  '#ffe26a',
-  '#6aa9d8',
-  '#7f6bb0',
-  '#8fbd7b',
-  '#dd6666',
-  '#f1a85b',
-  '#3d7f1f',
-  '#8a4f08',
-  '#f000df',
-  '#00a6a6',
-  '#b460a6',
+  'var(--color-chart-4)',
+  'var(--color-chart-2)',
+  'var(--color-chart-3)',
+  'var(--color-chart-7)',
+  'var(--color-success)',
+  'var(--color-chart-1)',
+  'var(--color-chart-9)',
+  'var(--color-chart-6)',
+  'var(--color-warning)',
+  'var(--color-chart-10)',
+  'var(--color-chart-8)',
+  'var(--color-danger)',
 ];
 
 function buildScheduleMatrix(weeks = []) {
@@ -699,17 +699,17 @@ function splitScheduledActivities(value) {
 function timelineToneClass(tone) {
   switch (tone) {
     case 'approved':
-      return 'border-emerald-200 bg-emerald-50 dark:border-green-400/40 dark:bg-green-950/30';
+      return 'border-success bg-success-soft dark:border-success/40 dark:bg-success-soft';
     case 'feedback':
-      return 'border-amber-200 bg-amber-50 dark:border-amber-400/40 dark:bg-amber-950/30';
+      return 'border-warning bg-warning-soft dark:border-warning/40 dark:bg-warning-soft';
     case 'review':
-      return 'border-sky-200 bg-sky-50 dark:border-sky-400/40 dark:bg-sky-950/30';
+      return 'border-info bg-info-soft dark:border-info/40 dark:bg-info-soft';
     case 'submitted':
-      return 'border-[#c4d8df] bg-[#d7e4e9] dark:border-sky-400/30 dark:bg-sky-950/25';
+      return 'border-info-soft bg-primary-soft dark:border-info/30 dark:bg-info-soft';
     case 'rejected':
-      return 'border-rose-200 bg-rose-50 dark:border-rose-400/40 dark:bg-rose-950/30';
+      return 'border-danger bg-danger-soft dark:border-danger/40 dark:bg-danger-soft';
     default:
-      return 'border-zinc-200 bg-zinc-50 dark:border-slate-700 dark:bg-surface-soft';
+      return 'border-line bg-panel-soft dark:border-line dark:bg-surface-soft';
   }
 }
 
@@ -793,8 +793,8 @@ function timelineFeedbackEvents(data) {
     const section = feedbackSectionLabel(feedback.sectionKey);
     const entryId = Number(feedback.entryId || 0);
     const title = entryId > 0
-      ? `Feedback en ${section} (registro especifico)`
-      : `Feedback en ${section}`;
+      ? `Retroalimentación en ${section} (registro especifico)`
+      : `Retroalimentación en ${section}`;
 
     return {
       id: `feedback-${feedback.sectionKey || 'general'}-${entryId}-${feedback.createdAt || feedback.updatedAt || index}`,
@@ -982,7 +982,7 @@ function resolveSectionFeedbackStatus(data, group) {
   }
 
   return {
-    label: 'Sin feedback',
+    label: 'Sin retroalimentación',
     tone: 'idle',
   };
 }
@@ -1062,13 +1062,13 @@ function isApprovedDocument(data) {
 function sectionStatusClass(tone) {
   switch (tone) {
     case 'approved':
-      return 'bg-emerald-100 text-emerald-800 dark:bg-green-950/40 dark:text-green-200';
+      return 'bg-success-soft text-success-strong dark:bg-success-soft dark:text-success-strong';
     case 'corrected':
-      return 'bg-sky-100 text-sky-800 dark:bg-sky-950/40 dark:text-sky-200';
+      return 'bg-info-soft text-info-strong dark:bg-info-soft dark:text-info-strong';
     case 'observed':
-      return 'bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-200';
+      return 'bg-warning-soft text-warning-strong dark:bg-warning-soft dark:text-warning-strong';
     default:
-      return 'bg-zinc-100 text-zinc-600 dark:bg-slate-800 dark:text-slate-300';
+      return 'bg-panel-soft text-muted dark:bg-surface-soft dark:text-muted';
   }
 }
 
@@ -1522,7 +1522,7 @@ function EvidenceViewerLink({ url }) {
 
   return (
     <a
-      className="break-all text-sm font-extrabold text-primary hover:underline dark:text-[#bbf7d0]"
+      className="break-all text-sm font-extrabold text-primary hover:underline dark:text-accent-strong"
       href={viewerLink}
       rel="noreferrer"
       target="_blank"

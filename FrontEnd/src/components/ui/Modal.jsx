@@ -55,17 +55,17 @@ export function Modal({
       >
         <div
           className={cx(
-            'flex max-h-[calc(100vh-3rem)] w-full flex-col overflow-hidden rounded-lg border border-[#bdcbd0] bg-[#fbfaf7] text-ink shadow-[0_24px_60px_rgba(4,52,76,0.22)] dark:border-slate-700 dark:bg-surface dark:text-ink dark:shadow-[0_24px_60px_rgba(0,0,0,0.45)]',
+            'flex max-h-[calc(100vh-3rem)] w-full flex-col overflow-hidden rounded-lg border border-line bg-panel text-ink shadow-soft dark:border-line dark:bg-surface dark:text-ink dark:shadow-soft',
             maxWidth,
             className,
           )}
         >
           {(title || description || onClose) && (
-            <div className="flex items-start gap-3 border-b border-border p-4 dark:border-slate-700">
+            <div className="flex items-start gap-3 border-b border-border p-4 dark:border-line">
               <div className="min-w-0 flex-1">
                 {title && (
                   <h2
-                    className="text-base font-[850] leading-tight text-unl-graphite dark:text-slate-50"
+                    className="text-base font-[850] leading-tight text-unl-graphite dark:text-heading"
                     id={labelledBy}
                   >
                     {title}
@@ -80,7 +80,7 @@ export function Modal({
               {onClose && (
                 <button
                   aria-label="Cerrar"
-                  className="grid h-9 w-9 flex-none place-items-center rounded-lg border border-transparent text-muted transition-colors hover:border-[#529914] hover:bg-[#eef5e8] hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#529914]/35 dark:hover:border-[#75c66a] dark:hover:bg-[#203026] dark:hover:text-[#bbf7d0]"
+                  className="grid h-9 w-9 flex-none place-items-center rounded-lg border border-transparent text-muted transition-colors hover:border-accent hover:bg-accent-soft hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong"
                   onClick={onClose}
                   type="button"
                 >
@@ -93,7 +93,7 @@ export function Modal({
             {children}
           </div>
           {footer && (
-            <div className="border-t border-border p-4 dark:border-slate-700">
+            <div className="border-t border-border p-4 dark:border-line">
               {footer}
             </div>
           )}

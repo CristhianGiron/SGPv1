@@ -1,5 +1,6 @@
 package com.sgp.systemsgp.model;
 
+import com.sgp.systemsgp.enums.PracticeFormKind;
 import com.sgp.systemsgp.enums.PracticeFormStatus;
 import com.sgp.systemsgp.enums.PracticeFormTargetRole;
 import com.sgp.systemsgp.model.listener.AuditEntityListener;
@@ -59,6 +60,11 @@ public class StudentPracticeForm {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "educational_institution_id")
     private Institution educationalInstitution;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Builder.Default
+    private PracticeFormKind formKind = PracticeFormKind.INTERVIEW;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

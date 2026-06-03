@@ -50,17 +50,17 @@ export function ForcePasswordChangePage() {
     <main className="min-h-screen bg-page text-ink">
       <div aria-hidden="true" className="h-[5px] bg-primary" />
       <div className="mx-auto flex min-h-[calc(100vh-5px)] w-full max-w-6xl items-center px-5 py-10">
-        <section className="mx-auto w-full max-w-xl rounded-lg border border-border bg-white p-6 shadow-card dark:border-slate-700 dark:bg-surface">
+        <section className="mx-auto w-full max-w-xl rounded-lg border border-border bg-panel p-6 shadow-card dark:border-line dark:bg-surface">
           <div className="mb-5 flex justify-end">
             <ThemeToggle />
           </div>
           <div className="mb-7">
-            <div className="grid h-14 w-14 place-items-center rounded-lg bg-primary text-white shadow-[0_14px_24px_rgba(4,52,76,0.2)]">
+            <div className="grid h-14 w-14 place-items-center rounded-lg bg-primary text-inverse shadow-card">
               <ShieldCheck size={26} />
             </div>
 
-            <p className="mt-4 inline-flex items-center rounded-full border border-[#529914]/30 bg-[#e4f0d8] px-3 py-2 text-xs font-black leading-none text-[#3f760f] dark:border-[#75c66a]/40 dark:bg-[#75c66a]/15 dark:text-[#bbf7d0]">Actualización requerida</p>
-            <h1 className="mt-4 text-2xl font-black text-[#20282d] dark:text-slate-50">Cambia tu contraseña</h1>
+            <p className="mt-4 inline-flex items-center rounded-full border border-accent/30 bg-accent-soft px-3 py-2 text-xs font-black leading-none text-accent-strong dark:border-accent/40 dark:bg-accent-soft dark:text-accent-strong">Actualización requerida</p>
+            <h1 className="mt-4 text-2xl font-black text-heading dark:text-heading">Cambia tu contraseña</h1>
             <p className="mt-2 text-sm leading-6 text-muted">
               {joinText(profile?.names, profile?.lastNames) || profile?.username}, antes de continuar debes
               reemplazar la contraseña asignada inicialmente.

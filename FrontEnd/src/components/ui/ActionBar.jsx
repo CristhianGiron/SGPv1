@@ -1,16 +1,16 @@
 import { Loader2 } from 'lucide-react';
 
 const baseButton =
-  'inline-flex min-h-[2.55rem] items-center justify-center rounded-lg border px-4 py-2 text-sm font-extrabold leading-tight transition-[background-color,border-color,color,transform] hover:-translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#529914]/35 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 max-sm:w-full';
+  'inline-flex min-h-[2.55rem] items-center justify-center rounded-lg border px-4 py-2 text-sm font-extrabold leading-tight transition-[background-color,border-color,color,transform] hover:-translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 max-sm:w-full';
 
 const primaryButton =
-  'border-[#529914] bg-transparent text-primary hover:border-primary hover:bg-primary hover:text-white dark:border-[#75c66a] dark:text-[#bbf7d0] dark:hover:border-[#a7e79f] dark:hover:bg-[#203026] dark:hover:text-white';
+  'border-accent bg-transparent text-primary hover:border-primary hover:bg-primary hover:text-inverse dark:border-accent dark:text-accent-strong dark:hover:border-accent-strong dark:hover:bg-hover-soft dark:hover:text-inverse';
 
 const secondaryButton =
-  'border-[#529914] bg-transparent text-primary hover:border-primary hover:bg-primary hover:text-white dark:border-slate-600 dark:bg-surface dark:text-ink dark:hover:border-[#75c66a] dark:hover:bg-[#203026] dark:hover:text-[#bbf7d0]';
+  'border-accent bg-transparent text-primary hover:border-primary hover:bg-primary hover:text-inverse dark:border-line dark:bg-surface dark:text-ink dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong';
 
 const dangerButton =
-  'border-rose-300 bg-rose-50 text-rose-700 hover:border-rose-500 hover:bg-rose-100 dark:border-rose-400/40 dark:bg-rose-950/35 dark:text-rose-200 dark:hover:bg-rose-900/45';
+  'border-danger bg-danger-soft text-danger-strong hover:border-danger hover:bg-danger-soft dark:border-danger/40 dark:bg-danger-soft dark:text-danger-strong dark:hover:bg-danger-soft';
 
 function cx(...classes) {
   return classes.filter(Boolean).join(' ');

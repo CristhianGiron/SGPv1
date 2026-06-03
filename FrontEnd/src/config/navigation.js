@@ -124,7 +124,20 @@ export const NAV_ITEMS = [
     id: 'forms',
     label: 'Entrevistas',
     Icon: FileQuestion,
-    roles: ['ROLE_ESTUDIANTE', 'ROLE_TUTOR_INSTITUCIONAL', 'ROLE_DIRECTORA_INSTITUCION'],
+    roles: [
+      'ROLE_ESTUDIANTE',
+      'ROLE_TUTOR_INSTITUCIONAL',
+      'ROLE_DIRECTORA_INSTITUCION',
+      'ROLE_TUTOR_PRACTICAS',
+      'ROLE_DIRECTOR_PRACTICAS',
+      'ROLE_ADMIN',
+    ],
+  },
+  {
+    id: 'observation-forms',
+    label: 'Fichas de observación',
+    Icon: ClipboardList,
+    roles: ['ROLE_ESTUDIANTE', 'ROLE_TUTOR_PRACTICAS', 'ROLE_DIRECTOR_PRACTICAS', 'ROLE_ADMIN'],
   },
   {
     id: 'courses',

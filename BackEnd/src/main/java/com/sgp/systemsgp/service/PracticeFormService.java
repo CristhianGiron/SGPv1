@@ -14,6 +14,7 @@ import com.sgp.systemsgp.dto.practiceform.SubmitPracticeFormResponseRequest;
 import com.sgp.systemsgp.dto.practiceform.UpdatePracticeFormInterpretationRequest;
 import com.sgp.systemsgp.enums.EnrollmentStatus;
 import com.sgp.systemsgp.enums.InstitutionType;
+import com.sgp.systemsgp.enums.PracticeFormKind;
 import com.sgp.systemsgp.enums.PracticeFormQuestionType;
 import com.sgp.systemsgp.enums.PracticeFormStatus;
 import com.sgp.systemsgp.enums.PracticeFormTargetRole;
@@ -72,6 +73,22 @@ public class PracticeFormService {
             String username,
             CreatePracticeFormRequest request) {
 
+        return createForm(username, request, PracticeFormKind.INTERVIEW);
+    }
+
+    @Transactional
+    public PracticeFormResponse createObservation(
+            String username,
+            CreatePracticeFormRequest request) {
+
+        return createForm(username, request, PracticeFormKind.OBSERVATION);
+    }
+
+    private PracticeFormResponse createForm(
+            String username,
+            CreatePracticeFormRequest request,
+            PracticeFormKind formKind) {
+
         Account student = getAccount(username);
         Enrollment enrollment = getEnrollment(request.getEnrollmentId());
 
@@ -79,15 +96,19 @@ public class PracticeFormService {
         validateEnrollmentApproved(enrollment);
 
         Institution institution = resolveEducationalInstitution(enrollment);
-        Account target = resolveTarget(enrollment, request.getTargetRole(), institution);
+        PracticeFormTargetRole targetRole = resolveTargetRole(formKind, request.getTargetRole());
+        Account target = resolveTarget(student, enrollment, targetRole, institution);
 
         StudentPracticeForm form = StudentPracticeForm.builder()
                 .enrollment(enrollment)
                 .student(student)
                 .targetAccount(target)
                 .educationalInstitution(institution)
-                .targetRole(request.getTargetRole())
-                .status(PracticeFormStatus.SENT)
+                .formKind(formKind)
+                .targetRole(targetRole)
+                .status(Boolean.TRUE.equals(request.getDraft())
+                        ? PracticeFormStatus.DRAFT
+                        : PracticeFormStatus.SENT)
                 .title(normalizeRequiredText(request.getTitle(), "El título del formulario es obligatorio"))
                 .description(normalizeText(request.getDescription()))
                 .build();
@@ -102,7 +123,20 @@ public class PracticeFormService {
     public List<PracticeFormResponse> myForms(String username) {
 
         return practiceFormRepository
-                .findByStudent_UsernameAndDeletedFalseOrderByCreatedAtDesc(username)
+                .findByStudent_UsernameAndFormKindAndDeletedFalseOrderByCreatedAtDesc(
+                        username,
+                        PracticeFormKind.INTERVIEW)
+                .stream()
+                .map(form -> mapToResponse(form, false))
+                .toList();
+    }
+
+    public List<PracticeFormResponse> myObservationForms(String username) {
+
+        return practiceFormRepository
+                .findByStudent_UsernameAndFormKindAndDeletedFalseOrderByCreatedAtDesc(
+                        username,
+                        PracticeFormKind.OBSERVATION)
                 .stream()
                 .map(form -> mapToResponse(form, false))
                 .toList();
@@ -111,10 +145,23 @@ public class PracticeFormService {
     public List<PracticeFormResponse> assignedForms(String username) {
 
         return practiceFormRepository
-                .findByTargetAccount_UsernameAndDeletedFalseOrderByCreatedAtDesc(username)
+                .findByTargetAccount_UsernameAndFormKindAndStatusAndDeletedFalseOrderByCreatedAtDesc(
+                        username,
+                        PracticeFormKind.INTERVIEW,
+                        PracticeFormStatus.SENT)
                 .stream()
                 .map(form -> mapToResponse(form, false))
                 .toList();
+    }
+
+    public List<PracticeFormResponse> managedForms(String username) {
+
+        return managedFormsByKind(username, PracticeFormKind.INTERVIEW);
+    }
+
+    public List<PracticeFormResponse> managedObservationForms(String username) {
+
+        return managedFormsByKind(username, PracticeFormKind.OBSERVATION);
     }
 
     public PracticeFormResponse getById(
@@ -126,7 +173,91 @@ public class PracticeFormService {
 
         validateCanView(form, account);
 
-        return mapToResponse(form, true);
+        return mapToResponse(form, true, isTargetAccount(form, account));
+    }
+
+    @Transactional
+    public PracticeFormResponse updateDraft(
+            Long id,
+            String username,
+            CreatePracticeFormRequest request) {
+
+        StudentPracticeForm form = getForm(id);
+        Account student = getAccount(username);
+
+        validateStudentOwnsForm(student, form);
+        validateDraftEditable(form);
+
+        Enrollment enrollment = getEnrollment(request.getEnrollmentId());
+
+        validateStudentOwnsEnrollment(student, enrollment);
+        validateEnrollmentApproved(enrollment);
+
+        Institution institution = resolveEducationalInstitution(enrollment);
+        PracticeFormTargetRole targetRole = resolveTargetRole(form.getFormKind(), request.getTargetRole());
+        Account target = resolveTarget(student, enrollment, targetRole, institution);
+
+        form.setEnrollment(enrollment);
+        form.setTargetAccount(target);
+        form.setEducationalInstitution(institution);
+        form.setTargetRole(targetRole);
+        form.setTitle(normalizeRequiredText(request.getTitle(), "El título del formulario es obligatorio"));
+        form.setDescription(normalizeText(request.getDescription()));
+        replaceQuestions(form, request.getQuestions());
+
+        practiceFormRepository.save(form);
+
+        return mapToResponse(form, true, true);
+    }
+
+    @Transactional
+    public PracticeFormResponse sendDraft(
+            Long id,
+            String username) {
+
+        StudentPracticeForm form = getForm(id);
+        Account student = getAccount(username);
+
+        validateStudentOwnsForm(student, form);
+        validateDraftEditable(form);
+        validateReadyToSend(form);
+
+        form.setStatus(PracticeFormStatus.SENT);
+
+        practiceFormRepository.save(form);
+
+        return mapToResponse(form, true, true);
+    }
+
+    @Transactional
+    public PracticeFormResponse duplicate(
+            Long id,
+            String username) {
+
+        StudentPracticeForm source = getForm(id);
+        Account student = getAccount(username);
+
+        validateStudentOwnsForm(student, source);
+
+        StudentPracticeForm copy = StudentPracticeForm.builder()
+                .enrollment(source.getEnrollment())
+                .student(student)
+                .targetAccount(source.getFormKind() == PracticeFormKind.OBSERVATION
+                        ? student
+                        : source.getTargetAccount())
+                .educationalInstitution(source.getEducationalInstitution())
+                .formKind(source.getFormKind())
+                .targetRole(source.getTargetRole())
+                .status(PracticeFormStatus.SENT)
+                .title(buildCopyTitle(source.getTitle()))
+                .description(source.getDescription())
+                .build();
+
+        copyQuestions(source, copy);
+
+        practiceFormRepository.save(copy);
+
+        return mapToResponse(copy, true);
     }
 
     @Transactional
@@ -137,17 +268,15 @@ public class PracticeFormService {
 
         StudentPracticeForm form = getForm(id);
         Account respondent = getAccount(username);
+        boolean draft = Boolean.TRUE.equals(request.getDraft());
 
         validateCanRespond(form, respondent);
-        validateCanReceiveResponse(form);
+        validateCanReceiveResponse(form, draft);
 
-        Map<Long, PracticeFormAnswerRequest> answersByQuestion = indexAnswerRequests(request.getAnswers());
+        Map<Long, PracticeFormAnswerRequest> answersByQuestion = indexAnswerRequests(request.getAnswers(), draft);
 
-        StudentPracticeFormResponse response = StudentPracticeFormResponse.builder()
-                .form(form)
-                .respondent(respondent)
-                .submittedAt(LocalDateTime.now())
-                .build();
+        StudentPracticeFormResponse response = resolveEditableResponse(form, respondent);
+        response.getAnswers().clear();
 
         Set<Long> consumedQuestionIds = new HashSet<>();
         for (StudentPracticeFormQuestion question : sortedQuestions(form)) {
@@ -157,7 +286,7 @@ public class PracticeFormService {
             }
 
             if (!hasMeaningfulAnswer(question, answerRequest)) {
-                if (question.isRequired()) {
+                if (!draft && question.isRequired()) {
                     throw new BadRequestException(
                             "La pregunta '" + question.getPrompt() + "' es obligatoria");
                 }
@@ -169,14 +298,21 @@ public class PracticeFormService {
 
         validateNoUnknownAnswers(answersByQuestion, consumedQuestionIds);
 
-        if (response.getAnswers().isEmpty()) {
+        if (!draft && response.getAnswers().isEmpty()) {
             throw new BadRequestException(
                     "Debe responder al menos una pregunta del formulario");
         }
 
         form.setResponse(response);
-        form.setStatus(PracticeFormStatus.ANSWERED);
-        form.setAnsweredAt(response.getSubmittedAt());
+        if (draft) {
+            response.setSubmittedAt(null);
+            form.setStatus(PracticeFormStatus.SENT);
+            form.setAnsweredAt(null);
+        } else {
+            response.setSubmittedAt(LocalDateTime.now());
+            form.setStatus(PracticeFormStatus.ANSWERED);
+            form.setAnsweredAt(response.getSubmittedAt());
+        }
 
         practiceFormResponseRepository.save(response);
 
@@ -255,6 +391,27 @@ public class PracticeFormService {
         }
     }
 
+    private void validateDraftEditable(StudentPracticeForm form) {
+
+        if (form.getStatus() != PracticeFormStatus.DRAFT) {
+            throw new BadRequestException(
+                    "Solo se pueden editar formularios en borrador");
+        }
+    }
+
+    private void validateReadyToSend(StudentPracticeForm form) {
+
+        if (!StringUtils.hasText(form.getTitle())) {
+            throw new BadRequestException(
+                    "El título del formulario es obligatorio");
+        }
+
+        if (form.getQuestions() == null || form.getQuestions().isEmpty()) {
+            throw new BadRequestException(
+                    "Debe agregar al menos una pregunta antes de enviar");
+        }
+    }
+
     private void validateEnrollmentApproved(Enrollment enrollment) {
 
         if (enrollment.getStatus() != EnrollmentStatus.APPROVED) {
@@ -262,19 +419,6 @@ public class PracticeFormService {
                     "Solo se pueden crear formularios para inscripciones aprobadas");
         }
 
-        if (!isActiveCourseEnrollment(enrollment)) {
-            throw new BadRequestException(
-                    "El curso de la inscripción no está activo");
-        }
-    }
-
-    private boolean isActiveCourseEnrollment(Enrollment enrollment) {
-
-        Course course = enrollment.getCourse();
-
-        return course != null
-                && course.isActive()
-                && !course.isDeleted();
     }
 
     private Institution resolveEducationalInstitution(Enrollment enrollment) {
@@ -306,9 +450,14 @@ public class PracticeFormService {
     }
 
     private Account resolveTarget(
+            Account student,
             Enrollment enrollment,
             PracticeFormTargetRole targetRole,
             Institution institution) {
+
+        if (targetRole == PracticeFormTargetRole.STUDENT_SELF) {
+            return student;
+        }
 
         if (targetRole == PracticeFormTargetRole.INSTITUTIONAL_TUTOR) {
             Account tutor = InstitutionalAssignmentResolver.institutionalTutor(enrollment);
@@ -376,18 +525,47 @@ public class PracticeFormService {
         }
     }
 
-    private void validateCanReceiveResponse(StudentPracticeForm form) {
+    private void validateCanReceiveResponse(
+            StudentPracticeForm form,
+            boolean draft) {
 
         if (form.getStatus() != PracticeFormStatus.SENT) {
             throw new BadRequestException(
                     "Este formulario ya fue respondido");
         }
 
-        if (form.getResponse() != null
-                || practiceFormResponseRepository.existsByForm_Id(form.getId())) {
+        StudentPracticeFormResponse response = form.getResponse() != null
+                ? form.getResponse()
+                : practiceFormResponseRepository.findByForm_Id(form.getId()).orElse(null);
+
+        if (response != null && response.getSubmittedAt() != null) {
             throw new BadRequestException(
                     "Este formulario ya tiene una respuesta registrada");
         }
+    }
+
+    private StudentPracticeFormResponse resolveEditableResponse(
+            StudentPracticeForm form,
+            Account respondent) {
+
+        StudentPracticeFormResponse response = form.getResponse() != null
+                ? form.getResponse()
+                : practiceFormResponseRepository.findByForm_Id(form.getId()).orElse(null);
+
+        if (response == null) {
+            return StudentPracticeFormResponse.builder()
+                    .form(form)
+                    .respondent(respondent)
+                    .build();
+        }
+
+        if (response.getRespondent() == null
+                || !Objects.equals(response.getRespondent().getId(), respondent.getId())) {
+            throw new AccessDeniedException(
+                    "Solo la persona asignada puede editar este borrador de respuesta");
+        }
+
+        return response;
     }
 
     private boolean isStudentOwner(
@@ -430,6 +608,91 @@ public class PracticeFormService {
                 && account.getRoles()
                         .stream()
                         .anyMatch(role -> roleName.name().equals(role.getName()));
+    }
+
+    private List<PracticeFormResponse> managedFormsByKind(
+            String username,
+            PracticeFormKind formKind) {
+
+        Account account = getAccount(username);
+        boolean globalAccess = hasRole(account, RoleName.ROLE_ADMIN)
+                || hasRole(account, RoleName.ROLE_DIRECTOR_PRACTICAS);
+
+        return practiceFormRepository
+                .findManagedByFormKindAndStatus(
+                        username,
+                        globalAccess,
+                        formKind,
+                        PracticeFormStatus.ANSWERED)
+                .stream()
+                .map(form -> mapToResponse(form, false))
+                .toList();
+    }
+
+    private PracticeFormTargetRole resolveTargetRole(
+            PracticeFormKind formKind,
+            PracticeFormTargetRole requestedTargetRole) {
+
+        if (formKind == PracticeFormKind.OBSERVATION) {
+            if (requestedTargetRole != null
+                    && requestedTargetRole != PracticeFormTargetRole.STUDENT_SELF) {
+                throw new BadRequestException(
+                        "Las fichas de observación las responde el estudiante");
+            }
+
+            return PracticeFormTargetRole.STUDENT_SELF;
+        }
+
+        if (requestedTargetRole == null
+                || requestedTargetRole == PracticeFormTargetRole.STUDENT_SELF) {
+            throw new BadRequestException(
+                    "Debe seleccionar quién responderá el formulario");
+        }
+
+        return requestedTargetRole;
+    }
+
+    private void copyQuestions(
+            StudentPracticeForm source,
+            StudentPracticeForm copy) {
+
+        for (StudentPracticeFormQuestion sourceQuestion : sortedQuestions(source)) {
+            StudentPracticeFormQuestion copiedQuestion = StudentPracticeFormQuestion.builder()
+                    .form(copy)
+                    .questionOrder(sourceQuestion.getQuestionOrder())
+                    .type(sourceQuestion.getType())
+                    .prompt(sourceQuestion.getPrompt())
+                    .required(sourceQuestion.isRequired())
+                    .scaleMin(sourceQuestion.getScaleMin())
+                    .scaleMax(sourceQuestion.getScaleMax())
+                    .build();
+
+            for (StudentPracticeFormOption sourceOption : sortedOptions(sourceQuestion)) {
+                copiedQuestion.getOptions().add(StudentPracticeFormOption.builder()
+                        .question(copiedQuestion)
+                        .label(sourceOption.getLabel())
+                        .optionOrder(sourceOption.getOptionOrder())
+                        .build());
+            }
+
+            copy.getQuestions().add(copiedQuestion);
+        }
+    }
+
+    private String buildCopyTitle(String title) {
+
+        String normalizedTitle = normalizeText(title);
+
+        if (!StringUtils.hasText(normalizedTitle)) {
+            return "Copia";
+        }
+
+        String suffix = " (copia)";
+        int maxBaseLength = Math.max(1, 160 - suffix.length());
+
+        return normalizedTitle.length() > maxBaseLength
+                ? normalizedTitle.substring(0, maxBaseLength) + suffix
+                : normalizedTitle + suffix;
     }
 
     private void replaceQuestions(
@@ -563,9 +826,14 @@ public class PracticeFormService {
     }
 
     private Map<Long, PracticeFormAnswerRequest> indexAnswerRequests(
-            List<PracticeFormAnswerRequest> answerRequests) {
+            List<PracticeFormAnswerRequest> answerRequests,
+            boolean draft) {
 
         if (answerRequests == null || answerRequests.isEmpty()) {
+            if (draft) {
+                return Map.of();
+            }
+
             throw new BadRequestException(
                     "Debe enviar al menos una respuesta");
         }
@@ -822,6 +1090,14 @@ public class PracticeFormService {
             StudentPracticeForm form,
             boolean includeQuestions) {
 
+        return mapToResponse(form, includeQuestions, false);
+    }
+
+    private PracticeFormResponse mapToResponse(
+            StudentPracticeForm form,
+            boolean includeQuestions,
+            boolean includeDraftResponse) {
+
         Enrollment enrollment = form.getEnrollment();
         Course course = enrollment != null
                 ? enrollment.getCourse()
@@ -847,21 +1123,25 @@ public class PracticeFormService {
                                 ? form.getEducationalInstitution().getName()
                                 : null)
                 .targetRole(form.getTargetRole())
+                .formKind(form.getFormKind())
                 .target(fullNameOrUsername(form.getTargetAccount()))
                 .status(form.getStatus())
                 .title(form.getTitle())
                 .description(form.getDescription())
                 .createdAt(form.getCreatedAt())
                 .answeredAt(form.getAnsweredAt())
-                .response(mapResponseSummary(form.getResponse()))
-                .questions(includeQuestions ? mapQuestions(form) : List.of())
+                .response(mapResponseSummary(form.getResponse(), includeDraftResponse))
+                .questions(includeQuestions ? mapQuestions(form, includeDraftResponse) : List.of())
                 .build();
     }
 
-    private List<PracticeFormQuestionResponse> mapQuestions(StudentPracticeForm form) {
+    private List<PracticeFormQuestionResponse> mapQuestions(
+            StudentPracticeForm form,
+            boolean includeDraftResponse) {
 
-        Map<Long, StudentPracticeFormAnswer> answerByQuestion = form.getResponse() != null
-                ? form.getResponse()
+        StudentPracticeFormResponse response = visibleResponse(form.getResponse(), includeDraftResponse);
+        Map<Long, StudentPracticeFormAnswer> answerByQuestion = response != null
+                ? response
                         .getAnswers()
                         .stream()
                         .collect(Collectors.toMap(
@@ -876,7 +1156,7 @@ public class PracticeFormService {
                 .map(question -> mapQuestion(
                         question,
                         answerByQuestion.get(question.getId()),
-                        form.getResponse()))
+                        response))
                 .toList();
     }
 
@@ -928,16 +1208,35 @@ public class PracticeFormService {
                 .build();
     }
 
-    private PracticeFormResponseSummary mapResponseSummary(StudentPracticeFormResponse response) {
+    private StudentPracticeFormResponse visibleResponse(
+            StudentPracticeFormResponse response,
+            boolean includeDraftResponse) {
 
         if (response == null) {
             return null;
         }
 
+        if (response.getSubmittedAt() == null && !includeDraftResponse) {
+            return null;
+        }
+
+        return response;
+    }
+
+    private PracticeFormResponseSummary mapResponseSummary(
+            StudentPracticeFormResponse response,
+            boolean includeDraftResponse) {
+
+        StudentPracticeFormResponse visibleResponse = visibleResponse(response, includeDraftResponse);
+
+        if (visibleResponse == null) {
+            return null;
+        }
+
         return PracticeFormResponseSummary.builder()
-                .id(response.getId())
-                .respondent(fullNameOrUsername(response.getRespondent()))
-                .submittedAt(response.getSubmittedAt())
+                .id(visibleResponse.getId())
+                .respondent(fullNameOrUsername(visibleResponse.getRespondent()))
+                .submittedAt(visibleResponse.getSubmittedAt())
                 .build();
     }
 

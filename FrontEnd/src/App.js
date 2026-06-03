@@ -26,7 +26,7 @@ import { LoginPage } from "./pages/LoginPage";
 import { NotificationsPage } from "./pages/NotificationsPage";
 import { RegisterStudentPage } from "./pages/RegisterPublic";
 import { PhotosPage } from "./pages/PhotosPage";
-import { PracticeFormsPage } from "./pages/PracticeFormsPage";
+import { ObservationFormsPage, PracticeFormsPage } from "./pages/PracticeFormsPage";
 import { PracticeInstitutionsPage } from "./pages/PracticeInstitutionsPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { ReportsPage } from "./pages/ReportsPage";
@@ -51,6 +51,7 @@ const PAGES = {
   profile: ProfilePage,
   photos: PhotosPage,
   forms: PracticeFormsPage,
+  "observation-forms": ObservationFormsPage,
   courses: CoursesPage,
   documents: DocumentsPage,
   schedules: SchedulesPage,

@@ -29,6 +29,8 @@ public class CreatePracticeFormRequest {
     @Size(max = 2000, message = "La descripción no puede superar 2000 caracteres")
     private String description;
 
+    private Boolean draft;
+
     @Valid
     @NotNull(message = "Debe agregar al menos una pregunta")
     @Size(min = 1, max = 80, message = "El formulario debe tener entre 1 y 80 preguntas")

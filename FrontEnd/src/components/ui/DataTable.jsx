@@ -5,25 +5,25 @@ import { Modal } from './Modal';
 import { formatValue } from '../../utils/format';
 
 const tableShellClass =
-  'min-w-0 max-w-full overflow-hidden rounded-lg border border-[#dbe3ed] bg-white shadow-[0_10px_24px_rgba(15,23,42,0.055)] dark:border-slate-700 dark:bg-surface';
+  'min-w-0 max-w-full overflow-hidden rounded-lg border border-line bg-panel shadow-card dark:border-line dark:bg-surface';
 
 const tableClass =
   'w-max min-w-full border-separate border-spacing-0 text-sm';
 
 const tableHeadClass =
-  'bg-[#d7e4e9] text-left text-xs font-extrabold uppercase text-[#475569] dark:bg-[#172033] dark:text-slate-300';
+  'bg-primary-soft text-left text-xs font-extrabold uppercase text-muted dark:bg-surface-soft dark:text-muted';
 
 const tableCellClass =
-  'border-b border-[#edf2f7] px-4 py-3 align-middle text-[#263241] dark:border-slate-800 dark:text-ink';
+  'border-b border-line-soft px-4 py-3 align-middle text-body dark:border-line dark:text-ink';
 
 const fieldLabelClass =
-  'mb-1.5 block text-[0.82rem] font-extrabold text-[#34443b] dark:text-slate-300';
+  'mb-1.5 block text-[0.82rem] font-extrabold text-body dark:text-muted';
 
 const fieldClass =
-  'min-h-[2.65rem] w-full rounded-lg border border-[#c8d2cd] bg-[#f5f4ed] px-3 py-2.5 text-sm text-[#20282d] outline-none transition-[background-color,border-color,box-shadow] placeholder:text-slate-400 hover:border-[#aebdb6] focus:border-[#074462] focus:ring-4 focus:ring-[#074462]/15 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:placeholder:text-slate-500 dark:hover:border-slate-500 dark:focus:border-sky-300 dark:focus:ring-sky-300/20';
+  'min-h-[2.65rem] w-full rounded-lg border border-line bg-field px-3 py-2.5 text-sm text-heading outline-none transition-[background-color,border-color,box-shadow] placeholder:text-muted hover:border-line-strong focus:border-primary-strong focus:ring-4 focus:ring-focus-soft disabled:cursor-not-allowed disabled:bg-panel-soft disabled:text-muted dark:border-line dark:bg-page dark:text-heading dark:placeholder:text-muted dark:hover:border-line-strong dark:focus:border-info dark:focus:ring-focus-soft';
 
 const secondaryButtonClass =
-  'inline-flex min-h-[2.55rem] w-full items-center justify-center rounded-lg border border-[#529914] bg-transparent px-4 py-2 text-sm font-extrabold text-primary transition-colors hover:border-primary hover:bg-primary hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#529914]/35 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-600 dark:bg-surface dark:text-ink dark:hover:border-[#75c66a] dark:hover:bg-[#203026] dark:hover:text-[#bbf7d0]';
+  'inline-flex min-h-[2.55rem] w-full items-center justify-center rounded-lg border border-accent bg-transparent px-4 py-2 text-sm font-extrabold text-primary transition-colors hover:border-primary hover:bg-primary hover:text-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 disabled:cursor-not-allowed disabled:opacity-60 dark:border-line dark:bg-surface dark:text-ink dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong';
 
 export function DataTable({
   columns,
@@ -90,7 +90,7 @@ export function DataTable({
                 <tr>
                   {visibleColumns.map((column) => (
                     <th
-                      className={`border-b border-[#dbe3ed] px-4 py-3 font-extrabold dark:border-slate-700 ${isParagraphColumn(column.key) ? 'min-w-[22rem]' : 'whitespace-nowrap'}`}
+                      className={`border-b border-line px-4 py-3 font-extrabold dark:border-line ${isParagraphColumn(column.key) ? 'min-w-[22rem]' : 'whitespace-nowrap'}`}
                       key={column.key}
                       scope="col"
                     >
@@ -102,7 +102,7 @@ export function DataTable({
               <tbody>
                 {effectiveRows.map((row, rowIndex) => (
                   <tr
-                    className="even:bg-[#e6efea] hover:bg-[#dbe8ed] dark:even:bg-slate-950/40 dark:hover:bg-sky-300/10"
+                    className="even:bg-panel-soft hover:bg-primary-soft dark:even:bg-page/40 dark:hover:bg-info-soft"
                     key={row[keyField] || `${keyField}-${rowIndex}`}
                   >
                     {visibleColumns.map((column) => (
@@ -132,7 +132,7 @@ export function DataTable({
             >
               {renderedColumns.map((column) => (
                 <div
-                  className={`border-b border-[#dbe3ed] bg-[#d7e4e9] px-4 py-3 text-left text-xs font-extrabold uppercase text-[#475569] dark:border-slate-700 dark:bg-[#172033] dark:text-slate-300 ${column.key === 'actions' ? 'sticky right-0 z-30 whitespace-nowrap shadow-[-10px_0_18px_rgba(15,23,42,0.08)]' : isParagraphColumn(column.key) ? 'break-words' : 'whitespace-nowrap'}`}
+                  className={`border-b border-line bg-primary-soft px-4 py-3 text-left text-xs font-extrabold uppercase text-muted dark:border-line dark:bg-surface-soft dark:text-muted ${column.key === 'actions' ? 'sticky right-0 z-30 whitespace-nowrap shadow-card' : isParagraphColumn(column.key) ? 'break-words' : 'whitespace-nowrap'}`}
                   key={column.key}
                   role="columnheader"
                 >
@@ -146,12 +146,12 @@ export function DataTable({
                   const evenRow = rowIndex % 2 === 1;
                   const isActionColumn = column.key === 'actions';
                   const cellTone = evenRow
-                    ? 'bg-[#e6efea] dark:bg-slate-950/40'
-                    : 'bg-white dark:bg-surface';
+                    ? 'bg-panel-soft dark:bg-page/40'
+                    : 'bg-panel dark:bg-surface';
 
                   return (
                     <div
-                      className={`${tableCellClass} min-h-[3.25rem] min-w-0 ${cellTone} hover:bg-[#dbe8ed] dark:hover:bg-sky-300/10 ${isActionColumn ? 'sticky right-0 z-20 whitespace-nowrap shadow-[-10px_0_18px_rgba(15,23,42,0.08)]' : isParagraphColumn(column.key) ? 'whitespace-pre-wrap break-words' : 'whitespace-nowrap'}`}
+                      className={`${tableCellClass} min-h-[3.25rem] min-w-0 ${cellTone} hover:bg-primary-soft dark:hover:bg-info-soft ${isActionColumn ? 'sticky right-0 z-20 whitespace-nowrap shadow-card' : isParagraphColumn(column.key) ? 'whitespace-pre-wrap break-words' : 'whitespace-nowrap'}`}
                       key={`${rowKey}-${column.key}`}
                       role="cell"
                     >
@@ -198,7 +198,7 @@ function TableFilters({ fields, filters, rows, totalCount, visibleCount, onChang
   }
 
   return (
-    <div className="rounded-lg border border-[#c8d2cd] bg-[#eef3f2] p-3 dark:border-slate-700 dark:bg-surface">
+    <div className="rounded-lg border border-line bg-panel-soft p-3 dark:border-line dark:bg-surface">
       <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
         <label className="block">
           <span className={fieldLabelClass}>Buscar</span>
@@ -440,7 +440,7 @@ function TableSkeleton({ columns }) {
             <tr>
               {columns.map((column) => (
                 <th
-                  className="border-b border-[#dbe3ed] px-4 py-3 font-extrabold dark:border-slate-700"
+                  className="border-b border-line px-4 py-3 font-extrabold dark:border-line"
                   key={column.key}
                   scope="col"
                 >
@@ -455,7 +455,7 @@ function TableSkeleton({ columns }) {
                 {columns.map((column, columnIndex) => (
                   <td className={tableCellClass} key={column.key}>
                     <span
-                      className="block h-3.5 rounded-full bg-slate-200 dark:bg-slate-700"
+                      className="block h-3.5 rounded-full bg-panel-soft dark:bg-table-header"
                       style={{ width: `${columnIndex === 0 ? 50 : 78}%` }}
                     />
                   </td>

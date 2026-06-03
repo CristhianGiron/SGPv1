@@ -345,9 +345,9 @@ function ArrayEditor({ name, path, customFields, readOnlyFields, hiddenFields, r
       )}
 
       {value.map((item, index) => (
-        <div className="rounded-lg border border-[#c8d2cd] bg-[#eef3f2] p-3 dark:border-slate-700 dark:bg-surface-soft" key={`${name}-${index}`}>
+        <div className="rounded-lg border border-line bg-panel-soft p-3 dark:border-line dark:bg-surface-soft" key={`${name}-${index}`}>
           <div className="mb-3 flex items-center justify-between gap-3">
-            <h4 className="text-sm font-extrabold text-[#20282d] dark:text-slate-50">
+            <h4 className="text-sm font-extrabold text-heading dark:text-heading">
               {labelFromKey(name)} {index + 1}
             </h4>
             <DangerButton
@@ -425,14 +425,14 @@ function PrimitiveField({ name, customFields = {}, readOnly = false, relations, 
 
   if (typeof value === 'boolean') {
     return (
-      <label className="flex min-h-[44px] items-center gap-3 rounded-lg border border-[#c8d2cd] bg-white px-3 py-2 dark:border-slate-700 dark:bg-surface">
+      <label className="flex min-h-[44px] items-center gap-3 rounded-lg border border-line bg-panel px-3 py-2 dark:border-line dark:bg-surface">
         <input
           checked={value}
-          className="h-4 w-4 accent-[#529914]"
+          className="h-4 w-4 accent-accent"
           onChange={(event) => onChange(event.target.checked)}
           type="checkbox"
         />
-        <span className="text-sm font-bold text-[#34443b] dark:text-slate-200">{labelFromKey(name)}</span>
+        <span className="text-sm font-bold text-body dark:text-body">{labelFromKey(name)}</span>
       </label>
     );
   }
@@ -481,7 +481,7 @@ function PrimitiveField({ name, customFields = {}, readOnly = false, relations, 
 
 function ReadOnlyValue({ name, value }) {
   return (
-    <div className="min-h-[44px] rounded-lg border border-[#c8d2cd] bg-[#eef3f2] px-3 py-2 text-sm font-semibold text-[#20282d] dark:border-slate-700 dark:bg-surface-soft dark:text-slate-100">
+    <div className="min-h-[44px] rounded-lg border border-line bg-panel-soft px-3 py-2 text-sm font-semibold text-heading dark:border-line dark:bg-surface-soft dark:text-heading">
       {formatValue(value, name)}
     </div>
   );
@@ -489,8 +489,8 @@ function ReadOnlyValue({ name, value }) {
 
 function FormGroup({ title, children }) {
   return (
-    <div className="rounded-lg border border-[#c8d2cd] bg-white p-3 dark:border-slate-700 dark:bg-surface">
-      <h3 className="mb-3 text-sm font-extrabold text-[#20282d] dark:text-slate-50">{title}</h3>
+    <div className="rounded-lg border border-line bg-panel p-3 dark:border-line dark:bg-surface">
+      <h3 className="mb-3 text-sm font-extrabold text-heading dark:text-heading">{title}</h3>
       {children}
     </div>
   );

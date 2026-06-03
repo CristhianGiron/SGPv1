@@ -200,14 +200,14 @@ export function ProfilePage() {
               <div className="flex items-center gap-4">
                 <Avatar profile={profile} size="lg" token={token} />
                 <div>
-                  <p className="text-xl font-bold text-[#20282d] dark:text-slate-50">
+                  <p className="text-xl font-bold text-heading dark:text-heading">
                     {joinText(profile?.names, profile?.lastNames) || profile?.username}
                   </p>
                   <p className="text-sm text-muted">{profile?.institutionalEmail || 'Sin correo registrado'}</p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {roles.map((role) => (
                       <span
-                        className="inline-flex items-center rounded-full border border-[#529914]/30 bg-accent-soft px-2.5 py-1 text-xs font-extrabold leading-none text-accent-strong dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300"
+                        className="inline-flex items-center rounded-full border border-accent/30 bg-accent-soft px-2.5 py-1 text-xs font-extrabold leading-none text-accent-strong dark:border-line dark:bg-surface-soft dark:text-muted"
                         key={role}
                       >
                         {formatRole(role)}
@@ -354,9 +354,9 @@ export function ProfilePage() {
 
 function ProfileMetric({ label, value }) {
   return (
-    <div className="rounded-lg border border-[#c8d2cd] bg-[#eef3f2] px-3 py-2 dark:border-slate-700 dark:bg-surface-soft">
+    <div className="rounded-lg border border-line bg-panel-soft px-3 py-2 dark:border-line dark:bg-surface-soft">
       <p className="text-xs font-bold uppercase text-muted">{label}</p>
-      <p className="mt-1 font-semibold text-[#20282d] dark:text-slate-50">{value || '-'}</p>
+      <p className="mt-1 font-semibold text-heading dark:text-heading">{value || '-'}</p>
     </div>
   );
 }
@@ -435,12 +435,12 @@ function MembershipSummary({ courses, currentEnrollment, enrollments, error, pro
 
 function ProfileInfo({ icon: Icon, label, meta, value }) {
   return (
-    <div className="min-w-0 rounded-lg border border-[#c8d2cd] bg-white p-3 dark:border-slate-700 dark:bg-surface">
+    <div className="min-w-0 rounded-lg border border-line bg-panel p-3 dark:border-line dark:bg-surface">
       <div className="flex items-center gap-2 text-xs font-bold uppercase text-muted">
         {Icon && <Icon aria-hidden="true" size={15} />}
         <span>{label}</span>
       </div>
-      <p className="mt-2 break-words text-sm font-extrabold text-[#20282d] dark:text-slate-50">{value || '-'}</p>
+      <p className="mt-2 break-words text-sm font-extrabold text-heading dark:text-heading">{value || '-'}</p>
       {meta && <p className="mt-1 text-xs font-semibold text-muted">{meta}</p>}
     </div>
   );

@@ -3,33 +3,33 @@ import { apiBlob } from '../api/client';
 import { initialsFromProfile } from '../utils/format';
 
 const avatarColors = {
-  A: '#9f2933',
-  B: '#ad852d',
-  C: '#04344c',
-  D: '#529914',
-  E: '#7d1f28',
-  F: '#074462',
-  G: '#3f760f',
-  H: '#8a6a20',
-  I: '#9f2933',
-  J: '#ad852d',
-  K: '#04344c',
-  L: '#529914',
-  M: '#7d1f28',
-  N: '#074462',
-  Ñ: '#3f760f',
-  O: '#8a6a20',
-  P: '#9f2933',
-  Q: '#ad852d',
-  R: '#04344c',
-  S: '#529914',
-  T: '#7d1f28',
-  U: '#074462',
-  V: '#3f760f',
-  W: '#8a6a20',
-  X: '#9f2933',
-  Y: '#ad852d',
-  Z: '#04344c',
+  A: 'var(--color-chart-1)',
+  B: 'var(--color-chart-2)',
+  C: 'var(--color-chart-3)',
+  D: 'var(--color-chart-4)',
+  E: 'var(--color-chart-10)',
+  F: 'var(--color-chart-5)',
+  G: 'var(--color-chart-6)',
+  H: 'var(--color-chart-9)',
+  I: 'var(--color-chart-1)',
+  J: 'var(--color-chart-2)',
+  K: 'var(--color-chart-3)',
+  L: 'var(--color-chart-4)',
+  M: 'var(--color-chart-10)',
+  N: 'var(--color-chart-5)',
+  Ñ: 'var(--color-chart-6)',
+  O: 'var(--color-chart-9)',
+  P: 'var(--color-chart-1)',
+  Q: 'var(--color-chart-2)',
+  R: 'var(--color-chart-3)',
+  S: 'var(--color-chart-4)',
+  T: 'var(--color-chart-10)',
+  U: 'var(--color-chart-5)',
+  V: 'var(--color-chart-6)',
+  W: 'var(--color-chart-9)',
+  X: 'var(--color-chart-1)',
+  Y: 'var(--color-chart-2)',
+  Z: 'var(--color-chart-3)',
 };
 
 function avatarColorFromInitials(initials) {
@@ -38,7 +38,7 @@ function avatarColorFromInitials(initials) {
     .charAt(0)
     .toUpperCase();
 
-  return avatarColors[letter] || '#04344c';
+  return avatarColors[letter] || 'var(--color-primary)';
 }
 
 export function Avatar({ profile, token, size = 'md', className = '' }) {
@@ -91,7 +91,7 @@ export function Avatar({ profile, token, size = 'md', className = '' }) {
     return (
       <img
         alt={profile?.username || 'Usuario'}
-        className={`${sizes[size]} rounded-full object-cover ring-2 ring-white dark:ring-slate-800 ${className}`}
+        className={`${sizes[size]} rounded-full object-cover ring-2 ring-panel dark:ring-surface-soft ${className}`}
         onError={() => setFailed(true)}
         src={source}
       />
@@ -101,7 +101,7 @@ export function Avatar({ profile, token, size = 'md', className = '' }) {
 
   return (
     <div
-      className={`${sizes[size]} grid place-items-center rounded-full font-black text-white ring-2 ring-white shadow-[0_10px_20px_rgba(4,52,76,0.18)] dark:ring-slate-800 ${className}`}
+      className={`${sizes[size]} grid place-items-center rounded-full font-black text-inverse ring-2 ring-panel shadow-card dark:ring-surface-soft ${className}`}
       style={{ backgroundColor: fallbackColor }}
     >
       {initials}

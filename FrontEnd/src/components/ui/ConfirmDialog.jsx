@@ -7,16 +7,16 @@ const ConfirmContext = createContext(null);
 
 const toneStyles = {
   danger: {
-    icon: 'border-rose-300 bg-rose-50 text-rose-700 dark:border-rose-400/40 dark:bg-rose-950/35 dark:text-rose-200',
-    confirm: 'border-rose-600 bg-rose-700 text-white hover:bg-rose-800 dark:border-rose-400 dark:bg-rose-800 dark:hover:bg-rose-700',
+    icon: 'border-danger bg-danger-soft text-danger-strong dark:border-danger/40 dark:bg-danger-soft dark:text-danger-strong',
+    confirm: 'border-danger bg-danger text-inverse hover:bg-danger-strong dark:border-danger dark:bg-danger-strong dark:hover:bg-danger',
   },
   warning: {
-    icon: 'border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-400/40 dark:bg-amber-950/35 dark:text-amber-200',
-    confirm: 'border-[#529914] bg-primary text-white hover:bg-secondary dark:border-[#75c66a] dark:bg-[#203026] dark:text-[#bbf7d0] dark:hover:bg-[#2b3f31]',
+    icon: 'border-warning bg-warning-soft text-warning-strong dark:border-warning/40 dark:bg-warning-soft dark:text-warning-strong',
+    confirm: 'border-accent bg-primary text-inverse hover:bg-secondary dark:border-accent dark:bg-hover-soft dark:text-accent-strong dark:hover:bg-hover-soft',
   },
   success: {
-    icon: 'border-[#b9ddcf] bg-[#eef9f1] text-[#14532d] dark:border-[#75c66a]/40 dark:bg-green-950/30 dark:text-green-200',
-    confirm: 'border-[#529914] bg-primary text-white hover:bg-secondary dark:border-[#75c66a] dark:bg-[#203026] dark:text-[#bbf7d0] dark:hover:bg-[#2b3f31]',
+    icon: 'border-line bg-success-soft text-success-strong dark:border-accent/40 dark:bg-success-soft dark:text-success-strong',
+    confirm: 'border-accent bg-primary text-inverse hover:bg-secondary dark:border-accent dark:bg-hover-soft dark:text-accent-strong dark:hover:bg-hover-soft',
   },
 };
 
@@ -109,14 +109,14 @@ function ConfirmModal({ request, onClose }) {
         role="dialog"
         style={{ zIndex: 100003 }}
       >
-        <div className="relative w-full max-w-[32rem] overflow-hidden rounded-lg border border-[#bdcbd0] bg-[#fbfaf7] text-ink shadow-[0_24px_60px_rgba(4,52,76,0.22)] dark:border-slate-700 dark:bg-surface dark:text-ink dark:shadow-[0_24px_60px_rgba(0,0,0,0.45)]">
-          <div className="flex items-start gap-3 border-b border-border p-4 dark:border-slate-700">
+        <div className="relative w-full max-w-[32rem] overflow-hidden rounded-lg border border-line bg-panel text-ink shadow-soft dark:border-line dark:bg-surface dark:text-ink dark:shadow-soft">
+          <div className="flex items-start gap-3 border-b border-border p-4 dark:border-line">
             <div className={cx('grid h-10 w-10 flex-none place-items-center rounded-lg border', tone.icon)}>
               <Icon aria-hidden="true" size={21} />
             </div>
             <div className="min-w-0 flex-1">
               <h2
-                className="text-base font-[850] leading-tight text-unl-graphite dark:text-slate-50"
+                className="text-base font-[850] leading-tight text-unl-graphite dark:text-heading"
                 id="confirm-dialog-title"
               >
                 {request.title}
@@ -127,7 +127,7 @@ function ConfirmModal({ request, onClose }) {
             </div>
             <button
               aria-label="Cerrar confirmacion"
-              className="grid h-8 w-8 flex-none place-items-center rounded-lg border border-transparent text-muted transition-colors hover:border-[#529914] hover:bg-[#eef5e8] hover:text-primary dark:hover:border-[#75c66a] dark:hover:bg-[#203026] dark:hover:text-[#bbf7d0]"
+              className="grid h-8 w-8 flex-none place-items-center rounded-lg border border-transparent text-muted transition-colors hover:border-accent hover:bg-accent-soft hover:text-primary dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong"
               onClick={() => onClose(false)}
               type="button"
             >
@@ -136,14 +136,14 @@ function ConfirmModal({ request, onClose }) {
           </div>
 
           {request.details && (
-            <div className="border-b border-border bg-[#eef3f2] px-4 py-3 text-sm font-bold leading-6 text-[#34443b] dark:border-slate-700 dark:bg-[#172033] dark:text-slate-200">
+            <div className="border-b border-border bg-panel-soft px-4 py-3 text-sm font-bold leading-6 text-body dark:border-line dark:bg-surface-soft dark:text-body">
               {request.details}
             </div>
           )}
 
           <div className="flex flex-col-reverse gap-2 p-4 sm:flex-row sm:justify-end">
             <button
-              className="inline-flex min-h-[2.55rem] items-center justify-center rounded-lg border border-[#529914] bg-transparent px-4 py-2 text-sm font-extrabold text-primary transition-colors hover:border-primary hover:bg-primary hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#529914]/35 dark:border-slate-600 dark:bg-surface dark:text-ink dark:hover:border-[#75c66a] dark:hover:bg-[#203026] dark:hover:text-[#bbf7d0]"
+              className="inline-flex min-h-[2.55rem] items-center justify-center rounded-lg border border-accent bg-transparent px-4 py-2 text-sm font-extrabold text-primary transition-colors hover:border-primary hover:bg-primary hover:text-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:bg-surface dark:text-ink dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong"
               onClick={() => onClose(false)}
               type="button"
             >
@@ -151,7 +151,7 @@ function ConfirmModal({ request, onClose }) {
             </button>
             <button
               className={cx(
-                'inline-flex min-h-[2.55rem] items-center justify-center rounded-lg border px-4 py-2 text-sm font-extrabold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#529914]/35',
+                'inline-flex min-h-[2.55rem] items-center justify-center rounded-lg border px-4 py-2 text-sm font-extrabold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35',
                 tone.confirm
               )}
               onClick={() => onClose(true)}

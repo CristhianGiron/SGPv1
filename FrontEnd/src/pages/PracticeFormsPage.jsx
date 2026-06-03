@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ArrowDown,
   ArrowUp,
+  Copy,
   Eye,
   Plus,
   Printer,
@@ -36,13 +37,51 @@ const QUESTION_TYPES = [
 const TARGET_ROLES = [
   ['INSTITUTIONAL_TUTOR', 'Tutor institucional'],
   ['INSTITUTION_DIRECTOR', 'Directora de la institucion'],
+  ['STUDENT_SELF', 'Estudiante'],
 ];
 
+const FORM_MODES = {
+  interviews: {
+    eyebrow: 'Practicas',
+    title: 'Entrevistas',
+    description: 'Crea entrevistas para la institucion receptora, registra respuestas y guarda la interpretacion del estudiante.',
+    singular: 'entrevista',
+    plural: 'entrevistas',
+    mineTab: 'Mis entrevistas',
+    createTab: 'Crear entrevista',
+    createdTitle: 'Entrevistas creadas',
+    assignedTitle: 'Entrevistas por responder',
+    emptyText: 'Aun no hay entrevistas registradas.',
+    createEndpoint: '/api/practice-forms',
+    listEndpoint: '/api/practice-forms/me',
+    managedEndpoint: '/api/practice-forms/managed',
+    showAssigned: true,
+    selfAnswered: false,
+  },
+  observations: {
+    eyebrow: 'Practicas',
+    title: 'Fichas de observación',
+    description: 'Crea y responde fichas de observación para registrar información directamente desde tu práctica.',
+    singular: 'ficha de observación',
+    plural: 'fichas de observación',
+    mineTab: 'Mis fichas',
+    createTab: 'Crear ficha',
+    createdTitle: 'Fichas de observación creadas',
+    assignedTitle: '',
+    emptyText: 'Aun no hay fichas de observación registradas.',
+    createEndpoint: '/api/practice-forms/observations',
+    listEndpoint: '/api/practice-forms/observations/me',
+    managedEndpoint: '/api/practice-forms/observations/managed',
+    showAssigned: false,
+    selfAnswered: true,
+  },
+};
+
 const CHOICE_TYPES = new Set(['SINGLE_CHOICE', 'MULTIPLE_CHOICE']);
-const choiceLabelClass = 'inline-flex min-h-[2.45rem] cursor-pointer items-center gap-2 rounded-lg border border-[#cad8cf] bg-white px-3 py-2 text-sm font-[850] text-[#34443b] transition-colors hover:bg-[#f5faf7] dark:border-slate-600 dark:bg-surface dark:text-ink dark:hover:bg-[#203026]';
-const questionEditorCardClass = 'overflow-hidden rounded-lg border border-border bg-white shadow-card dark:border-slate-700 dark:bg-surface';
-const questionEditorHeaderClass = 'flex flex-wrap items-center justify-between gap-3 border-b border-[#edf2ee] bg-[#f7f3ef] px-4 py-3 dark:border-slate-700 dark:bg-[#172033]';
-const printableQuestionClass = 'rounded-lg border border-border bg-[#fbfaf7] p-4 dark:border-slate-700 dark:bg-surface practice-form-print-question print:break-inside-avoid print:[page-break-inside:avoid] print:bg-white print:shadow-none';
+const choiceLabelClass = 'inline-flex min-h-[2.45rem] cursor-pointer items-center gap-2 rounded-lg border border-field-border bg-panel px-3 py-2 text-sm font-[850] text-body transition-colors hover:bg-field-hover dark:border-line dark:bg-surface dark:text-ink dark:hover:bg-hover-soft';
+const questionEditorCardClass = 'overflow-hidden rounded-lg border border-border bg-panel shadow-card dark:border-line dark:bg-surface';
+const questionEditorHeaderClass = 'flex flex-wrap items-center justify-between gap-3 border-b border-line-soft bg-field px-4 py-3 dark:border-line dark:bg-surface-soft';
+const printableQuestionClass = 'rounded-lg border border-border bg-panel p-4 dark:border-line dark:bg-surface practice-form-print-question print:break-inside-avoid print:[page-break-inside:avoid] print:bg-panel print:shadow-none';
 
 function newQuestion(type = 'OPEN_TEXT') {
   return {
@@ -56,46 +95,83 @@ function newQuestion(type = 'OPEN_TEXT') {
   };
 }
 
-function emptyDraft() {
+function emptyDraft(mode = 'interviews') {
   return {
     enrollmentId: '',
-    targetRole: 'INSTITUTIONAL_TUTOR',
+    targetRole: mode === 'observations' ? 'STUDENT_SELF' : 'INSTITUTIONAL_TUTOR',
     title: '',
     description: '',
     questions: [newQuestion()],
   };
 }
 
-export function PracticeFormsPage() {
+function formToDraft(form, mode = 'interviews') {
+  return {
+    enrollmentId: form?.enrollmentId ? String(form.enrollmentId) : '',
+    targetRole: form?.targetRole || (mode === 'observations' ? 'STUDENT_SELF' : 'INSTITUTIONAL_TUTOR'),
+    title: form?.title || '',
+    description: form?.description || '',
+    questions: (form?.questions || []).map((question) =>
+      normalizeQuestion({
+        key: question.id || `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+        type: question.type || 'OPEN_TEXT',
+        prompt: question.prompt || '',
+        required: question.required !== false,
+        scaleMin: question.scaleMin || 1,
+        scaleMax: question.scaleMax || 5,
+        options: (question.options || []).map((option) => option.label).filter(Boolean),
+      })
+    ),
+  };
+}
+
+export function PracticeFormsPage({ mode = 'interviews' }) {
   const { token, roles } = useAuth();
   const confirm = useConfirm();
+  const config = FORM_MODES[mode] || FORM_MODES.interviews;
   const isStudent = roles.includes('ROLE_ESTUDIANTE');
-  const canResolveForms =
-    roles.includes('ROLE_TUTOR_INSTITUCIONAL') || roles.includes('ROLE_DIRECTORA_INSTITUCION');
-  const [activeView, setActiveView] = useState(isStudent ? 'mine' : 'assigned');
+  const canResolveAssigned =
+    config.showAssigned &&
+    (roles.includes('ROLE_TUTOR_INSTITUCIONAL') || roles.includes('ROLE_DIRECTORA_INSTITUCION'));
+  const canReviewManaged =
+    roles.includes('ROLE_TUTOR_PRACTICAS') ||
+    roles.includes('ROLE_DIRECTOR_PRACTICAS') ||
+    roles.includes('ROLE_ADMIN');
+  const [activeView, setActiveView] = useState(
+    isStudent ? 'mine' : canResolveAssigned ? 'assigned' : 'managed'
+  );
   const [myForms, setMyForms] = useState([]);
   const [assignedForms, setAssignedForms] = useState([]);
+  const [managedForms, setManagedForms] = useState([]);
   const [enrollments, setEnrollments] = useState([]);
   const [selectedForm, setSelectedForm] = useState(null);
-  const [draft, setDraft] = useState(emptyDraft);
+  const [editingForm, setEditingForm] = useState(null);
+  const [draft, setDraft] = useState(() => emptyDraft(mode));
   const [responseDraft, setResponseDraft] = useState({});
   const [interpretationDrafts, setInterpretationDrafts] = useState({});
+  const [detailView, setDetailView] = useState('view');
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [sendingDraft, setSendingDraft] = useState(false);
   const [responding, setResponding] = useState(false);
+  const [savingResponseDraft, setSavingResponseDraft] = useState(false);
   const [savingInterpretationId, setSavingInterpretationId] = useState(null);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
 
   useEffect(() => {
     if (activeView === 'create' && !isStudent) {
-      setActiveView(canResolveForms ? 'assigned' : 'mine');
+      setActiveView(canResolveAssigned ? 'assigned' : canReviewManaged ? 'managed' : 'mine');
     }
 
-    if (activeView === 'assigned' && !canResolveForms) {
-      setActiveView(isStudent ? 'mine' : 'assigned');
+    if (activeView === 'assigned' && !canResolveAssigned) {
+      setActiveView(isStudent ? 'mine' : canReviewManaged ? 'managed' : 'mine');
     }
-  }, [activeView, canResolveForms, isStudent]);
+
+    if (activeView === 'managed' && !canReviewManaged) {
+      setActiveView(isStudent ? 'mine' : canResolveAssigned ? 'assigned' : 'mine');
+    }
+  }, [activeView, canResolveAssigned, canReviewManaged, isStudent]);
 
   const loadFormDetail = useCallback(
     async (id) => {
@@ -118,28 +194,31 @@ export function PracticeFormsPage() {
     try {
       if (isStudent) {
         const [formsPayload, enrollmentsPayload] = await Promise.all([
-          apiRequest('/api/practice-forms/me', { token }),
+          apiRequest(config.listEndpoint, { token }),
           apiRequest('/api/enrollments/me', { token }),
         ]);
 
         setMyForms(Array.isArray(formsPayload) ? formsPayload : []);
         setEnrollments(
-          unwrapPage(enrollmentsPayload).filter(
-            (enrollment) => enrollment.status === 'APPROVED' && enrollment.courseActive !== false
-          )
+          unwrapPage(enrollmentsPayload).filter(isApprovedEnrollment)
         );
       }
 
-      if (canResolveForms) {
+      if (canResolveAssigned) {
         const payload = await apiRequest('/api/practice-forms/assigned', { token });
         setAssignedForms(Array.isArray(payload) ? payload : []);
+      }
+
+      if (canReviewManaged) {
+        const payload = await apiRequest(config.managedEndpoint, { token });
+        setManagedForms(Array.isArray(payload) ? payload : []);
       }
     } catch (requestError) {
       setError(requestError.message);
     } finally {
       setLoading(false);
     }
-  }, [canResolveForms, isStudent, token]);
+  }, [canResolveAssigned, canReviewManaged, config.listEndpoint, config.managedEndpoint, isStudent, token]);
 
   useEffect(() => {
     loadData();
@@ -154,53 +233,97 @@ export function PracticeFormsPage() {
           .map((question) => [question.id, question.studentInterpretation || ''])
       )
     );
-    setResponseDraft({});
+    setResponseDraft(responseDraftFromQuestions(questions));
+    setDetailView('view');
   }, [selectedForm]);
 
-  const visibleForms = activeView === 'assigned' ? assignedForms : myForms;
+  const visibleForms = activeView === 'assigned' ? assignedForms : activeView === 'managed' ? managedForms : myForms;
   const selectedIsAssigned = assignedForms.some((form) => form.id === selectedForm?.id);
+  const selectedIsManaged = managedForms.some((form) => form.id === selectedForm?.id);
   const selectedIsMine = myForms.some((form) => form.id === selectedForm?.id);
-  const canRespondSelected = canResolveForms && selectedIsAssigned && selectedForm?.status === 'SENT';
+  const canRespondSelected =
+    selectedForm?.status === 'SENT' &&
+    ((canResolveAssigned && selectedIsAssigned) ||
+      (config.selfAnswered && isStudent && selectedIsMine));
   const canInterpretSelected = isStudent && selectedIsMine && selectedForm?.status === 'ANSWERED';
+  const canEditDraftSelected = isStudent && selectedIsMine && selectedForm?.status === 'DRAFT';
 
-  const formColumns = useMemo(
-    () => [
-      { key: 'title', header: 'Entrevista' },
-      { key: 'courseName', header: 'Paralelo' },
-      activeView === 'assigned'
+  const formColumns = [
+    { key: 'title', header: config.singular[0].toUpperCase() + config.singular.slice(1) },
+    { key: 'courseName', header: 'Paralelo' },
+    activeView === 'assigned'
+      ? { key: 'studentFullName', header: 'Estudiante', render: (row) => row.studentFullName || row.student || '-' }
+      : activeView === 'managed'
         ? { key: 'studentFullName', header: 'Estudiante', render: (row) => row.studentFullName || row.student || '-' }
+      : config.selfAnswered
+        ? { key: 'target', header: 'Respondida por', render: () => 'Estudiante' }
         : { key: 'target', header: 'Asignado a', render: (row) => row.target || targetRoleLabel(row.targetRole) },
-      {
-        key: 'status',
-        header: 'Estado',
-        render: (row) => <StatusBadge status={row.status} />,
-      },
-      {
-        key: 'createdAt',
-        header: 'Creado',
-        render: (row) => formatDateTime(row.createdAt),
-      },
-      {
-        key: 'actions',
-        header: '',
-        render: (row) => (
+    {
+      key: 'status',
+      header: 'Estado',
+      render: (row) => <StatusBadge status={row.status} />,
+    },
+    {
+      key: 'createdAt',
+      header: 'Creado',
+      render: (row) => formatDateTime(row.createdAt),
+    },
+    {
+      key: 'actions',
+      header: '',
+      render: (row) => (
+        <ActionBar>
           <SecondaryButton icon={Eye} onClick={() => loadFormDetail(row.id)} type="button">
             Ver
           </SecondaryButton>
-        ),
-      },
-    ],
-    [activeView, loadFormDetail]
-  );
+          {isStudent && activeView === 'mine' && row.status === 'DRAFT' && (
+            <SecondaryButton icon={Save} onClick={() => handleEditDraft(row)} type="button">
+              Editar
+            </SecondaryButton>
+          )}
+        </ActionBar>
+      ),
+    },
+  ];
 
-  async function handleCreate(event) {
+  async function persistDraft(nextDraft, asDraft) {
+    const payload = {
+      ...buildCreatePayload(nextDraft, config),
+      draft: asDraft,
+    };
+
+    if (editingForm?.id) {
+      const updated = await apiRequest(`/api/practice-forms/${editingForm.id}`, {
+        method: 'PUT',
+        token,
+        body: { ...payload, draft: true },
+      });
+
+      if (!asDraft) {
+        return apiRequest(`/api/practice-forms/${editingForm.id}/send`, {
+          method: 'POST',
+          token,
+        });
+      }
+
+      return updated;
+    }
+
+    return apiRequest(config.createEndpoint, {
+      method: 'POST',
+      token,
+      body: payload,
+    });
+  }
+
+  async function handleSaveDraft(event) {
     event.preventDefault();
 
     const accepted = await confirm({
-      title: 'Crear y asignar entrevista',
-      description: 'La entrevista quedara disponible para la institucion receptora seleccionada.',
-      details: draft.title || 'Entrevista',
-      confirmLabel: 'Crear entrevista',
+      title: `Guardar borrador`,
+      description: `La ${config.singular} quedara privada y podras editarla antes de enviarla.`,
+      details: draft.title || config.singular,
+      confirmLabel: 'Guardar borrador',
       tone: 'warning',
     });
 
@@ -213,22 +336,185 @@ export function PracticeFormsPage() {
     setMessage('');
 
     try {
-      const payload = buildCreatePayload(draft);
-      const created = await apiRequest('/api/practice-forms', {
-        method: 'POST',
-        token,
-        body: payload,
-      });
+      const saved = await persistDraft(draft, true);
 
-      setMessage('Entrevista creada y asignada correctamente.');
-      setDraft(emptyDraft());
+      setMessage('Borrador guardado correctamente.');
+      setEditingForm(saved);
+      setDraft(emptyDraft(mode));
       setActiveView('mine');
       await loadData();
-      await loadFormDetail(created.id);
+      await loadFormDetail(saved.id);
     } catch (requestError) {
       setError(requestError.message);
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleSendForm(event) {
+    event.preventDefault();
+
+    const accepted = await confirm({
+      title: editingForm?.id ? `Enviar borrador` : `Crear y enviar ${config.singular}`,
+      description: config.selfAnswered
+        ? 'La ficha quedara lista para registrar respuestas.'
+        : 'La entrevista quedara disponible para la persona asignada.',
+      details: draft.title || config.singular,
+      confirmLabel: 'Enviar',
+      tone: 'warning',
+    });
+
+    if (!accepted) {
+      return;
+    }
+
+    setSaving(true);
+    setError('');
+    setMessage('');
+
+    try {
+      const sent = await persistDraft(draft, false);
+
+      setMessage(config.selfAnswered ? 'Ficha enviada correctamente.' : 'Entrevista enviada correctamente.');
+      setEditingForm(null);
+      setDraft(emptyDraft(mode));
+      setActiveView('mine');
+      await loadData();
+      await loadFormDetail(sent.id);
+    } catch (requestError) {
+      setError(requestError.message);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleEditDraft(form) {
+    if (!form?.id) return;
+
+    setSaving(true);
+    setError('');
+    setMessage('');
+
+    try {
+      const detail = await loadFormDetail(form.id);
+      setEditingForm(detail);
+      setDraft(formToDraft(detail, mode));
+      setActiveView('create');
+    } catch (requestError) {
+      setError(requestError.message);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  function handleNewDraft() {
+    setEditingForm(null);
+    setDraft(emptyDraft(mode));
+    setSelectedForm(null);
+    setActiveView('create');
+  }
+
+  async function handleSendSelectedDraft() {
+    if (!selectedForm?.id) return;
+
+    const accepted = await confirm({
+      title: 'Enviar borrador',
+      description: `La ${config.singular} dejara de ser editable y pasara al flujo de respuesta.`,
+      details: selectedForm.title,
+      confirmLabel: 'Enviar',
+      tone: 'warning',
+    });
+
+    if (!accepted) return;
+
+    setSendingDraft(true);
+    setError('');
+    setMessage('');
+
+    try {
+      const sent = await apiRequest(`/api/practice-forms/${selectedForm.id}/send`, {
+        method: 'POST',
+        token,
+      });
+
+      setMessage(`${config.singular[0].toUpperCase() + config.singular.slice(1)} enviada correctamente.`);
+      await loadData();
+      setSelectedForm(sent);
+    } catch (requestError) {
+      setError(requestError.message);
+    } finally {
+      setSendingDraft(false);
+    }
+  }
+
+  async function handleDuplicate(form) {
+    if (!form?.id) return;
+
+    const accepted = await confirm({
+      title: `Duplicar ${config.singular}`,
+      description: 'Se copiara la estructura de preguntas, sin copiar respuestas.',
+      details: form.title,
+      confirmLabel: 'Duplicar',
+      tone: 'warning',
+    });
+
+    if (!accepted) return;
+
+    setSaving(true);
+    setError('');
+    setMessage('');
+
+    try {
+      const duplicated = await apiRequest(`/api/practice-forms/${form.id}/duplicate`, {
+        method: 'POST',
+        token,
+      });
+
+      setMessage(`${config.singular[0].toUpperCase() + config.singular.slice(1)} duplicada correctamente.`);
+      await loadData();
+      await loadFormDetail(duplicated.id);
+    } catch (requestError) {
+      setError(requestError.message);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function persistResponseDraft(asDraft) {
+    if (!selectedForm) {
+      return null;
+    }
+
+    const payload = buildResponsePayload(selectedForm.questions || [], responseDraft, asDraft);
+
+    return apiRequest(`/api/practice-forms/${selectedForm.id}/responses`, {
+      method: 'POST',
+      token,
+      body: {
+        ...payload,
+        draft: asDraft,
+      },
+    });
+  }
+
+  async function handleSaveResponseDraft() {
+    setSavingResponseDraft(true);
+    setError('');
+    setMessage('');
+
+    try {
+      const saved = await persistResponseDraft(true);
+
+      setMessage('Borrador de respuestas guardado.');
+      await loadData();
+      if (saved?.id) {
+        await loadFormDetail(saved.id);
+        setDetailView('respond');
+      }
+    } catch (requestError) {
+      setError(requestError.message);
+    } finally {
+      setSavingResponseDraft(false);
     }
   }
 
@@ -256,12 +542,7 @@ export function PracticeFormsPage() {
     setMessage('');
 
     try {
-      const payload = buildResponsePayload(selectedForm.questions || [], responseDraft);
-      await apiRequest(`/api/practice-forms/${selectedForm.id}/responses`, {
-        method: 'POST',
-        token,
-        body: payload,
-      });
+      await persistResponseDraft(false);
 
       setMessage('Respuesta registrada correctamente.');
       await loadData();
@@ -303,9 +584,9 @@ export function PracticeFormsPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Practicas"
-        title="Entrevistas"
-        description="Crea entrevistas para la institucion receptora, registra respuestas y guarda la interpretacion del estudiante."
+        eyebrow={config.eyebrow}
+        title={config.title}
+        description={config.description}
         action={
           <SecondaryButton icon={RefreshCw} loading={loading} onClick={loadData} type="button">
             Actualizar
@@ -319,16 +600,17 @@ export function PracticeFormsPage() {
       <SectionCard className="print:hidden">
         <ModuleTabs>
           {[
-            isStudent && ['mine', 'Mis entrevistas'],
-            canResolveForms && ['assigned', 'Por responder'],
-            isStudent && ['create', 'Crear entrevista'],
+            isStudent && ['mine', config.mineTab],
+            canResolveAssigned && ['assigned', 'Por responder'],
+            canReviewManaged && ['managed', 'Respondidas'],
+            isStudent && ['create', config.createTab],
           ]
             .filter(Boolean)
             .map(([id, label]) => (
               <ModuleTab
                 active={activeView === id}
                 key={id}
-                onClick={() => setActiveView(id)}
+                onClick={() => (id === 'create' ? handleNewDraft() : setActiveView(id))}
               >
                 {label}
               </ModuleTab>
@@ -337,28 +619,40 @@ export function PracticeFormsPage() {
       </SectionCard>
 
       {activeView === 'create' ? (
-        <PracticeFormBuilder
-          draft={draft}
-          enrollments={enrollments}
-          loading={loading}
-          saving={saving}
-          setDraft={setDraft}
-          onSubmit={handleCreate}
-        />
+          <PracticeFormBuilder
+            draft={draft}
+            editing={Boolean(editingForm)}
+            enrollments={enrollments}
+            mode={mode}
+            loading={loading}
+            saving={saving}
+            setDraft={setDraft}
+            config={config}
+            onSaveDraft={handleSaveDraft}
+            onSend={handleSendForm}
+          />
       ) : (
         <div className="grid grid-cols-1 gap-5">
           <SectionCard
             className="print:hidden"
-            title={activeView === 'assigned' ? 'Entrevistas por responder' : 'Entrevistas creadas'}
+            title={
+              activeView === 'assigned'
+                ? config.assignedTitle
+                : activeView === 'managed'
+                  ? `${config.plural[0].toUpperCase() + config.plural.slice(1)} respondidas`
+                  : config.createdTitle
+            }
             description={
               activeView === 'assigned'
-                ? 'Selecciona una entrevista para revisar sus preguntas y responder.'
-                : 'Selecciona una entrevista para ver respuestas e interpretaciones.'
+                ? `Selecciona una ${config.singular} para revisar sus preguntas y responder.`
+                : activeView === 'managed'
+                  ? `Selecciona una ${config.singular} respondida para revisar sus respuestas.`
+                : `Selecciona una ${config.singular} para ver respuestas e interpretaciones.`
             }
           >
             <DataTable
               columns={formColumns}
-              emptyText={loading ? 'Cargando entrevistas' : 'Aun no hay entrevistas registradas.'}
+              emptyText={loading ? `Cargando ${config.plural}` : config.emptyText}
               loading={loading}
               rows={visibleForms}
             />
@@ -367,14 +661,26 @@ export function PracticeFormsPage() {
           <PracticeFormDetail
             canInterpret={canInterpretSelected}
             canRespond={canRespondSelected}
+            canDuplicate={isStudent && selectedIsMine}
+            canEditDraft={canEditDraftSelected}
+            canReview={selectedIsManaged}
+            config={config}
+            detailView={detailView}
             form={selectedForm}
             interpretationDrafts={interpretationDrafts}
             responseDraft={responseDraft}
             responding={responding}
+            savingResponseDraft={savingResponseDraft}
+            sendingDraft={sendingDraft}
             savingInterpretationId={savingInterpretationId}
             setInterpretationDrafts={setInterpretationDrafts}
+            setDetailView={setDetailView}
             setResponseDraft={setResponseDraft}
+            onEditDraft={handleEditDraft}
             onPrint={() => window.print()}
+            onDuplicate={handleDuplicate}
+            onSendDraft={handleSendSelectedDraft}
+            onSaveResponseDraft={handleSaveResponseDraft}
             onSaveInterpretation={handleSaveInterpretation}
             onSubmitAnswers={handleSubmitAnswers}
           />
@@ -384,11 +690,29 @@ export function PracticeFormsPage() {
   );
 }
 
-function PracticeFormBuilder({ draft, enrollments, loading, saving, setDraft, onSubmit }) {
+export function ObservationFormsPage() {
+  return <PracticeFormsPage mode="observations" />;
+}
+
+function PracticeFormBuilder({
+  config,
+  draft,
+  editing,
+  enrollments,
+  loading,
+  mode,
+  saving,
+  setDraft,
+  onSaveDraft,
+  onSend,
+}) {
   const confirm = useConfirm();
   const selectedEnrollment = enrollments.find((enrollment) => String(enrollment.id) === String(draft.enrollmentId));
   const defaultEnrollment = useMemo(() => resolveDefaultEnrollment(enrollments), [enrollments]);
-  const targetOptions = useMemo(() => targetOptionsForEnrollment(selectedEnrollment), [selectedEnrollment]);
+  const targetOptions = useMemo(
+    () => (mode === 'observations' ? [{ value: 'STUDENT_SELF', label: 'Estudiante', disabled: false }] : targetOptionsForEnrollment(selectedEnrollment)),
+    [mode, selectedEnrollment],
+  );
 
   useEffect(() => {
     if (!defaultEnrollment) {
@@ -399,7 +723,9 @@ function PracticeFormBuilder({ draft, enrollments, loading, saving, setDraft, on
       const selectedStillValid = enrollments.some((enrollment) => String(enrollment.id) === String(current.enrollmentId));
       const nextEnrollmentId = selectedStillValid ? current.enrollmentId : String(defaultEnrollment.id);
       const nextEnrollment = enrollments.find((enrollment) => String(enrollment.id) === String(nextEnrollmentId)) || defaultEnrollment;
-      const options = targetOptionsForEnrollment(nextEnrollment);
+      const options = mode === 'observations'
+        ? [{ value: 'STUDENT_SELF', label: 'Estudiante', disabled: false }]
+        : targetOptionsForEnrollment(nextEnrollment);
       const nextTargetRole = options.some((option) => option.value === current.targetRole && !option.disabled)
         ? current.targetRole
         : options.find((option) => !option.disabled)?.value || current.targetRole;
@@ -414,7 +740,7 @@ function PracticeFormBuilder({ draft, enrollments, loading, saving, setDraft, on
         targetRole: nextTargetRole,
       };
     });
-  }, [defaultEnrollment, enrollments, setDraft]);
+  }, [defaultEnrollment, enrollments, mode, setDraft]);
 
   function updateDraft(field, value) {
     setDraft((current) => ({
@@ -533,9 +859,9 @@ function PracticeFormBuilder({ draft, enrollments, loading, saving, setDraft, on
   }
 
   return (
-    <form className="space-y-5" onSubmit={onSubmit}>
+    <form className="space-y-5" onSubmit={onSaveDraft}>
       <SectionCard
-        title="Datos de la entrevista"
+        title={`${editing ? 'Editar' : 'Datos de la'} ${config.singular}`}
         description="La pertenencia academica y de practica se toma de tu inscripcion aprobada."
       >
         <div className="grid gap-4 lg:grid-cols-2">
@@ -547,25 +873,31 @@ function PracticeFormBuilder({ draft, enrollments, loading, saving, setDraft, on
                   ? [selectedEnrollment.courseName, selectedEnrollment.educationalInstitutionName].filter(Boolean).join(' | ')
                   : loading
                     ? 'Cargando inscripcion aprobada'
-                    : 'No tienes una inscripcion aprobada activa'
+                    : 'No se encontro una inscripcion aprobada'
               }
             />
           </Field>
 
-          <Field label="Quien respondera">
-            <Select
-              disabled={!selectedEnrollment}
-              required
-              value={draft.targetRole}
-              onChange={(event) => updateDraft('targetRole', event.target.value)}
-            >
-              {targetOptions.map(({ disabled, label, value }) => (
-                <option disabled={disabled} key={value} value={value}>
-                  {label}
-                </option>
-              ))}
-            </Select>
-          </Field>
+          {mode === 'observations' ? (
+            <Field label="Quien respondera">
+              <Input disabled value="Estudiante" />
+            </Field>
+          ) : (
+            <Field label="Quien respondera">
+              <Select
+                disabled={!selectedEnrollment}
+                required
+                value={draft.targetRole}
+                onChange={(event) => updateDraft('targetRole', event.target.value)}
+              >
+                {targetOptions.map(({ disabled, label, value }) => (
+                  <option disabled={disabled} key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </Select>
+            </Field>
+          )}
 
           <Field className="lg:col-span-2" label="Titulo">
             <Input
@@ -586,7 +918,7 @@ function PracticeFormBuilder({ draft, enrollments, loading, saving, setDraft, on
         </div>
 
         {selectedEnrollment && (
-          <div className="mt-4 grid gap-3 rounded-lg border border-[#c8d2cd] bg-[#eef3f2] p-3 text-sm text-[#34443b] dark:border-slate-700 dark:bg-surface-soft dark:text-slate-200 md:grid-cols-2">
+          <div className="mt-4 grid gap-3 rounded-lg border border-line bg-panel-soft p-3 text-sm text-body dark:border-line dark:bg-surface-soft dark:text-body md:grid-cols-2">
             <InfoLine label="Paralelo" value={selectedEnrollment.courseName} />
             <InfoLine label="Institucion" value={selectedEnrollment.educationalInstitutionName} />
             <InfoLine label="Tutor institucional" value={selectedEnrollment.institutionalTutor} />
@@ -622,8 +954,8 @@ function PracticeFormBuilder({ draft, enrollments, loading, saving, setDraft, on
             <div className={questionEditorCardClass} key={question.key}>
               <div className={questionEditorHeaderClass}>
                 <div>
-                  <p className="font-black text-zinc-900 dark:text-slate-50">Pregunta {index + 1}</p>
-                  <p className="text-xs font-bold uppercase text-zinc-500 dark:text-slate-400">{questionTypeLabel(question.type)}</p>
+                  <p className="font-black text-heading dark:text-heading">Pregunta {index + 1}</p>
+                  <p className="text-xs font-bold uppercase text-muted dark:text-muted">{questionTypeLabel(question.type)}</p>
                 </div>
                 <ActionBar>
                   <SecondaryButton
@@ -688,7 +1020,7 @@ function PracticeFormBuilder({ draft, enrollments, loading, saving, setDraft, on
                 {CHOICE_TYPES.has(question.type) && (
                   <div className="space-y-3 lg:col-span-2">
                     <div className="flex items-center justify-between gap-3">
-                      <p className="mb-0 text-[0.82rem] font-extrabold text-[#34443b] dark:text-slate-300">Opciones</p>
+                      <p className="mb-0 text-[0.82rem] font-extrabold text-body dark:text-muted">Opciones</p>
                       <SecondaryButton icon={Plus} onClick={() => addOption(index)} type="button">
                         Agregar opcion
                       </SecondaryButton>
@@ -745,8 +1077,11 @@ function PracticeFormBuilder({ draft, enrollments, loading, saving, setDraft, on
       </SectionCard>
 
       <ActionBar>
-        <PrimaryButton icon={Send} loading={saving} type="submit">
-          Crear y asignar
+        <SecondaryButton icon={Save} loading={saving} type="submit">
+          Guardar borrador
+        </SecondaryButton>
+        <PrimaryButton icon={Send} loading={saving} type="button" onClick={onSend}>
+          Enviar
         </PrimaryButton>
       </ActionBar>
     </form>
@@ -754,28 +1089,47 @@ function PracticeFormBuilder({ draft, enrollments, loading, saving, setDraft, on
 }
 
 function PracticeFormDetail({
+  canDuplicate,
+  canEditDraft,
   canInterpret,
   canRespond,
+  config,
+  detailView,
   form,
   interpretationDrafts,
   responseDraft,
   responding,
+  savingResponseDraft,
+  sendingDraft,
   savingInterpretationId,
   setInterpretationDrafts,
+  setDetailView,
   setResponseDraft,
+  onEditDraft,
   onPrint,
+  onDuplicate,
+  onSendDraft,
+  onSaveResponseDraft,
   onSaveInterpretation,
   onSubmitAnswers,
 }) {
   if (!form) {
     return (
       <SectionCard title="Detalle">
-        <EmptyState text="Selecciona una entrevista para ver el detalle." />
+        <EmptyState text={`Selecciona una ${config.singular} para ver el detalle.`} />
       </SectionCard>
     );
   }
 
   const questions = form.questions || [];
+  const hasResponseDraft = Boolean(form.response && !form.response.submittedAt);
+  const hasInterpretationQuestions = questions.some((question) => question.type === 'OPEN_TEXT' && question.answer);
+  const availableViews = [
+    ['view', 'Vista'],
+    canRespond && ['respond', 'Responder'],
+    (canInterpret || hasInterpretationQuestions) && ['interpretation', 'Interpretación'],
+  ].filter(Boolean);
+  const activeDetailView = availableViews.some(([id]) => id === detailView) ? detailView : 'view';
 
   function setAnswer(questionId, patch) {
     setResponseDraft((current) => ({
@@ -806,10 +1160,25 @@ function PracticeFormDetail({
 
   return (
     <SectionCard
-      className="practice-form-print-card print:border-0 print:bg-white print:p-0 print:shadow-none"
-      title="Detalle de la entrevista"
+      className="practice-form-print-card print:border-0 print:bg-panel print:p-0 print:shadow-none"
+      title={`Detalle de la ${config.singular}`}
       action={
         <ActionBar>
+          {canDuplicate && (
+            <SecondaryButton className="print:hidden" icon={Copy} onClick={() => onDuplicate(form)} type="button">
+              Duplicar
+            </SecondaryButton>
+          )}
+          {canEditDraft && (
+            <>
+              <SecondaryButton className="print:hidden" icon={Save} onClick={() => onEditDraft(form)} type="button">
+                Editar borrador
+              </SecondaryButton>
+              <PrimaryButton className="print:hidden" icon={Send} loading={sendingDraft} onClick={onSendDraft} type="button">
+                Enviar
+              </PrimaryButton>
+            </>
+          )}
           <SecondaryButton className="print:hidden" icon={Printer} onClick={onPrint} type="button">
             Imprimir
           </SecondaryButton>
@@ -817,50 +1186,75 @@ function PracticeFormDetail({
       }
     >
       <form onSubmit={onSubmitAnswers}>
-        <div className="practice-form-print-document space-y-5 print:text-[11pt] print:text-[#111827]">
+        <div className="practice-form-print-document space-y-5 print:text-[11pt] print:text-heading">
           <header className="practice-form-print-header flex items-start justify-between gap-4 border-b border-border pb-4">
             <div>
-              <p className="text-xs font-extrabold uppercase leading-tight tracking-normal text-primary dark:text-sky-200 print:text-[10pt] print:text-black">Entrevista</p>
-              <h2 className="text-2xl font-black leading-tight text-zinc-950 dark:text-slate-50 print:text-[18pt] print:uppercase print:text-black">{form.title}</h2>
-              {form.description && <p className="mt-2 text-sm leading-6 text-zinc-600 dark:text-slate-300">{form.description}</p>}
+              <p className="text-xs font-extrabold uppercase leading-tight tracking-normal text-primary dark:text-info-strong print:text-[10pt] print:text-table-ink">
+                {config.singular}
+              </p>
+              <h2 className="text-2xl font-black leading-tight text-heading dark:text-heading print:text-[18pt] print:uppercase print:text-table-ink">{form.title}</h2>
+              {form.description && <p className="mt-2 text-sm leading-6 text-muted dark:text-muted">{form.description}</p>}
             </div>
             <span className="print:hidden">
               <StatusBadge status={form.status} />
             </span>
           </header>
 
-          <div className="practice-form-print-meta grid gap-3 rounded-lg border border-zinc-200 bg-zinc-50 p-3 text-sm dark:border-slate-700 dark:bg-surface-soft md:grid-cols-2 print:grid-cols-2 print:gap-0 print:rounded-none print:border-black print:bg-white print:p-0">
+          <div className="practice-form-print-meta grid gap-3 rounded-lg border border-line bg-panel-soft p-3 text-sm dark:border-line dark:bg-surface-soft md:grid-cols-2 print:grid-cols-2 print:gap-0 print:rounded-none print:border-black print:bg-panel print:p-0">
             <InfoLine label="Paralelo" value={form.courseName} />
             <InfoLine label="Estudiante" value={form.studentFullName || form.student} />
             <InfoLine label="Institucion" value={form.educationalInstitutionName} />
-            <InfoLine label="Asignado a" value={form.target || targetRoleLabel(form.targetRole)} />
+            <InfoLine label={config.selfAnswered ? 'Respondida por' : 'Asignado a'} value={form.target || targetRoleLabel(form.targetRole)} />
             <InfoLine label="Estado" value={formatEnum(form.status)} />
             <InfoLine label="Creado" value={formatDateTime(form.createdAt)} />
             <InfoLine label="Respondido" value={formatDateTime(form.answeredAt)} />
             {form.response?.respondent && <InfoLine label="Respondido por" value={form.response.respondent} />}
+            {hasResponseDraft && <InfoLine label="Respuesta" value="Borrador guardado" />}
           </div>
 
-          <div className="space-y-4">
-            {questions.map((question) => (
-              <QuestionDetail
-                canInterpret={canInterpret}
-                canRespond={canRespond}
-                interpretation={interpretationDrafts[question.id] || ''}
-                key={question.id}
-                question={question}
-                responseValue={responseDraft[question.id] || {}}
-                savingInterpretation={savingInterpretationId === question.id}
-                setAnswer={setAnswer}
-                setInterpretationDrafts={setInterpretationDrafts}
-                toggleOption={toggleOption}
-                onSaveInterpretation={onSaveInterpretation}
-              />
-            ))}
+          <div className="print:hidden">
+            <ModuleTabs>
+              {availableViews.map(([id, label]) => (
+                <ModuleTab active={activeDetailView === id} key={id} onClick={() => setDetailView(id)}>
+                  {label}
+                </ModuleTab>
+              ))}
+            </ModuleTabs>
           </div>
+
+          {activeDetailView === 'interpretation' && !hasInterpretationQuestions ? (
+            <EmptyState text="No hay respuestas abiertas para interpretar." />
+          ) : (
+            <div className="space-y-4">
+              {questions
+                .filter((question) => activeDetailView !== 'interpretation' || (question.type === 'OPEN_TEXT' && question.answer))
+                .map((question) => (
+                  <QuestionDetail
+                    canInterpret={canInterpret && activeDetailView === 'interpretation'}
+                    canRespond={canRespond && activeDetailView === 'respond'}
+                    interpretation={interpretationDrafts[question.id] || ''}
+                    key={question.id}
+                    question={question}
+                    responseValue={responseDraft[question.id] || {}}
+                    savingInterpretation={savingInterpretationId === question.id}
+                    setAnswer={setAnswer}
+                    setInterpretationDrafts={setInterpretationDrafts}
+                    showAnswer={activeDetailView !== 'respond'}
+                    showInterpretation={activeDetailView === 'interpretation'}
+                    showTabulation={activeDetailView === 'view'}
+                    toggleOption={toggleOption}
+                    onSaveInterpretation={onSaveInterpretation}
+                  />
+                ))}
+            </div>
+          )}
         </div>
 
-        {canRespond && (
+        {canRespond && activeDetailView === 'respond' && (
           <ActionBar>
+            <SecondaryButton className="print:hidden" icon={Save} loading={savingResponseDraft} type="button" onClick={onSaveResponseDraft}>
+              Guardar borrador
+            </SecondaryButton>
             <PrimaryButton className="print:hidden" icon={Send} loading={responding} type="submit">
               Enviar respuestas
             </PrimaryButton>
@@ -880,6 +1274,9 @@ function QuestionDetail({
   savingInterpretation,
   setAnswer,
   setInterpretationDrafts,
+  showAnswer = true,
+  showInterpretation = false,
+  showTabulation = true,
   toggleOption,
   onSaveInterpretation,
 }) {
@@ -887,12 +1284,12 @@ function QuestionDetail({
     <article className={printableQuestionClass}>
       <div className="practice-form-print-question-header flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-xs font-black uppercase text-zinc-500 dark:text-slate-400">
+          <p className="text-xs font-black uppercase text-muted dark:text-muted">
             Pregunta {question.order} | {questionTypeLabel(question.type)}
           </p>
-          <h3 className="mt-1 text-base font-black text-zinc-950 dark:text-slate-50">{question.prompt}</h3>
+          <h3 className="mt-1 text-base font-black text-heading dark:text-heading">{question.prompt}</h3>
         </div>
-        <span className="inline-flex items-center rounded-full border border-slate-300 bg-slate-50 px-2.5 py-1 text-xs font-extrabold leading-none text-slate-600 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 print:hidden">
+        <span className="inline-flex items-center rounded-full border border-line bg-panel-soft px-2.5 py-1 text-xs font-extrabold leading-none text-muted dark:border-line dark:bg-surface-soft dark:text-muted print:hidden">
           {question.required ? 'Obligatoria' : 'Opcional'}
         </span>
       </div>
@@ -908,19 +1305,19 @@ function QuestionDetail({
         </div>
       )}
 
-      {question.answer && (
-        <div className="practice-form-print-answer mt-4 rounded-lg border border-zinc-200 bg-white p-3 dark:border-slate-700 dark:bg-[#111827]">
-          <p className="mb-1.5 text-[0.82rem] font-extrabold text-[#34443b] dark:text-slate-300">Respuesta</p>
-          <p className="whitespace-pre-wrap text-sm leading-6 text-zinc-800 dark:text-slate-100">{formatAnswer(question)}</p>
+      {showAnswer && question.answer && (
+        <div className="practice-form-print-answer mt-4 rounded-lg border border-line bg-panel p-3 dark:border-line dark:bg-surface">
+          <p className="mb-1.5 text-[0.82rem] font-extrabold text-body dark:text-muted">Respuesta</p>
+          <p className="whitespace-pre-wrap text-sm leading-6 text-heading dark:text-heading">{formatAnswer(question)}</p>
         </div>
       )}
 
-      {question.tabulable && question.tabulation && <Tabulation question={question} />}
+      {showTabulation && question.tabulable && question.tabulation && <Tabulation question={question} />}
 
-      {question.type === 'OPEN_TEXT' && question.answer && (
-        <div className="practice-form-print-answer mt-4 rounded-lg border border-zinc-200 bg-zinc-50 p-3 dark:border-slate-700 dark:bg-surface-soft">
+      {showInterpretation && question.type === 'OPEN_TEXT' && question.answer && (
+        <div className="practice-form-print-answer mt-4 rounded-lg border border-line bg-panel-soft p-3 dark:border-line dark:bg-surface-soft">
           <div className="mb-2 flex items-center justify-between gap-3">
-            <p className="mb-0 text-[0.82rem] font-extrabold text-[#34443b] dark:text-slate-300">Interpretacion del estudiante</p>
+            <p className="mb-0 text-[0.82rem] font-extrabold text-body dark:text-muted">Interpretacion del estudiante</p>
             {canInterpret && (
               <SecondaryButton
                 className="print:hidden"
@@ -946,12 +1343,12 @@ function QuestionDetail({
               }
             />
           ) : (
-            <p className="whitespace-pre-wrap text-sm leading-6 text-zinc-700 dark:text-slate-200">
+            <p className="whitespace-pre-wrap text-sm leading-6 text-body dark:text-body">
               {question.studentInterpretation || 'Sin interpretacion registrada'}
             </p>
           )}
           {canInterpret && (
-            <p className="hidden whitespace-pre-wrap text-sm leading-6 text-zinc-700 print:block">
+            <p className="hidden whitespace-pre-wrap text-sm leading-6 text-body print:block">
               {interpretation || 'Sin interpretacion registrada'}
             </p>
           )}
@@ -1068,23 +1465,23 @@ function Tabulation({ question }) {
   }
 
   return (
-    <div className="mt-4 rounded-lg border border-[#c8d2cd] bg-white p-3 dark:border-slate-700 dark:bg-surface">
-      <p className="mb-1.5 text-[0.82rem] font-extrabold text-[#34443b] dark:text-slate-300">Tabulacion</p>
+    <div className="mt-4 rounded-lg border border-line bg-panel p-3 dark:border-line dark:bg-surface">
+      <p className="mb-1.5 text-[0.82rem] font-extrabold text-body dark:text-muted">Tabulacion</p>
       {counts.length > 0 && (
-        <div className="min-w-0 max-w-full overflow-hidden rounded-lg border border-[#dbe3ed] bg-white shadow-[0_10px_24px_rgba(15,23,42,0.055)] dark:border-slate-700 dark:bg-surface">
+        <div className="min-w-0 max-w-full overflow-hidden rounded-lg border border-line bg-panel shadow-card dark:border-line dark:bg-surface">
           <div className="min-w-0 max-w-full overflow-x-auto overscroll-x-contain">
             <table className="w-max min-w-full border-separate border-spacing-0 text-sm">
-              <thead className="bg-[#d7e4e9] text-left text-xs font-extrabold uppercase text-[#475569] dark:bg-[#172033] dark:text-slate-300">
+              <thead className="bg-primary-soft text-left text-xs font-extrabold uppercase text-muted dark:bg-surface-soft dark:text-muted">
                 <tr>
-                  <th className="border-b border-[#dbe3ed] px-4 py-3 dark:border-slate-700">Valor</th>
-                  <th className="border-b border-[#dbe3ed] px-4 py-3 dark:border-slate-700">Frecuencia</th>
+                  <th className="border-b border-line px-4 py-3 dark:border-line">Valor</th>
+                  <th className="border-b border-line px-4 py-3 dark:border-line">Frecuencia</th>
                 </tr>
               </thead>
               <tbody>
                 {counts.map(([label, count]) => (
-                  <tr className="even:bg-[#e6efea] hover:bg-[#dbe8ed] dark:even:bg-slate-950/40 dark:hover:bg-sky-300/10" key={label}>
-                    <td className="border-b border-[#edf2f7] px-4 py-3 text-[#263241] dark:border-slate-800 dark:text-ink">{label}</td>
-                    <td className="border-b border-[#edf2f7] px-4 py-3 text-[#263241] dark:border-slate-800 dark:text-ink">{count}</td>
+                  <tr className="even:bg-panel-soft hover:bg-primary-soft dark:even:bg-page/40 dark:hover:bg-info-soft" key={label}>
+                    <td className="border-b border-line-soft px-4 py-3 text-body dark:border-line dark:text-ink">{label}</td>
+                    <td className="border-b border-line-soft px-4 py-3 text-body dark:border-line dark:text-ink">{count}</td>
                   </tr>
                 ))}
               </tbody>
@@ -1108,7 +1505,7 @@ function InfoLine({ fallback = '-', label, value }) {
   return (
     <div className="practice-form-print-info-line">
       <p className="text-xs font-black uppercase text-muted">{label}</p>
-      <p className="mt-1 font-semibold text-[#20282d] dark:text-slate-50">{value || fallback}</p>
+      <p className="mt-1 font-semibold text-heading dark:text-heading">{value || fallback}</p>
     </div>
   );
 }
@@ -1132,13 +1529,13 @@ function normalizeQuestion(question) {
   return question;
 }
 
-function buildCreatePayload(draft) {
+function buildCreatePayload(draft, config = FORM_MODES.interviews) {
   if (!draft.enrollmentId) {
-    throw new Error('No tienes una inscripcion aprobada activa para crear la entrevista.');
+    throw new Error(`No se encontro una inscripcion aprobada para crear la ${config.singular}.`);
   }
 
   if (!draft.title.trim()) {
-    throw new Error('El titulo de la entrevista es obligatorio.');
+    throw new Error(`El titulo de la ${config.singular} es obligatorio.`);
   }
 
   const questions = draft.questions.map((question, index) => {
@@ -1206,6 +1603,12 @@ function resolveDefaultEnrollment(enrollments) {
   return ranked[0] || null;
 }
 
+function isApprovedEnrollment(enrollment) {
+  const status = String(enrollment?.status || '').toUpperCase();
+
+  return status === 'APPROVED' || status === 'APROBADA' || status === 'APROBADO';
+}
+
 function enrollmentScore(enrollment) {
   if (!enrollment) {
     return 0;
@@ -1242,7 +1645,37 @@ function targetOptionsForEnrollment(enrollment) {
   ];
 }
 
-function buildResponsePayload(questions, responseDraft) {
+function responseDraftFromQuestions(questions) {
+  return Object.fromEntries(
+    (questions || [])
+      .filter((question) => question.answer)
+      .map((question) => {
+        const answer = question.answer || {};
+
+        if (question.type === 'OPEN_TEXT') {
+          return [question.id, { textAnswer: answer.textAnswer || '' }];
+        }
+
+        if (question.type === 'YES_NO') {
+          return [
+            question.id,
+            {
+              booleanAnswer:
+                answer.booleanAnswer === true ? 'true' : answer.booleanAnswer === false ? 'false' : '',
+            },
+          ];
+        }
+
+        if (question.type === 'SCALE' || question.type === 'NUMBER') {
+          return [question.id, { numberAnswer: answer.numberAnswer ?? '' }];
+        }
+
+        return [question.id, { selectedOptions: answer.selectedOptions || [] }];
+      })
+  );
+}
+
+function buildResponsePayload(questions, responseDraft, draft = false) {
   const answers = [];
 
   questions.forEach((question) => {
@@ -1252,7 +1685,7 @@ function buildResponsePayload(questions, responseDraft) {
       const textAnswer = (value.textAnswer || '').trim();
       if (textAnswer) {
         answers.push({ questionId: question.id, textAnswer });
-      } else if (question.required) {
+      } else if (!draft && question.required) {
         throw new Error(`Responde la pregunta ${question.order}.`);
       }
       return;
@@ -1261,7 +1694,7 @@ function buildResponsePayload(questions, responseDraft) {
     if (question.type === 'YES_NO') {
       if (value.booleanAnswer === 'true' || value.booleanAnswer === 'false') {
         answers.push({ questionId: question.id, booleanAnswer: value.booleanAnswer === 'true' });
-      } else if (question.required) {
+      } else if (!draft && question.required) {
         throw new Error(`Responde la pregunta ${question.order}.`);
       }
       return;
@@ -1270,7 +1703,7 @@ function buildResponsePayload(questions, responseDraft) {
     if (question.type === 'SCALE' || question.type === 'NUMBER') {
       if (value.numberAnswer !== undefined && value.numberAnswer !== null && value.numberAnswer !== '') {
         answers.push({ questionId: question.id, numberAnswer: Number(value.numberAnswer) });
-      } else if (question.required) {
+      } else if (!draft && question.required) {
         throw new Error(`Responde la pregunta ${question.order}.`);
       }
       return;
@@ -1279,12 +1712,12 @@ function buildResponsePayload(questions, responseDraft) {
     const selectedOptions = value.selectedOptions || [];
     if (selectedOptions.length) {
       answers.push({ questionId: question.id, selectedOptions });
-    } else if (question.required) {
+    } else if (!draft && question.required) {
       throw new Error(`Responde la pregunta ${question.order}.`);
     }
   });
 
-  if (!answers.length) {
+  if (!draft && !answers.length) {
     throw new Error('Debes responder al menos una pregunta.');
   }
 

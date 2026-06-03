@@ -1,7 +1,6 @@
 package com.sgp.systemsgp.dto.practiceform;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,8 +11,9 @@ import java.util.List;
 @Setter
 public class SubmitPracticeFormResponseRequest {
 
+    private Boolean draft;
+
     @Valid
-    @NotNull(message = "Las respuestas son obligatorias")
-    @Size(min = 1, max = 120, message = "Debe enviar entre 1 y 120 respuestas")
+    @Size(max = 120, message = "No puede enviar más de 120 respuestas")
     private List<PracticeFormAnswerRequest> answers;
 }

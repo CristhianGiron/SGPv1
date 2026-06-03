@@ -401,7 +401,7 @@ export function CoursesPage() {
         const pending = pendingEnrollmentsByCourse.get(String(row.id)) || 0;
         return (
           <div className="flex items-center gap-2">
-            <span className={`font-semibold ${pending > 0 ? 'text-orange-600 dark:text-orange-300' : 'text-muted'}`}>
+            <span className={`font-semibold ${pending > 0 ? 'text-warning-strong dark:text-warning-strong' : 'text-muted'}`}>
               {pending}
             </span>
             {canUseCourse && pending > 0 && (
@@ -1150,9 +1150,9 @@ export function CoursesPage() {
               </SecondaryButton>
             </ActionBar>
           </div>
-          <div className="mt-5 border-t border-[#c8d2cd] pt-4 dark:border-slate-700">
+          <div className="mt-5 border-t border-line pt-4 dark:border-line">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <h3 className="text-sm font-extrabold text-[#20282d] dark:text-slate-50">Grupos del paralelo</h3>
+              <h3 className="text-sm font-extrabold text-heading dark:text-heading">Grupos del paralelo</h3>
               {canManageGroups && (
                 <SecondaryButton disabled={loading || !courseId} icon={Plus} onClick={() => setManagementModal('group')} type="button">
                   Crear grupo

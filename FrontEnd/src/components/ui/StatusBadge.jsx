@@ -1,19 +1,19 @@
 import { formatEnum } from '../../utils/format';
 
 const PALETTE = {
-  APPROVED: 'border-green-300 bg-green-50 text-green-800 dark:border-green-400/40 dark:bg-green-950/35 dark:text-green-200',
-  ACTIVE: 'border-green-300 bg-green-50 text-green-800 dark:border-green-400/40 dark:bg-green-950/35 dark:text-green-200',
-  INACTIVE: 'border-slate-300 bg-slate-50 text-slate-600 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300',
-  LOCKED: 'border-rose-300 bg-rose-50 text-rose-700 dark:border-rose-400/40 dark:bg-rose-950/35 dark:text-rose-200',
-  PRESENT: 'border-green-300 bg-green-50 text-green-800 dark:border-green-400/40 dark:bg-green-950/35 dark:text-green-200',
-  SUBMITTED: 'border-sky-300 bg-sky-50 text-sky-800 dark:border-sky-400/40 dark:bg-sky-950/35 dark:text-sky-200',
-  SENT: 'border-sky-300 bg-sky-50 text-sky-800 dark:border-sky-400/40 dark:bg-sky-950/35 dark:text-sky-200',
-  ANSWERED: 'border-green-300 bg-green-50 text-green-800 dark:border-green-400/40 dark:bg-green-950/35 dark:text-green-200',
-  PENDING: 'border-amber-300 bg-amber-50 text-amber-800 dark:border-amber-400/40 dark:bg-amber-950/35 dark:text-amber-200',
-  NEEDS_CORRECTION: 'border-amber-300 bg-amber-50 text-amber-800 dark:border-amber-400/40 dark:bg-amber-950/35 dark:text-amber-200',
-  REJECTED: 'border-rose-300 bg-rose-50 text-rose-700 dark:border-rose-400/40 dark:bg-rose-950/35 dark:text-rose-200',
-  ABSENT: 'border-rose-300 bg-rose-50 text-rose-700 dark:border-rose-400/40 dark:bg-rose-950/35 dark:text-rose-200',
-  DRAFT: 'border-slate-300 bg-slate-50 text-slate-600 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300',
+  APPROVED: 'border-success bg-success-soft text-success-strong dark:border-success/40 dark:bg-success-soft dark:text-success-strong',
+  ACTIVE: 'border-success bg-success-soft text-success-strong dark:border-success/40 dark:bg-success-soft dark:text-success-strong',
+  INACTIVE: 'border-line bg-panel-soft text-muted dark:border-line dark:bg-surface-soft dark:text-muted',
+  LOCKED: 'border-danger bg-danger-soft text-danger-strong dark:border-danger/40 dark:bg-danger-soft dark:text-danger-strong',
+  PRESENT: 'border-success bg-success-soft text-success-strong dark:border-success/40 dark:bg-success-soft dark:text-success-strong',
+  SUBMITTED: 'border-info bg-info-soft text-info-strong dark:border-info/40 dark:bg-info-soft dark:text-info-strong',
+  SENT: 'border-info bg-info-soft text-info-strong dark:border-info/40 dark:bg-info-soft dark:text-info-strong',
+  ANSWERED: 'border-success bg-success-soft text-success-strong dark:border-success/40 dark:bg-success-soft dark:text-success-strong',
+  PENDING: 'border-warning bg-warning-soft text-warning-strong dark:border-warning/40 dark:bg-warning-soft dark:text-warning-strong',
+  NEEDS_CORRECTION: 'border-warning bg-warning-soft text-warning-strong dark:border-warning/40 dark:bg-warning-soft dark:text-warning-strong',
+  REJECTED: 'border-danger bg-danger-soft text-danger-strong dark:border-danger/40 dark:bg-danger-soft dark:text-danger-strong',
+  ABSENT: 'border-danger bg-danger-soft text-danger-strong dark:border-danger/40 dark:bg-danger-soft dark:text-danger-strong',
+  DRAFT: 'border-line bg-panel-soft text-muted dark:border-line dark:bg-surface-soft dark:text-muted',
   COMPLETED: 'border-indigo-300 bg-indigo-50 text-indigo-700 dark:border-indigo-400/40 dark:bg-indigo-950/35 dark:text-indigo-200',
 };
 

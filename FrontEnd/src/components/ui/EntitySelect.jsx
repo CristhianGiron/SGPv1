@@ -5,7 +5,7 @@ import { joinText } from '../../utils/format';
 import { filterInactiveForNonAdmin } from '../../utils/visibility';
 
 const fieldClass =
-  'min-h-[2.65rem] w-full rounded-lg border border-[#c8d2cd] bg-[#f5f4ed] px-3 py-2.5 text-sm text-[#20282d] outline-none transition-[background-color,border-color,box-shadow] placeholder:text-slate-400 hover:border-[#aebdb6] focus:border-[#074462] focus:ring-4 focus:ring-[#074462]/15 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:placeholder:text-slate-500 dark:hover:border-slate-500 dark:focus:border-sky-300 dark:focus:ring-sky-300/20';
+  'min-h-[2.65rem] w-full rounded-lg border border-line bg-field px-3 py-2.5 text-sm text-heading outline-none transition-[background-color,border-color,box-shadow] placeholder:text-muted hover:border-line-strong focus:border-primary-strong focus:ring-4 focus:ring-focus-soft disabled:cursor-not-allowed disabled:bg-panel-soft disabled:text-muted dark:border-line dark:bg-page dark:text-heading dark:placeholder:text-muted dark:hover:border-line-strong dark:focus:border-info dark:focus:ring-focus-soft';
 
 export function EntitySelect({
   value,

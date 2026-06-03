@@ -362,7 +362,7 @@ function PhotoSection({ title, photos, token, emptyText, canDelete = false, onDe
       {photos.length === 0 ? (
         <EmptyState text={emptyText} />
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {photos.map((photo) => (
             <PhotoCard
               canDelete={canDelete}
@@ -544,7 +544,7 @@ function GroupedPhotoSection({ photos, token, emptyText, onDownload, onOpen }) {
           key={group.key}
           title={group.label}
         >
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {group.photos.map((photo) => (
               <PhotoCard
                 key={photo.id}
@@ -613,18 +613,18 @@ function PhotoCard({ photo, token, canDelete = false, onDelete, onDownload, onOp
   }
 
   return (
-    <article className="overflow-hidden rounded-lg border border-[#c8d2cd] bg-white dark:border-slate-700 dark:bg-surface">
+    <article className="overflow-hidden rounded-lg border border-line bg-panel dark:border-line dark:bg-surface">
       <PhotoPreview photo={photo} token={token} onOpen={onOpen} />
       <div className="space-y-3 p-3">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="text-sm font-semibold text-[#20282d] dark:text-slate-50">{photo.courseName || photo.originalFilename}</p>
+            <p className="text-sm font-semibold text-heading dark:text-heading">{photo.courseName || photo.originalFilename}</p>
             <p className="text-xs text-muted">{photo.studentFullName || photo.studentUsername || 'Estudiante'}</p>
             <p className="text-xs text-muted">Evidencia de practica</p>
           </div>
           <StatusBadge status={photo.practiceDate ? 'COMPLETED' : 'DRAFT'} />
         </div>
-        {photo.description && <p className="line-clamp-3 text-sm text-[#34443b] dark:text-slate-200">{photo.description}</p>}
+        {photo.description && <p className="line-clamp-3 text-sm text-body dark:text-body">{photo.description}</p>}
         <div className="flex items-center justify-between gap-3">
           <ActionBar>
             <span className="text-xs text-muted">{photo.practiceDate || 'Sin fecha'}</span>
@@ -678,7 +678,7 @@ function PhotoPreview({ photo, token, onOpen }) {
 
   if (!source || failed) {
     return (
-      <div className="flex aspect-[4/3] items-center justify-center bg-[#eef3f2] text-sm font-medium text-muted dark:bg-surface-soft">
+      <div className="flex aspect-[4/3] items-center justify-center bg-panel-soft text-sm font-medium text-muted dark:bg-surface-soft">
         {failed ? 'Vista no disponible' : 'Cargando'}
       </div>
     );
@@ -687,7 +687,7 @@ function PhotoPreview({ photo, token, onOpen }) {
   return (
     <button
       aria-label="Ver fotografia en pantalla completa"
-      className="block w-full bg-[#eef3f2] dark:bg-surface-soft"
+      className="block w-full bg-panel-soft dark:bg-surface-soft"
       onClick={() => onOpen?.(photo)}
       type="button"
     >
@@ -749,7 +749,7 @@ function PhotoFullscreen({ photo, token, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 z-[100001] flex items-center justify-center bg-zinc-950/95 p-4"
+      className="fixed inset-0 z-[100001] flex items-center justify-center bg-page/95 p-4"
       onMouseDown={onClose}
       role="dialog"
       aria-modal="true"
@@ -761,7 +761,7 @@ function PhotoFullscreen({ photo, token, onClose }) {
       </div>
       <div className="max-h-full max-w-full" onMouseDown={(event) => event.stopPropagation()}>
         {!source || failed ? (
-          <div className="flex h-80 w-[min(90vw,42rem)] items-center justify-center rounded-lg bg-zinc-900 text-sm font-medium text-zinc-200">
+          <div className="flex h-80 w-[min(90vw,42rem)] items-center justify-center rounded-lg bg-surface text-sm font-medium text-body">
             {failed ? 'Vista no disponible' : 'Cargando'}
           </div>
         ) : (

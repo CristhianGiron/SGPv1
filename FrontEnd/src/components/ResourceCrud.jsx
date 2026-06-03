@@ -386,7 +386,7 @@ function ResourceInput({ disabled = false, field, form, required = false, value,
     return (
       <input
         checked={Boolean(value)}
-        className="h-5 w-5 rounded border-zinc-300 text-emerald-700 dark:border-slate-600 dark:text-[#75c66a]"
+        className="h-5 w-5 rounded border-line text-accent-strong dark:border-line dark:text-accent"
         disabled={disabled}
         onChange={(event) => setField(field.name, event.target.checked)}
         type="checkbox"

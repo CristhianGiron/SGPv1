@@ -44,7 +44,7 @@ public class GlobalExceptionHandler {
 
                                 .status(400)
 
-                                .error("Validation Error")
+                                .error("Error de validación")
 
                                 .message(ex.getBindingResult()
                                                 .getAllErrors()
@@ -71,7 +71,7 @@ public class GlobalExceptionHandler {
 
                 return build(
                                 400,
-                                "Bad Request",
+                                "Solicitud inválida",
                                 ex.getMessage());
         }
 
@@ -87,7 +87,7 @@ public class GlobalExceptionHandler {
 
                 return build(
                                 404,
-                                "Not Found",
+                                "No encontrado",
                                 ex.getMessage());
         }
 
@@ -103,7 +103,7 @@ public class GlobalExceptionHandler {
 
                 return build(
                                 401,
-                                "Unauthorized",
+                                "No autorizado",
                                 "Credenciales incorrectas");
         }
 
@@ -119,7 +119,7 @@ public class GlobalExceptionHandler {
 
                 return build(
                                 403,
-                                "Forbidden",
+                                "Prohibido",
                                 "Cuenta desactivada");
         }
 
@@ -135,7 +135,7 @@ public class GlobalExceptionHandler {
 
                 return build(
                                 403,
-                                "Forbidden",
+                                "Prohibido",
                                 "Cuenta bloqueada");
         }
 
@@ -151,7 +151,7 @@ public class GlobalExceptionHandler {
 
                 return build(
                                 404,
-                                "Not Found",
+                                "No encontrado",
                                 ex.getMessage());
         }
 
@@ -167,7 +167,7 @@ public class GlobalExceptionHandler {
 
                 return build(
                                 401,
-                                "Unauthorized",
+                                "No autorizado",
                                 "No autenticado");
         }
 
@@ -183,7 +183,7 @@ public class GlobalExceptionHandler {
 
                 return build(
                                 403,
-                                "Forbidden",
+                                "Prohibido",
                                 "Acceso denegado");
         }
 
@@ -199,8 +199,8 @@ public class GlobalExceptionHandler {
 
                 return build(
                                 405,
-                                "Method Not Allowed",
-                                "Metodo HTTP no soportado para esta ruta");
+                                "Método no permitido",
+                                "Método HTTP no soportado para esta ruta");
         }
 
         /*
@@ -215,7 +215,7 @@ public class GlobalExceptionHandler {
 
                 return build(
                                 404,
-                                "Not Found",
+                                "No encontrado",
                                 "Ruta no encontrada");
         }
 
@@ -231,7 +231,7 @@ public class GlobalExceptionHandler {
 
                 return build(
                                 500,
-                                "Internal Server Error",
+                                "Error interno del servidor",
                                 ex.getMessage());
         }
 

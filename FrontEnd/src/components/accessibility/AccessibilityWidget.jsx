@@ -200,16 +200,16 @@ export default function AccessibilityWidget() {
           aria-label="Herramientas de accesibilidad"
           className="
             absolute bottom-20 left-0
-            rounded-2xl border border-slate-200
-            bg-white p-5 text-slate-900
-            shadow-[0_24px_70px_rgba(15,23,42,0.25)]
+            rounded-2xl border border-line
+            bg-panel p-5 text-heading
+            shadow-soft
             animate-[awPanelIn_0.22s_ease-out]
-            dark:border-slate-700 dark:bg-surface dark:text-slate-100
+            dark:border-line dark:bg-surface dark:text-heading
           "
         >
           <div className="flex flex-col gap-4">
             <div className="mb-4 flex items-start justify-between gap-3 ">
-              <h2 className="text-[16px] font-bold leading-tight text-green-500 dark:text-slate-100">
+              <h2 className="text-[16px] font-bold leading-tight text-accent dark:text-heading">
                 Herramientas de accesibilidad
               </h2>
 
@@ -219,9 +219,9 @@ export default function AccessibilityWidget() {
                 aria-label="Cerrar herramientas de accesibilidad"
                 className="
                 grid h-8 w-8 place-items-center rounded-full
-                bg-slate-100 text-slate-600 transition
-                hover:bg-slate-200
-                dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700
+                bg-panel-soft text-muted transition
+                hover:bg-panel-soft
+                dark:bg-surface-soft dark:text-muted dark:hover:bg-line-strong
                 focus-visible:outline focus-visible:outline-3
                 focus-visible:outline-offset-2 focus-visible:outline-yellow-400
               "
@@ -275,10 +275,10 @@ export default function AccessibilityWidget() {
                 step="0.1"
                 value={speechRate}
                 onChange={(e) => setSpeechRate(Number(e.target.value))}
-                className="w-full cursor-pointer accent-green-500  dark:accent-green-400"
+                className="w-full cursor-pointer accent-accent  dark:accent-accent"
               />
 
-              <span className="mt-1 block text-sm text-slate-800 dark:text-slate-200">
+              <span className="mt-1 block text-sm text-heading dark:text-body">
                 {speechRate.toFixed(1)}x
               </span>
             </div>
@@ -306,15 +306,15 @@ export default function AccessibilityWidget() {
               onClick={resetChanges}
               className="
                 mt-1 flex min-h-9 w-full items-center gap-2 rounded-xl
-                px-2 py-2 text-left text-[15px] font-semibold text-slate-900
-                transition hover:translate-x-0.5 hover:bg-red-100 hover:text-red-800
-                dark:text-slate-100 dark:hover:bg-rose-950/35 dark:hover:text-rose-200
+                px-2 py-2 text-left text-[15px] font-semibold text-heading
+                transition hover:translate-x-0.5 hover:bg-danger-soft hover:text-danger-strong
+                dark:text-heading dark:hover:bg-danger-soft dark:hover:text-danger-strong
                 focus-visible:outline focus-visible:outline-3
                 focus-visible:outline-offset-2 focus-visible:outline-yellow-400
               "
             >
-              <RotateCcw className="text-red-500" size={17} />
-              <span className="text-red-500">Restablecer cambios</span>
+              <RotateCcw className="text-danger" size={17} />
+              <span className="text-danger">Restablecer cambios</span>
             </button>
           </div>
         </aside>
@@ -327,11 +327,11 @@ export default function AccessibilityWidget() {
         aria-expanded={open}
         className="
           grid h-[40px] w-[40px] place-items-center
-          border border-[#529914] bg-[#04344c] text-white
-          shadow-[0_18px_40px_rgba(4,52,76,0.28)]
+          border border-accent bg-primary text-inverse
+          shadow-card
           transition hover:-translate-y-1 hover:scale-[1.03]
-          hover:bg-[#074462]
-          hover:shadow-[0_22px_55px_rgba(4,52,76,0.34)]
+          hover:bg-primary-strong
+          hover:shadow-soft
           focus-visible:outline focus-visible:outline-3
           focus-visible:outline-offset-2 focus-visible:outline-yellow-400
         "
@@ -351,8 +351,8 @@ function optionClass(active) {
     focus-visible:outline-offset-2 focus-visible:outline-yellow-400
     ${
       active
-        ? "bg-[#d7e4e9] font-bold text-[#04344c] dark:bg-[#203026] dark:text-[#bbf7d0]"
-        : "text-slate-900 hover:translate-x-0.5 hover:bg-[#e4f0d8] hover:text-[#04344c] dark:text-slate-100 dark:hover:bg-[#203026] dark:hover:text-[#bbf7d0]"
+        ? "bg-primary-soft font-bold text-primary dark:bg-hover-soft dark:text-accent-strong"
+        : "text-heading hover:translate-x-0.5 hover:bg-accent-soft hover:text-primary dark:text-heading dark:hover:bg-hover-soft dark:hover:text-accent-strong"
     }
   `;
 }
@@ -440,18 +440,18 @@ function injectAccessibilityStyles(styleId) {
     }
 
     html.aw-high-contrast body {
-      background: #000 !important;
-      color: #fff !important;
+      background: var(--color-a11y-contrast-dark-bg) !important;
+      color: var(--color-a11y-contrast-dark-ink) !important;
     }
 
     html.aw-high-contrast body *:not([data-accessibility-widget]):not([data-accessibility-widget] *) {
-      background-color: #000 !important;
-      color: #fff !important;
-      border-color: #fff !important;
+      background-color: var(--color-a11y-contrast-dark-bg) !important;
+      color: var(--color-a11y-contrast-dark-ink) !important;
+      border-color: var(--color-a11y-contrast-dark-ink) !important;
     }
 
     html.aw-high-contrast body a:not([data-accessibility-widget] a) {
-      color: #facc15 !important;
+      color: var(--color-a11y-contrast-link) !important;
     }
 
     /*
@@ -469,13 +469,13 @@ function injectAccessibilityStyles(styleId) {
     }
 
     html.aw-light-background body {
-      background: #fff !important;
-      color: #111827 !important;
+      background: var(--color-a11y-contrast-light-bg) !important;
+      color: var(--color-a11y-contrast-light-ink) !important;
     }
 
     html.aw-light-background body *:not([data-accessibility-widget]):not([data-accessibility-widget] *) {
-      background-color: #fff !important;
-      color: #111827 !important;
+      background-color: var(--color-a11y-contrast-dark-ink) !important;
+      color: var(--color-a11y-contrast-light-ink) !important;
     }
 
     html.aw-underline-links body a:not([data-accessibility-widget] a) {

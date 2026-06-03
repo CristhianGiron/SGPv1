@@ -9,10 +9,10 @@ const ALERT_AUTO_HIDE_MS = 3000;
 export function Alert({ tone = 'info', children, dismissible = true }) {
   const [visible, setVisible] = useState(true);
   const styles = {
-    error: 'border-rose-300 bg-rose-50 text-rose-800 dark:border-rose-400/40 dark:bg-rose-950/35 dark:text-rose-200',
-    success: 'border-green-300 bg-green-50 text-green-800 dark:border-green-400/40 dark:bg-green-950/35 dark:text-green-200',
-    info: 'border-sky-300 bg-sky-50 text-sky-800 dark:border-sky-400/40 dark:bg-sky-950/35 dark:text-sky-200',
-    warning: 'border-amber-300 bg-amber-50 text-amber-800 dark:border-amber-400/40 dark:bg-amber-950/35 dark:text-amber-200',
+    error: 'border-danger bg-danger-soft text-danger-strong dark:border-danger/40 dark:bg-danger-soft dark:text-danger-strong',
+    success: 'border-success bg-success-soft text-success-strong dark:border-success/40 dark:bg-success-soft dark:text-success-strong',
+    info: 'border-info bg-info-soft text-info-strong dark:border-info/40 dark:bg-info-soft dark:text-info-strong',
+    warning: 'border-warning bg-warning-soft text-warning-strong dark:border-warning/40 dark:bg-warning-soft dark:text-warning-strong',
   };
   const icons = {
     error: AlertCircle,
@@ -48,7 +48,7 @@ export function Alert({ tone = 'info', children, dismissible = true }) {
 
   return (
     <div
-      className={`fixed left-1/2 top-4 z-[100000] flex w-[min(34rem,calc(100vw-1.5rem))] -translate-x-1/2 items-start gap-3 rounded-lg border p-3 text-sm leading-6 shadow-[0_18px_45px_rgba(15,23,42,0.18)] ${styles[tone] || styles.info}`}
+      className={`fixed left-1/2 top-4 z-[100000] flex w-[min(34rem,calc(100vw-1.5rem))] -translate-x-1/2 items-start gap-3 rounded-lg border p-3 text-sm leading-6 shadow-soft ${styles[tone] || styles.info}`}
       role={tone === 'error' ? 'alert' : 'status'}
     >
       <Icon aria-hidden="true" size={18} />
@@ -56,7 +56,7 @@ export function Alert({ tone = 'info', children, dismissible = true }) {
       {dismissible && (
         <button
           aria-label="Cerrar alerta"
-          className="ml-auto grid min-h-8 min-w-8 place-items-center rounded-lg border border-current/20 bg-white/40 transition-colors hover:bg-white/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current/25 dark:bg-slate-950/20 dark:hover:bg-slate-900/50"
+          className="ml-auto grid min-h-8 min-w-8 place-items-center rounded-lg border border-current/20 bg-panel/40 transition-colors hover:bg-panel/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current/25 dark:bg-page/20 dark:hover:bg-surface/50"
           onClick={() => setVisible(false)}
           type="button"
         >

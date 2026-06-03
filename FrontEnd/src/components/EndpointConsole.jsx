@@ -133,29 +133,29 @@ function cx(...classes) {
 }
 
 const reviewChoiceBaseClass =
-  "inline-flex min-h-[2.45rem] items-center gap-2 rounded-lg border border-[#cad8cf] bg-white px-3 py-2 text-sm font-[850] text-[#34443b] transition-colors hover:bg-[#f5faf7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#529914]/35 dark:border-slate-600 dark:bg-surface dark:text-ink dark:hover:bg-[#203026]";
+  "inline-flex min-h-[2.45rem] items-center gap-2 rounded-lg border border-field-border bg-panel px-3 py-2 text-sm font-[850] text-body transition-colors hover:bg-field-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:bg-surface dark:text-ink dark:hover:bg-hover-soft";
 const reviewChoiceActiveClass =
-  "border-[#529914] bg-[#e4f0d8] text-primary-strong hover:bg-[#d8ecc8] dark:border-[#75c66a] dark:bg-[#203026] dark:text-[#bbf7d0] dark:hover:bg-[#2b3f31]";
+  "border-accent bg-accent-soft text-primary-strong hover:bg-accent-soft dark:border-accent dark:bg-hover-soft dark:text-accent-strong dark:hover:bg-hover-soft";
 const reviewSectionClass =
-  "overflow-hidden rounded-lg border border-border bg-white shadow-card dark:border-slate-700 dark:bg-surface dark:text-ink";
+  "overflow-hidden rounded-lg border border-border bg-panel shadow-card dark:border-line dark:bg-surface dark:text-ink";
 const reviewSectionHeaderClass =
-  "border-b border-[#edf2ee] bg-[#f7f3ef] px-4 py-3 dark:border-slate-700 dark:bg-[#172033]";
+  "border-b border-line-soft bg-field px-4 py-3 dark:border-line dark:bg-surface-soft";
 const reviewFieldGridClass = "space-y-3";
 const reviewFieldClass =
-  "min-w-0 border-b border-[#edf2ee] pb-3 last:border-b-0 last:pb-0 dark:border-slate-700";
+  "min-w-0 border-b border-line-soft pb-3 last:border-b-0 last:pb-0 dark:border-line";
 const reviewValueClass =
-  "m-0 whitespace-pre-wrap break-words text-sm leading-6 text-[#1f2f27] dark:text-slate-50";
+  "m-0 whitespace-pre-wrap break-words text-sm leading-6 text-body dark:text-heading";
 const reviewEmptyClass = "m-0 text-sm text-muted";
 const reviewArrayItemClass =
-  "space-y-3 rounded-lg border border-[#edf2ee] bg-[#fbfdfb] p-3 dark:border-slate-700 dark:bg-[#111827]";
+  "space-y-3 rounded-lg border border-line-soft bg-field-hover p-3 dark:border-line dark:bg-surface";
 const reviewArrayIndexClass =
-  "text-[0.82rem] font-[850] text-primary-strong dark:text-[#bbf7d0]";
+  "text-[0.82rem] font-[850] text-primary-strong dark:text-accent-strong";
 const feedbackIconBaseClass =
-  "relative grid h-[2.1rem] w-[2.1rem] flex-none place-items-center rounded-full border border-[#b9ddcf] bg-white text-primary-strong transition-colors hover:border-primary hover:bg-[#e8f6f0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#529914]/35 dark:border-slate-600 dark:bg-surface dark:text-[#bbf7d0] dark:hover:border-[#75c66a] dark:hover:bg-[#203026]";
+  "relative grid h-[2.1rem] w-[2.1rem] flex-none place-items-center rounded-full border border-line bg-panel text-primary-strong transition-colors hover:border-primary hover:bg-accent-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:bg-surface dark:text-accent-strong dark:hover:border-accent dark:hover:bg-hover-soft";
 const feedbackIconActiveClass =
-  "border-primary bg-[#e8f6f0] dark:border-[#75c66a] dark:bg-[#203026]";
+  "border-primary bg-accent-soft dark:border-accent dark:bg-hover-soft";
 const feedbackIconNewClass =
-  "after:absolute after:left-[1.4rem] after:top-[0.4rem] after:h-2 after:w-2 after:rounded-full after:bg-[#dc2626] after:ring-2 after:ring-white dark:after:ring-[#111827]";
+  "after:absolute after:left-[1.4rem] after:top-[0.4rem] after:h-2 after:w-2 after:rounded-full after:bg-danger after:ring-2 after:ring-panel dark:after:ring-surface";
 
 function EndpointModule({ module, roles, token, enableListFilters }) {
   const confirm = useConfirm();
@@ -1366,12 +1366,12 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
               <div className="space-y-4">
                 {selectedExtraActions.map((action) => (
                   <div
-                    className="border-t border-[#c8d2cd] pt-4 first:border-t-0 first:pt-0 dark:border-slate-700"
+                    className="border-t border-line pt-4 first:border-t-0 first:pt-0 dark:border-line"
                     key={action.label}
                   >
                     {action.body ? (
                       <div className="space-y-3">
-                        <h3 className="text-sm font-extrabold text-[#20282d] dark:text-slate-50">
+                        <h3 className="text-sm font-extrabold text-heading dark:text-heading">
                           {action.label}
                         </h3>
                         {isFeedbackReviewBody(actionBodies[action.label]) ? (
@@ -1749,8 +1749,8 @@ function EvidenceLinkPicker({
   return (
     <Field label="Evidencia">
       <div className="space-y-2">
-        <div className="min-h-[2.75rem] rounded-lg border border-[#c8d2cd] bg-[#eef3f2] px-3 py-2 text-sm dark:border-slate-700 dark:bg-surface-soft">
-          <p className="font-semibold text-[#20282d] dark:text-slate-50">
+        <div className="min-h-[2.75rem] rounded-lg border border-line bg-panel-soft px-3 py-2 text-sm dark:border-line dark:bg-surface-soft">
+          <p className="font-semibold text-heading dark:text-heading">
             {selectedPhoto
               ? selectedPhoto.description ||
                 selectedPhoto.originalFilename ||
@@ -1763,7 +1763,7 @@ function EvidenceLinkPicker({
             <div className="mt-1 space-y-1">
               {directLink ? (
                 <a
-                  className="break-all text-xs font-extrabold text-primary hover:underline dark:text-[#bbf7d0]"
+                  className="break-all text-xs font-extrabold text-primary hover:underline dark:text-accent-strong"
                   href={directLink}
                   rel="noreferrer"
                   target="_blank"
@@ -1813,10 +1813,10 @@ function EvidenceLinkPicker({
             {photos.map((photo) => (
               <button
                 className={cx(
-                  "overflow-hidden rounded-lg border bg-white text-left shadow-card transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-[#529914] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#529914]/35 dark:bg-surface",
+                  "overflow-hidden rounded-lg border bg-panel text-left shadow-card transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:bg-surface",
                   publicEvidenceUrl(photo.publicContentUrl) === value || photo.contentUrl === value
-                    ? "border-[#529914] ring-2 ring-[#529914]/25"
-                    : "border-[#c8d2cd] dark:border-slate-700",
+                    ? "border-accent ring-2 ring-accent/25"
+                    : "border-line dark:border-line",
                 )}
                 key={photo.id || photo.contentUrl}
                 onClick={() => {
@@ -1827,7 +1827,7 @@ function EvidenceLinkPicker({
               >
                 <EvidencePhotoPreview photo={photo} token={token} />
                 <div className="space-y-1 p-3">
-                  <p className="text-sm font-extrabold text-[#20282d] dark:text-slate-50">
+                  <p className="text-sm font-extrabold text-heading dark:text-heading">
                     {photo.description || photo.originalFilename || "Evidencia"}
                   </p>
                   <p className="text-xs text-muted">
@@ -1931,7 +1931,7 @@ function EvidencePhotoPreview({ photo, token }) {
 
   if (!source || failed) {
     return (
-      <div className="flex aspect-[4/3] items-center justify-center bg-[#eef3f2] text-sm font-semibold text-muted dark:bg-surface-soft">
+      <div className="flex aspect-[4/3] items-center justify-center bg-panel-soft text-sm font-semibold text-muted dark:bg-surface-soft">
         {failed ? "Vista no disponible" : "Cargando imagen"}
       </div>
     );
@@ -2006,11 +2006,11 @@ function ReviewFeedbackForm({
           className={cx(
             "rounded-lg border px-3 py-2 text-sm leading-5",
             decisionState.tone === "success" &&
-              "border-[#b9ddcf] bg-[#eef9f1] text-[#14532d] dark:border-[#75c66a]/40 dark:bg-green-950/30 dark:text-green-200",
+              "border-line bg-success-soft text-success-strong dark:border-accent/40 dark:bg-success-soft dark:text-success-strong",
             decisionState.tone === "warning" &&
-              "border-amber-300 bg-amber-50 text-[#7c2d12] dark:border-amber-400/40 dark:bg-amber-950/30 dark:text-amber-200",
+              "border-warning bg-warning-soft text-warning-strong dark:border-warning/40 dark:bg-warning-soft dark:text-warning-strong",
             decisionState.tone === "info" &&
-              "border-[#c8d2cd] bg-[#f5f4ed] text-[#34443b] dark:border-slate-700 dark:bg-[#172033] dark:text-slate-200",
+              "border-line bg-field text-body dark:border-line dark:bg-surface-soft dark:text-body",
           )}
           role="status"
         >
@@ -2087,7 +2087,7 @@ function ReviewSection({
   return (
     <article className={reviewSectionClass}>
       <div className={reviewSectionHeaderClass}>
-        <h3 className="text-sm font-[850] leading-tight text-[#111827] dark:text-slate-50">
+        <h3 className="text-sm font-[850] leading-tight text-heading dark:text-heading">
           {section.title}
         </h3>
       </div>
@@ -2203,7 +2203,7 @@ function ListFilters({
   const selectFilterCount = countActiveSelectFilters(filters);
 
   return (
-    <div className="rounded-lg border border-[#c8d2cd] bg-[#eef3f2] p-3 dark:border-slate-700 dark:bg-surface">
+    <div className="rounded-lg border border-line bg-panel-soft p-3 dark:border-line dark:bg-surface">
       <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
         <Field label="Buscar">
           <Input
@@ -2544,7 +2544,7 @@ function ReviewValue({ field = "", label, value }) {
 
   return (
     <div className={`${reviewFieldClass} ${wide ? "md:col-span-2" : ""}`}>
-      <span className="text-[0.78rem] font-extrabold uppercase text-[#34443b] dark:text-slate-300">
+      <span className="text-[0.78rem] font-extrabold uppercase text-body dark:text-muted">
         {label}
       </span>
       <p className={reviewValueClass}>{formatValue(value, field)}</p>
@@ -2572,7 +2572,7 @@ function ReviewArray({ config, items }) {
   if (config.key === "scheduleWeeks") {
     return (
       <div className="grid gap-2">
-        <span className="text-[0.78rem] font-extrabold uppercase text-[#34443b] dark:text-slate-300">
+        <span className="text-[0.78rem] font-extrabold uppercase text-body dark:text-muted">
           {config.label}
         </span>
         <ActivityPlanScheduleMatrix weeks={items} />
@@ -2582,7 +2582,7 @@ function ReviewArray({ config, items }) {
 
   return (
     <div className="grid gap-2">
-      <span className="text-[0.78rem] font-extrabold uppercase text-[#34443b] dark:text-slate-300">
+      <span className="text-[0.78rem] font-extrabold uppercase text-body dark:text-muted">
         {config.label}
       </span>
       <div className="space-y-3">
@@ -2662,13 +2662,13 @@ function FeedbackComposer({ label, value, onChange, onSubmit, sentAt }) {
         >
           <MessageCircle size={16} />
         </button>
-        <div className="min-w-0 flex-1 rounded-lg border border-[#f4d2cf] bg-[#fff7f5] p-3 dark:border-slate-700 dark:bg-[#111827]">
+        <div className="min-w-0 flex-1 rounded-lg border border-danger bg-danger-soft p-3 dark:border-line dark:bg-surface">
           <div className="mb-1 flex flex-wrap items-center gap-x-3 gap-y-1">
-            <span className="text-[0.78rem] font-extrabold uppercase text-[#34443b] dark:text-slate-300">
+            <span className="text-[0.78rem] font-extrabold uppercase text-body dark:text-muted">
               {label}
             </span>
             {hasValue && sentAt && (
-              <span className="text-xs leading-5 text-[#7f1d1d] dark:text-[#a8b4c7]">
+              <span className="text-xs leading-5 text-danger-strong dark:text-muted">
                 Enviado: {formatValue(sentAt, "reviewedAt")}
               </span>
             )}
@@ -2681,7 +2681,7 @@ function FeedbackComposer({ label, value, onChange, onSubmit, sentAt }) {
         </div>
       </div>
       {open && (
-        <div className="ml-[2.65rem] grid gap-2 rounded-lg border border-[#b9ddcf] bg-white p-2 dark:border-slate-700 dark:bg-surface">
+        <div className="ml-[2.65rem] grid gap-2 rounded-lg border border-line bg-panel p-2 dark:border-line dark:bg-surface">
           <Textarea
             value={draft}
             onChange={(event) => updateDraft(event.target.value)}
@@ -2710,7 +2710,7 @@ function EntryFeedbackList({ entries, value, onChange, onSendFeedback }) {
 
   return (
     <div className="grid gap-2">
-      <span className="text-[0.78rem] font-extrabold uppercase text-[#34443b] dark:text-slate-300">
+      <span className="text-[0.78rem] font-extrabold uppercase text-body dark:text-muted">
         Actividades registradas
       </span>
       <div className="space-y-3">

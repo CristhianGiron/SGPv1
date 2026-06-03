@@ -115,7 +115,7 @@ export function ActionMenu({ actions, label = 'Acciones' }) {
     <div className="relative z-auto inline-flex" ref={ref}>
       <button
         type="button"
-        className="grid h-10 w-10 place-items-center rounded-full border border-[#529914] bg-transparent text-primary transition-colors hover:border-primary hover:bg-primary hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#529914]/35 dark:border-slate-600 dark:bg-surface dark:text-ink dark:hover:border-[#75c66a] dark:hover:bg-[#203026] dark:hover:text-[#bbf7d0]"
+        className="grid h-10 w-10 place-items-center rounded-full border border-accent bg-transparent text-primary transition-colors hover:border-primary hover:bg-primary hover:text-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:bg-surface dark:text-ink dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong"
         aria-haspopup="menu"
         aria-expanded={open}
         onClick={() => setOpen((current) => !current)}
@@ -129,7 +129,7 @@ export function ActionMenu({ actions, label = 'Acciones' }) {
         createPortal(
           <div
             ref={popoverRef}
-            className="fixed z-[100000] max-w-[calc(100vw-1.5rem)] overflow-auto rounded-lg border border-[#c8d2cd] bg-white shadow-[0_18px_45px_rgba(19,40,24,0.12)] dark:border-slate-700 dark:bg-surface dark:text-ink"
+            className="fixed z-[100000] max-w-[calc(100vw-1.5rem)] overflow-auto rounded-lg border border-line bg-panel shadow-soft dark:border-line dark:bg-surface dark:text-ink"
             role="menu"
             aria-label={label}
             style={popoverStyle}
@@ -138,7 +138,7 @@ export function ActionMenu({ actions, label = 'Acciones' }) {
               <button
                 key={action.key ?? `${action.label}-${index}`}
                 type="button"
-                className="flex w-full items-center gap-3 bg-transparent px-4 py-3 text-left text-sm font-bold text-[#24342f] transition-colors hover:bg-primary hover:text-white disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:bg-transparent disabled:hover:text-[#24342f] dark:text-ink dark:hover:bg-[#203026] dark:hover:text-[#bbf7d0] dark:disabled:hover:text-ink"
+                className="flex w-full items-center gap-3 bg-transparent px-4 py-3 text-left text-sm font-bold text-body transition-colors hover:bg-primary hover:text-inverse disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:bg-transparent disabled:hover:text-body dark:text-ink dark:hover:bg-hover-soft dark:hover:text-accent-strong dark:disabled:hover:text-ink"
                 disabled={action.disabled}
                 onClick={() => handleAction(action)}
               >

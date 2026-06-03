@@ -82,7 +82,7 @@ export function EvidenceViewerPage() {
           <p className="text-sm text-muted">Cargando imagen...</p>
         ) : imageUrl ? (
           <div className="space-y-3">
-            <div className="overflow-hidden rounded-lg border border-[#c8d2cd] bg-[#eef3f2] dark:border-slate-700 dark:bg-surface-soft">
+            <div className="overflow-hidden rounded-lg border border-line bg-panel-soft dark:border-line dark:bg-surface-soft">
               <img
                 alt="Evidencia de practica"
                 className="max-h-[calc(100vh-15rem)] w-full object-contain"

@@ -84,4 +84,16 @@ public class RegisterRequest {
          */
         @Positive(message = "La institución seleccionada no es válida")
         private Long institutionId;
+
+        /*
+         * Paralelo universitario al que se vincula el tutor de prácticas.
+         */
+        @Positive(message = "El paralelo seleccionado no es válido")
+        private Long courseId;
+
+        /*
+         * Paralelo institucional al que se vincula el tutor institucional.
+         */
+        @Positive(message = "El paralelo seleccionado no es válido")
+        private Long gradeParallelId;
 }

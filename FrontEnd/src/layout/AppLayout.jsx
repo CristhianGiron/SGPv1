@@ -20,71 +20,71 @@ import { ThemeToggle } from "../components/ui/ThemeToggle";
 import { useThemeMode } from "../hooks/useThemeMode";
 
 const topbarIconButton =
-  "grid h-8 w-8 place-items-center rounded-full border border-[#529914] bg-transparent text-white transition-colors hover:border-white hover:bg-[#074462] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50";
+  "grid h-8 w-8 place-items-center rounded-full border border-accent bg-transparent text-inverse transition-colors hover:border-inverse hover:bg-primary-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-panel/50";
 
 const menuActionButton =
-  "flex w-full items-center gap-2 rounded-lg border border-[#529914] bg-transparent px-3 py-2 text-sm font-extrabold text-primary transition-colors hover:border-primary hover:bg-primary hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#529914]/40 dark:text-ink dark:hover:bg-[#04344c] dark:hover:text-white";
+  "flex w-full items-center gap-2 rounded-lg border border-accent bg-transparent px-3 py-2 text-sm font-extrabold text-primary transition-colors hover:border-primary hover:bg-primary hover:text-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 dark:text-ink dark:hover:bg-primary dark:hover:text-inverse";
 
 const sidebarToggleButton =
-  "grid min-h-9 min-w-9 place-items-center rounded-lg border border-[#aebfba] bg-[#edf3ef] text-primary transition-colors hover:border-[#529914] hover:bg-[#e4f0d8] hover:text-[#3f760f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#529914]/35 dark:border-[#334155] dark:bg-[#172033] dark:text-ink dark:hover:border-[#75c66a] dark:hover:bg-[#203026] dark:hover:text-[#bbf7d0]";
+  "grid min-h-9 min-w-9 place-items-center rounded-lg border border-line bg-panel-soft text-primary transition-colors hover:border-accent hover:bg-accent-soft hover:text-accent-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:bg-surface-soft dark:text-ink dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong";
 
 const navButtonBase =
-  "group relative flex min-h-11 w-full items-center rounded-lg border border-transparent text-left text-sm font-extrabold text-[#40525a] transition-colors hover:border-[color:var(--nav-accent-border)] hover:bg-[var(--nav-accent-soft)] hover:text-[color:var(--nav-accent-strong)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#529914]/35 dark:text-[#c8d3df]";
+  "group relative flex min-h-11 w-full items-center rounded-lg border border-transparent text-left text-sm font-extrabold text-nav-text transition-colors hover:border-[color:var(--nav-accent-border)] hover:bg-[var(--nav-accent-soft)] hover:text-[color:var(--nav-accent-strong)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:text-nav-text";
 
 const navIconBase =
-  "grid h-8 w-8 flex-none place-items-center rounded-lg border border-[color:var(--nav-accent-border)] bg-[var(--nav-accent-soft)] text-[color:var(--nav-accent-strong)] transition-colors group-hover:bg-white/90 dark:group-hover:bg-white/10";
+  "grid h-8 w-8 flex-none place-items-center rounded-lg border border-[color:var(--nav-accent-border)] bg-[var(--nav-accent-soft)] text-[color:var(--nav-accent-strong)] transition-colors group-hover:bg-panel/90 dark:group-hover:bg-panel/10";
 
 const navSubButtonBase =
-  "group flex min-h-9 w-full items-center gap-2 rounded-lg border border-transparent px-2.5 py-2 text-left text-xs font-bold text-[#52656d] transition-colors hover:border-[color:var(--nav-accent-border)] hover:bg-[var(--nav-accent-soft)] hover:text-[color:var(--nav-accent-strong)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#529914]/35 dark:text-[#b7c4d1]";
+  "group flex min-h-9 w-full items-center gap-2 rounded-lg border border-transparent px-2.5 py-2 text-left text-xs font-bold text-nav-subtext transition-colors hover:border-[color:var(--nav-accent-border)] hover:bg-[var(--nav-accent-soft)] hover:text-[color:var(--nav-accent-strong)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:text-nav-subtext";
 
 const mobileNavItemBase =
-  "group flex min-h-[3.25rem] w-full items-center gap-3 rounded-lg border border-[#c4d2cd] bg-[#f6f7f3] px-4 py-3 text-left text-base font-extrabold text-unl-graphite transition-colors hover:border-[color:var(--nav-accent-border)] hover:bg-[var(--nav-accent-soft)] hover:text-[color:var(--nav-accent-strong)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#529914]/35 dark:border-[#334155] dark:bg-surface dark:text-ink";
+  "group flex min-h-[3.25rem] w-full items-center gap-3 rounded-lg border border-line bg-panel-soft px-4 py-3 text-left text-base font-extrabold text-unl-graphite transition-colors hover:border-[color:var(--nav-accent-border)] hover:bg-[var(--nav-accent-soft)] hover:text-[color:var(--nav-accent-strong)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:bg-surface dark:text-ink";
 
 const lightNavAccents = {
   default: {
-    border: "rgba(4, 52, 76, 0.2)",
-    marker: "#04344c",
-    soft: "#d7e4e9",
-    strong: "#04344c",
+    border: "color-mix(in srgb, var(--unl-blue) 20%, transparent)",
+    marker: "var(--unl-blue)",
+    soft: "var(--unl-blue-soft)",
+    strong: "var(--color-primary-strong)",
   },
   green: {
-    border: "rgba(82, 153, 20, 0.26)",
-    marker: "#529914",
-    soft: "#e4f0d8",
-    strong: "#3f760f",
+    border: "color-mix(in srgb, var(--unl-green) 26%, transparent)",
+    marker: "var(--unl-green)",
+    soft: "var(--unl-green-soft)",
+    strong: "var(--unl-green-strong)",
   },
 };
 
 const darkNavAccents = {
   default: {
-    border: "rgba(125, 211, 252, 0.22)",
-    marker: "#7dd3fc",
-    soft: "rgba(102, 189, 242, 0.11)",
-    strong: "#cbeafe",
+    border: "color-mix(in srgb, var(--unl-blue) 22%, transparent)",
+    marker: "var(--unl-blue)",
+    soft: "color-mix(in srgb, var(--unl-blue) 11%, transparent)",
+    strong: "var(--color-info-strong)",
   },
   gold: {
-    border: "rgba(244, 200, 74, 0.22)",
-    marker: "#f4c84a",
-    soft: "rgba(244, 200, 74, 0.11)",
-    strong: "#f6df8e",
+    border: "color-mix(in srgb, var(--unl-gold) 22%, transparent)",
+    marker: "var(--unl-gold)",
+    soft: "color-mix(in srgb, var(--unl-gold) 11%, transparent)",
+    strong: "var(--color-warning-strong)",
   },
   green: {
-    border: "rgba(117, 198, 106, 0.24)",
-    marker: "#75c66a",
-    soft: "rgba(117, 198, 106, 0.11)",
-    strong: "#c7f3c1",
+    border: "color-mix(in srgb, var(--unl-green) 24%, transparent)",
+    marker: "var(--unl-green)",
+    soft: "color-mix(in srgb, var(--unl-green) 11%, transparent)",
+    strong: "var(--unl-green-strong)",
   },
   violet: {
-    border: "rgba(167, 139, 250, 0.22)",
-    marker: "#a78bfa",
-    soft: "rgba(167, 139, 250, 0.11)",
-    strong: "#ddd6fe",
+    border: "color-mix(in srgb, var(--color-chart-7) 22%, transparent)",
+    marker: "var(--color-chart-7)",
+    soft: "color-mix(in srgb, var(--color-chart-7) 11%, transparent)",
+    strong: "var(--color-chart-7)",
   },
   teal: {
-    border: "rgba(45, 212, 191, 0.22)",
-    marker: "#5eead4",
-    soft: "rgba(45, 212, 191, 0.1)",
-    strong: "#b5f4e8",
+    border: "color-mix(in srgb, var(--color-chart-8) 22%, transparent)",
+    marker: "var(--color-chart-8)",
+    soft: "color-mix(in srgb, var(--color-chart-8) 10%, transparent)",
+    strong: "var(--color-chart-8)",
   },
 };
 
@@ -211,8 +211,8 @@ export function AppLayout({ route, routeChild, children }) {
 
   return (
     <main className="min-h-screen bg-page text-ink">
-      <header className="sticky top-0 z-30 border-b-[3px] border-primary bg-white shadow-[0_8px_22px_rgba(4,52,76,0.08)] dark:border-slate-700 dark:bg-[#0b1120] print:hidden">
-        <div className="bg-primary text-xs font-semibold text-white">
+      <header className="sticky top-0 z-30 border-b-[3px] border-primary bg-panel shadow-card dark:border-line dark:bg-page print:hidden">
+        <div className="bg-primary text-xs font-semibold text-inverse">
           <div className="mx-auto flex min-h-9 w-full max-w-[96rem] items-center justify-between gap-4 px-3 py-0.5">
             <div className="hidden min-w-0 items-center gap-4 lg:flex">
               <span className="flex min-w-0 items-center gap-1.5 whitespace-nowrap">
@@ -249,21 +249,21 @@ export function AppLayout({ route, routeChild, children }) {
               <div ref={menuRef} className="relative hidden lg:block">
                 <button
                   aria-expanded={isDesplegableOpen}
-                  className="flex max-w-xs items-center gap-2 rounded-full border border-[#529914] bg-[#074462] py-0.5 pl-1 pr-3 text-left transition-colors hover:border-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+                  className="flex max-w-xs items-center gap-2 rounded-full border border-accent bg-primary-strong py-0.5 pl-1 pr-3 text-left transition-colors hover:border-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-panel/50"
                   onClick={() => setIsDesplegableOpen((current) => !current)}
                   type="button"
                 >
                   <Avatar
-                    className="!h-7 !w-7 !text-xs ring-1 ring-white/70"
+                    className="!h-7 !w-7 !text-xs ring-1 ring-panel/70"
                     profile={profile}
                     size="sm"
                     token={token}
                   />
                   <span className="min-w-0 leading-tight">
-                    <span className="block truncate text-xs font-extrabold text-white">
+                    <span className="block truncate text-xs font-extrabold text-inverse">
                       {fullName}
                     </span>
-                    <span className="block truncate text-[0.68rem] font-semibold text-white/75">
+                    <span className="block truncate text-[0.68rem] font-semibold text-inverse/75">
                       {profile?.institution ||
                         profile?.academicCycle ||
                         "Sesión activa"}
@@ -273,7 +273,7 @@ export function AppLayout({ route, routeChild, children }) {
 
                 <div
                   className={cx(
-                    "absolute right-0 top-[calc(100%+0.55rem)] z-50 w-[min(22rem,calc(100vw-1rem))] overflow-hidden rounded-lg border border-[#bdcbd0] bg-[#fbfaf7] text-ink opacity-0 shadow-[0_18px_42px_rgba(4,52,76,0.16)] transition-[max-height,opacity,transform] duration-200 dark:border-slate-700 dark:bg-surface dark:shadow-[0_18px_42px_rgba(0,0,0,0.34)]",
+                    "absolute right-0 top-[calc(100%+0.55rem)] z-50 w-[min(22rem,calc(100vw-1rem))] overflow-hidden rounded-lg border border-line bg-panel text-ink opacity-0 shadow-soft transition-[max-height,opacity,transform] duration-200 dark:border-line dark:bg-surface dark:shadow-soft",
                     isDesplegableOpen
                       ? "max-h-[min(32rem,calc(100vh-4rem))] translate-y-0 overflow-y-auto opacity-100"
                       : "pointer-events-none max-h-0 -translate-y-1",
@@ -283,7 +283,7 @@ export function AppLayout({ route, routeChild, children }) {
                     <div className="flex min-w-0 items-center gap-3 border-b border-border px-1 pb-3">
                       <Avatar profile={profile} size="md" token={token} />
                       <div className="min-w-0">
-                        <p className="truncate text-sm font-[850] leading-tight text-unl-graphite dark:text-slate-50">
+                        <p className="truncate text-sm font-[850] leading-tight text-unl-graphite dark:text-heading">
                           {fullName}
                         </p>
                         <p className="mt-1 truncate text-xs font-semibold leading-tight text-muted">
@@ -295,7 +295,7 @@ export function AppLayout({ route, routeChild, children }) {
                     <div className="flex flex-wrap gap-2 px-0.5">
                       {roles.map((role) => (
                         <span
-                          className="inline-flex rounded-full border border-[#529914] bg-accent-soft px-2.5 py-1 text-xs font-extrabold leading-none text-accent-strong dark:bg-[#172033] dark:text-slate-200"
+                          className="inline-flex rounded-full border border-accent bg-accent-soft px-2.5 py-1 text-xs font-extrabold leading-none text-accent-strong dark:bg-surface-soft dark:text-body"
                           key={role}
                         >
                           {formatRole(role)}
@@ -305,7 +305,7 @@ export function AppLayout({ route, routeChild, children }) {
 
                     <div className="flex items-center justify-between gap-3 border-b border-border px-1 pb-3">
                       <div>
-                        <p className="text-sm font-[850] leading-tight text-unl-graphite dark:text-slate-50">
+                        <p className="text-sm font-[850] leading-tight text-unl-graphite dark:text-heading">
                           Apariencia
                         </p>
                         <p className="mt-1 text-xs font-bold leading-tight text-muted">
@@ -351,7 +351,7 @@ export function AppLayout({ route, routeChild, children }) {
         <aside className="hidden lg:block print:hidden">
           <section
             className={cx(
-              "fixed left-[max(0.75rem,calc((100vw-96rem)/2+0.75rem))] top-14 z-20 flex h-[calc(100vh-4.25rem)] w-[var(--sidebar-layout-width)] flex-col overflow-hidden rounded-lg border border-[#b9c9c4] bg-[#eef3f2] shadow-card transition-[width,padding] duration-200 dark:border-[#263449] dark:bg-[#101827]",
+              "fixed left-[max(0.75rem,calc((100vw-96rem)/2+0.75rem))] top-14 z-20 flex h-[calc(100vh-4.25rem)] w-[var(--sidebar-layout-width)] flex-col overflow-hidden rounded-lg border border-line bg-panel-soft shadow-card transition-[width,padding] duration-200 dark:border-line dark:bg-surface",
               sidebarCollapsed ? "py-3 pl-2 pr-0" : "p-3",
             )}
           >
@@ -439,7 +439,7 @@ export function AppLayout({ route, routeChild, children }) {
                         <span
                           className={cx(
                             navIconBase,
-                            isActive && "bg-white dark:bg-white/10",
+                            isActive && "bg-panel dark:bg-panel/10",
                           )}
                         >
                           <item.Icon aria-hidden="true" size={18} />
@@ -487,8 +487,8 @@ export function AppLayout({ route, routeChild, children }) {
                               {child.Icon && (
                                 <span
                                   className={cx(
-                                    "grid h-7 w-7 flex-none place-items-center rounded-lg bg-[var(--nav-accent-soft)] text-[color:var(--nav-accent-strong)] transition-colors group-hover:bg-white dark:bg-white/10 dark:group-hover:bg-white/10",
-                                    childActive && "bg-white dark:bg-white/10",
+                                    "grid h-7 w-7 flex-none place-items-center rounded-lg bg-[var(--nav-accent-soft)] text-[color:var(--nav-accent-strong)] transition-colors group-hover:bg-panel dark:bg-panel/10 dark:group-hover:bg-panel/10",
+                                    childActive && "bg-panel dark:bg-panel/10",
                                   )}
                                 >
                                   <child.Icon aria-hidden="true" size={16} />
@@ -523,23 +523,23 @@ export function AppLayout({ route, routeChild, children }) {
       >
         <div
           className={cx(
-            "grid h-full min-h-full w-[min(100%,420px)] grid-rows-[auto_auto_auto_1fr] bg-page shadow-[24px_0_60px_rgba(27,33,21,0.18)] transition-transform duration-200",
+            "grid h-full min-h-full w-[min(100%,420px)] grid-rows-[auto_auto_auto_1fr] bg-page shadow-soft transition-transform duration-200",
             mobileMenuOpen ? "translate-x-0" : "-translate-x-full",
           )}
           role="dialog"
           aria-modal="true"
           aria-label="Menu principal"
         >
-          <div className="flex items-center justify-between gap-4 border-b border-border bg-white/90 px-4 py-3 dark:bg-[#0b1120]/95">
+          <div className="flex items-center justify-between gap-4 border-b border-border bg-panel/90 px-4 py-3 dark:bg-page/95">
             <div className="flex min-w-0 items-center gap-3">
-              <div className="grid h-10 w-10 flex-none place-items-center rounded-lg border border-[#529914] bg-primary text-xs font-black text-white">
+              <div className="grid h-10 w-10 flex-none place-items-center rounded-lg border border-accent bg-primary text-xs font-black text-inverse">
                 UNL
               </div>
               <div className="min-w-0">
-                <p className="text-xs font-extrabold uppercase leading-tight text-primary dark:text-sky-200">
+                <p className="text-xs font-extrabold uppercase leading-tight text-primary dark:text-info-strong">
                   Universidad Nacional de Loja
                 </p>
-                <p className="mt-1 truncate text-sm font-black leading-tight text-unl-graphite dark:text-slate-50">
+                <p className="mt-1 truncate text-sm font-black leading-tight text-unl-graphite dark:text-heading">
                   Sistema de Gestion de Practicas
                 </p>
               </div>
@@ -554,10 +554,10 @@ export function AppLayout({ route, routeChild, children }) {
             </button>
           </div>
 
-          <div className="m-4 flex items-center gap-3 rounded-lg border border-border bg-white/90 p-3 shadow-card dark:bg-surface">
+          <div className="m-4 flex items-center gap-3 rounded-lg border border-border bg-panel/90 p-3 shadow-card dark:bg-surface">
             <Avatar profile={profile} size="md" token={token} />
             <div className="min-w-0">
-              <p className="truncate text-sm font-extrabold text-unl-graphite dark:text-slate-50">
+              <p className="truncate text-sm font-extrabold text-unl-graphite dark:text-heading">
                 {fullName}
               </p>
               <p className="truncate text-xs font-semibold text-muted">
@@ -569,7 +569,7 @@ export function AppLayout({ route, routeChild, children }) {
           <div className="mx-4 mb-4 grid gap-2 rounded-lg border border-border bg-surface-soft p-3 shadow-card">
             <div className="flex items-center justify-between gap-3 border-b border-border pb-3">
               <div>
-                <p className="text-sm font-[850] leading-tight text-unl-graphite dark:text-slate-50">
+                <p className="text-sm font-[850] leading-tight text-unl-graphite dark:text-heading">
                   Apariencia
                 </p>
                 <p className="mt-1 text-xs font-bold leading-tight text-muted">
@@ -610,7 +610,7 @@ export function AppLayout({ route, routeChild, children }) {
                   className={cx(
                     "grid gap-2",
                     hasChildren &&
-                      "rounded-lg border border-border bg-white/80 p-1.5 shadow-[0_10px_24px_rgba(62,65,61,0.06)] dark:bg-surface",
+                      "rounded-lg border border-border bg-panel/80 p-1.5 shadow-card dark:bg-surface",
                     isActive && hasChildren && "!border-[color:var(--nav-accent-border)]",
                   )}
                   key={item.id}
@@ -654,7 +654,7 @@ export function AppLayout({ route, routeChild, children }) {
                             aria-current={childActive ? "page" : undefined}
                             className={cx(
                               navSubButtonBase,
-                              "min-h-11 bg-white text-sm dark:bg-surface-soft",
+                              "min-h-11 bg-panel text-sm dark:bg-surface-soft",
                               childActive &&
                                 "!border-[color:var(--nav-accent-border)] bg-[var(--nav-accent-soft)] text-[color:var(--nav-accent-strong)]",
                             )}

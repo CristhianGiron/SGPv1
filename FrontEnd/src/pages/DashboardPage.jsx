@@ -26,16 +26,16 @@ import { setHashRoute } from '../utils/routes';
 
 const statAccentClasses = [
   'bg-primary',
-  'bg-[#529914]',
-  'bg-[#ad852d]',
-  'bg-[#9f2933]',
+  'bg-accent',
+  'bg-warning',
+  'bg-danger',
 ];
 
 const statIconClasses = [
-  'bg-[#d7e4e9] text-primary dark:bg-[#66bdf2]/15 dark:text-[#cbeafe]',
-  'bg-[#e4f0d8] text-[#3f760f] dark:bg-[#75c66a]/15 dark:text-[#bbf7d0]',
-  'bg-[#f1eadb] text-[#7a4f00] dark:bg-[#f4c84a]/15 dark:text-[#f6df8e]',
-  'bg-[#f3e6e5] text-[#7d1f28] dark:bg-[#ff5a66]/15 dark:text-[#fecdd3]',
+  'bg-primary-soft text-primary dark:bg-info-soft dark:text-info-strong',
+  'bg-accent-soft text-accent-strong dark:bg-accent-soft dark:text-accent-strong',
+  'bg-warning-soft text-warning-strong dark:bg-warning-soft dark:text-warning-strong',
+  'bg-danger-soft text-danger-strong dark:bg-danger-soft dark:text-danger-strong',
 ];
 
 export function DashboardPage() {
@@ -201,12 +201,12 @@ function StatCard({ index, item }) {
   const iconClass = statIconClasses[index % statIconClasses.length];
 
   return (
-    <section className="relative min-h-32 overflow-hidden rounded-lg border border-[#04344c]/15 bg-white p-4 shadow-card transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-[#529914]/30 hover:shadow-[0_14px_28px_rgba(62,65,61,0.08)] dark:border-slate-700 dark:bg-surface">
+    <section className="relative min-h-32 overflow-hidden rounded-lg border border-primary/15 bg-panel p-4 shadow-card transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-accent/30 hover:shadow-card dark:border-line dark:bg-surface">
       <span aria-hidden="true" className={`absolute inset-y-0 left-0 w-1 ${accentClass}`} />
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="text-xs font-extrabold uppercase tracking-normal text-muted">{item.label}</p>
-          <p className="mt-3 text-3xl font-extrabold leading-none text-[#20282d] dark:text-slate-50">{item.value}</p>
+          <p className="mt-3 text-3xl font-extrabold leading-none text-heading dark:text-heading">{item.value}</p>
         </div>
         <span className={`grid h-10 w-10 flex-none place-items-center rounded-lg ${iconClass}`}>
           <Icon aria-hidden="true" size={20} />
@@ -229,14 +229,14 @@ function QuickActionsPanel({ actions }) {
 
           return (
             <button
-              className="group flex min-h-[4.2rem] w-full items-center gap-3 rounded-lg border border-[#529914] bg-transparent p-3 text-left text-primary transition-colors hover:border-primary hover:bg-primary hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#529914]/35 dark:border-slate-700 dark:bg-surface dark:text-ink dark:hover:border-[#75c66a] dark:hover:bg-[#203026] dark:hover:text-[#bbf7d0]"
+              className="group flex min-h-[4.2rem] w-full items-center gap-3 rounded-lg border border-accent bg-transparent p-3 text-left text-primary transition-colors hover:border-primary hover:bg-primary hover:text-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:bg-surface dark:text-ink dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong"
               key={action.id}
               onClick={() => {
                 setHashRoute(action.id);
               }}
               type="button"
             >
-              <span className="grid h-9 w-9 flex-none place-items-center rounded-lg bg-[#e4f0d8] text-[#3f760f] transition-colors group-hover:bg-[#04344c] group-hover:text-white dark:bg-white/10 dark:text-[#bbf7d0] dark:group-hover:bg-[#203026]">
+              <span className="grid h-9 w-9 flex-none place-items-center rounded-lg bg-accent-soft text-accent-strong transition-colors group-hover:bg-primary group-hover:text-inverse dark:bg-panel/10 dark:text-accent-strong dark:group-hover:bg-hover-soft">
                 <Icon aria-hidden="true" size={19} />
               </span>
               <span className="min-w-0 text-sm font-[850] leading-tight">{action.label}</span>
@@ -262,14 +262,14 @@ function StudentDocumentsPanel({ documents }) {
         <div className="space-y-4">
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             {summary.map((item) => (
-              <div className="rounded-lg border border-[#c8d2cd] bg-[#eef3f2] p-3 dark:border-slate-700 dark:bg-surface-soft" key={item.label}>
+              <div className="rounded-lg border border-line bg-panel-soft p-3 dark:border-line dark:bg-surface-soft" key={item.label}>
                 <p className="text-xs font-extrabold uppercase text-muted">{item.label}</p>
-                <p className="mt-2 text-2xl font-extrabold text-[#20282d] dark:text-slate-50">{item.value}</p>
+                <p className="mt-2 text-2xl font-extrabold text-heading dark:text-heading">{item.value}</p>
               </div>
             ))}
           </div>
 
-          <div className="overflow-hidden rounded-lg border border-[#c8d2cd] bg-white dark:border-slate-700 dark:bg-surface">
+          <div className="overflow-hidden rounded-lg border border-line bg-panel dark:border-line dark:bg-surface">
             {documents.map((document) => (
               <StudentDocumentRow document={document} key={document.key} />
             ))}
@@ -291,12 +291,12 @@ function StudentPracticeFilePanel({ documents, overview }) {
       title="Expediente de practica"
     >
       <div className="grid gap-4 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,1.8fr)]">
-        <div className="rounded-lg border border-[#c8d2cd] bg-[#eef3f2] p-4 dark:border-slate-700 dark:bg-surface-soft">
+        <div className="rounded-lg border border-line bg-panel-soft p-4 dark:border-line dark:bg-surface-soft">
           <p className="text-xs font-extrabold uppercase text-muted">Pertenencia actual</p>
-          <h3 className="mt-2 text-lg font-extrabold leading-tight text-[#20282d] dark:text-slate-50">
+          <h3 className="mt-2 text-lg font-extrabold leading-tight text-heading dark:text-heading">
             {enrollment?.studentFullName || enrollment?.student || 'Estudiante'}
           </h3>
-          <div className="mt-3 grid gap-2 text-sm font-semibold text-[#34443b] dark:text-slate-200">
+          <div className="mt-3 grid gap-2 text-sm font-semibold text-body dark:text-body">
             <PracticeFileLine label="Paralelo" value={enrollment?.courseName} />
             <PracticeFileLine label="Grupo" value={enrollment?.groupName} />
             <PracticeFileLine label="Institucion" value={enrollment?.educationalInstitutionName} />
@@ -352,16 +352,16 @@ function PracticeFileLine({ label, value }) {
 function PracticeFileMetric({ Icon, detail, label, route, value }) {
   return (
     <button
-      className="group flex min-h-[6.2rem] items-start gap-3 rounded-lg border border-[#c8d2cd] bg-white p-4 text-left shadow-card transition-[border-color,background-color,transform] hover:-translate-y-0.5 hover:border-[#529914] hover:bg-[#f8fbf5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#529914]/35 dark:border-slate-700 dark:bg-surface dark:hover:bg-[#203026]"
+      className="group flex min-h-[6.2rem] items-start gap-3 rounded-lg border border-line bg-panel p-4 text-left shadow-card transition-[border-color,background-color,transform] hover:-translate-y-0.5 hover:border-accent hover:bg-field-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:bg-surface dark:hover:bg-hover-soft"
       onClick={() => setHashRoute(route)}
       type="button"
     >
-      <span className="grid h-10 w-10 flex-none place-items-center rounded-lg bg-[#e4f0d8] text-[#3f760f] dark:bg-white/10 dark:text-[#bbf7d0]">
+      <span className="grid h-10 w-10 flex-none place-items-center rounded-lg bg-accent-soft text-accent-strong dark:bg-panel/10 dark:text-accent-strong">
         <Icon aria-hidden="true" size={20} />
       </span>
       <span className="min-w-0">
         <span className="block text-xs font-extrabold uppercase text-muted">{label}</span>
-        <span className="mt-1 block text-xl font-extrabold text-[#20282d] dark:text-slate-50">{value}</span>
+        <span className="mt-1 block text-xl font-extrabold text-heading dark:text-heading">{value}</span>
         <span className="mt-1 block text-xs font-bold text-muted">{detail}</span>
       </span>
     </button>
@@ -396,20 +396,20 @@ function RoleTaskCard({ task }) {
 
   return (
     <button
-      className="group grid min-h-[6rem] gap-3 rounded-lg border border-[#c8d2cd] bg-white p-4 text-left shadow-card transition-[border-color,background-color,transform] hover:-translate-y-0.5 hover:border-[#529914] hover:bg-[#f8fbf5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#529914]/35 dark:border-slate-700 dark:bg-surface dark:hover:bg-[#203026]"
+      className="group grid min-h-[6rem] gap-3 rounded-lg border border-line bg-panel p-4 text-left shadow-card transition-[border-color,background-color,transform] hover:-translate-y-0.5 hover:border-accent hover:bg-field-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:bg-surface dark:hover:bg-hover-soft"
       onClick={() => setHashRoute(`documents/${task.moduleId}`)}
       type="button"
     >
       <div className="flex items-start justify-between gap-3">
-        <span className="grid h-10 w-10 flex-none place-items-center rounded-lg bg-[#e4f0d8] text-[#3f760f] dark:bg-white/10 dark:text-[#bbf7d0]">
+        <span className="grid h-10 w-10 flex-none place-items-center rounded-lg bg-accent-soft text-accent-strong dark:bg-panel/10 dark:text-accent-strong">
           <Icon aria-hidden="true" size={20} />
         </span>
-        <span className="rounded-full border border-[#529914]/30 bg-[#e4f0d8] px-2.5 py-1 text-xs font-extrabold text-[#3f760f] dark:border-[#75c66a]/35 dark:bg-[#75c66a]/10 dark:text-[#bbf7d0]">
+        <span className="rounded-full border border-accent/30 bg-accent-soft px-2.5 py-1 text-xs font-extrabold text-accent-strong dark:border-accent/35 dark:bg-accent-soft dark:text-accent-strong">
           {task.count}
         </span>
       </div>
       <div>
-        <p className="text-sm font-extrabold text-[#20282d] dark:text-slate-50">{task.title}</p>
+        <p className="text-sm font-extrabold text-heading dark:text-heading">{task.title}</p>
         <p className="mt-1 text-xs font-bold text-muted">{task.label}</p>
       </div>
     </button>
@@ -435,23 +435,23 @@ function buildQuickActions(roles) {
 
 function StudentDocumentRow({ document }) {
   return (
-    <div className="grid gap-3 border-b border-[#dbe3ed] p-3 last:border-b-0 dark:border-slate-700 lg:grid-cols-[minmax(0,1.2fr)_auto_minmax(0,1.2fr)_auto] lg:items-center">
+    <div className="grid gap-3 border-b border-line p-3 last:border-b-0 dark:border-line lg:grid-cols-[minmax(0,1.2fr)_auto_minmax(0,1.2fr)_auto] lg:items-center">
       <div>
-        <p className="text-sm font-extrabold text-[#20282d] dark:text-slate-50">{document.title}</p>
+        <p className="text-sm font-extrabold text-heading dark:text-heading">{document.title}</p>
         <p className="mt-1 text-xs font-semibold text-muted">{document.context}</p>
       </div>
 
       <StatusBadge status={document.status} />
 
       <div>
-        <p className="text-sm font-semibold text-[#34443b] dark:text-slate-200">{document.nextStep}</p>
+        <p className="text-sm font-semibold text-body dark:text-body">{document.nextStep}</p>
         <p className="mt-1 text-xs font-semibold text-muted">
           Actualizado: {formatValue(document.updatedAt, 'updatedAt')}
         </p>
       </div>
 
       <button
-        className="inline-flex min-h-[2.55rem] items-center justify-center rounded-lg border border-[#529914] bg-transparent px-4 py-2 text-sm font-extrabold text-primary transition-colors hover:border-primary hover:bg-primary hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#529914]/35 dark:border-slate-600 dark:bg-surface dark:text-ink dark:hover:border-[#75c66a] dark:hover:bg-[#203026] dark:hover:text-[#bbf7d0]"
+        className="inline-flex min-h-[2.55rem] items-center justify-center rounded-lg border border-accent bg-transparent px-4 py-2 text-sm font-extrabold text-primary transition-colors hover:border-primary hover:bg-primary hover:text-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:bg-surface dark:text-ink dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong"
         onClick={() => {
           setHashRoute(`documents/${document.moduleId}`);
         }}

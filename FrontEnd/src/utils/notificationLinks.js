@@ -1,5 +1,13 @@
+export function getNotificationTarget(link) {
+  return String(link || '').trim();
+}
+
+export function hasNotificationLink(link) {
+  return Boolean(getNotificationTarget(link));
+}
+
 export function openNotificationLink(link) {
-  const target = String(link || '').trim();
+  const target = getNotificationTarget(link);
 
   if (!target) {
     window.location.hash = '#/notifications';

@@ -13,13 +13,17 @@ import com.sgp.systemsgp.exception.NotFoundException;
 
 import com.sgp.systemsgp.model.AcademicCycle;
 import com.sgp.systemsgp.model.Account;
+import com.sgp.systemsgp.model.Course;
+import com.sgp.systemsgp.model.Grade;
+import com.sgp.systemsgp.model.GradeParallel;
 import com.sgp.systemsgp.model.Institution;
 import com.sgp.systemsgp.model.Person;
 import com.sgp.systemsgp.model.Role;
 
 import com.sgp.systemsgp.repository.AccountRepository;
 import com.sgp.systemsgp.repository.AcademicCycleRepository;
-import com.sgp.systemsgp.repository.InstitutionRepository;
+import com.sgp.systemsgp.repository.CourseRepository;
+import com.sgp.systemsgp.repository.GradeParallelRepository;
 import com.sgp.systemsgp.repository.RoleRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -60,7 +64,9 @@ public class AuthService {
 
         private final AcademicCycleRepository academicCycleRepository;
 
-        private final InstitutionRepository institutionRepository;
+        private final CourseRepository courseRepository;
+
+        private final GradeParallelRepository gradeParallelRepository;
 
         private final AuthenticationManager authenticationManager;
 
@@ -91,13 +97,24 @@ public class AuthService {
                 Role role = roleRepository.findByName(roleName)
                                 .orElseThrow(() -> new NotFoundException("Rol no configurado"));
 
+                Course practiceTutorCourse = resolvePracticeTutorCourse(
+                                roleName,
+                                request.getCourseId());
+
+                GradeParallel gradeParallel = resolveInstitutionalTutorParallel(
+                                roleName,
+                                request.getGradeParallelId());
+
                 AcademicCycle academicCycle = resolveAcademicCycle(
                                 roleName,
-                                request.getAcademicCycleId());
+                                request.getAcademicCycleId(),
+                                practiceTutorCourse);
 
                 Institution institution = resolveInstitution(
                                 roleName,
-                                request.getInstitutionId());
+                                request.getInstitutionId(),
+                                practiceTutorCourse,
+                                gradeParallel);
 
                 byte[] image = null;
                 String imageType = null;
@@ -130,11 +147,18 @@ public class AuthService {
                                 .enabled(true)
                                 .academicCycle(academicCycle)
                                 .institution(institution)
+                                .grade(gradeParallel != null ? gradeParallel.getGrade() : null)
+                                .gradeParallel(gradeParallel)
                                 .profileImage(image)
                                 .profileImageType(imageType)
                                 .build();
 
                 accountRepository.save(account);
+
+                if (practiceTutorCourse != null) {
+                        practiceTutorCourse.setPracticeTutor(account);
+                        courseRepository.save(practiceTutorCourse);
+                }
 
                 UserDetails user = userDetailsService
                                 .loadUserByUsername(account.getUsername());
@@ -211,10 +235,22 @@ public class AuthService {
 
         private AcademicCycle resolveAcademicCycle(
                         String roleName,
-                        Long academicCycleId) {
+                        Long academicCycleId,
+                        Course practiceTutorCourse) {
 
                 boolean requiresAcademicCycle =
                                 RoleName.ROLE_ESTUDIANTE.name().equals(roleName);
+
+                if (RoleName.ROLE_TUTOR_PRACTICAS.name().equals(roleName)) {
+                        if (academicCycleId != null) {
+                                throw new BadRequestException(
+                                                "El ciclo académico se obtiene desde el paralelo seleccionado");
+                        }
+
+                        return practiceTutorCourse != null
+                                        ? practiceTutorCourse.getAcademicCycle()
+                                        : null;
+                }
 
                 if (!requiresAcademicCycle) {
                         if (academicCycleId != null) {
@@ -245,32 +281,149 @@ public class AuthService {
 
         private Institution resolveInstitution(
                         String roleName,
-                        Long institutionId) {
+                        Long institutionId,
+                        Course practiceTutorCourse,
+                        GradeParallel gradeParallel) {
 
-                boolean requiresInstitution =
-                                RoleName.ROLE_TUTOR_INSTITUCIONAL.name().equals(roleName)
-                                                || RoleName.ROLE_TUTOR_PRACTICAS.name().equals(roleName);
+                if (RoleName.ROLE_TUTOR_PRACTICAS.name().equals(roleName)) {
+                        Institution institution = resolveUniversityFromCourse(practiceTutorCourse);
 
-                if (!requiresInstitution) {
-                        if (institutionId != null) {
+                        if (institutionId != null && institution != null
+                                        && !institution.getId().equals(institutionId)) {
                                 throw new BadRequestException(
-                                                "Este rol no debe vincularse a una institución");
+                                                "La universidad debe coincidir con el paralelo seleccionado");
+                        }
+
+                        return institution;
+                }
+
+                if (RoleName.ROLE_TUTOR_INSTITUCIONAL.name().equals(roleName)) {
+                        Institution institution = resolveEducationalInstitutionFromParallel(gradeParallel);
+
+                        if (institutionId != null && institution != null
+                                        && !institution.getId().equals(institutionId)) {
+                                throw new BadRequestException(
+                                                "La institución debe coincidir con el paralelo seleccionado");
+                        }
+
+                        validateInstitutionForRole(roleName, institution);
+
+                        return institution;
+                }
+
+                if (institutionId != null) {
+                        throw new BadRequestException(
+                                        "Este rol no debe vincularse a una institución");
+                }
+
+                return null;
+        }
+
+        private Course resolvePracticeTutorCourse(
+                        String roleName,
+                        Long courseId) {
+
+                if (!RoleName.ROLE_TUTOR_PRACTICAS.name().equals(roleName)) {
+                        if (courseId != null) {
+                                throw new BadRequestException(
+                                                "Este rol no debe vincularse a un paralelo universitario");
                         }
 
                         return null;
                 }
 
-                if (institutionId == null) {
+                if (courseId == null) {
                         throw new BadRequestException(
-                                        "La institución es obligatoria para este rol");
+                                        "El paralelo universitario es obligatorio para este rol");
                 }
 
-                Institution institution = institutionRepository
-                                .findByIdAndDeletedFalse(institutionId)
+                Course course = courseRepository
+                                .findByIdAndDeletedFalse(courseId)
                                 .orElseThrow(() -> new NotFoundException(
-                                                "Institución no encontrada"));
+                                                "Paralelo universitario no encontrado"));
 
-                if (!institution.isActive() || institution.isDeleted()) {
+                if (!course.isActive() || course.isLocked() || course.getAcademicCycle() == null
+                                || !course.getAcademicCycle().isActive()
+                                || course.getAcademicCycle().isDeleted()) {
+                        throw new BadRequestException(
+                                        "El paralelo universitario no está activo");
+                }
+
+                if (course.getPracticeTutor() != null) {
+                        throw new BadRequestException(
+                                        "El paralelo universitario ya tiene tutor de prácticas asignado");
+                }
+
+                return course;
+        }
+
+        private GradeParallel resolveInstitutionalTutorParallel(
+                        String roleName,
+                        Long gradeParallelId) {
+
+                if (!RoleName.ROLE_TUTOR_INSTITUCIONAL.name().equals(roleName)) {
+                        if (gradeParallelId != null) {
+                                throw new BadRequestException(
+                                                "Este rol no debe vincularse a un paralelo institucional");
+                        }
+
+                        return null;
+                }
+
+                if (gradeParallelId == null) {
+                        throw new BadRequestException(
+                                        "El paralelo institucional es obligatorio para este rol");
+                }
+
+                GradeParallel parallel = gradeParallelRepository
+                                .findByIdAndDeletedFalse(gradeParallelId)
+                                .orElseThrow(() -> new NotFoundException(
+                                                "Paralelo institucional no encontrado"));
+
+                Grade grade = parallel.getGrade();
+
+                if (!parallel.isActive() || grade == null || !grade.isActive()
+                                || grade.isDeleted()) {
+                        throw new BadRequestException(
+                                        "El paralelo institucional no está activo");
+                }
+
+                return parallel;
+        }
+
+        private Institution resolveUniversityFromCourse(Course course) {
+
+                if (course == null
+                                || course.getAcademicCycle() == null
+                                || course.getAcademicCycle().getCareer() == null
+                                || course.getAcademicCycle().getCareer().getFaculty() == null) {
+                        throw new BadRequestException(
+                                        "El paralelo universitario no tiene una universidad asociada");
+                }
+
+                Institution institution = course.getAcademicCycle()
+                                .getCareer()
+                                .getFaculty()
+                                .getInstitution();
+
+                validateInstitutionForRole(RoleName.ROLE_TUTOR_PRACTICAS.name(), institution);
+
+                return institution;
+        }
+
+        private Institution resolveEducationalInstitutionFromParallel(GradeParallel parallel) {
+
+                if (parallel == null || parallel.getGrade() == null) {
+                        throw new BadRequestException(
+                                        "El paralelo institucional no tiene institución asociada");
+                }
+
+                return parallel.getGrade().getInstitution();
+        }
+
+        private void validateInstitutionForRole(String roleName, Institution institution) {
+
+                if (institution == null || !institution.isActive() || institution.isDeleted()) {
                         throw new BadRequestException(
                                         "La institución no está activa");
                 }
@@ -294,7 +447,5 @@ public class AuthService {
                         throw new BadRequestException(
                                         "La institución educativa debe tener convenio activo y aceptar practicantes");
                 }
-
-                return institution;
         }
 }

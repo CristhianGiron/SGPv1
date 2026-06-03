@@ -24,14 +24,14 @@ export function ModuleTab({
 }) {
   const activeClasses =
     activeVariant === 'outline'
-      ? 'border-[#529914] bg-transparent text-primary hover:border-primary hover:bg-primary hover:text-white dark:border-slate-600 dark:bg-surface dark:text-ink dark:hover:border-[#75c66a] dark:hover:bg-[#203026] dark:hover:text-[#bbf7d0]'
-      : 'border-[#529914] bg-[#529914] text-white hover:border-[#3f760f] hover:bg-[#3f760f] dark:border-[#75c66a] dark:bg-[#203026] dark:text-[#bbf7d0] dark:hover:border-[#a7e79f] dark:hover:bg-[#2b3f31]';
+      ? 'border-accent bg-transparent text-primary hover:border-primary hover:bg-primary hover:text-inverse dark:border-line dark:bg-surface dark:text-ink dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong'
+      : 'border-accent bg-accent text-inverse hover:border-accent-strong hover:bg-accent-strong dark:border-accent dark:bg-hover-soft dark:text-accent-strong dark:hover:border-accent-strong dark:hover:bg-hover-soft';
 
   return (
     <button
       aria-selected={active}
       className={cx(
-        'inline-flex min-h-[2.45rem] flex-none items-center rounded-lg border border-[#529914] bg-transparent px-3 py-2 text-sm font-extrabold text-primary transition-colors hover:border-primary hover:bg-primary hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#529914]/35 dark:border-slate-600 dark:text-ink dark:hover:border-[#75c66a] dark:hover:bg-[#203026] dark:hover:text-[#bbf7d0]',
+        'inline-flex min-h-[2.45rem] flex-none items-center rounded-lg border border-accent bg-transparent px-3 py-2 text-sm font-extrabold text-primary transition-colors hover:border-primary hover:bg-primary hover:text-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:text-ink dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong',
         active && activeClasses,
         className,
       )}

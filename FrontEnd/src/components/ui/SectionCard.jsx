@@ -20,7 +20,7 @@ export function SectionCard({
   return (
     <section
       className={cx(
-        'relative min-w-0 overflow-hidden rounded-lg border border-[#04344c]/15 bg-white p-4 text-ink shadow-card dark:border-slate-500/20 dark:bg-surface',
+        'relative min-w-0 overflow-hidden rounded-lg border border-primary/15 bg-panel p-4 text-ink shadow-card dark:border-line-soft dark:bg-surface',
         className,
       )}
     >
@@ -31,19 +31,19 @@ export function SectionCard({
       {(title || description || action) && (
         <div
           className={cx(
-            'mb-4 flex flex-col gap-3 border-b border-[#6f8079]/20 pb-4 sm:flex-row sm:items-start sm:justify-between dark:border-slate-500/20',
+            'mb-4 flex flex-col gap-3 border-b border-line-soft pb-4 sm:flex-row sm:items-start sm:justify-between dark:border-line-soft',
             collapsed && 'mb-0 border-b-transparent pb-0',
           )}
         >
           {(title || description) && (
             <div className="min-w-0">
               {title && (
-                <h2 className="text-base font-[850] leading-tight text-[#1f2937] dark:text-slate-50">
+                <h2 className="text-base font-[850] leading-tight text-heading dark:text-heading">
                   {title}
                 </h2>
               )}
               {description && (
-                <p className="mt-1 text-sm leading-6 text-[#64748b] dark:text-[#a8b4c7]">
+                <p className="mt-1 text-sm leading-6 text-muted dark:text-muted">
                   {description}
                 </p>
               )}
@@ -54,7 +54,7 @@ export function SectionCard({
             {canCollapse && (
               <button
                 aria-expanded={!collapsed}
-                className="grid min-h-9 min-w-9 place-items-center rounded-lg border border-[#529914] bg-transparent text-primary transition-colors hover:border-primary hover:bg-primary hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#529914]/35 dark:border-slate-600 dark:bg-surface-soft dark:text-ink dark:hover:border-[#75c66a] dark:hover:bg-[#203026] dark:hover:text-[#bbf7d0]"
+                className="grid min-h-9 min-w-9 place-items-center rounded-lg border border-accent bg-transparent text-primary transition-colors hover:border-primary hover:bg-primary hover:text-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:bg-surface-soft dark:text-ink dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong"
                 onClick={() => setCollapsed((current) => !current)}
                 title={collapsed ? 'Expandir seccion' : 'Contraer seccion'}
                 type="button"

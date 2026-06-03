@@ -1,5 +1,6 @@
 package com.sgp.systemsgp.dto.practiceform;
 
+import com.sgp.systemsgp.enums.PracticeFormKind;
 import com.sgp.systemsgp.enums.PracticeFormStatus;
 import com.sgp.systemsgp.enums.PracticeFormTargetRole;
 import lombok.Builder;
@@ -29,6 +30,8 @@ public class PracticeFormResponse {
     private String educationalInstitutionName;
 
     private PracticeFormTargetRole targetRole;
+
+    private PracticeFormKind formKind;
 
     private String target;
 

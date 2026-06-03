@@ -1,15 +1,19 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   CheckCircle2,
+  Fingerprint,
+  FileCheck2,
   GraduationCap,
   IdCard,
+  ImagePlus,
   Landmark,
   LockKeyhole,
+  LogIn,
   Mail,
   MapPin,
   Phone,
   Search,
-  Upload,
+  ShieldCheck,
   User,
   UserPlus,
 } from "lucide-react";
@@ -17,7 +21,9 @@ import { apiRequest, unwrapPage } from "../api/client";
 import { Alert } from "../components/ui/Alert";
 import { Input } from "../components/ui/FormControls";
 import { PrimaryButton } from "../components/ui/ActionBar";
+import { ThemeToggle } from "../components/ui/ThemeToggle";
 import { useAuth } from "../auth/AuthContext";
+import { setHashRoute } from "../utils/routes";
 
 const REGISTRATION_ROLES = [
   {
@@ -25,7 +31,7 @@ const REGISTRATION_ROLES = [
     label: "Estudiante",
     title: "Crear cuenta de estudiante",
     description:
-      "Registra tu acceso y vincula tu cuenta al ciclo académico correspondiente.",
+      "Registra tu acceso y vincula tu cuenta a la facultad, carrera y ciclo académico correspondiente.",
     relation: "academicCycle",
   },
   {
@@ -33,8 +39,8 @@ const REGISTRATION_ROLES = [
     label: "Tutor institucional",
     title: "Crear cuenta de tutor institucional",
     description:
-      "Registra tu acceso como tutor institucional vinculado a una escuela o colegio.",
-    relation: "institution",
+      "Registra tu acceso como tutor institucional vinculado al paralelo de una escuela o colegio.",
+    relation: "gradeParallel",
     institutionKind: "educational",
     institutionLabel: "Institución educativa",
     institutionPlaceholder: "Seleccionar escuela o colegio",
@@ -44,12 +50,9 @@ const REGISTRATION_ROLES = [
     id: "ROLE_TUTOR_PRACTICAS",
     label: "Tutor de prácticas",
     title: "Crear cuenta de tutor de prácticas",
-    description: "Registra tu acceso como tutor vinculado a una universidad.",
-    relation: "institution",
-    institutionKind: "university",
-    institutionLabel: "Universidad",
-    institutionPlaceholder: "Seleccionar universidad",
-    institutionSearchPlaceholder: "Buscar universidad",
+    description:
+      "Registra tu acceso como tutor académico vinculado al paralelo universitario que gestionas.",
+    relation: "course",
   },
 ];
 
@@ -65,32 +68,21 @@ const initialForm = {
   facultyId: "",
   careerId: "",
   academicCycleId: "",
+  courseId: "",
   institutionId: "",
+  gradeId: "",
+  gradeParallelId: "",
 };
-
-function StorySlide({ number, title, text }) {
-  return (
-    <article className="relative flex min-h-[108px] gap-3 rounded-3xl border border-[#529914] bg-[#074462] p-4 shadow-xl shadow-black/10 before:absolute before:left-0 before:top-4 before:bottom-4 before:w-1 before:rounded-full before:bg-[#529914]">
-      <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-[#04344c] text-[11px] font-black text-white">
-        {number}
-      </span>
-
-      <div>
-        <h3 className="text-sm font-black text-white">{title}</h3>
-
-        <p className="mt-1.5 text-xs leading-5 text-slate-300/75">{text}</p>
-      </div>
-    </article>
-  );
-}
 
 export function RegisterStudentPage() {
   const [activeRole, setActiveRole] = useState(REGISTRATION_ROLES[0].id);
   const [form, setForm] = useState(initialForm);
   const [file, setFile] = useState(null);
   const [academicCycles, setAcademicCycles] = useState([]);
-  const [universityInstitutions, setUniversityInstitutions] = useState([]);
+  const [courses, setCourses] = useState([]);
   const [educationalInstitutions, setEducationalInstitutions] = useState([]);
+  const [grades, setGrades] = useState([]);
+  const [gradeParallels, setGradeParallels] = useState([]);
   const [catalogLoading, setCatalogLoading] = useState(false);
   const [catalogError, setCatalogError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -105,18 +97,16 @@ export function RegisterStudentPage() {
     [activeRole],
   );
 
-  const institutionRows =
-    roleConfig.institutionKind === "educational"
-      ? educationalInstitutions
-      : universityInstitutions;
   const facultyRows = useMemo(
     () => buildFacultyRowsFromCycles(academicCycles),
     [academicCycles],
   );
+
   const careerRows = useMemo(
     () => buildCareerRowsFromCycles(academicCycles, form.facultyId),
     [academicCycles, form.facultyId],
   );
+
   const filteredAcademicCycles = useMemo(
     () =>
       form.careerId
@@ -127,6 +117,36 @@ export function RegisterStudentPage() {
     [academicCycles, form.careerId],
   );
 
+  const filteredCourses = useMemo(
+    () =>
+      form.academicCycleId
+        ? courses.filter((course) =>
+            hasMatchingId(course.academicCycleId, form.academicCycleId),
+          )
+        : [],
+    [courses, form.academicCycleId],
+  );
+
+  const filteredGrades = useMemo(
+    () =>
+      form.institutionId
+        ? grades.filter((grade) =>
+            hasMatchingId(grade.institutionId, form.institutionId),
+          )
+        : [],
+    [grades, form.institutionId],
+  );
+
+  const filteredGradeParallels = useMemo(
+    () =>
+      form.gradeId
+        ? gradeParallels.filter((parallel) =>
+            hasMatchingId(parallel.gradeId, form.gradeId),
+          )
+        : [],
+    [gradeParallels, form.gradeId],
+  );
+
   useEffect(() => {
     let active = true;
 
@@ -135,12 +155,21 @@ export function RegisterStudentPage() {
       setCatalogError("");
 
       try {
-        const [cyclePayload, universityPayload, schoolPayload, collegePayload] =
+        const [
+          cyclePayload,
+          coursePayload,
+          schoolPayload,
+          collegePayload,
+          gradePayload,
+          gradeParallelPayload,
+        ] =
           await Promise.all([
             apiRequest("/api/public/academic-cycles"),
-            apiRequest("/api/public/institutions?type=UNIVERSIDAD&size=100"),
+            apiRequest("/api/public/courses"),
             apiRequest("/api/public/institutions?type=ESCUELA&size=100"),
             apiRequest("/api/public/institutions?type=COLEGIO&size=100"),
+            apiRequest("/api/public/grades"),
+            apiRequest("/api/public/grade-parallels"),
           ]);
 
         if (active) {
@@ -149,12 +178,18 @@ export function RegisterStudentPage() {
               ? cyclePayload
               : unwrapPage(cyclePayload),
           );
-          setUniversityInstitutions(unwrapPage(universityPayload));
+          setCourses(Array.isArray(coursePayload) ? coursePayload : unwrapPage(coursePayload));
           setEducationalInstitutions(
             dedupeById([
               ...unwrapPage(schoolPayload),
               ...unwrapPage(collegePayload),
             ]),
+          );
+          setGrades(Array.isArray(gradePayload) ? gradePayload : unwrapPage(gradePayload));
+          setGradeParallels(
+            Array.isArray(gradeParallelPayload)
+              ? gradeParallelPayload
+              : unwrapPage(gradeParallelPayload),
           );
         }
       } catch (requestError) {
@@ -199,7 +234,10 @@ export function RegisterStudentPage() {
       facultyId: "",
       careerId: "",
       academicCycleId: "",
+      courseId: "",
       institutionId: "",
+      gradeId: "",
+      gradeParallelId: "",
     }));
   }
 
@@ -214,11 +252,11 @@ export function RegisterStudentPage() {
 
       await registerStudent({ data, file });
 
-      setSuccess("Cuenta registrada correctamente.");
+      setSuccess("Cuenta registrada correctamente. Estamos preparando tu acceso.");
       setForm(initialForm);
       setFile(null);
 
-      window.location.hash = "dashboard";
+      setHashRoute("dashboard");
     } catch (requestError) {
       const message = requestError.message || "";
 
@@ -233,407 +271,672 @@ export function RegisterStudentPage() {
   }
 
   return (
-    <main className="relative min-h-screen bg-[#d1dde1] px-4 py-6 text-zinc-900 dark:bg-[#0b1120] dark:text-slate-100">
-      <section className="flex gap-6 lg:mx-8">
-        <aside className="hidden lg:block sticky top-6 self-start">
-          <div className="relative min-h-[680px] rounded-[2rem] bg-[#04344c] p-6 text-white shadow-2xl shadow-[#04344c]/30">
-            {/* Fondos decorativos */}
-            <div className="pointer-events-none absolute inset-0 bg-[#04344c]" />
+    <main className="register-page relative min-h-dvh overflow-x-hidden bg-page text-heading dark:bg-page dark:text-heading">
+      <style>{`
+        @media (min-width: 1024px) {
+          .register-viewport {
+            min-height: 100dvh;
+            height: 100dvh;
+          }
 
-            {/* Capa inferior oscura */}
-            <div className="pointer-events-none absolute inset-x-6 bottom-0 z-10 h-40 bg-[#04344c]" />
+          .register-layout {
+            height: min(760px, calc(100dvh - 3rem));
+          }
 
-            {/* Header brand */}
-            <div className="inline-flex min-w-80 items-center gap-3 rounded-lg border border-white/15 bg-white/10 p-3 shadow-card">
-              <div className="grid h-11 w-11 place-items-center rounded-lg border border-[#529914]/40 bg-[#529914] text-sm font-black text-white" aria-hidden="true">UNL</div>
-              <div>
-                <p className="text-xs font-extrabold uppercase leading-tight tracking-normal text-[#bbf7d0]">Universidad Nacional de Loja</p>
-                <p className="text-sm font-[850] leading-tight text-white">Sistema de Gestion de Practicas</p>
-              </div>
-            </div>
+          .register-side-card,
+          .register-form-card {
+            height: 100%;
+          }
 
-            {/* Texto principal */}
-            <div className="relative z-20 mt-16">
-              <span className="inline-flex rounded-full border border-[#529914] bg-[#074462] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.18em] text-white">
-                Prácticas preprofesionales
-              </span>
+          .register-form-scroll {
+            max-height: 100%;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: color-mix(in srgb, var(--color-primary) 35%, transparent) transparent;
+          }
 
-              <h1 className="mt-5 max-w-72 text-4xl font-black leading-[0.98] tracking-[-0.06em] text-white">
-                Gestión académica institucional para prácticas preprofesionales.
-              </h1>
+          .register-form-scroll::-webkit-scrollbar {
+            width: 8px;
+          }
 
-              <p className="mt-4 max-w-72 text-sm leading-7 text-slate-300/80">
-                Centraliza el seguimiento, la vinculación institucional y el
-                control académico de estudiantes, tutores e instituciones.
-              </p>
-            </div>
+          .register-form-scroll::-webkit-scrollbar-thumb {
+            background: color-mix(in srgb, var(--color-primary) 28%, transparent);
+            border-radius: 999px;
+          }
 
-            {/* Slider vertical */}
-            <div className="relative z-20 mt-8 h-60 overflow-hidden rounded-3xl">
-              <div className="flex animate-vertical-slide flex-col gap-3 hover:[animation-play-state:paused]">
-                <StorySlide
-                  number="01"
-                  title="Vinculación institucional"
-                  text="Relaciona estudiantes, tutores, universidades y centros de práctica desde un mismo espacio."
-                />
+          .register-form-scroll::-webkit-scrollbar-track {
+            background: transparent;
+          }
+        }
 
-                <StorySlide
-                  number="02"
-                  title="Seguimiento académico"
-                  text="Organiza ciclos, carreras, asignaturas y procesos asociados a las prácticas."
-                />
+        @media (min-width: 1024px) and (max-height: 780px) {
+          .register-layout {
+            height: calc(100dvh - 2.25rem);
+          }
 
-                <StorySlide
-                  number="03"
-                  title="Control seguro"
-                  text="Acceso por roles para mantener la información ordenada y protegida."
-                />
+          .register-side-card,
+          .register-form-card {
+            padding: 1.35rem !important;
+          }
 
-                <StorySlide
-                  number="04"
-                  title="Gestión eficiente"
-                  text="Reduce procesos manuales y mejora la trazabilidad institucional."
-                />
+          .register-hero-title {
+            font-size: clamp(1.65rem, 2.4vw, 2.25rem) !important;
+          }
 
-                {/* Repetidos para loop fluido */}
-                <StorySlide
-                  number="01"
-                  title="Vinculación institucional"
-                  text="Relaciona estudiantes, tutores, universidades y centros de práctica desde un mismo espacio."
-                />
+          .register-hero-text,
+          .register-credential-text {
+            font-size: 0.78rem !important;
+            line-height: 1.55 !important;
+          }
 
-                <StorySlide
-                  number="02"
-                  title="Seguimiento académico"
-                  text="Organiza ciclos, carreras, asignaturas y procesos asociados a las prácticas."
-                />
-              </div>
-            </div>
+          .register-credential {
+            padding: 1rem !important;
+          }
 
-            {/* Footer */}
-            <div className="absolute bottom-6 left-6 right-6 z-20 flex items-center justify-between">
-              <div>
-                <p className="text-sm font-black text-white">SGP</p>
-                <p className="text-xs font-medium text-slate-400">
-                  Plataforma académica
-                </p>
-              </div>
+          .register-form-header {
+            padding-bottom: 1rem !important;
+            margin-bottom: 1rem !important;
+          }
 
-              <div className="flex items-center gap-1.5">
-                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white/30" />
-                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-300/80 [animation-delay:200ms]" />
-                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white/30 [animation-delay:400ms]" />
-              </div>
-            </div>
-          </div>
-        </aside>
+          .register-section {
+            padding: 0.85rem !important;
+            margin-bottom: 0.85rem !important;
+          }
+        }
+      `}</style>
 
-        <form
-          onSubmit={handleSubmit}
-          className="w-full rounded-[2rem] border border-white/90 bg-white/90 p-5 shadow-2xl shadow-zinc-300/60 backdrop-blur-xl dark:border-slate-700 dark:bg-surface dark:shadow-black/35 sm:p-6"
-        >
-          <header className="mb-5 border-b border-zinc-100 pb-4 dark:border-slate-700">
-            <div className="flex items-start justify-between gap-4">
-              <div className="min-w-0 flex-1 overflow-hidden">
-                <p className="text-[11px] font-black uppercase tracking-normal text-primary">
-                  Registro público
-                </p>
+      <div className="absolute inset-x-0 top-0 z-20 h-1.5 bg-gradient-to-r from-primary via-accent to-primary" />
 
-                <div key={activeRole} className="animate-role-slide">
-                  <h2 className="mt-1 text-2xl font-black tracking-tight text-zinc-950 dark:text-slate-50">
-                    {roleConfig.title}
-                  </h2>
+      <div className="fixed right-5 top-5 z-50 md:right-6 md:top-6">
+        <ThemeToggle />
+      </div>
 
-                  <p className="mt-1 text-sm text-muted">
-                    {roleConfig.description}
+      <div
+        aria-hidden="true"
+        className="absolute left-[-10rem] top-[-10rem] h-[30rem] w-[30rem] rounded-full bg-primary/18 blur-3xl dark:bg-primary-soft"
+      />
+
+      <div
+        aria-hidden="true"
+        className="absolute bottom-[-12rem] right-[-12rem] h-[34rem] w-[34rem] rounded-full bg-accent/18 blur-3xl dark:bg-accent-soft"
+      />
+
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 opacity-[0.32] dark:opacity-[0.12]"
+        style={{
+          backgroundImage:
+            "linear-gradient(to right, color-mix(in srgb, var(--color-primary) 10%, transparent) 1px, transparent 1px), linear-gradient(to bottom, color-mix(in srgb, var(--color-primary) 8%, transparent) 1px, transparent 1px)",
+          backgroundSize: "42px 42px",
+        }}
+      />
+
+      <div className="register-viewport relative mx-auto flex w-full max-w-7xl items-center px-5 py-6 lg:px-8">
+        <section className="register-layout grid w-full items-stretch gap-8 lg:grid-cols-[0.9fr_1.35fr]">
+          <aside className="register-side-card relative hidden overflow-hidden rounded-[2rem] border border-inverse/70 bg-panel/82 p-8 shadow-soft backdrop-blur-xl dark:border-line dark:bg-surface/75 lg:grid lg:grid-rows-[auto_minmax(0,1fr)_auto]">
+            <div
+              aria-hidden="true"
+              className="absolute right-0 top-0 h-40 w-40 rounded-bl-[6rem] bg-accent-soft dark:bg-accent-soft"
+            />
+
+            <div
+              aria-hidden="true"
+              className="absolute bottom-[-5rem] right-[-4rem] h-64 w-64 rounded-full bg-accent/10 blur-3xl"
+            />
+
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 opacity-[0.28] dark:opacity-[0.1]"
+              style={{
+                backgroundImage:
+                  "linear-gradient(to right, color-mix(in srgb, var(--color-primary) 8%, transparent) 1px, transparent 1px), linear-gradient(to bottom, color-mix(in srgb, var(--color-primary) 6%, transparent) 1px, transparent 1px)",
+                backgroundSize: "34px 34px",
+              }}
+            />
+
+            <div className="relative z-10">
+              <div className="flex items-center gap-4">
+                <div className="grid h-16 w-16 place-items-center rounded-2xl bg-primary text-lg font-black text-inverse shadow-card">
+                  UNL
+                </div>
+
+                <div>
+                  <p className="text-xs font-black uppercase tracking-[0.2em] text-muted dark:text-muted">
+                    Universidad Nacional de Loja
+                  </p>
+                  <p className="mt-1 text-lg font-black text-heading dark:text-heading">
+                    Sistema de Gestión de Prácticas
                   </p>
                 </div>
               </div>
-
-              <button
-                type="button"
-                onClick={() => {
-                  window.location.hash = "";
-                }}
-                className="rounded-full px-3 py-2 text-sm font-semibold text-muted transition hover:bg-zinc-100 hover:text-zinc-950 dark:hover:bg-slate-800 dark:hover:text-slate-50 lg:hidden"
-              >
-                Iniciar sesión
-              </button>
             </div>
 
-            <div className="mt-5 grid gap-2 md:grid-cols-3" role="tablist">
-              {REGISTRATION_ROLES.map((role) => (
-                <button
-                  aria-selected={activeRole === role.id}
-                  className={[
-                    "rounded-xl border px-3 py-2 text-sm font-black transition",
-                    activeRole === role.id
-                      ? "border-[--unl-green-strong] bg-[--unl-green] text-white shadow-lg shadow-zinc-200 dark:shadow-black/25"
-                      : "border-zinc-200 bg-white text-zinc-600 hover:border-zinc-400 hover:text-zinc-950 dark:border-slate-700 dark:bg-surface-soft dark:text-slate-300 dark:hover:border-[#75c66a] dark:hover:text-slate-50",
-                  ].join(" ")}
-                  key={role.id}
-                  onClick={() => changeRole(role.id)}
-                  role="tab"
-                  type="button"
-                >
-                  {role.label}
-                </button>
-              ))}
-            </div>
-          </header>
-
-          {catalogError && (
-            <div className="mb-4">
-              <Alert tone="error">{catalogError}</Alert>
-            </div>
-          )}
-
-          <CompactSection title="Datos personales">
-            <IconField icon={User} label="Nombres">
-              <StyledInput
-                name="names"
-                value={form.names}
-                onChange={handleChange}
-                required
-                placeholder="Nombres"
-              />
-            </IconField>
-
-            <IconField icon={User} label="Apellidos">
-              <StyledInput
-                name="lastNames"
-                value={form.lastNames}
-                onChange={handleChange}
-                required
-                placeholder="Apellidos"
-              />
-            </IconField>
-
-            <IconField icon={IdCard} label="Cédula">
-              <StyledInput
-                name="cedula"
-                value={form.cedula}
-                onChange={handleChange}
-                required
-                placeholder="1100000001"
-              />
-            </IconField>
-
-            <IconField icon={Phone} label="Teléfono">
-              <StyledInput
-                name="phone"
-                value={form.phone}
-                onChange={handleChange}
-                placeholder="0990000001"
-              />
-            </IconField>
-
-            <div className="md:col-span-2">
-              <IconField icon={MapPin} label="Dirección">
-                <StyledInput
-                  name="address"
-                  value={form.address}
-                  onChange={handleChange}
-                  placeholder="Loja"
-                />
-              </IconField>
-            </div>
-          </CompactSection>
-
-          <CompactSection title="Cuenta académica">
-            <IconField icon={Mail} label="Correo institucional">
-              <StyledInput
-                name="institutionalEmail"
-                type="email"
-                value={form.institutionalEmail}
-                onChange={handleChange}
-                required
-                placeholder="usuario@unl.edu.ec"
-              />
-            </IconField>
-
-            <IconField icon={UserPlus} label="Usuario">
-              <StyledInput
-                name="username"
-                value={form.username}
-                onChange={handleChange}
-                required
-                placeholder="usuario"
-              />
-            </IconField>
-
-            <IconField icon={LockKeyhole} label="Contraseña">
-              <StyledInput
-                minLength={8}
-                name="password"
-                type="password"
-                value={form.password}
-                onChange={handleChange}
-                required
-                placeholder="Mínimo 8 caracteres"
-              />
-            </IconField>
-
-            <SlideRoleContent activeRole={activeRole}>
-              {roleConfig.relation === "academicCycle" && (
-                <>
-                  <SearchableSelect
-                    icon={GraduationCap}
-                    label="Facultad"
-                    loading={catalogLoading}
-                    rows={facultyRows}
-                    value={form.facultyId}
-                    onChange={(value) =>
-                      setForm((current) => ({
-                        ...current,
-                        facultyId: value,
-                        careerId: "",
-                        academicCycleId: "",
-                      }))
-                    }
-                    placeholder="Seleccionar facultad"
-                    searchPlaceholder="Buscar facultad"
-                    getOptionLabel={facultyLabel}
-                    required
-                  />
-                  <SearchableSelect
-                    icon={GraduationCap}
-                    label="Carrera"
-                    disabled={!form.facultyId}
-                    loading={catalogLoading}
-                    rows={careerRows}
-                    value={form.careerId}
-                    onChange={(value) =>
-                      setForm((current) => ({
-                        ...current,
-                        careerId: value,
-                        academicCycleId: "",
-                      }))
-                    }
-                    placeholder={
-                      form.facultyId
-                        ? "Seleccionar carrera"
-                        : "Selecciona primero una facultad"
-                    }
-                    searchPlaceholder="Buscar carrera"
-                    getOptionLabel={careerLabel}
-                    required
-                  />
-                  <SearchableSelect
-                    icon={GraduationCap}
-                    label="Ciclo académico"
-                    disabled={!form.careerId}
-                    loading={catalogLoading}
-                    rows={filteredAcademicCycles}
-                    value={form.academicCycleId}
-                    onChange={(value) =>
-                      setForm((current) => ({
-                        ...current,
-                        academicCycleId: value,
-                      }))
-                    }
-                    placeholder={
-                      form.careerId
-                        ? "Seleccionar ciclo académico"
-                        : "Selecciona primero una carrera"
-                    }
-                    searchPlaceholder="Buscar ciclo"
-                    getOptionLabel={academicCycleLabel}
-                    required
-                  />
-                </>
-              )}
-
-              {roleConfig.relation === "institution" && (
-                <SearchableSelect
-                  icon={Landmark}
-                  label={roleConfig.institutionLabel || "Institución"}
-                  loading={catalogLoading}
-                  rows={institutionRows}
-                  value={form.institutionId}
-                  onChange={(value) =>
-                    setForm((current) => ({
-                      ...current,
-                      institutionId: value,
-                    }))
-                  }
-                  placeholder={
-                    roleConfig.institutionPlaceholder ||
-                    "Seleccionar institución"
-                  }
-                  searchPlaceholder={
-                    roleConfig.institutionSearchPlaceholder ||
-                    "Buscar institución"
-                  }
-                  getOptionLabel={institutionLabel}
-                  required
-                />
-              )}
-            </SlideRoleContent>
-          </CompactSection>
-
-          <div className="mb-4 grid gap-3 md:grid-cols-[1fr_190px] md:items-end">
-            <div>
-              <p className="mb-2 text-xs font-bold text-muted">
-                Archivo opcional
+            <div className="relative z-10 flex min-h-0 flex-col justify-center py-8">
+              <p className="inline-flex w-fit rounded-full border border-accent/25 bg-accent-soft px-4 py-2 text-xs font-black uppercase tracking-wide text-accent-strong dark:border-accent/30 dark:bg-accent-soft dark:text-accent-strong">
+                Registro público
               </p>
 
-              <label className="group flex h-11 cursor-pointer items-center gap-3 rounded-xl border border-dashed border-zinc-300 bg-zinc-50 px-4 text-sm text-zinc-500 transition hover:border-zinc-500 hover:bg-zinc-100 dark:border-slate-700 dark:bg-surface-soft dark:text-slate-300 dark:hover:border-[#75c66a] dark:hover:bg-[#203026]">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white text-zinc-500 shadow-sm transition group-hover:bg-zinc-950 group-hover:text-white dark:bg-slate-900 dark:text-slate-300 dark:group-hover:bg-[#75c66a] dark:group-hover:text-[#0b1120]">
-                  <Upload size={15} />
-                </span>
+              <h1 className="register-hero-title mt-6 max-w-[13ch] text-[clamp(2rem,3vw,3rem)] font-black leading-[1.04] tracking-tight text-primary dark:text-heading">
+                Crea tu acceso institucional.
+              </h1>
 
-                <span className="truncate font-medium">
-                  {file ? file.name : "Seleccionar archivo"}
-                </span>
-
-                <input
-                  accept="image/jpeg,image/png,image/webp"
-                  type="file"
-                  className="hidden"
-                  onChange={(event) => setFile(event.target.files?.[0] || null)}
-                />
-              </label>
+              <p className="register-hero-text mt-4 max-w-md text-[15px] leading-7 text-muted dark:text-muted">
+                Registra tu perfil, vincula tu rol académico y accede al sistema
+                de seguimiento de prácticas preprofesionales.
+              </p>
             </div>
 
-            <PrimaryButton
-              className="h-11 w-full rounded-xl bg-zinc-950 font-bold text-white shadow-lg shadow-zinc-300 transition hover:-translate-y-0.5 hover:bg-zinc-800 dark:bg-[#2f7a4d] dark:shadow-black/25 dark:hover:bg-[#25643d]"
-              icon={UserPlus}
-              loading={loading}
-              type="submit"
-            >
-              {loading ? "Registrando..." : "Crear cuenta"}
-            </PrimaryButton>
+            <RegisterCredential />
+          </aside>
+
+          <form
+            onSubmit={handleSubmit}
+            className="register-form-card relative flex min-h-[calc(100dvh-3rem)] overflow-hidden rounded-[2rem] border border-inverse/80 bg-panel/92 p-5 shadow-soft backdrop-blur-xl dark:border-line dark:bg-surface/90 sm:p-6 lg:min-h-0 lg:p-8"
+          >
+            <div
+              aria-hidden="true"
+              className="absolute right-0 top-0 h-32 w-32 rounded-bl-[5rem] bg-accent-soft dark:bg-accent-soft"
+            />
+
+            <div
+              aria-hidden="true"
+              className="absolute bottom-0 left-0 h-24 w-24 rounded-tr-[4rem] bg-primary/5 dark:bg-primary-soft"
+            />
+
+            <div className="register-form-scroll relative z-10 w-full pr-1">
+              <header className="register-form-header mb-5 border-b border-line pb-5 dark:border-line">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-3">
+                      <div className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-primary to-accent text-inverse shadow-card">
+                        <UserPlus size={22} />
+                      </div>
+
+                      <p className="inline-flex rounded-full border border-accent/25 bg-accent-soft px-3 py-2 text-[11px] font-black uppercase tracking-[0.2em] text-accent dark:border-accent/30 dark:bg-accent-soft dark:text-accent-strong">
+                        Registro autorizado
+                      </p>
+                    </div>
+
+                    <div key={activeRole} className="animate-role-slide">
+                      <h2 className="mt-5 text-[2rem] font-black tracking-tight text-heading dark:text-heading">
+                        {roleConfig.title}
+                      </h2>
+
+                      <p className="mt-2 max-w-2xl text-sm leading-6 text-muted dark:text-muted">
+                        {roleConfig.description}
+                      </p>
+
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setHashRoute("");
+                    }}
+                    className="hidden shrink-0 items-center gap-2 rounded-full border border-line bg-panel px-4 py-2 text-sm font-bold text-muted transition hover:border-primary/30 hover:text-primary dark:border-line dark:bg-page dark:text-muted dark:hover:text-info-strong sm:inline-flex"
+                  >
+                    <LogIn size={16} />
+                    Iniciar sesión
+                  </button>
+                </div>
+
+                <div className="mt-5 grid gap-2 md:grid-cols-3" role="tablist">
+                  {REGISTRATION_ROLES.map((role) => (
+                    <button
+                      aria-selected={activeRole === role.id}
+                      className={[
+                        "rounded-2xl border px-3 py-2.5 text-sm font-black transition",
+                        activeRole === role.id
+                          ? "border-accent bg-accent text-inverse shadow-lg shadow-accent/20"
+                          : "border-line bg-panel/80 text-muted hover:border-primary/30 hover:text-primary dark:border-line dark:bg-page dark:text-muted dark:hover:border-accent dark:hover:text-heading",
+                      ].join(" ")}
+                      key={role.id}
+                      onClick={() => changeRole(role.id)}
+                      role="tab"
+                      type="button"
+                    >
+                      {role.label}
+                    </button>
+                  ))}
+                </div>
+              </header>
+
+              {catalogError && (
+                <div className="mb-4">
+                  <Alert tone="error">{catalogError}</Alert>
+                </div>
+              )}
+
+              <CompactSection title="Datos personales">
+                <IconField icon={User} label="Nombres">
+                  <StyledInput
+                    name="names"
+                    value={form.names}
+                    onChange={handleChange}
+                    required
+                    placeholder="Nombres"
+                  />
+                </IconField>
+
+                <IconField icon={User} label="Apellidos">
+                  <StyledInput
+                    name="lastNames"
+                    value={form.lastNames}
+                    onChange={handleChange}
+                    required
+                    placeholder="Apellidos"
+                  />
+                </IconField>
+
+                <IconField icon={IdCard} label="Cédula">
+                  <StyledInput
+                    name="cedula"
+                    value={form.cedula}
+                    onChange={handleChange}
+                    required
+                    placeholder="1100000001"
+                  />
+                </IconField>
+
+                <IconField icon={Phone} label="Teléfono">
+                  <StyledInput
+                    name="phone"
+                    value={form.phone}
+                    onChange={handleChange}
+                    placeholder="0990000001"
+                  />
+                </IconField>
+
+                <div className="md:col-span-2">
+                  <IconField icon={MapPin} label="Dirección">
+                    <StyledInput
+                      name="address"
+                      value={form.address}
+                      onChange={handleChange}
+                      placeholder="Loja"
+                    />
+                  </IconField>
+                </div>
+              </CompactSection>
+
+              <CompactSection title="Cuenta académica">
+                <IconField icon={Mail} label="Correo institucional">
+                  <StyledInput
+                    name="institutionalEmail"
+                    type="email"
+                    value={form.institutionalEmail}
+                    onChange={handleChange}
+                    required
+                    placeholder="usuario@unl.edu.ec"
+                  />
+                </IconField>
+
+                <IconField icon={UserPlus} label="Usuario">
+                  <StyledInput
+                    name="username"
+                    value={form.username}
+                    onChange={handleChange}
+                    required
+                    placeholder="usuario"
+                  />
+                </IconField>
+
+                <IconField icon={LockKeyhole} label="Contraseña">
+                  <StyledInput
+                    minLength={8}
+                    name="password"
+                    type="password"
+                    value={form.password}
+                    onChange={handleChange}
+                    required
+                    placeholder="Mínimo 8 caracteres"
+                  />
+                </IconField>
+
+                <SlideRoleContent activeRole={activeRole}>
+                  {(roleConfig.relation === "academicCycle" ||
+                    roleConfig.relation === "course") && (
+                    <>
+                      <SearchableSelect
+                        icon={GraduationCap}
+                        label="Facultad"
+                        loading={catalogLoading}
+                        rows={facultyRows}
+                        value={form.facultyId}
+                        onChange={(value) =>
+                          setForm((current) => ({
+                            ...current,
+                            facultyId: value,
+                            careerId: "",
+                            academicCycleId: "",
+                            courseId: "",
+                          }))
+                        }
+                        placeholder="Seleccionar facultad"
+                        searchPlaceholder="Buscar facultad"
+                        getOptionLabel={facultyLabel}
+                        required
+                      />
+
+                      <SearchableSelect
+                        icon={GraduationCap}
+                        label="Carrera"
+                        disabled={!form.facultyId}
+                        loading={catalogLoading}
+                        rows={careerRows}
+                        value={form.careerId}
+                        onChange={(value) =>
+                          setForm((current) => ({
+                            ...current,
+                            careerId: value,
+                            academicCycleId: "",
+                            courseId: "",
+                          }))
+                        }
+                        placeholder={
+                          form.facultyId
+                            ? "Seleccionar carrera"
+                            : "Selecciona primero una facultad"
+                        }
+                        searchPlaceholder="Buscar carrera"
+                        getOptionLabel={careerLabel}
+                        required
+                      />
+
+                      <SearchableSelect
+                        icon={GraduationCap}
+                        label="Ciclo académico"
+                        disabled={!form.careerId}
+                        loading={catalogLoading}
+                        rows={filteredAcademicCycles}
+                        value={form.academicCycleId}
+                        onChange={(value) =>
+                          setForm((current) => ({
+                            ...current,
+                            academicCycleId: value,
+                            courseId: "",
+                          }))
+                        }
+                        placeholder={
+                          form.careerId
+                            ? "Seleccionar ciclo académico"
+                            : "Selecciona primero una carrera"
+                        }
+                        searchPlaceholder="Buscar ciclo"
+                        getOptionLabel={academicCycleLabel}
+                        required
+                      />
+
+                      {roleConfig.relation === "course" && (
+                        <SearchableSelect
+                          icon={GraduationCap}
+                          label="Paralelo universitario"
+                          disabled={!form.academicCycleId}
+                          loading={catalogLoading}
+                          rows={filteredCourses}
+                          value={form.courseId}
+                          onChange={(value) =>
+                            setForm((current) => ({
+                              ...current,
+                              courseId: value,
+                            }))
+                          }
+                          placeholder={
+                            form.academicCycleId
+                              ? "Seleccionar paralelo"
+                              : "Selecciona primero un ciclo"
+                          }
+                          searchPlaceholder="Buscar paralelo"
+                          getOptionLabel={courseLabel}
+                          required
+                        />
+                      )}
+                    </>
+                  )}
+
+                  {roleConfig.relation === "gradeParallel" && (
+                    <>
+                      <SearchableSelect
+                        icon={Landmark}
+                        label={roleConfig.institutionLabel || "Institución"}
+                        loading={catalogLoading}
+                        rows={educationalInstitutions}
+                        value={form.institutionId}
+                        onChange={(value) =>
+                          setForm((current) => ({
+                            ...current,
+                            institutionId: value,
+                            gradeId: "",
+                            gradeParallelId: "",
+                          }))
+                        }
+                        placeholder={
+                          roleConfig.institutionPlaceholder ||
+                          "Seleccionar institución"
+                        }
+                        searchPlaceholder={
+                          roleConfig.institutionSearchPlaceholder ||
+                          "Buscar institución"
+                        }
+                        getOptionLabel={institutionLabel}
+                        required
+                      />
+
+                      <SearchableSelect
+                        icon={GraduationCap}
+                        label="Grado"
+                        disabled={!form.institutionId}
+                        loading={catalogLoading}
+                        rows={filteredGrades}
+                        value={form.gradeId}
+                        onChange={(value) =>
+                          setForm((current) => ({
+                            ...current,
+                            gradeId: value,
+                            gradeParallelId: "",
+                          }))
+                        }
+                        placeholder={
+                          form.institutionId
+                            ? "Seleccionar grado"
+                            : "Selecciona primero una institución"
+                        }
+                        searchPlaceholder="Buscar grado"
+                        getOptionLabel={gradeLabel}
+                        required
+                      />
+
+                      <SearchableSelect
+                        icon={GraduationCap}
+                        label="Paralelo institucional"
+                        disabled={!form.gradeId}
+                        loading={catalogLoading}
+                        rows={filteredGradeParallels}
+                        value={form.gradeParallelId}
+                        onChange={(value) =>
+                          setForm((current) => ({
+                            ...current,
+                            gradeParallelId: value,
+                          }))
+                        }
+                        placeholder={
+                          form.gradeId
+                            ? "Seleccionar paralelo"
+                            : "Selecciona primero un grado"
+                        }
+                        searchPlaceholder="Buscar paralelo"
+                        getOptionLabel={gradeParallelLabel}
+                        required
+                      />
+                    </>
+                  )}
+                </SlideRoleContent>
+              </CompactSection>
+
+              <div className="mb-4 grid gap-3 grid-cols-1 lg:grid-cols-[1fr_210px] lg:items-end">
+                <ProfileImagePicker file={file} onChange={setFile} />
+
+                <PrimaryButton
+                  className="h-12 w-full rounded-xl bg-primary font-bold text-primary-strong shadow-lg shadow-primary/20 transition hover:-translate-y-0.5 hover:bg-primary-strong dark:bg-accent dark:shadow-soft dark:hover:bg-accent-strong"
+                  icon={UserPlus}
+                  loading={loading}
+                  type="submit"
+                >
+                  {loading ? "Registrando..." : "Crear cuenta"}
+                </PrimaryButton>
+              </div>
+
+              {error && (
+                <div className="mt-3">
+                  <Alert tone="error">{error}</Alert>
+                </div>
+              )}
+
+              {success && (
+                <div className="mt-3 flex items-center gap-2 rounded-xl border border-success bg-success-soft px-4 py-3 text-sm font-semibold text-success-strong dark:border-success/40 dark:bg-success-soft dark:text-success-strong">
+                  <CheckCircle2 size={18} />
+                  {success}
+                </div>
+              )}
+
+              <p className="mt-4 text-center text-xs text-muted dark:text-muted">
+                ¿Ya tienes una cuenta?{" "}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setHashRoute("");
+                  }}
+                  className="font-bold text-primary transition hover:text-accent dark:text-body dark:hover:text-accent-strong"
+                >
+                  Iniciar sesión
+                </button>
+              </p>
+            </div>
+          </form>
+        </section>
+      </div>
+    </main>
+  );
+}
+
+function RegisterCredential() {
+  return (
+    <div className="relative z-10">
+      <div className="register-credential relative rotate-[-1deg] overflow-hidden rounded-[2rem] border border-line bg-primary p-5 text-inverse shadow-soft">
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 opacity-[0.08]"
+          style={{
+            backgroundImage:
+              "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)",
+            backgroundSize: "28px 28px",
+          }}
+        />
+
+        <div
+          aria-hidden="true"
+          className="absolute -right-16 -top-16 h-52 w-52 rounded-full bg-accent/45 blur-2xl"
+        />
+
+        <div className="relative flex items-start justify-between gap-5">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.22em] text-inverse/55">
+              Credencial de registro
+            </p>
+
+            <h2 className="mt-3 max-w-xs text-[1.5rem] font-black leading-tight">
+              Perfil académico institucional
+            </h2>
+
+            <p className="register-credential-text mt-2 max-w-xs text-[13px] leading-6 text-inverse/65">
+              Tus datos permiten identificar tu rol dentro del proceso de
+              prácticas.
+            </p>
           </div>
 
-          {error && (
-            <div className="mt-3">
-              <Alert tone="error">{error}</Alert>
-            </div>
-          )}
+          <div className="grid h-14 w-14 shrink-0 place-items-center rounded-3xl border border-inverse/20 bg-panel/10 backdrop-blur">
+            <Fingerprint size={29} className="text-inverse/85" />
+          </div>
+        </div>
 
-          {success && (
-            <div className="mt-3 flex items-center gap-2 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-semibold text-green-700 dark:border-green-400/40 dark:bg-green-950/35 dark:text-green-200">
-              <CheckCircle2 size={18} />
-              {success}
-            </div>
-          )}
+        <div className="relative mt-5 grid grid-cols-3 gap-3">
+          <AccessPill icon={GraduationCap} label="Rol" />
+          <AccessPill icon={FileCheck2} label="Perfil" />
+          <AccessPill icon={ShieldCheck} label="Acceso" />
+        </div>
+      </div>
+    </div>
+  );
+}
 
-          <p className="mt-4 text-center text-xs text-muted">
-            ¿Ya tienes una cuenta?{" "}
-            <button
-              type="button"
-              onClick={() => {
-                window.location.hash = "";
-              }}
-              className="font-bold text-[#34443b] transition hover:text-zinc-950 dark:text-slate-200 dark:hover:text-white"
-            >
-              Iniciar sesión
-            </button>
-          </p>
-        </form>
-      </section>
-    </main>
+function ProfileImagePicker({ file, onChange }) {
+  const previewUrl = useMemo(() => {
+    if (!file) return "";
+    return URL.createObjectURL(file);
+  }, [file]);
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
+
+  return (
+    <div>
+      <p className="mb-2 text-xs font-bold text-muted dark:text-muted">
+        Foto de perfil opcional
+      </p>
+
+      <label className="group flex min-h-20 cursor-pointer items-center gap-4 rounded-2xl border border-dashed border-line bg-field-hover p-3 transition hover:border-accent hover:bg-accent-soft dark:border-line dark:bg-surface-soft/70 dark:hover:border-accent dark:hover:bg-accent-soft">
+        <span className="relative grid h-14 w-14 shrink-0 place-items-center overflow-hidden rounded-2xl border border-line bg-panel text-accent-strong shadow-sm dark:border-line dark:bg-page dark:text-accent-strong">
+          {previewUrl ? (
+            <img
+              src={previewUrl}
+              alt="Vista previa de la foto de perfil"
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <ImagePlus size={24} />
+          )}
+        </span>
+
+        <span className="min-w-0 flex-1">
+          <span className="block text-sm font-black text-heading dark:text-heading">
+            {file ? "Foto seleccionada" : "Subir imagen de perfil"}
+          </span>
+
+          <span className="mt-1 block truncate text-xs leading-5 text-muted dark:text-muted">
+            {file
+              ? file.name
+              : "Usa una imagen JPG, PNG o WebP para identificar tu cuenta."}
+          </span>
+        </span>
+
+        <input
+          accept="image/jpeg,image/png,image/webp"
+          type="file"
+          className="hidden"
+          onChange={(event) => onChange(event.target.files?.[0] || null)}
+        />
+      </label>
+    </div>
+  );
+}
+
+function AccessPill({ icon: Icon, label }) {
+  return (
+    <div className="flex min-w-0 items-center gap-2 rounded-2xl border border-inverse/15 bg-panel/10 px-3 py-3 backdrop-blur">
+      <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-panel text-primary">
+        <Icon size={16} />
+      </span>
+
+      <span className="truncate text-[10px] font-black uppercase tracking-wide text-inverse/75">
+        {label}
+      </span>
+    </div>
   );
 }
 
@@ -650,6 +953,8 @@ function cleanRegistrationPayload(form, role) {
     address: form.address,
     academicCycleId: null,
     institutionId: null,
+    courseId: null,
+    gradeParallelId: null,
   };
 
   if (role === "ROLE_ESTUDIANTE") {
@@ -658,9 +963,16 @@ function cleanRegistrationPayload(form, role) {
       : null;
   }
 
-  if (role === "ROLE_TUTOR_INSTITUCIONAL" || role === "ROLE_TUTOR_PRACTICAS") {
+  if (role === "ROLE_TUTOR_PRACTICAS") {
+    payload.courseId = form.courseId ? Number(form.courseId) : null;
+  }
+
+  if (role === "ROLE_TUTOR_INSTITUCIONAL") {
     payload.institutionId = form.institutionId
       ? Number(form.institutionId)
+      : null;
+    payload.gradeParallelId = form.gradeParallelId
+      ? Number(form.gradeParallelId)
       : null;
   }
 
@@ -674,6 +986,10 @@ function academicCycleLabel(row) {
   );
 }
 
+function courseLabel(row) {
+  return [row.name, row.code].filter(Boolean).join(" - ") || "Paralelo";
+}
+
 function facultyLabel(row) {
   return row.name || "Facultad";
 }
@@ -684,6 +1000,14 @@ function careerLabel(row) {
 
 function institutionLabel(row) {
   return [row.name, row.code].filter(Boolean).join(" - ") || "Institución";
+}
+
+function gradeLabel(row) {
+  return [row.name, row.code].filter(Boolean).join(" - ") || "Grado";
+}
+
+function gradeParallelLabel(row) {
+  return [row.name, row.letter].filter(Boolean).join(" - ") || "Paralelo";
 }
 
 function buildFacultyRowsFromCycles(cycles) {
@@ -734,8 +1058,8 @@ function SlideRoleContent({ activeRole, children }) {
 
 function CompactSection({ title, children }) {
   return (
-    <section className="mb-4 rounded-2xl border border-zinc-100 bg-zinc-50/55 p-3.5 dark:border-slate-700 dark:bg-surface-soft">
-      <h3 className="mb-3 px-1 text-[11px] font-black uppercase tracking-[0.2em] text-muted">
+    <section className="register-section mb-4 rounded-2xl border border-line bg-field-hover/80 p-3.5 dark:border-line dark:bg-surface-soft/70">
+      <h3 className="mb-3 px-1 text-[11px] font-black uppercase tracking-[0.2em] text-muted dark:text-muted">
         {title}
       </h3>
 
@@ -747,10 +1071,12 @@ function CompactSection({ title, children }) {
 function IconField({ icon: Icon, label, children }) {
   return (
     <div>
-      <p className="mb-2 text-xs font-bold text-muted">{label}</p>
+      <p className="mb-2 text-xs font-bold text-muted dark:text-muted">
+        {label}
+      </p>
 
       <div className="relative">
-        <span className="pointer-events-none absolute left-3 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-lg bg-white text-zinc-400 shadow-sm dark:bg-slate-900 dark:text-slate-400">
+        <span className="pointer-events-none absolute left-3 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-lg bg-panel text-muted shadow-sm dark:bg-page dark:text-muted">
           <Icon size={14} />
         </span>
 
@@ -789,11 +1115,13 @@ function SearchableSelect({
 
   return (
     <div>
-      <p className="mb-2 text-xs font-bold text-muted">{label}</p>
+      <p className="mb-2 text-xs font-bold text-muted dark:text-muted">
+        {label}
+      </p>
 
       <div className="space-y-2">
         <div className="relative">
-          <span className="pointer-events-none absolute left-3 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-lg bg-white text-zinc-400 shadow-sm dark:bg-slate-900 dark:text-slate-400">
+          <span className="pointer-events-none absolute left-3 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-lg bg-panel text-muted shadow-sm dark:bg-page dark:text-muted">
             <Search size={14} />
           </span>
 
@@ -807,16 +1135,16 @@ function SearchableSelect({
         </div>
 
         <div className="relative">
-          <span className="pointer-events-none absolute left-3 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-lg bg-white text-zinc-400 shadow-sm dark:bg-slate-900 dark:text-slate-400">
+          <span className="pointer-events-none absolute left-3 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-lg bg-panel text-muted shadow-sm dark:bg-page dark:text-muted">
             <Icon size={14} />
           </span>
 
           <select
             className={[
-              "h-11 w-full rounded-xl border border-zinc-200 bg-white py-2.5 pl-11 pr-4 text-sm",
-              "text-zinc-900 shadow-sm outline-none transition",
-              "focus:border-zinc-900 focus:bg-white focus:ring-2 focus:ring-zinc-900/10",
-              "dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:focus:border-sky-300 dark:focus:bg-slate-950 dark:focus:ring-sky-300/20",
+              "h-11 w-full rounded-xl border border-line bg-panel py-2.5 pl-11 pr-4 text-sm",
+              "text-heading shadow-sm outline-none transition",
+              "focus:border-focus focus:bg-panel focus:ring-2 focus:ring-focus-soft",
+              "dark:border-line dark:bg-page dark:text-heading dark:focus:border-accent dark:focus:bg-page dark:focus:ring-focus-soft",
             ].join(" ")}
             disabled={loading || disabled}
             onChange={(event) => onChange(event.target.value)}
@@ -834,13 +1162,13 @@ function SearchableSelect({
         </div>
 
         {!loading && rows.length === 0 && (
-          <p className="text-xs font-semibold text-muted">
+          <p className="text-xs font-semibold text-muted dark:text-muted">
             No hay registros disponibles.
           </p>
         )}
 
         {query && options.length === 0 && rows.length > 0 && (
-          <p className="text-xs font-semibold text-muted">
+          <p className="text-xs font-semibold text-muted dark:text-muted">
             No hay coincidencias.
           </p>
         )}
@@ -854,11 +1182,11 @@ function StyledInput(props) {
     <Input
       {...props}
       className={[
-        "h-11 w-full rounded-xl border border-zinc-200 bg-white py-2.5 pl-11 pr-4 text-sm",
-        "text-zinc-900 placeholder:text-zinc-400",
+        "h-11 w-full rounded-xl border border-line bg-panel py-2.5 pl-11 pr-4 text-sm",
+        "text-heading placeholder:text-muted",
         "shadow-sm outline-none transition",
-        "focus:border-zinc-900 focus:bg-white focus:ring-2 focus:ring-zinc-900/10",
-        "dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:border-sky-300 dark:focus:bg-slate-950 dark:focus:ring-sky-300/20",
+        "focus:border-focus focus:bg-panel focus:ring-2 focus:ring-focus-soft",
+        "dark:border-line dark:bg-page dark:text-heading dark:placeholder:text-muted dark:focus:border-accent dark:focus:bg-page dark:focus:ring-focus-soft",
         props.className || "",
       ].join(" ")}
     />

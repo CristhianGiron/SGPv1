@@ -22,6 +22,8 @@ public interface CourseRepository
 
     List<Course> findByInstitutionalTutor_UsernameAndDeletedFalse(String username);
 
+    List<Course> findByAcademicCycle_IdAndDeletedFalse(Long academicCycleId);
+
     Optional<Course> findByIdAndDeletedFalse(Long id);
 
     @Query("""

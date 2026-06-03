@@ -153,12 +153,12 @@ function StudentScheduleView() {
 
 function Metric({ icon: Icon = CalendarClock, label, value }) {
   return (
-    <div className="border-l border-[#c8d2cd] px-4 py-2 first:border-l-0 dark:border-slate-700">
+    <div className="border-l border-line px-4 py-2 first:border-l-0 dark:border-line">
       <div className="flex items-center gap-2 text-xs font-extrabold uppercase text-muted">
         <Icon aria-hidden="true" size={16} />
         {label}
       </div>
-      <p className="mt-2 text-2xl font-black text-[#20282d] dark:text-slate-50">{value}</p>
+      <p className="mt-2 text-2xl font-black text-heading dark:text-heading">{value}</p>
     </div>
   );
 }
@@ -171,14 +171,14 @@ function ScheduleMatrix({ periods }) {
   }
 
   return (
-    <div className="min-w-0 max-w-full overflow-hidden rounded-lg border border-[#dbe3ed] bg-white shadow-[0_10px_24px_rgba(15,23,42,0.055)] dark:border-slate-700 dark:bg-surface">
+    <div className="min-w-0 max-w-full overflow-hidden rounded-lg border border-line bg-panel shadow-card dark:border-line dark:bg-surface">
       <div className="min-w-0 max-w-full overflow-x-auto overscroll-x-contain">
         <table className="w-max min-w-full border-separate border-spacing-0 text-sm">
-          <thead className="bg-[#d7e4e9] text-left text-xs font-extrabold uppercase text-[#475569] dark:bg-[#172033] dark:text-slate-300">
+          <thead className="bg-primary-soft text-left text-xs font-extrabold uppercase text-muted dark:bg-surface-soft dark:text-muted">
             <tr>
-              <th className="border-b border-[#dbe3ed] px-4 py-3 dark:border-slate-700" scope="col">Hora</th>
+              <th className="border-b border-line px-4 py-3 dark:border-line" scope="col">Hora</th>
               {DAY_ORDER.map((day) => (
-                <th className="border-b border-[#dbe3ed] px-4 py-3 dark:border-slate-700" key={day} scope="col">
+                <th className="border-b border-line px-4 py-3 dark:border-line" key={day} scope="col">
                   {DAY_LABELS[day]}
                 </th>
               ))}
@@ -186,23 +186,23 @@ function ScheduleMatrix({ periods }) {
           </thead>
           <tbody>
             {timeRows.map((row) => (
-              <tr className="even:bg-[#e6efea] hover:bg-[#dbe8ed] dark:even:bg-slate-950/40 dark:hover:bg-sky-300/10" key={row.slot}>
-                <th className="border-b border-[#edf2f7] bg-[#eef3f2] px-4 py-3 text-left font-extrabold text-[#40525a] dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200" scope="row">
+              <tr className="even:bg-panel-soft hover:bg-primary-soft dark:even:bg-page/40 dark:hover:bg-info-soft" key={row.slot}>
+                <th className="border-b border-line-soft bg-panel-soft px-4 py-3 text-left font-extrabold text-nav-text dark:border-line dark:bg-surface dark:text-body" scope="row">
                   {row.slot}
                 </th>
                 {DAY_ORDER.map((day) => (
-                  <td className="border-b border-[#edf2f7] px-4 py-3 align-top text-[#263241] dark:border-slate-800 dark:text-ink" key={day}>
+                  <td className="border-b border-line-soft px-4 py-3 align-top text-body dark:border-line dark:text-ink" key={day}>
                     {row.byDay[day]?.length ? (
                       <div className="space-y-2">
                         {row.byDay[day].map((period) => (
                           <div key={period.id || `${period.dayOfWeek}-${period.startTime}-${period.place}`}>
-                            <p className="font-bold text-[#20282d] dark:text-slate-100">{period.place || 'Jornada'}</p>
+                            <p className="font-bold text-heading dark:text-heading">{period.place || 'Jornada'}</p>
                             {period.notes && <p className="text-xs text-muted">{period.notes}</p>}
                           </div>
                         ))}
                       </div>
                     ) : (
-                      <span className="text-slate-300 dark:text-slate-600">-</span>
+                      <span className="text-muted dark:text-muted">-</span>
                     )}
                   </td>
                 ))}
