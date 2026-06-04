@@ -11,6 +11,10 @@ function isVisibleActiveRecord(row) {
     return true;
   }
 
+  if (row.status === 'COMPLETED') {
+    return true;
+  }
+
   if (row.active === false || row.enabled === false || row.courseActive === false) {
     return false;
   }

@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { CheckCheck, Send } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { CheckCheck, ChevronDown, Send } from 'lucide-react';
 import { apiRequest } from '../api/client';
 import { useAuth } from '../auth/AuthContext';
 import { PageHeader } from '../components/ui/PageHeader';
@@ -13,6 +13,7 @@ import { NotificationItem } from '../components/notifications/NotificationItem';
 import { ROLES } from '../config/resources';
 import { formatRole } from '../utils/format';
 import { hasNotificationLink, openNotificationLink } from '../utils/notificationLinks';
+import { splitNotificationsForArchive } from '../utils/notificationArchive';
 
 const EMPTY_ANNOUNCEMENT = {
   title: '',
@@ -41,7 +42,13 @@ export function NotificationsPage() {
   const [announcementError, setAnnouncementError] = useState('');
   const [announcementMessage, setAnnouncementMessage] = useState('');
   const [announcementOpen, setAnnouncementOpen] = useState(false);
+  const [archivedOpen, setArchivedOpen] = useState(false);
   const isAdmin = roles.includes('ROLE_ADMIN');
+  const { recentNotifications, archivedNotifications } = useMemo(
+    () => splitNotificationsForArchive(notifications),
+    [notifications],
+  );
+  const hasArchivedNotifications = archivedNotifications.length > 0;
 
   function updateAnnouncementField(field, value) {
     setAnnouncement((current) => ({
@@ -256,9 +263,55 @@ export function NotificationsPage() {
           <div className="rounded-lg border border-dashed border-line bg-panel-soft p-4 text-center text-sm leading-6 text-muted dark:border-line dark:bg-surface-soft dark:text-muted">
             Todavía no tienes notificaciones.
           </div>
+        ) : recentNotifications.length === 0 ? (
+          <div className="grid gap-3">
+            <div className="rounded-lg border border-dashed border-line bg-panel-soft p-4 text-center text-sm leading-6 text-muted dark:border-line dark:bg-surface-soft dark:text-muted">
+              No tienes notificaciones recientes.
+            </div>
+
+            {hasArchivedNotifications && (
+              <section className="mt-1 overflow-hidden rounded-lg border border-line bg-panel-soft dark:border-line dark:bg-surface-soft">
+                <button
+                  type="button"
+                  className="flex min-h-12 w-full items-center justify-between gap-3 px-4 py-3 text-left text-sm font-[850] text-heading transition-colors hover:bg-hover-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:text-heading"
+                  aria-expanded={archivedOpen}
+                  onClick={() => setArchivedOpen((current) => !current)}
+                >
+                  <span className="min-w-0 truncate">
+                    Notificaciones archivadas ({archivedNotifications.length})
+                  </span>
+                  <ChevronDown
+                    aria-hidden="true"
+                    className={`flex-none text-muted transition-transform ${archivedOpen ? 'rotate-180' : ''}`}
+                    size={18}
+                  />
+                </button>
+
+                {archivedOpen && (
+                  <div className="grid gap-3 border-t border-line p-3 dark:border-line">
+                    {archivedNotifications.map((notification) => (
+                      <NotificationItem
+                        key={notification.id}
+                        notification={notification}
+                        onClick={async (item) => {
+                          if (!item.read) {
+                            await markAsRead(item.id);
+                          }
+
+                          if (hasNotificationLink(item.link)) {
+                            openNotificationLink(item.link);
+                          }
+                        }}
+                      />
+                    ))}
+                  </div>
+                )}
+              </section>
+            )}
+          </div>
         ) : (
           <div className="grid gap-3">
-            {notifications.map((notification) => (
+            {recentNotifications.map((notification) => (
               <NotificationItem
                 key={notification.id}
                 notification={notification}
@@ -273,6 +326,46 @@ export function NotificationsPage() {
                 }}
               />
             ))}
+
+            {hasArchivedNotifications && (
+              <section className="mt-1 overflow-hidden rounded-lg border border-line bg-panel-soft dark:border-line dark:bg-surface-soft">
+                <button
+                  type="button"
+                  className="flex min-h-12 w-full items-center justify-between gap-3 px-4 py-3 text-left text-sm font-[850] text-heading transition-colors hover:bg-hover-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:text-heading"
+                  aria-expanded={archivedOpen}
+                  onClick={() => setArchivedOpen((current) => !current)}
+                >
+                  <span className="min-w-0 truncate">
+                    Notificaciones archivadas ({archivedNotifications.length})
+                  </span>
+                  <ChevronDown
+                    aria-hidden="true"
+                    className={`flex-none text-muted transition-transform ${archivedOpen ? 'rotate-180' : ''}`}
+                    size={18}
+                  />
+                </button>
+
+                {archivedOpen && (
+                  <div className="grid gap-3 border-t border-line p-3 dark:border-line">
+                    {archivedNotifications.map((notification) => (
+                      <NotificationItem
+                        key={notification.id}
+                        notification={notification}
+                        onClick={async (item) => {
+                          if (!item.read) {
+                            await markAsRead(item.id);
+                          }
+
+                          if (hasNotificationLink(item.link)) {
+                            openNotificationLink(item.link);
+                          }
+                        }}
+                      />
+                    ))}
+                  </div>
+                )}
+              </section>
+            )}
           </div>
         )}
       </div>

@@ -4,7 +4,7 @@ import { apiRequest, toQuery, unwrapPage } from '../api/client';
 import { useAuth } from '../auth/AuthContext';
 import { Alert } from '../components/ui/Alert';
 import { PrimaryButton } from '../components/ui/ActionBar';
-import { Field, FileInput, Input } from '../components/ui/FormControls';
+import { Field, FileInput, Input, PasswordInput } from '../components/ui/FormControls';
 import { Modal } from '../components/ui/Modal';
 import { ModuleTab, ModuleTabs } from '../components/ui/ModuleTabs';
 import { PageHeader } from '../components/ui/PageHeader';
@@ -299,8 +299,7 @@ export function ProfilePage() {
           <form className="space-y-4" onSubmit={changePassword}>
             <div className='grid lg:grid-cols-2 grid-cols-1 gap-3'>
         <Field label="Actual">
-              <Input
-                type="password"
+              <PasswordInput
                 value={passwordForm.currentPassword}
                 onChange={(event) =>
                   setPasswordForm((current) => ({
@@ -312,8 +311,7 @@ export function ProfilePage() {
               />
             </Field>
             <Field label="Nueva">
-              <Input
-                type="password"
+              <PasswordInput
                 value={passwordForm.newPassword}
                 onChange={(event) =>
                   setPasswordForm((current) => ({
@@ -325,8 +323,7 @@ export function ProfilePage() {
               />
             </Field>
             <Field label="Confirmar">
-              <Input
-                type="password"
+              <PasswordInput
                 value={passwordForm.confirmPassword}
                 onChange={(event) =>
                   setPasswordForm((current) => ({
@@ -463,6 +460,8 @@ function enrollmentScore(enrollment) {
     ? 100
     : enrollment.status === 'PENDING'
       ? 40
+      : enrollment.status === 'COMPLETED'
+        ? 30
       : 10;
   const completenessScore = [
     enrollment.groupName,
@@ -478,6 +477,7 @@ function enrollmentScore(enrollment) {
 function formatEnrollmentStatus(status) {
   const labels = {
     APPROVED: 'Aprobada',
+    COMPLETED: 'Concluida',
     PENDING: 'Pendiente',
     REJECTED: 'Rechazada',
   };

@@ -48,6 +48,9 @@ class EnrollmentServiceTest {
     @Mock
     private NotificationService notificationService;
 
+    @Mock
+    private PracticeAuditService practiceAuditService;
+
     private EnrollmentService enrollmentService;
 
     @BeforeEach
@@ -61,7 +64,9 @@ class EnrollmentServiceTest {
                 courseRepository,
                 courseGroupRepository,
                 subjectRepository,
-                notificationService);
+                notificationService,
+                practiceAuditService,
+                new PracticeAccessService());
     }
 
     @Test

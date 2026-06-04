@@ -18,6 +18,7 @@ import { AppLayout } from "./layout/AppLayout";
 import { AccountsPage } from "./pages/AccountsPage";
 import { CoursesPage } from "./pages/CoursesPage";
 import { DashboardPage } from "./pages/DashboardPage";
+import { DidacticPlansPage } from "./pages/DidacticPlansPage";
 import { DocumentsPage } from "./pages/DocumentsPage";
 import { ForcePasswordChangePage } from "./pages/ForcePasswordChangePage";
 import { EvidenceViewerPage } from "./pages/EvidenceViewerPage";
@@ -28,6 +29,7 @@ import { RegisterStudentPage } from "./pages/RegisterPublic";
 import { PhotosPage } from "./pages/PhotosPage";
 import { ObservationFormsPage, PracticeFormsPage } from "./pages/PracticeFormsPage";
 import { PracticeInstitutionsPage } from "./pages/PracticeInstitutionsPage";
+import { PracticeArchivePage } from "./pages/PracticeArchivePage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { ReportsPage } from "./pages/ReportsPage";
 import { SchedulesPage } from "./pages/SchedulesPage";
@@ -53,6 +55,8 @@ const PAGES = {
   forms: PracticeFormsPage,
   "observation-forms": ObservationFormsPage,
   courses: CoursesPage,
+  "practice-archive": PracticeArchivePage,
+  "didactic-plans": DidacticPlansPage,
   documents: DocumentsPage,
   schedules: SchedulesPage,
   institutions: PracticeInstitutionsPage,

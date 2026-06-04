@@ -52,7 +52,8 @@ class PracticePhotoServiceTest {
         practicePhotoService = new PracticePhotoService(
                 practicePhotoRepository,
                 enrollmentRepository,
-                accountRepository);
+                accountRepository,
+                new PracticeAccessService());
     }
 
     @Test
@@ -154,8 +155,11 @@ class PracticePhotoServiceTest {
                 .thenReturn(Optional.of(practiceTutor));
 
         when(practicePhotoRepository
-                .findByDeletedFalseOrderByUploadedAtDesc())
+                .findByCourse_PracticeTutor_UsernameAndDeletedFalseOrderByUploadedAtDesc("tutor.practicas"))
                 .thenReturn(List.of(photo));
+        when(practicePhotoRepository
+                .findByEnrollment_Course_PracticeTutor_UsernameAndDeletedFalseOrderByUploadedAtDesc("tutor.practicas"))
+                .thenReturn(List.of());
 
         List<PracticePhotoResponse> response =
                 practicePhotoService.reviewQueue("tutor.practicas");
@@ -194,7 +198,7 @@ class PracticePhotoServiceTest {
     }
 
     @Test
-    void practiceTutorCanOpenUploadedPhotoEvenWhenCourseIsUnassigned() {
+    void practiceTutorCannotOpenUploadedPhotoFromUnassignedCourse() {
 
         PracticePhoto photo = photo(
                 student(),
@@ -213,12 +217,11 @@ class PracticePhotoServiceTest {
         when(accountRepository.findByUsernameAndDeletedFalse("otro.tutor"))
                 .thenReturn(Optional.of(otherTutor));
 
-        PracticePhotoResponse response = practicePhotoService.getById(
+        assertThatThrownBy(() -> practicePhotoService.getById(
                 1L,
-                "otro.tutor");
-
-        assertThat(response.getStudentFullName())
-                .isEqualTo("Ana Loja");
+                "otro.tutor"))
+                .isInstanceOf(AccessDeniedException.class)
+                .hasMessage("No puedes ver esta fotografia de practicas");
     }
 
     @Test

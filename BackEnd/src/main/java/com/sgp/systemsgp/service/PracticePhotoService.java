@@ -48,6 +48,7 @@ public class PracticePhotoService {
     private final PracticePhotoRepository practicePhotoRepository;
     private final EnrollmentRepository enrollmentRepository;
     private final AccountRepository accountRepository;
+    private final PracticeAccessService practiceAccessService;
 
     @Transactional
     public PracticePhotoResponse upload(
@@ -117,10 +118,27 @@ public class PracticePhotoService {
         Account reviewer = getAccount(username);
 
         if (hasRole(reviewer, RoleName.ROLE_ADMIN)
-                || hasRole(reviewer, RoleName.ROLE_DIRECTOR_PRACTICAS)
-                || hasRole(reviewer, RoleName.ROLE_TUTOR_PRACTICAS)) {
+                || hasRole(reviewer, RoleName.ROLE_DIRECTOR_PRACTICAS)) {
             return practicePhotoRepository
                     .findByDeletedFalseOrderByUploadedAtDesc()
+                    .stream()
+                    .filter(photo -> canViewPhoto(photo, reviewer))
+                    .map(this::mapToResponse)
+                    .toList();
+        }
+
+        if (hasRole(reviewer, RoleName.ROLE_TUTOR_PRACTICAS)) {
+            List<PracticePhoto> photos = new ArrayList<>();
+            addPhotos(
+                    photos,
+                    practicePhotoRepository
+                            .findByCourse_PracticeTutor_UsernameAndDeletedFalseOrderByUploadedAtDesc(username));
+            addPhotos(
+                    photos,
+                    practicePhotoRepository
+                            .findByEnrollment_Course_PracticeTutor_UsernameAndDeletedFalseOrderByUploadedAtDesc(username));
+
+            return uniquePhotos(photos)
                     .stream()
                     .map(this::mapToResponse)
                     .toList();
@@ -386,17 +404,21 @@ public class PracticePhotoService {
             PracticePhoto photo,
             Account account) {
 
-        if (photo.getStudent().getId().equals(account.getId())
-                || isAssignedPracticeTutor(resolveCourse(photo), account)
-                || isAssignedInstitutionalTutor(photo.getEnrollment(), account)
-                || hasRole(account, RoleName.ROLE_ADMIN)
-                || hasRole(account, RoleName.ROLE_DIRECTOR_PRACTICAS)
-                || hasRole(account, RoleName.ROLE_TUTOR_PRACTICAS)) {
+        if (canViewPhoto(photo, account)) {
             return;
         }
 
         throw new AccessDeniedException(
                 "No puedes ver esta fotografia de practicas");
+    }
+
+    private boolean canViewPhoto(PracticePhoto photo, Account account) {
+
+        return photo.getStudent().getId().equals(account.getId())
+                || practiceAccessService.isPracticeTutorForCourse(resolveCourse(photo), account)
+                || practiceAccessService.isInstitutionalTutorForEnrollment(photo.getEnrollment(), account)
+                || practiceAccessService.isAdmin(account)
+                || practiceAccessService.isDirectorForCourse(resolveCourse(photo), account);
     }
 
     private void validateCanViewEnrollment(
@@ -410,34 +432,15 @@ public class PracticePhotoService {
             return;
         }
 
-        if (isAssignedPracticeTutor(course, account)
-                || isAssignedInstitutionalTutor(enrollment, account)
-                || hasRole(account, RoleName.ROLE_ADMIN)
-                || hasRole(account, RoleName.ROLE_DIRECTOR_PRACTICAS)
-                || hasRole(account, RoleName.ROLE_TUTOR_PRACTICAS)) {
+        if (practiceAccessService.isPracticeTutorForCourse(course, account)
+                || practiceAccessService.isInstitutionalTutorForEnrollment(enrollment, account)
+                || practiceAccessService.isAdmin(account)
+                || practiceAccessService.isDirectorForCourse(course, account)) {
             return;
         }
 
         throw new AccessDeniedException(
                 "No puedes ver fotografias de esta inscripcion");
-    }
-
-    private boolean isAssignedPracticeTutor(
-            Course course,
-            Account account) {
-
-        return course != null
-                && course.getPracticeTutor() != null
-                && course.getPracticeTutor().getId().equals(account.getId());
-    }
-
-    private boolean isAssignedInstitutionalTutor(
-            Enrollment enrollment,
-            Account account) {
-
-        return InstitutionalAssignmentResolver.isAssignedInstitutionalTutor(
-                enrollment,
-                account);
     }
 
     private boolean hasRole(

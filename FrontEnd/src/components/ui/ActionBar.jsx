@@ -9,6 +9,9 @@ const primaryButton =
 const secondaryButton =
   'border-accent bg-transparent text-primary hover:border-primary hover:bg-primary hover:text-inverse dark:border-line dark:bg-surface dark:text-ink dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong';
 
+const closeButton =
+  'border-accent bg-transparent text-inverse hover:border-primary hover:bg-primary hover:text-inverse dark:border-line dark:bg-surface dark:text-ink dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong';
+
 const dangerButton =
   'border-danger bg-danger-soft text-danger-strong hover:border-danger hover:bg-danger-soft dark:border-danger/40 dark:bg-danger-soft dark:text-danger-strong dark:hover:bg-danger-soft';
 
@@ -71,6 +74,30 @@ export function SecondaryButton({
       {...props}
       aria-busy={loading || undefined}
       className={cx(baseButton, secondaryButton, className)}
+      disabled={disabled || loading}
+      type={type}
+    >
+      <ButtonContent icon={icon} loading={loading}>
+        {children}
+      </ButtonContent>
+    </button>
+  );
+}
+
+export function CloseButton({
+  children,
+  className = '',
+  disabled,
+  icon,
+  loading = false,
+  type = 'button',
+  ...props
+}) {
+  return (
+    <button
+      {...props}
+      aria-busy={loading || undefined}
+      className={cx(baseButton, closeButton, className)}
       disabled={disabled || loading}
       type={type}
     >

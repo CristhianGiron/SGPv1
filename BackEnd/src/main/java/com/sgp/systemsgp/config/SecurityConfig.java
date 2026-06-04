@@ -30,6 +30,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
         private final JwtAuthFilter jwtAuthFilter;
+        private final RateLimitingFilter rateLimitingFilter;
 
         @Bean
         public PasswordEncoder passwordEncoder() {
@@ -120,10 +121,23 @@ public class SecurityConfig {
                                                 .requestMatchers("/api/courses", "/api/courses/**")
                                                 .hasAnyRole("ADMIN", "DIRECTOR_PRACTICAS")
                                                 .requestMatchers("/api/enrollments/me").hasRole("ESTUDIANTE")
+                                                .requestMatchers(HttpMethod.GET, "/api/enrollments/practices")
+                                                .hasAnyRole("ESTUDIANTE", "ADMIN", "DIRECTOR_PRACTICAS",
+                                                                "TUTOR_PRACTICAS", "TUTOR_INSTITUCIONAL")
                                                 .requestMatchers(HttpMethod.DELETE, "/api/enrollments/*")
                                                 .hasRole("ESTUDIANTE")
                                                 .requestMatchers(HttpMethod.PATCH, "/api/enrollments/*/group/*")
                                                 .hasAnyRole("ADMIN", "TUTOR_PRACTICAS")
+                                                .requestMatchers(HttpMethod.PATCH, "/api/enrollments/*/complete")
+                                                .hasAnyRole("ADMIN", "DIRECTOR_PRACTICAS", "TUTOR_PRACTICAS")
+                                                .requestMatchers(HttpMethod.PATCH, "/api/enrollments/*/reopen")
+                                                .hasAnyRole("ADMIN", "DIRECTOR_PRACTICAS", "TUTOR_PRACTICAS")
+                                                .requestMatchers(HttpMethod.PATCH, "/api/enrollments/*/archive")
+                                                .hasAnyRole("ADMIN", "DIRECTOR_PRACTICAS", "TUTOR_PRACTICAS")
+                                                .requestMatchers(HttpMethod.PATCH, "/api/enrollments/*/unarchive")
+                                                .hasAnyRole("ADMIN", "DIRECTOR_PRACTICAS", "TUTOR_PRACTICAS")
+                                                .requestMatchers(HttpMethod.PATCH, "/api/enrollments/archive-completed")
+                                                .hasAnyRole("ADMIN", "DIRECTOR_PRACTICAS", "TUTOR_PRACTICAS")
                                                 .requestMatchers("/api/enrollments/**")
                                                 .hasAnyRole("ADMIN", "DIRECTOR_PRACTICAS", "TUTOR_PRACTICAS",
                                                                 "TUTOR_INSTITUCIONAL")
@@ -303,6 +317,8 @@ public class SecurityConfig {
                                                 .hasRole("TUTOR_INSTITUCIONAL")
                                                 .requestMatchers(HttpMethod.GET, "/api/practice-schedules/institution-review")
                                                 .hasRole("DIRECTORA_INSTITUCION")
+                                                .requestMatchers(HttpMethod.GET, "/api/practice-schedules/review")
+                                                .hasAnyRole("TUTOR_PRACTICAS", "DIRECTOR_PRACTICAS", "ADMIN")
                                                 .requestMatchers(HttpMethod.PUT, "/api/practice-schedules/*")
                                                 .hasRole("TUTOR_INSTITUCIONAL")
                                                 .requestMatchers(HttpMethod.POST, "/api/practice-schedules/*/attendances")
@@ -313,6 +329,31 @@ public class SecurityConfig {
                                                 .hasAnyRole("ESTUDIANTE", "TUTOR_INSTITUCIONAL", "TUTOR_PRACTICAS",
                                                                 "DIRECTORA_INSTITUCION", "DIRECTOR_PRACTICAS",
                                                                 "ADMIN")
+
+                                                .requestMatchers(HttpMethod.POST, "/api/didactic-plans")
+                                                .hasAnyRole("ESTUDIANTE", "TUTOR_INSTITUCIONAL")
+                                                .requestMatchers(HttpMethod.GET, "/api/didactic-plans/me")
+                                                .hasRole("ESTUDIANTE")
+                                                .requestMatchers(HttpMethod.GET, "/api/didactic-plans/managed")
+                                                .hasAnyRole("TUTOR_INSTITUCIONAL", "TUTOR_PRACTICAS",
+                                                                "DIRECTOR_PRACTICAS", "ADMIN")
+                                                .requestMatchers(HttpMethod.PUT, "/api/didactic-plans/*")
+                                                .hasAnyRole("ESTUDIANTE", "TUTOR_INSTITUCIONAL")
+                                                .requestMatchers(HttpMethod.DELETE, "/api/didactic-plans/*")
+                                                .hasAnyRole("ESTUDIANTE", "TUTOR_INSTITUCIONAL")
+                                                .requestMatchers(HttpMethod.PATCH, "/api/didactic-plans/*/submit")
+                                                .hasAnyRole("ESTUDIANTE", "TUTOR_INSTITUCIONAL")
+                                                .requestMatchers(HttpMethod.PATCH, "/api/didactic-plans/*/recommendations")
+                                                .hasAnyRole("TUTOR_INSTITUCIONAL", "TUTOR_PRACTICAS",
+                                                                "DIRECTOR_PRACTICAS", "ADMIN")
+                                                .requestMatchers(HttpMethod.POST, "/api/didactic-plans/*/pdf")
+                                                .hasAnyRole("ESTUDIANTE", "TUTOR_INSTITUCIONAL")
+                                                .requestMatchers(HttpMethod.GET, "/api/didactic-plans/*/pdf")
+                                                .hasAnyRole("ESTUDIANTE", "TUTOR_INSTITUCIONAL", "TUTOR_PRACTICAS",
+                                                                "DIRECTOR_PRACTICAS", "ADMIN")
+                                                .requestMatchers(HttpMethod.GET, "/api/didactic-plans/*")
+                                                .hasAnyRole("ESTUDIANTE", "TUTOR_INSTITUCIONAL", "TUTOR_PRACTICAS",
+                                                                "DIRECTOR_PRACTICAS", "ADMIN")
 
                                                 .requestMatchers(HttpMethod.POST, "/api/practice-forms")
                                                 .hasRole("ESTUDIANTE")
@@ -367,6 +408,9 @@ public class SecurityConfig {
                                                                 .sendError(HttpServletResponse.SC_FORBIDDEN,
                                                                                 "Acceso denegado")))
                                 /// bootstrap/admin
+                                .addFilterBefore(
+                                                rateLimitingFilter,
+                                                UsernamePasswordAuthenticationFilter.class)
                                 .addFilterBefore(
                                                 jwtAuthFilter,
                                                 UsernamePasswordAuthenticationFilter.class);

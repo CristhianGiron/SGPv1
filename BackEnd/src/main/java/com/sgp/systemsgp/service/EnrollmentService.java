@@ -35,12 +35,23 @@ import java.util.Map;
 @Transactional(readOnly = true)
 public class EnrollmentService {
 
+    private static final List<EnrollmentStatus> VISIBLE_PRACTICE_STATUSES = List.of(
+            EnrollmentStatus.APPROVED,
+            EnrollmentStatus.COMPLETED);
+
+    private static final List<EnrollmentStatus> PRACTICE_LIST_STATUSES = List.of(
+            EnrollmentStatus.PENDING,
+            EnrollmentStatus.APPROVED,
+            EnrollmentStatus.COMPLETED);
+
     private final EnrollmentRepository enrollmentRepository;
     private final AccountRepository accountRepository;
     private final CourseRepository courseRepository;
     private final CourseGroupRepository courseGroupRepository;
     private final SubjectRepository subjectRepository;
     private final NotificationService notificationService;
+    private final PracticeAuditService practiceAuditService;
+    private final PracticeAccessService practiceAccessService;
 
     @Transactional
     public EnrollmentResponse enroll(
@@ -103,6 +114,168 @@ public class EnrollmentService {
         notificationService.notifyEnrollmentRejected(enrollment);
 
         return mapToResponse(enrollment);
+    }
+
+    @Transactional
+    public EnrollmentResponse complete(String username, Long id) {
+
+        Account account = getAccount(username);
+        Enrollment enrollment = getEnrollment(id);
+        validatePracticeLifecycleManagerCanManage(enrollment, account);
+
+        if (enrollment.getStatus() != EnrollmentStatus.APPROVED) {
+            throw new BadRequestException(
+                    "Solo se pueden concluir practicas aprobadas");
+        }
+
+        EnrollmentStatus previousStatus = enrollment.getStatus();
+        boolean previousArchived = enrollment.isArchived();
+        enrollment.setStatus(EnrollmentStatus.COMPLETED);
+        enrollment.setArchived(false);
+        enrollment.setArchivedAt(null);
+        enrollmentRepository.save(enrollment);
+        practiceAuditService.logEnrollmentAction(
+                enrollment,
+                account,
+                "COMPLETE_PRACTICE",
+                previousStatus.name(),
+                enrollment.getStatus().name(),
+                previousArchived,
+                enrollment.isArchived(),
+                null);
+
+        return mapToResponse(enrollment);
+    }
+
+    @Transactional
+    public EnrollmentResponse reopen(String username, Long id) {
+
+        Account account = getAccount(username);
+        Enrollment enrollment = getEnrollment(id);
+        validatePracticeLifecycleManagerCanManage(enrollment, account);
+
+        if (enrollment.getStatus() != EnrollmentStatus.COMPLETED) {
+            throw new BadRequestException(
+                    "Solo se pueden reabrir practicas concluidas");
+        }
+
+        EnrollmentStatus previousStatus = enrollment.getStatus();
+        boolean previousArchived = enrollment.isArchived();
+        validateSingleActiveEnrollment(enrollment.getAccount(), enrollment.getId());
+        enrollment.setStatus(EnrollmentStatus.APPROVED);
+        enrollment.setArchived(false);
+        enrollment.setArchivedAt(null);
+        enrollmentRepository.save(enrollment);
+        practiceAuditService.logEnrollmentAction(
+                enrollment,
+                account,
+                "REOPEN_PRACTICE",
+                previousStatus.name(),
+                enrollment.getStatus().name(),
+                previousArchived,
+                enrollment.isArchived(),
+                null);
+
+        return mapToResponse(enrollment);
+    }
+
+    @Transactional
+    public EnrollmentResponse archive(String username, Long id) {
+
+        Account account = getAccount(username);
+        Enrollment enrollment = getEnrollment(id);
+        validatePracticeLifecycleManagerCanManage(enrollment, account);
+        requireCompletedForArchive(enrollment);
+
+        boolean previousArchived = enrollment.isArchived();
+        enrollment.setArchived(true);
+        enrollment.setArchivedAt(LocalDateTime.now());
+        enrollmentRepository.save(enrollment);
+        practiceAuditService.logEnrollmentAction(
+                enrollment,
+                account,
+                "ARCHIVE_PRACTICE",
+                enrollment.getStatus().name(),
+                enrollment.getStatus().name(),
+                previousArchived,
+                enrollment.isArchived(),
+                null);
+
+        return mapToResponse(enrollment);
+    }
+
+    @Transactional
+    public EnrollmentResponse unarchive(String username, Long id) {
+
+        Account account = getAccount(username);
+        Enrollment enrollment = getEnrollment(id);
+        validatePracticeLifecycleManagerCanManage(enrollment, account);
+        requireCompletedForArchive(enrollment);
+
+        boolean previousArchived = enrollment.isArchived();
+        enrollment.setArchived(false);
+        enrollment.setArchivedAt(null);
+        enrollmentRepository.save(enrollment);
+        practiceAuditService.logEnrollmentAction(
+                enrollment,
+                account,
+                "UNARCHIVE_PRACTICE",
+                enrollment.getStatus().name(),
+                enrollment.getStatus().name(),
+                previousArchived,
+                enrollment.isArchived(),
+                null);
+
+        return mapToResponse(enrollment);
+    }
+
+    @Transactional
+    public List<EnrollmentResponse> archiveAllCompleted(String username) {
+
+        Account account = getAccount(username);
+        if (!canArchivePractices(account)) {
+            throw new BadRequestException(
+                    "No tienes permisos para archivar practicas");
+        }
+
+        List<Enrollment> visiblePractices = visiblePracticeEnrollments(account)
+                .stream()
+                .filter(enrollment -> canViewEnrollment(enrollment, account))
+                .filter(enrollment -> !enrollment.isArchived())
+                .toList();
+
+        boolean hasUncompletedPractices = visiblePractices
+                .stream()
+                .anyMatch(enrollment -> enrollment.getStatus() != EnrollmentStatus.COMPLETED);
+
+        if (hasUncompletedPractices) {
+            throw new BadRequestException(
+                    "Solo se puede archivar todo cuando todas las practicas visibles estan concluidas");
+        }
+
+        LocalDateTime archivedAt = LocalDateTime.now();
+        visiblePractices
+                .forEach(enrollment -> {
+                    boolean previousArchived = enrollment.isArchived();
+                    enrollment.setArchived(true);
+                    enrollment.setArchivedAt(archivedAt);
+                    practiceAuditService.logEnrollmentAction(
+                            enrollment,
+                            account,
+                            "ARCHIVE_ALL_COMPLETED",
+                            enrollment.getStatus().name(),
+                            enrollment.getStatus().name(),
+                            previousArchived,
+                            enrollment.isArchived(),
+                            "Archivo masivo de prácticas concluidas");
+                });
+
+        enrollmentRepository.saveAll(visiblePractices);
+
+        return visiblePractices
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
     }
 
     @Transactional
@@ -198,21 +371,21 @@ public class EnrollmentService {
 
         if (hasRole(account, RoleName.ROLE_ADMIN)
                 || hasRole(account, RoleName.ROLE_DIRECTOR_PRACTICAS)) {
-            enrollments.addAll(enrollmentRepository.findByStatus(EnrollmentStatus.APPROVED));
+            enrollments.addAll(enrollmentRepository.findByStatusIn(VISIBLE_PRACTICE_STATUSES));
         } else {
             if (hasRole(account, RoleName.ROLE_TUTOR_PRACTICAS)) {
-                enrollments.addAll(enrollmentRepository.findByCourse_PracticeTutor_UsernameAndStatus(
+                enrollments.addAll(enrollmentRepository.findByCourse_PracticeTutor_UsernameAndStatusIn(
                         username,
-                        EnrollmentStatus.APPROVED));
+                        VISIBLE_PRACTICE_STATUSES));
             }
 
             if (hasRole(account, RoleName.ROLE_TUTOR_INSTITUCIONAL)) {
-                enrollments.addAll(enrollmentRepository.findByGroup_InstitutionalTutor_UsernameAndStatus(
+                enrollments.addAll(enrollmentRepository.findByGroup_InstitutionalTutor_UsernameAndStatusIn(
                         username,
-                        EnrollmentStatus.APPROVED));
-                enrollments.addAll(enrollmentRepository.findByCourse_InstitutionalTutor_UsernameAndStatus(
+                        VISIBLE_PRACTICE_STATUSES));
+                enrollments.addAll(enrollmentRepository.findByCourse_InstitutionalTutor_UsernameAndStatusIn(
                         username,
-                        EnrollmentStatus.APPROVED));
+                        VISIBLE_PRACTICE_STATUSES));
             }
         }
 
@@ -224,7 +397,22 @@ public class EnrollmentService {
         return uniqueEnrollments
                 .values()
                 .stream()
-                .filter(this::isActiveCourseEnrollment)
+                .filter(enrollment -> enrollment.getStatus() == EnrollmentStatus.COMPLETED
+                        || isActiveCourseEnrollment(enrollment))
+                .filter(enrollment -> canViewEnrollment(enrollment, account))
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+    public List<EnrollmentResponse> practiceEnrollments(String username) {
+
+        Account account = getAccount(username);
+
+        return visiblePracticeEnrollments(account)
+                .stream()
+                .filter(enrollment -> enrollment.getStatus() == EnrollmentStatus.COMPLETED
+                        || isActiveCourseEnrollment(enrollment))
+                .filter(enrollment -> PRACTICE_LIST_STATUSES.contains(enrollment.getStatus()))
                 .filter(enrollment -> canViewEnrollment(enrollment, account))
                 .map(this::mapToResponse)
                 .toList();
@@ -428,6 +616,13 @@ public class EnrollmentService {
         validateDirectorCanManageCourse(enrollment.getCourse(), account);
     }
 
+    private void validatePracticeLifecycleManagerCanManage(
+            Enrollment enrollment,
+            Account account) {
+
+        practiceAccessService.requirePracticeLifecycleAccess(enrollment, account);
+    }
+
     private void validateDirectorCanManageCourse(
             Course course,
             Account account) {
@@ -452,20 +647,7 @@ public class EnrollmentService {
             Enrollment enrollment,
             Account account) {
 
-        if (hasRole(account, RoleName.ROLE_ADMIN)) {
-            return true;
-        }
-
-        if (hasRole(account, RoleName.ROLE_DIRECTOR_PRACTICAS)) {
-            Career directorCareer = account.getCareer();
-            Career courseCareer = getCourseCareer(enrollment.getCourse());
-
-            return directorCareer != null
-                    && courseCareer != null
-                    && directorCareer.getId().equals(courseCareer.getId());
-        }
-
-        return true;
+        return practiceAccessService.canViewEnrollment(enrollment, account);
     }
 
     private void validateSingleActiveEnrollment(
@@ -502,6 +684,57 @@ public class EnrollmentService {
             throw new BadRequestException(
                     "Solo puedes cancelar inscripciones pendientes");
         }
+    }
+
+    private void requireCompletedForArchive(Enrollment enrollment) {
+
+        if (enrollment.getStatus() != EnrollmentStatus.COMPLETED) {
+            throw new BadRequestException(
+                    "Solo se pueden archivar practicas concluidas");
+        }
+    }
+
+    private boolean canArchivePractices(Account account) {
+
+        return hasRole(account, RoleName.ROLE_ADMIN)
+                || hasRole(account, RoleName.ROLE_DIRECTOR_PRACTICAS)
+                || hasRole(account, RoleName.ROLE_TUTOR_PRACTICAS);
+    }
+
+    private List<Enrollment> visiblePracticeEnrollments(Account account) {
+
+        List<Enrollment> enrollments = new ArrayList<>();
+
+        if (hasRole(account, RoleName.ROLE_ESTUDIANTE)) {
+            enrollments.addAll(enrollmentRepository.findByAccount_Id(account.getId()));
+        }
+
+        if (hasRole(account, RoleName.ROLE_ADMIN)
+                || hasRole(account, RoleName.ROLE_DIRECTOR_PRACTICAS)) {
+            enrollments.addAll(enrollmentRepository.findByStatusIn(PRACTICE_LIST_STATUSES));
+        } else {
+            if (hasRole(account, RoleName.ROLE_TUTOR_PRACTICAS)) {
+                enrollments.addAll(enrollmentRepository.findByCourse_PracticeTutor_UsernameAndStatusIn(
+                        account.getUsername(),
+                        PRACTICE_LIST_STATUSES));
+            }
+
+            if (hasRole(account, RoleName.ROLE_TUTOR_INSTITUCIONAL)) {
+                enrollments.addAll(enrollmentRepository.findByGroup_InstitutionalTutor_UsernameAndStatusIn(
+                        account.getUsername(),
+                        PRACTICE_LIST_STATUSES));
+                enrollments.addAll(enrollmentRepository.findByCourse_InstitutionalTutor_UsernameAndStatusIn(
+                        account.getUsername(),
+                        PRACTICE_LIST_STATUSES));
+            }
+        }
+
+        Map<Long, Enrollment> uniqueEnrollments = new LinkedHashMap<>();
+        enrollments.forEach(enrollment -> uniqueEnrollments.putIfAbsent(
+                enrollment.getId(),
+                enrollment));
+
+        return new ArrayList<>(uniqueEnrollments.values());
     }
 
     private boolean hasRole(
@@ -559,6 +792,10 @@ public class EnrollmentService {
         Course course = enrollment.getCourse();
         CourseGroup group = resolveEnrollmentGroup(enrollment);
         Subject subject = resolveCourseSubject(course);
+        AcademicCycle academicCycle = getCourseAcademicCycle(course);
+        Career career = academicCycle != null
+                ? academicCycle.getCareer()
+                : null;
         Person person = student.getPerson();
         Institution educationalInstitution = getEnrollmentEducationalInstitution(enrollment);
         Account institutionDirector = getInstitutionDirector(educationalInstitution);
@@ -601,6 +838,30 @@ public class EnrollmentService {
                         subject != null
                                 ? subject.getName()
                                 : null)
+                .facultyId(
+                        career != null && career.getFaculty() != null
+                                ? career.getFaculty().getId()
+                                : null)
+                .facultyName(
+                        career != null && career.getFaculty() != null
+                                ? career.getFaculty().getName()
+                                : null)
+                .careerId(
+                        career != null
+                                ? career.getId()
+                                : null)
+                .careerName(
+                        career != null
+                                ? career.getName()
+                                : null)
+                .academicCycleId(
+                        academicCycle != null
+                                ? academicCycle.getId()
+                                : null)
+                .academicCycleName(
+                        academicCycle != null
+                                ? academicCycle.getName()
+                                : null)
                 .educationalInstitutionId(
                         educationalInstitution != null
                                 ? educationalInstitution.getId()
@@ -636,6 +897,8 @@ public class EnrollmentService {
                         getCourseAcademicCycleName(course))
                 .status(enrollment.getStatus().name())
                 .enrolledAt(enrollment.getEnrolledAt())
+                .archived(enrollment.isArchived())
+                .archivedAt(enrollment.getArchivedAt())
                 .build();
     }
 

@@ -49,6 +49,7 @@ public class PracticeScheduleService {
     private final PracticeScheduleRepository practiceScheduleRepository;
     private final EnrollmentRepository enrollmentRepository;
     private final AccountRepository accountRepository;
+    private final PracticeAccessService practiceAccessService;
 
     @Transactional
     public PracticeScheduleResponse create(
@@ -122,6 +123,29 @@ public class PracticeScheduleService {
                 .findByEducationalInstitution_IdAndDeletedFalse(
                         director.getInstitution().getId())
                 .stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+    public List<PracticeScheduleResponse> reviewQueue(String username) {
+
+        Account account = getAccount(username);
+        List<PracticeSchedule> schedules = new ArrayList<>();
+
+        if (hasRole(account, RoleName.ROLE_ADMIN)
+                || hasRole(account, RoleName.ROLE_DIRECTOR_PRACTICAS)) {
+            schedules.addAll(practiceScheduleRepository.findByDeletedFalse());
+        } else if (hasRole(account, RoleName.ROLE_TUTOR_PRACTICAS)) {
+            schedules.addAll(practiceScheduleRepository
+                    .findByCourse_PracticeTutor_UsernameAndDeletedFalse(username));
+        } else {
+            throw new AccessDeniedException(
+                    "No puedes revisar horarios de prácticas");
+        }
+
+        return schedules
+                .stream()
+                .filter(schedule -> canViewSchedule(schedule, account))
                 .map(this::mapToResponse)
                 .toList();
     }
@@ -267,17 +291,22 @@ public class PracticeScheduleService {
             PracticeSchedule schedule,
             Account account) {
 
-        if (schedule.getStudent().getId().equals(account.getId())
-                || isAssignedInstitutionalTutor(schedule, account)
-                || isAssignedPracticeTutor(schedule, account)
-                || isInstitutionDirectorForSchedule(schedule, account)
-                || hasRole(account, RoleName.ROLE_ADMIN)
-                || hasRole(account, RoleName.ROLE_DIRECTOR_PRACTICAS)) {
+        if (canViewSchedule(schedule, account)) {
             return;
         }
 
         throw new AccessDeniedException(
                 "No puedes ver este horario de practicas");
+    }
+
+    private boolean canViewSchedule(PracticeSchedule schedule, Account account) {
+
+        return schedule.getStudent().getId().equals(account.getId())
+                || isAssignedInstitutionalTutor(schedule, account)
+                || isAssignedPracticeTutor(schedule, account)
+                || isInstitutionDirectorForSchedule(schedule, account)
+                || hasRole(account, RoleName.ROLE_ADMIN)
+                || practiceAccessService.isDirectorForCourse(schedule.getCourse(), account);
     }
 
     private boolean isAssignedInstitutionalTutor(

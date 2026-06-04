@@ -57,4 +57,12 @@ public class Enrollment {
      */
     @Enumerated(EnumType.STRING)
     private EnrollmentStatus status;
+
+    /*
+     * Archivo histórico de prácticas concluidas.
+     */
+    @Builder.Default
+    private boolean archived = false;
+
+    private LocalDateTime archivedAt;
 }

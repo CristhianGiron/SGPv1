@@ -1,4 +1,4 @@
-const ACTIVE_COLOR_THEME = "unl"; // Cambia este valor a "unl", "academico", "claro", "bosque" o "admision" para seleccionar el tema de color
+const ACTIVE_COLOR_THEME = "unl"; // Cambia este valor a "unl", "academico", "claro", "bosque", "admision", "tecnologico", "contrasteVivo" o "vivo" para seleccionar el tema de color
 
 const colorThemes = {
   unl: {
@@ -24,7 +24,7 @@ const colorThemes = {
       "--color-surface-soft": "#dfe9e3",
       "--color-ink": "#10232c",
       "--color-muted": "#586c74",
-      "--color-border": "#bdcbd0",
+      "--color-border": "#7fb35d",
       "--color-primary": "var(--color_primary)",
       "--color-primary-strong": "#03283a",
       "--color-primary-soft": "#d7e4e9",
@@ -54,15 +54,36 @@ const colorThemes = {
       "--color-ink": "#e5edf7",
       "--color-muted": "#a8b4c7",
       "--color-border": "#263449",
+      "--color-primary": "#04344c",
+      "--color-primary-strong": "#66bdf2",
+      "--color-primary-soft": "rgba(102, 189, 242, 0.14)",
+      "--color-accent": "#75c66a",
+      "--color-accent-strong": "#a7e79f",
+      "--color-accent-soft": "rgba(117, 198, 106, 0.14)",
       "--shadow-soft": "0 22px 48px rgba(0, 0, 0, 0.36)",
       "--shadow-card": "0 16px 34px rgba(0, 0, 0, 0.28)",
+      semantic: {
+        "--color-line": "#263449",
+        "--color-line-soft": "rgba(168, 180, 199, 0.16)",
+        "--color-line-strong": "#3a4a5c",
+        "--color-field": "#0f172a",
+        "--color-field-hover": "#182334",
+        "--color-field-border": "#263449",
+        "--color-table-border": "#475569",
+        "--color-table-header": "#334155",
+        "--color-focus": "#75c66a",
+        "--color-focus-soft": "rgba(117, 198, 106, 0.22)",
+        "--color-nav-text": "#c8d3df",
+        "--color-nav-subtext": "#b7c4d1",
+        "--color-hover-soft": "#203026",
+      },
     },
   },
   academico: {
     label: "Academico sobrio",
     light: {
-      "--color_primary": "#123c4a",
-      "--color_secondary": "#1f5664",
+      "--color_primary": "#2b3a67",
+      "--color_secondary": "#8a6f2a",
       "--color_unl_green": "#2f855a",
       "--color_tutu_approx": "#123c4a",
       "--unl-red": "#a43f3f",
@@ -71,23 +92,23 @@ const colorThemes = {
       "--unl-green": "#2f855a",
       "--unl-green-strong": "#256b49",
       "--unl-green-soft": "#dcefe6",
-      "--unl-blue": "#123c4a",
-      "--unl-blue-soft": "#dbe8eb",
-      "--unl-gold": "#a4772a",
-      "--unl-gold-soft": "#f0e6d4",
+      "--unl-blue": "#2b3a67",
+      "--unl-blue-soft": "#e1e6f5",
+      "--unl-gold": "#b0892f",
+      "--unl-gold-soft": "#f4ead0",
       "--unl-graphite": "#20272c",
       "--color-page": "#d9e3e4",
       "--color-surface": "#f2f5f2",
       "--color-surface-soft": "#e5ece8",
       "--color-ink": "#12242b",
       "--color-muted": "#53676e",
-      "--color-border": "#bfcccd",
+      "--color-border": "#c8b06a",
       "--color-primary": "var(--color_primary)",
-      "--color-primary-strong": "#0c2d38",
-      "--color-primary-soft": "#dbe8eb",
-      "--color-accent": "var(--color_unl_green)",
-      "--color-accent-strong": "var(--unl-green-strong)",
-      "--color-accent-soft": "var(--unl-green-soft)",
+      "--color-primary-strong": "#1e2a4d",
+      "--color-primary-soft": "#e1e6f5",
+      "--color-accent": "var(--unl-gold)",
+      "--color-accent-strong": "#7c5a17",
+      "--color-accent-soft": "var(--unl-gold-soft)",
       "--color-warm": "var(--unl-gold)",
       "--color-warm-soft": "var(--unl-gold-soft)",
       "--shadow-soft": "0 22px 48px rgba(32, 39, 44, 0.09)",
@@ -110,7 +131,13 @@ const colorThemes = {
       "--color-surface-soft": "#1b282e",
       "--color-ink": "#e6eef1",
       "--color-muted": "#a8b6bc",
-      "--color-border": "#2d3d44",
+      "--color-border": "#5a4b2a",
+      "--color-primary": "#9aa8ff",
+      "--color-primary-strong": "#d7ddff",
+      "--color-primary-soft": "rgba(154, 168, 255, 0.14)",
+      "--color-accent": "#e7bf69",
+      "--color-accent-strong": "#f5d996",
+      "--color-accent-soft": "rgba(231, 191, 105, 0.16)",
       "--shadow-soft": "0 22px 48px rgba(0, 0, 0, 0.34)",
       "--shadow-card": "0 16px 34px rgba(0, 0, 0, 0.25)",
     },
@@ -118,9 +145,9 @@ const colorThemes = {
   claro: {
     label: "Claro profesional",
     light: {
-      "--color_primary": "#164e63",
-      "--color_secondary": "#0f766e",
-      "--color_unl_green": "#3b7f45",
+      "--color_primary": "#00a6c8",
+      "--color_secondary": "#14b8a6",
+      "--color_unl_green": "#22c55e",
       "--color_tutu_approx": "#164e63",
       "--unl-red": "#b33a3a",
       "--unl-red-strong": "#8f2e2e",
@@ -130,21 +157,21 @@ const colorThemes = {
       "--unl-green-soft": "#e0efdf",
       "--unl-blue": "#164e63",
       "--unl-blue-soft": "#d9eaee",
-      "--unl-gold": "#9a732b",
-      "--unl-gold-soft": "#f1e7d5",
+      "--unl-gold": "#f59e0b",
+      "--unl-gold-soft": "#fef3c7",
       "--unl-graphite": "#1f2933",
-      "--color-page": "#edf3f4",
+      "--color-page": "#effcff",
       "--color-surface": "#ffffff",
-      "--color-surface-soft": "#f1f5f4",
+      "--color-surface-soft": "#e6fffb",
       "--color-ink": "#14242b",
       "--color-muted": "#5a6b72",
-      "--color-border": "#cad6d8",
+      "--color-border": "#7ddce8",
       "--color-primary": "var(--color_primary)",
-      "--color-primary-strong": "#103a49",
-      "--color-primary-soft": "#d9eaee",
-      "--color-accent": "var(--color_unl_green)",
-      "--color-accent-strong": "var(--unl-green-strong)",
-      "--color-accent-soft": "var(--unl-green-soft)",
+      "--color-primary-strong": "#007a91",
+      "--color-primary-soft": "#cff7ff",
+      "--color-accent": "#f59e0b",
+      "--color-accent-strong": "#a35a00",
+      "--color-accent-soft": "#fef3c7",
       "--color-warm": "var(--unl-gold)",
       "--color-warm-soft": "var(--unl-gold-soft)",
       "--shadow-soft": "0 22px 48px rgba(31, 41, 51, 0.08)",
@@ -167,7 +194,13 @@ const colorThemes = {
       "--color-surface-soft": "#17242a",
       "--color-ink": "#e7f0f3",
       "--color-muted": "#aab9be",
-      "--color-border": "#293a41",
+      "--color-border": "#1e6876",
+      "--color-primary": "#67e8f9",
+      "--color-primary-strong": "#cffafe",
+      "--color-primary-soft": "rgba(103, 232, 249, 0.14)",
+      "--color-accent": "#fbbf24",
+      "--color-accent-strong": "#fde68a",
+      "--color-accent-soft": "rgba(251, 191, 36, 0.16)",
       "--shadow-soft": "0 22px 48px rgba(0, 0, 0, 0.34)",
       "--shadow-card": "0 16px 34px rgba(0, 0, 0, 0.25)",
     },
@@ -175,8 +208,8 @@ const colorThemes = {
   bosque: {
     label: "Bosque institucional",
     light: {
-      "--color_primary": "#174236",
-      "--color_secondary": "#245747",
+      "--color_primary": "#1f6f3d",
+      "--color_secondary": "#6b8e23",
       "--color_unl_green": "#4f8a3d",
       "--color_tutu_approx": "#174236",
       "--unl-red": "#a2413b",
@@ -195,13 +228,13 @@ const colorThemes = {
       "--color-surface-soft": "#e6ece2",
       "--color-ink": "#17261f",
       "--color-muted": "#59695f",
-      "--color-border": "#c2cec4",
+      "--color-border": "#8fbd62",
       "--color-primary": "var(--color_primary)",
-      "--color-primary-strong": "#102f26",
-      "--color-primary-soft": "#dce9e2",
-      "--color-accent": "var(--color_unl_green)",
-      "--color-accent-strong": "var(--unl-green-strong)",
-      "--color-accent-soft": "var(--unl-green-soft)",
+      "--color-primary-strong": "#14532d",
+      "--color-primary-soft": "#dff3df",
+      "--color-accent": "#9f7d2b",
+      "--color-accent-strong": "#6f551c",
+      "--color-accent-soft": "var(--unl-gold-soft)",
       "--color-warm": "var(--unl-gold)",
       "--color-warm-soft": "var(--unl-gold-soft)",
       "--shadow-soft": "0 22px 48px rgba(35, 41, 35, 0.09)",
@@ -224,7 +257,13 @@ const colorThemes = {
       "--color-surface-soft": "#1a2921",
       "--color-ink": "#e6efe9",
       "--color-muted": "#a9b8ad",
-      "--color-border": "#2c3d32",
+      "--color-border": "#3f633f",
+      "--color-primary": "#94d77a",
+      "--color-primary-strong": "#bceaa8",
+      "--color-primary-soft": "rgba(148, 215, 122, 0.14)",
+      "--color-accent": "#e5c46b",
+      "--color-accent-strong": "#f5df99",
+      "--color-accent-soft": "rgba(229, 196, 107, 0.16)",
       "--shadow-soft": "0 22px 48px rgba(0, 0, 0, 0.34)",
       "--shadow-card": "0 16px 34px rgba(0, 0, 0, 0.25)",
     },
@@ -267,13 +306,13 @@ const colorThemes = {
       "--color-muted": "#536a72",
       "--color-border": "#bfd5d7",
 
-      "--color-primary": "var(--color_primary)",
-      "--color-primary-strong": "#031e33",
-      "--color-primary-soft": "#dcecf3",
+      "--color-primary": "var(--color_unl_green)",
+      "--color-primary-strong": "#168a22",
+      "--color-primary-soft": "#dff7df",
 
-      "--color-accent": "var(--color_unl_green)",
-      "--color-accent-strong": "#168a22",
-      "--color-accent-soft": "#dff7df",
+      "--color-accent": "var(--unl-orange)",
+      "--color-accent-strong": "#b44100",
+      "--color-accent-soft": "var(--unl-orange-soft)",
 
       "--color-warm": "#ffad14",
       "--color-warm-soft": "#fff0cf",
@@ -311,7 +350,13 @@ const colorThemes = {
 
       "--color-ink": "#e8f4f7",
       "--color-muted": "#a9bdc6",
-      "--color-border": "#274453",
+      "--color-border": "#2d6f4b",
+      "--color-primary": "#5de76b",
+      "--color-primary-strong": "#9ff3a8",
+      "--color-primary-soft": "rgba(93, 231, 107, 0.14)",
+      "--color-accent": "#ff9345",
+      "--color-accent-strong": "#ffd2ad",
+      "--color-accent-soft": "rgba(255, 147, 69, 0.15)",
 
       "--shadow-soft": "0 24px 55px rgba(0, 0, 0, 0.38)",
       "--shadow-card": "0 16px 34px rgba(0, 0, 0, 0.28)",
@@ -320,8 +365,8 @@ const colorThemes = {
   tecnologico: {
     label: "Tecnológico institucional",
     light: {
-      "--color_primary": "#073b5c",
-      "--color_secondary": "#0e7490",
+      "--color_primary": "#06b6d4",
+      "--color_secondary": "#6d5bd0",
       "--color_unl_green": "#16a34a",
       "--color_tutu_approx": "#073b5c",
 
@@ -353,15 +398,15 @@ const colorThemes = {
 
       "--color-ink": "#102a3a",
       "--color-muted": "#526b76",
-      "--color-border": "#bfd8dc",
+      "--color-border": "#93c5fd",
 
       "--color-primary": "var(--color_primary)",
-      "--color-primary-strong": "#05293f",
-      "--color-primary-soft": "#d9edf7",
+      "--color-primary-strong": "#06748c",
+      "--color-primary-soft": "var(--unl-cyan-soft)",
 
-      "--color-accent": "var(--color_unl_green)",
-      "--color-accent-strong": "#12833c",
-      "--color-accent-soft": "#dcfce7",
+      "--color-accent": "var(--unl-purple)",
+      "--color-accent-strong": "#4c3ab0",
+      "--color-accent-soft": "var(--unl-purple-soft)",
 
       "--color-warm": "var(--unl-gold)",
       "--color-warm-soft": "var(--unl-gold-soft)",
@@ -399,7 +444,13 @@ const colorThemes = {
 
       "--color-ink": "#e8f5f8",
       "--color-muted": "#a9bdc6",
-      "--color-border": "#294756",
+      "--color-border": "#2f6f81",
+      "--color-primary": "#22d3ee",
+      "--color-primary-strong": "#a5f3fc",
+      "--color-primary-soft": "rgba(34, 211, 238, 0.14)",
+      "--color-accent": "#a99cff",
+      "--color-accent-strong": "#ddd8ff",
+      "--color-accent-soft": "rgba(169, 156, 255, 0.14)",
 
       "--shadow-soft": "0 24px 55px rgba(0, 0, 0, 0.38)",
       "--shadow-card": "0 16px 34px rgba(0, 0, 0, 0.28)",
@@ -448,9 +499,9 @@ const colorThemes = {
       "--color-primary-strong": "#011727",
       "--color-primary-soft": "#d9eaf2",
 
-      "--color-accent": "var(--color_unl_green)",
-      "--color-accent-strong": "#168227",
-      "--color-accent-soft": "#dcfce2",
+      "--color-accent": "var(--unl-orange)",
+      "--color-accent-strong": "#b43d00",
+      "--color-accent-soft": "var(--unl-orange-soft)",
 
       "--color-warm": "var(--unl-gold)",
       "--color-warm-soft": "var(--unl-gold-soft)",
@@ -489,44 +540,178 @@ const colorThemes = {
 
       "--color-ink": "#f1f7fa",
       "--color-muted": "#b0c0c9",
-      "--color-border": "#29475a",
+      "--color-border": "#415a70",
+      "--color-primary": "#7dd3fc",
+      "--color-primary-strong": "#e0f2fe",
+      "--color-primary-soft": "rgba(125, 211, 252, 0.15)",
+      "--color-accent": "#ff8a3d",
+      "--color-accent-strong": "#ffd2ad",
+      "--color-accent-soft": "rgba(255, 138, 61, 0.15)",
 
       "--shadow-soft": "0 26px 60px rgba(0, 0, 0, 0.42)",
       "--shadow-card": "0 18px 38px rgba(0, 0, 0, 0.32)",
+    },
+  },
+  vivo: {
+    label: "Vivo académico",
+    light: {
+      "--color_primary": "#2dad29",
+      "--color_secondary": "#13c0a0",
+      "--color_unl_green": "#2dad29",
+      "--color_tutu_approx": "#2dad29",
+
+      "--unl-red": "#df5200",
+      "--unl-red-strong": "#b44100",
+      "--unl-red-soft": "#ffe3cc",
+
+      "--unl-green": "#2dad29",
+      "--unl-green-strong": "#22851f",
+      "--unl-green-soft": "#dbf6d6",
+
+      "--unl-blue": "#108f9b",
+      "--unl-blue-soft": "#d8f3f5",
+
+      "--unl-gold": "#ffb000",
+      "--unl-gold-soft": "#fff0bf",
+
+      "--unl-orange": "#df5200",
+      "--unl-orange-soft": "#ffdfc2",
+
+      "--unl-teal": "#13c0a0",
+      "--unl-teal-soft": "#d5f7ef",
+
+      "--unl-cyan": "#0f92a0",
+      "--unl-cyan-soft": "#d8f4f7",
+
+      "--unl-purple": "#4f46e5",
+      "--unl-purple-soft": "#e5e7ff",
+
+      "--unl-graphite": "#1f2a37",
+
+      "--color-page": "#f3f8f4",
+      "--color-surface": "#ffffff",
+      "--color-surface-soft": "#e9f7ef",
+
+      "--color-ink": "#173037",
+      "--color-muted": "#567178",
+      "--color-border": "#82d57b",
+
+      "--color-primary": "var(--color_primary)",
+      "--color-primary-strong": "#21831f",
+      "--color-primary-soft": "#dbf6d6",
+
+      "--color-accent": "var(--unl-gold)",
+      "--color-accent-strong": "#b86f00",
+      "--color-accent-soft": "var(--unl-gold-soft)",
+
+      "--color-warm": "var(--unl-gold)",
+      "--color-warm-soft": "var(--unl-gold-soft)",
+
+      "--shadow-soft": "0 22px 50px color-mix(in srgb, var(--color-primary) 20%, transparent)",
+      "--shadow-card": "0 12px 28px color-mix(in srgb, var(--color-primary) 14%, transparent)",
+    },
+    dark: {
+      "--unl-red": "#ff8a3d",
+      "--unl-red-strong": "#ffc29c",
+      "--unl-red-soft": "rgba(255, 138, 61, 0.17)",
+
+      "--unl-green": "#65e65f",
+      "--unl-green-strong": "#b3f5af",
+      "--unl-green-soft": "rgba(101, 230, 95, 0.15)",
+
+      "--unl-blue": "#4dd7e5",
+      "--unl-blue-soft": "rgba(77, 215, 229, 0.15)",
+
+      "--unl-gold": "#ffc928",
+      "--unl-gold-soft": "rgba(255, 201, 40, 0.17)",
+
+      "--unl-orange": "#ff7a1a",
+      "--unl-orange-soft": "rgba(255, 122, 26, 0.16)",
+
+      "--unl-teal": "#3be0bf",
+      "--unl-teal-soft": "rgba(59, 224, 191, 0.15)",
+
+      "--unl-cyan": "#36c9d8",
+      "--unl-cyan-soft": "rgba(54, 201, 216, 0.15)",
+
+      "--unl-purple": "#b197fc",
+      "--unl-purple-soft": "rgba(177, 151, 252, 0.14)",
+
+      "--unl-graphite": "#f8fafc",
+
+      "--color-page": "#07161a",
+      "--color-surface": "#0d2026",
+      "--color-surface-soft": "#123039",
+
+      "--color-ink": "#eaf4fb",
+      "--color-muted": "#adc0cc",
+      "--color-border": "#326a45",
+
+      "--color-primary": "var(--unl-green)",
+      "--color-primary-strong": "var(--unl-green-strong)",
+      "--color-primary-soft": "var(--unl-green-soft)",
+
+      "--color-accent": "var(--unl-gold)",
+      "--color-accent-strong": "#ffe08a",
+      "--color-accent-soft": "var(--unl-gold-soft)",
+
+      "--shadow-soft": "0 24px 54px rgba(0, 0, 0, 0.36)",
+      "--shadow-card": "0 16px 36px rgba(0, 0, 0, 0.28)",
     },
   },
 };
 
 function withSemanticTokens(tokens, mode) {
   const isDark = mode === "dark";
+  const { semantic = {}, ...themeTokens } = tokens;
 
   return {
-    ...tokens,
+    ...themeTokens,
     "--color-heading": "var(--color-ink)",
-    "--color-body": isDark ? "#d6e0e6" : "#34443b",
+    "--color-body": isDark
+      ? "color-mix(in srgb, var(--color-ink) 86%, var(--color-muted))"
+      : "color-mix(in srgb, var(--color-ink) 82%, var(--color-muted))",
     "--color-secondary": "var(--color_secondary)",
     "--color-subtle": "var(--color-muted)",
-    "--color-line": "var(--color-border)",
+    "--color-line": isDark
+      ? "color-mix(in srgb, var(--color-primary) 42%, var(--color-border))"
+      : "color-mix(in srgb, var(--color-primary) 48%, var(--color-border))",
     "--color-line-soft": isDark
-      ? "rgba(168, 180, 199, 0.16)"
-      : "rgba(88, 108, 116, 0.2)",
-    "--color-line-strong": isDark ? "#3a4a5c" : "#6f8079",
-    "--color-panel": isDark ? "var(--color-surface)" : "#ffffff",
+      ? "color-mix(in srgb, var(--color-accent) 22%, transparent)"
+      : "color-mix(in srgb, var(--color-accent) 28%, transparent)",
+    "--color-line-strong": isDark
+      ? "color-mix(in srgb, var(--color-accent) 66%, var(--color-border))"
+      : "color-mix(in srgb, var(--color-accent) 72%, var(--color-border))",
+    "--color-panel": isDark ? "var(--color-surface)" : "var(--color-surface)",
     "--color-panel-soft": "var(--color-surface-soft)",
-    "--color-field": isDark ? "#0f172a" : "#f5f4ed",
-    "--color-field-hover": isDark ? "#182334" : "#fbfdfb",
-    "--color-field-border": "var(--color-border)",
-    "--color-table-border": isDark ? "#475569" : "#1f2933",
-    "--color-table-header": isDark ? "#334155" : "#858582",
+    "--color-field": isDark
+      ? "color-mix(in srgb, var(--color-surface) 82%, var(--color-primary))"
+      : "color-mix(in srgb, var(--color-accent) 12%, var(--color-surface))",
+    "--color-field-hover": isDark
+      ? "color-mix(in srgb, var(--color-surface-soft) 78%, var(--color-accent))"
+      : "color-mix(in srgb, var(--color-primary) 10%, var(--color-surface))",
+    "--color-field-border": "var(--color-line)",
+    "--color-table-border": isDark
+      ? "color-mix(in srgb, var(--color-primary) 56%, var(--color-border))"
+      : "color-mix(in srgb, var(--color-primary) 68%, var(--color-border))",
+    "--color-table-header": isDark
+      ? "color-mix(in srgb, var(--color-primary) 74%, var(--color-surface))"
+      : "var(--color-primary)",
     "--color-table-ink": isDark ? "#e2e8f0" : "#111827",
     "--color-inverse": "#ffffff",
-    "--color-focus": "var(--color-primary)",
+    "--color-focus": "var(--color-accent)",
     "--color-focus-soft": isDark
-      ? "rgba(139, 211, 230, 0.2)"
-      : "rgba(7, 68, 98, 0.15)",
-    "--color-nav-text": isDark ? "#c8d3df" : "#40525a",
-    "--color-nav-subtext": isDark ? "#b7c4d1" : "#52656d",
-    "--color-hover-soft": isDark ? "#203026" : "var(--color-accent-soft)",
+      ? "color-mix(in srgb, var(--color-accent) 28%, transparent)"
+      : "color-mix(in srgb, var(--color-accent) 24%, transparent)",
+    "--color-nav-text": isDark
+      ? "color-mix(in srgb, var(--color-ink) 90%, var(--color-primary))"
+      : "color-mix(in srgb, var(--color-primary-strong) 78%, var(--color-ink))",
+    "--color-nav-subtext": isDark
+      ? "color-mix(in srgb, var(--color-muted) 80%, var(--color-primary))"
+      : "color-mix(in srgb, var(--color-primary-strong) 60%, var(--color-muted))",
+    "--color-hover-soft": isDark
+      ? "color-mix(in srgb, var(--color-accent) 18%, var(--color-surface-soft))"
+      : "color-mix(in srgb, var(--color-accent) 22%, var(--color-surface))",
     "--color-success": "var(--unl-green)",
     "--color-success-strong": "var(--unl-green-strong)",
     "--color-success-soft": "var(--unl-green-soft)",
@@ -560,6 +745,7 @@ function withSemanticTokens(tokens, mode) {
     "--color-a11y-contrast-light-bg": "#ffffff",
     "--color-a11y-contrast-light-ink": "#111827",
     "--color-a11y-contrast-link": "#facc15",
+    ...semantic,
   };
 }
 

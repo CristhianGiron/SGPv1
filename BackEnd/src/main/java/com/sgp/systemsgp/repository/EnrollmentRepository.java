@@ -45,17 +45,41 @@ public interface EnrollmentRepository
         List<Enrollment> findByStatus(
                         EnrollmentStatus status);
 
+        List<Enrollment> findByStatusIn(
+                        List<EnrollmentStatus> statuses);
+
         List<Enrollment> findByCourse_PracticeTutor_UsernameAndStatus(
                         String username,
                         EnrollmentStatus status);
+
+        List<Enrollment> findByCourse_PracticeTutor_UsernameAndStatusIn(
+                        String username,
+                        List<EnrollmentStatus> statuses);
+
+        List<Enrollment> findByCourse_PracticeTutor_Username(
+                        String username);
 
         List<Enrollment> findByCourse_InstitutionalTutor_UsernameAndStatus(
                         String username,
                         EnrollmentStatus status);
 
+        List<Enrollment> findByCourse_InstitutionalTutor_UsernameAndStatusIn(
+                        String username,
+                        List<EnrollmentStatus> statuses);
+
+        List<Enrollment> findByCourse_InstitutionalTutor_Username(
+                        String username);
+
         List<Enrollment> findByGroup_InstitutionalTutor_UsernameAndStatus(
                         String username,
                         EnrollmentStatus status);
+
+        List<Enrollment> findByGroup_InstitutionalTutor_UsernameAndStatusIn(
+                        String username,
+                        List<EnrollmentStatus> statuses);
+
+        List<Enrollment> findByGroup_InstitutionalTutor_Username(
+                        String username);
 
         /*
          * CONTAR APROBADOS

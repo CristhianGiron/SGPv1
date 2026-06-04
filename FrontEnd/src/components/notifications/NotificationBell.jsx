@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
-import { Bell, BellRing, Check, X } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Bell, BellRing, Check, ChevronDown, X } from 'lucide-react';
 import { useNotifications } from '../../hooks/useNotifications';
 import { NotificationItem } from './NotificationItem';
 import { hasNotificationLink, openNotificationLink } from '../../utils/notificationLinks';
+import { splitNotificationsForArchive } from '../../utils/notificationArchive';
 import { setHashRoute } from '../../utils/routes';
 
 const bellButtonClass =
@@ -15,6 +16,9 @@ const smallActionButtonClass =
 
 const closeButtonClass =
   'inline-grid min-h-8 w-8 place-items-center rounded-lg border border-accent bg-transparent text-primary transition-colors hover:border-primary-strong hover:bg-primary-strong hover:text-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:bg-surface-soft dark:text-ink dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong';
+
+const dropdownPanelClass =
+  'absolute right-0 top-[calc(100%+0.6rem)] z-50 w-[min(26rem,calc(100vw-1rem))] min-w-0 overflow-hidden rounded-lg border border-line bg-panel text-ink opacity-0 shadow-soft transition-[opacity,transform] duration-150 dark:border-line dark:bg-surface dark:shadow-soft';
 
 const panelMessageClass =
   'rounded-lg border border-dashed border-line bg-panel-soft p-4 text-sm leading-6 text-muted dark:border-line dark:bg-surface-soft dark:text-muted';
@@ -31,9 +35,15 @@ export function NotificationBell() {
   } = useNotifications();
 
   const [open, setOpen] = useState(false);
+  const [archivedOpen, setArchivedOpen] = useState(false);
 
   // Ref que envuelve botón + panel
   const containerRef = useRef(null);
+  const { recentNotifications, archivedNotifications } = useMemo(
+    () => splitNotificationsForArchive(notifications),
+    [notifications],
+  );
+  const hasArchivedNotifications = archivedNotifications.length > 0;
 
   useEffect(() => {
     if (!open) return;
@@ -56,6 +66,12 @@ export function NotificationBell() {
       );
     };
   }, [open]);
+
+  useEffect(() => {
+    if (!hasArchivedNotifications && archivedOpen) {
+      setArchivedOpen(false);
+    }
+  }, [archivedOpen, hasArchivedNotifications]);
 
   const handleBellClick = () => {
     setOpen((current) => !current);
@@ -102,14 +118,14 @@ export function NotificationBell() {
       </button>
 
       <div
-        className={`absolute right-0 top-[calc(100%+0.5rem)] z-50 w-[min(23rem,calc(100vw-1rem))] rounded-lg border border-line bg-panel text-ink opacity-0 shadow-soft transition-[opacity,transform] duration-150 dark:border-line dark:bg-surface dark:shadow-soft ${
+        className={`${dropdownPanelClass} ${
           open
             ? 'pointer-events-auto translate-y-0 opacity-100'
             : 'pointer-events-none -translate-y-1'
         }`}
       >
-        <div className="flex items-center justify-between gap-3 border-b border-line p-3 dark:border-border">
-          <div>
+        <div className="flex min-w-0 items-center justify-between gap-3 border-b border-line p-3 dark:border-border">
+          <div className="min-w-0">
             <p className="text-sm font-[850] leading-tight text-heading dark:text-heading">
               Notificaciones
             </p>
@@ -119,7 +135,7 @@ export function NotificationBell() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex min-w-0 flex-none items-center gap-2">
             <button
               type="button"
               onClick={markAllAsRead}
@@ -141,7 +157,7 @@ export function NotificationBell() {
           </div>
         </div>
 
-        <div className="grid max-h-96 gap-2 overflow-y-auto overscroll-contain p-3">
+        <div className="grid max-h-96 min-w-0 gap-2 overflow-y-auto overflow-x-hidden overscroll-contain p-3">
           {loading ? (
             <div className="grid gap-3">
               <div className="min-h-[4.5rem] rounded-lg border border-line bg-panel-soft dark:border-line dark:bg-surface-soft" />
@@ -155,14 +171,86 @@ export function NotificationBell() {
             <div className={panelMessageClass}>
               No tienes notificaciones nuevas.
             </div>
+          ) : recentNotifications.length === 0 ? (
+            <>
+              <div className={panelMessageClass}>
+                No tienes notificaciones recientes.
+              </div>
+
+              {hasArchivedNotifications && (
+                <section className="mt-1 overflow-hidden rounded-lg border border-line bg-panel-soft dark:border-line dark:bg-surface-soft">
+                  <button
+                    type="button"
+                    className="flex min-h-11 w-full items-center justify-between gap-3 px-3 py-2 text-left text-sm font-[850] text-heading transition-colors hover:bg-hover-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:text-heading"
+                    aria-expanded={archivedOpen}
+                    onClick={() => setArchivedOpen((current) => !current)}
+                  >
+                    <span className="min-w-0 truncate">
+                      Notificaciones archivadas ({archivedNotifications.length})
+                    </span>
+                    <ChevronDown
+                      aria-hidden="true"
+                      className={`flex-none text-muted transition-transform ${archivedOpen ? 'rotate-180' : ''}`}
+                      size={17}
+                    />
+                  </button>
+
+                  {archivedOpen && (
+                    <div className="grid gap-2 border-t border-line p-2 dark:border-line">
+                      {archivedNotifications.map((notification) => (
+                        <NotificationItem
+                          key={notification.id}
+                          notification={notification}
+                          onClick={handleSelectNotification}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </section>
+              )}
+            </>
           ) : (
-            notifications.map((notification) => (
-              <NotificationItem
-                key={notification.id}
-                notification={notification}
-                onClick={handleSelectNotification}
-              />
-            ))
+            <>
+              {recentNotifications.map((notification) => (
+                <NotificationItem
+                  key={notification.id}
+                  notification={notification}
+                  onClick={handleSelectNotification}
+                />
+              ))}
+
+              {hasArchivedNotifications && (
+                <section className="mt-1 overflow-hidden rounded-lg border border-line bg-panel-soft dark:border-line dark:bg-surface-soft">
+                  <button
+                    type="button"
+                    className="flex min-h-11 w-full items-center justify-between gap-3 px-3 py-2 text-left text-sm font-[850] text-heading transition-colors hover:bg-hover-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:text-heading"
+                    aria-expanded={archivedOpen}
+                    onClick={() => setArchivedOpen((current) => !current)}
+                  >
+                    <span className="min-w-0 truncate">
+                      Notificaciones archivadas ({archivedNotifications.length})
+                    </span>
+                    <ChevronDown
+                      aria-hidden="true"
+                      className={`flex-none text-muted transition-transform ${archivedOpen ? 'rotate-180' : ''}`}
+                      size={17}
+                    />
+                  </button>
+
+                  {archivedOpen && (
+                    <div className="grid gap-2 border-t border-line p-2 dark:border-line">
+                      {archivedNotifications.map((notification) => (
+                        <NotificationItem
+                          key={notification.id}
+                          notification={notification}
+                          onClick={handleSelectNotification}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </section>
+              )}
+            </>
           )}
         </div>
 

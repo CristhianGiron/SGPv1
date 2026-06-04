@@ -3,7 +3,7 @@ import { Download, ImagePlus, Maximize2, RefreshCw, Trash2, X } from 'lucide-rea
 import { apiBlob, apiRequest, unwrapPage } from '../api/client';
 import { useAuth } from '../auth/AuthContext';
 import { Alert } from '../components/ui/Alert';
-import { ActionBar, PrimaryButton, SecondaryButton } from '../components/ui/ActionBar';
+import { ActionBar, PrimaryButton, SecondaryButton,CloseButton } from '../components/ui/ActionBar';
 import { ActionMenu } from '../components/ui/ActionMenu';
 import { useConfirm } from '../components/ui/ConfirmDialog';
 import { EmptyState } from '../components/ui/EmptyState';
@@ -749,15 +749,15 @@ function PhotoFullscreen({ photo, token, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 z-[100001] flex items-center justify-center bg-page/95 p-4"
+      className="fixed inset-0 z-[100001] flex items-center justify-center bg-page/95 p-4 bg-black/75"
       onMouseDown={onClose}
       role="dialog"
       aria-modal="true"
     >
       <div className="absolute right-4 top-4">
-        <SecondaryButton icon={X} onClick={onClose} type="button">
+        <CloseButton icon={X} onClick={onClose} type="button">
           Cerrar
-        </SecondaryButton>
+        </CloseButton>
       </div>
       <div className="max-h-full max-w-full" onMouseDown={(event) => event.stopPropagation()}>
         {!source || failed ? (

@@ -1,4 +1,5 @@
-import { Children, isValidElement } from 'react';
+import { Children, isValidElement, useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
 
 const labelClass =
   'mb-1.5 block text-[0.82rem] font-extrabold text-body dark:text-muted';
@@ -35,6 +36,29 @@ export function Input({ className = '', ...props }) {
   return <input className={cx(fieldClass, className)} {...props} />;
 }
 
+export function PasswordInput({ className = '', ...props }) {
+  const [visible, setVisible] = useState(false);
+  const Icon = visible ? EyeOff : Eye;
+
+  return (
+    <div className="relative">
+      <input
+        className={cx(fieldClass, 'pr-12', className)}
+        type={visible ? 'text' : 'password'}
+        {...props}
+      />
+      <button
+        aria-label={visible ? 'Ocultar contraseña' : 'Ver contraseña'}
+        className="absolute right-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-lg text-muted transition-colors hover:bg-hover-soft hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-soft"
+        onClick={() => setVisible((current) => !current)}
+        type="button"
+      >
+        <Icon size={18} strokeWidth={2.4} />
+      </button>
+    </div>
+  );
+}
+
 export function Select({ children, className = '', ...props }) {
   return (
     <select className={cx(fieldClass, className)} {...props}>
@@ -56,5 +80,5 @@ function canUseImplicitLabel(children) {
 
   return childArray.length === 1
     && isValidElement(childArray[0])
-    && [Input, Select, Textarea, FileInput].includes(childArray[0].type);
+    && [Input, PasswordInput, Select, Textarea, FileInput].includes(childArray[0].type);
 }

@@ -377,12 +377,20 @@ export const SCHEDULE_MODULES = [
   {
     id: 'schedules',
     title: 'Jornadas y asistencias',
-    roles: ['ROLE_ESTUDIANTE', 'ROLE_TUTOR_INSTITUCIONAL', 'ROLE_DIRECTORA_INSTITUCION'],
+    roles: [
+      'ROLE_ESTUDIANTE',
+      'ROLE_TUTOR_INSTITUCIONAL',
+      'ROLE_DIRECTORA_INSTITUCION',
+      'ROLE_TUTOR_PRACTICAS',
+      'ROLE_DIRECTOR_PRACTICAS',
+      'ROLE_ADMIN',
+    ],
     listPath: '/api/practice-schedules/me',
     listRoles: STUDENT_ROLES,
     altLists: [
       { label: 'Mis jornadas', path: '/api/practice-schedules/managed', roles: INSTITUTIONAL_TUTOR_ROLES },
       { label: 'Jornadas de mi institucion', path: '/api/practice-schedules/institution-review', roles: INSTITUTION_DIRECTOR_ROLES },
+      { label: 'Revisión', path: '/api/practice-schedules/review', roles: ['ROLE_TUTOR_PRACTICAS', 'ROLE_DIRECTOR_PRACTICAS', 'ROLE_ADMIN'] },
     ],
     createPath: '/api/practice-schedules',
     createRoles: INSTITUTIONAL_TUTOR_ROLES,

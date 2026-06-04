@@ -10,7 +10,7 @@ import { useConfirm } from '../components/ui/ConfirmDialog';
 import { DataTable } from '../components/ui/DataTable';
 import { EntitySelect } from '../components/ui/EntitySelect';
 import { FilterPanel } from '../components/ui/FilterPanel';
-import { Field, Input, Select } from '../components/ui/FormControls';
+import { Field, Input, PasswordInput, Select } from '../components/ui/FormControls';
 import { Modal } from '../components/ui/Modal';
 import { PageHeader } from '../components/ui/PageHeader';
 import { SectionCard } from '../components/ui/SectionCard';
@@ -331,11 +331,19 @@ export function AccountsPage() {
             ['address', 'Direccion'],
           ].map(([name, label]) => (
             <Field key={name} label={label}>
-              <Input
-                type={name === 'password' ? 'password' : 'text'}
-                value={form[name]}
-                onChange={(event) => setFormField(name, event.target.value)}
-              />
+              {name === 'password' ? (
+                <PasswordInput
+                  autoComplete="new-password"
+                  value={form[name]}
+                  onChange={(event) => setFormField(name, event.target.value)}
+                />
+              ) : (
+                <Input
+                  type="text"
+                  value={form[name]}
+                  onChange={(event) => setFormField(name, event.target.value)}
+                />
+              )}
             </Field>
           ))}
           <Field label="Rol">

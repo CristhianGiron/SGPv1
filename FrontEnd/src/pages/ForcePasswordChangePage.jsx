@@ -4,7 +4,7 @@ import { apiRequest } from '../api/client';
 import { useAuth } from '../auth/AuthContext';
 import { Alert } from '../components/ui/Alert';
 import { PrimaryButton, SecondaryButton } from '../components/ui/ActionBar';
-import { Field, Input } from '../components/ui/FormControls';
+import { Field, PasswordInput } from '../components/ui/FormControls';
 import { ThemeToggle } from '../components/ui/ThemeToggle';
 import { joinText } from '../utils/format';
 
@@ -75,9 +75,8 @@ export function ForcePasswordChangePage() {
 
           <form className="space-y-4" onSubmit={handleSubmit}>
             <Field label="Contraseña actual">
-              <Input
+              <PasswordInput
                 autoComplete="current-password"
-                type="password"
                 value={form.currentPassword}
                 onChange={(event) => updateField('currentPassword', event.target.value)}
                 required
@@ -85,10 +84,9 @@ export function ForcePasswordChangePage() {
             </Field>
 
             <Field label="Nueva contraseña">
-              <Input
+              <PasswordInput
                 autoComplete="new-password"
                 minLength={8}
-                type="password"
                 value={form.newPassword}
                 onChange={(event) => updateField('newPassword', event.target.value)}
                 required
@@ -96,10 +94,9 @@ export function ForcePasswordChangePage() {
             </Field>
 
             <Field label="Confirmar contraseña">
-              <Input
+              <PasswordInput
                 autoComplete="new-password"
                 minLength={8}
-                type="password"
                 value={form.confirmPassword}
                 onChange={(event) => updateField('confirmPassword', event.target.value)}
                 required

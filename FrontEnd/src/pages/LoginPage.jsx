@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../auth/AuthContext";
 import { Alert } from "../components/ui/Alert";
-import { Field, Input } from "../components/ui/FormControls";
+import { Field, Input, PasswordInput } from "../components/ui/FormControls";
 import { PrimaryButton } from "../components/ui/ActionBar";
 import { ThemeToggle } from "../components/ui/ThemeToggle";
 import { setHashRoute } from "../utils/routes";
@@ -377,9 +377,8 @@ export function LoginPage() {
                   </Field>
 
                   <Field className="mt-4" label="Contraseña">
-                    <Input
+                    <PasswordInput
                       autoComplete="current-password"
-                      type="password"
                       placeholder="Ingresa tu contraseña"
                       value={form.password}
                       onChange={(event) =>

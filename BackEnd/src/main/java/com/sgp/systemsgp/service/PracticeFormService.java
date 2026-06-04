@@ -67,6 +67,7 @@ public class PracticeFormService {
     private final StudentPracticeFormResponseRepository practiceFormResponseRepository;
     private final EnrollmentRepository enrollmentRepository;
     private final AccountRepository accountRepository;
+    private final PracticeAccessService practiceAccessService;
 
     @Transactional
     public PracticeFormResponse create(
@@ -507,7 +508,9 @@ public class PracticeFormService {
                 || isTargetAccount(form, account)
                 || isAssignedPracticeTutor(form, account)
                 || hasRole(account, RoleName.ROLE_ADMIN)
-                || hasRole(account, RoleName.ROLE_DIRECTOR_PRACTICAS)) {
+                || practiceAccessService.isDirectorForCourse(
+                        form.getEnrollment() != null ? form.getEnrollment().getCourse() : null,
+                        account)) {
             return;
         }
 
@@ -625,8 +628,18 @@ public class PracticeFormService {
                         formKind,
                         PracticeFormStatus.ANSWERED)
                 .stream()
+                .filter(form -> canViewManagedForm(form, account))
                 .map(form -> mapToResponse(form, false))
                 .toList();
+    }
+
+    private boolean canViewManagedForm(StudentPracticeForm form, Account account) {
+
+        return hasRole(account, RoleName.ROLE_ADMIN)
+                || isAssignedPracticeTutor(form, account)
+                || practiceAccessService.isDirectorForCourse(
+                        form.getEnrollment() != null ? form.getEnrollment().getCourse() : null,
+                        account);
     }
 
     private PracticeFormTargetRole resolveTargetRole(

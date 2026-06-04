@@ -9,6 +9,7 @@ const PALETTE = {
   SUBMITTED: 'border-info bg-info-soft text-info-strong dark:border-info/40 dark:bg-info-soft dark:text-info-strong',
   SENT: 'border-info bg-info-soft text-info-strong dark:border-info/40 dark:bg-info-soft dark:text-info-strong',
   ANSWERED: 'border-success bg-success-soft text-success-strong dark:border-success/40 dark:bg-success-soft dark:text-success-strong',
+  ARCHIVED: 'border-line bg-panel-soft text-muted dark:border-line dark:bg-surface-soft dark:text-muted',
   PENDING: 'border-warning bg-warning-soft text-warning-strong dark:border-warning/40 dark:bg-warning-soft dark:text-warning-strong',
   NEEDS_CORRECTION: 'border-warning bg-warning-soft text-warning-strong dark:border-warning/40 dark:bg-warning-soft dark:text-warning-strong',
   REJECTED: 'border-danger bg-danger-soft text-danger-strong dark:border-danger/40 dark:bg-danger-soft dark:text-danger-strong',

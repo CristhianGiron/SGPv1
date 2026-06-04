@@ -7,6 +7,7 @@ import {
   Lock,
   Plus,
   RefreshCw,
+  RotateCcw,
   Unlock,
   UserPlus,
   XCircle,
@@ -73,6 +74,7 @@ export function CoursesPage() {
     () =>
       new Map(
         enrollments
+          .filter(isEnrollmentOperationallyActive)
           .filter((enrollment) => enrollment.courseId !== undefined && enrollment.courseId !== null)
           .map((enrollment) => [String(enrollment.courseId), enrollment])
       ),
@@ -82,6 +84,7 @@ export function CoursesPage() {
     () =>
       new Map(
         enrollments
+          .filter(isEnrollmentOperationallyActive)
           .filter((enrollment) => enrollment.courseName)
           .map((enrollment) => [normalizeCourseName(enrollment.courseName), enrollment])
       ),
@@ -517,7 +520,10 @@ export function CoursesPage() {
   );
 
   const showEnrollmentActionsColumn = enrollments.some(
-    (row) => (row.status === 'PENDING' && (canManage || isStudent)) || (canManageGroups && row.status === 'APPROVED')
+    (row) =>
+      (row.status === 'PENDING' && (canManage || isStudent))
+      || (canManageGroups && row.status === 'APPROVED')
+      || ((canManage || canPracticeTutor) && ['APPROVED', 'COMPLETED'].includes(row.status))
   );
 
   const enrollmentColumns = [
@@ -642,8 +648,55 @@ export function CoursesPage() {
           });
         }
 
+        if ((canManage || canPracticeTutor) && row.status === 'APPROVED') {
+          actions.push({
+            key: 'complete',
+            label: 'Concluir práctica',
+            icon: CheckCircle2,
+            onClick: () =>
+              runCourseAction(
+                `/api/enrollments/${row.id}/complete`,
+                'PATCH',
+                courseActionConfirmation({
+                  title: 'Concluir práctica',
+                  description: 'La práctica pasará al historial como concluida y el estudiante podrá iniciar otra práctica posteriormente.',
+                  details: row.studentFullName || row.student || row.courseName,
+                  confirmLabel: 'Concluir',
+                  tone: 'warning',
+                })
+              ),
+          });
+        }
+
+        if ((canManage || canPracticeTutor) && row.status === 'COMPLETED') {
+          actions.push({
+            key: 'reopen',
+            label: 'Reabrir práctica',
+            icon: RotateCcw,
+            onClick: () =>
+              runCourseAction(
+                `/api/enrollments/${row.id}/reopen`,
+                'PATCH',
+                courseActionConfirmation({
+                  title: 'Reabrir práctica',
+                  description: 'La práctica volverá a quedar como aprobada si el estudiante no tiene otra práctica activa.',
+                  details: row.studentFullName || row.student || row.courseName,
+                  confirmLabel: 'Reabrir',
+                  tone: 'warning',
+                })
+              ),
+          });
+        }
+
         if (canManageGroups && row.status === 'APPROVED') {
-          return renderEnrollmentGroupAssignment(row);
+          const assignment = renderEnrollmentGroupAssignment(row);
+
+          return actions.length ? (
+            <div className="flex flex-col gap-2">
+              {assignment}
+              <ActionMenu actions={actions} />
+            </div>
+          ) : assignment;
         }
 
         return actions.length ? <ActionMenu actions={actions} /> : null;
@@ -728,8 +781,8 @@ export function CoursesPage() {
     <>
       <PageHeader
         eyebrow="Practicas"
-        title="Paralelos y grupos"
-        description="Busca paralelos, organiza grupos, asigna tutores y revisa inscripciones."
+        title="Paralelos y prácticas"
+        description="Busca paralelos, organiza grupos, asigna tutores y revisa el historial de prácticas."
         action={
           <SecondaryButton icon={RefreshCw} loading={loading} onClick={loadData} type="button">
             Actualizar
@@ -747,7 +800,7 @@ export function CoursesPage() {
             canManage && ['create', 'Crear paralelo'],
             // Mostrar 'Gestion' e 'Inscripciones' solo si se seleccionó un paralelo.
             courseId && canUseCourse && ['manage', 'Gestion del paralelo'],
-            courseId && ['enrollments', isStudent ? 'Mis inscripciones' : 'Inscripciones'],
+            (isStudent || courseId) && ['enrollments', isStudent ? 'Mis prácticas' : 'Inscripciones'],
           ]
             .filter(Boolean)
             .map(([id, label]) => (
@@ -759,7 +812,9 @@ export function CoursesPage() {
                   // Si volvemos a 'Paralelos' o 'Crear paralelo', limpiar la selección.
                   if (id === 'courses' || id === 'create') {
                     setCourseId('');
-                    setEnrollments([]);
+                    if (!isStudent) {
+                      setEnrollments([]);
+                    }
                     setGroups([]);
                     setGroupId('');
                     setAssignmentGroupByEnrollmentId({});
@@ -1487,6 +1542,10 @@ function hasEnrollmentForCourse(course, enrollmentByCourseId, enrollmentByCourse
   }
 
   return enrollmentByCourseName.has(normalizeCourseName(course.name));
+}
+
+function isEnrollmentOperationallyActive(enrollment) {
+  return ['PENDING', 'APPROVED'].includes(String(enrollment?.status || '').toUpperCase());
 }
 
 function normalizeCourseName(name) {

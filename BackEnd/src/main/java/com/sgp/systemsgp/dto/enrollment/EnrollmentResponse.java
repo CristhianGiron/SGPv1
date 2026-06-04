@@ -37,6 +37,18 @@ public class EnrollmentResponse {
 
     private String subjectName;
 
+    private Long facultyId;
+
+    private String facultyName;
+
+    private Long careerId;
+
+    private String careerName;
+
+    private Long academicCycleId;
+
+    private String academicCycleName;
+
     private Long educationalInstitutionId;
 
     private String educationalInstitutionName;
@@ -62,4 +74,8 @@ public class EnrollmentResponse {
     private String status;
 
     private LocalDateTime enrolledAt;
+
+    private boolean archived;
+
+    private LocalDateTime archivedAt;
 }

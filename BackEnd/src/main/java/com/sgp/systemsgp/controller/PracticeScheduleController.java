@@ -65,6 +65,15 @@ public class PracticeScheduleController {
                 authentication.getName());
     }
 
+    @GetMapping("/review")
+    @PreAuthorize("hasAnyRole('TUTOR_PRACTICAS','DIRECTOR_PRACTICAS','ADMIN')")
+    public List<PracticeScheduleResponse> reviewQueue(
+            Authentication authentication) {
+
+        return practiceScheduleService.reviewQueue(
+                authentication.getName());
+    }
+
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ESTUDIANTE','TUTOR_INSTITUCIONAL','TUTOR_PRACTICAS','DIRECTORA_INSTITUCION','DIRECTOR_PRACTICAS','ADMIN')")
     public PracticeScheduleResponse getById(

@@ -60,7 +60,8 @@ class PracticeScheduleServiceTest {
         practiceScheduleService = new PracticeScheduleService(
                 practiceScheduleRepository,
                 enrollmentRepository,
-                accountRepository);
+                accountRepository,
+                new PracticeAccessService());
     }
 
     @Test

@@ -108,6 +108,11 @@ class SecurityConfigTest {
         JwtAuthFilter jwtAuthFilter() {
             return new JwtAuthFilter(null, null, null);
         }
+
+        @Bean
+        RateLimitingFilter rateLimitingFilter() {
+            return new RateLimitingFilter();
+        }
     }
 
     @RestController

@@ -22,6 +22,11 @@ public interface PracticeScheduleRepository
     List<PracticeSchedule> findByEnrollment_Group_InstitutionalTutor_UsernameAndDeletedFalse(
             String username);
 
+    List<PracticeSchedule> findByCourse_PracticeTutor_UsernameAndDeletedFalse(
+            String username);
+
     List<PracticeSchedule> findByEducationalInstitution_IdAndDeletedFalse(
             Long institutionId);
+
+    List<PracticeSchedule> findByDeletedFalse();
 }

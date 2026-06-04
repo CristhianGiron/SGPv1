@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import { apiRequest, unwrapPage } from "../api/client";
 import { Alert } from "../components/ui/Alert";
-import { Input } from "../components/ui/FormControls";
+import { Input, PasswordInput } from "../components/ui/FormControls";
 import { PrimaryButton } from "../components/ui/ActionBar";
 import { ThemeToggle } from "../components/ui/ThemeToggle";
 import { useAuth } from "../auth/AuthContext";
@@ -583,10 +583,9 @@ export function RegisterStudentPage() {
                 </IconField>
 
                 <IconField icon={LockKeyhole} label="Contraseña">
-                  <StyledInput
+                  <StyledPasswordInput
                     minLength={8}
                     name="password"
-                    type="password"
                     value={form.password}
                     onChange={handleChange}
                     required
@@ -1183,6 +1182,22 @@ function StyledInput(props) {
       {...props}
       className={[
         "h-11 w-full rounded-xl border border-line bg-panel py-2.5 pl-11 pr-4 text-sm",
+        "text-heading placeholder:text-muted",
+        "shadow-sm outline-none transition",
+        "focus:border-focus focus:bg-panel focus:ring-2 focus:ring-focus-soft",
+        "dark:border-line dark:bg-page dark:text-heading dark:placeholder:text-muted dark:focus:border-accent dark:focus:bg-page dark:focus:ring-focus-soft",
+        props.className || "",
+      ].join(" ")}
+    />
+  );
+}
+
+function StyledPasswordInput(props) {
+  return (
+    <PasswordInput
+      {...props}
+      className={[
+        "h-11 w-full rounded-xl border border-line bg-panel py-2.5 pl-11 pr-12 text-sm",
         "text-heading placeholder:text-muted",
         "shadow-sm outline-none transition",
         "focus:border-focus focus:bg-panel focus:ring-2 focus:ring-focus-soft",

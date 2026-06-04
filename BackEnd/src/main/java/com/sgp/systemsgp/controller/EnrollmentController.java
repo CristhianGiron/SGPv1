@@ -75,6 +75,88 @@ public class EnrollmentController {
         }
 
         /*
+         * CONCLUIR PRACTICA
+         */
+        @PatchMapping("/api/enrollments/{id}/complete")
+
+        @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR_PRACTICAS', 'TUTOR_PRACTICAS')")
+
+        public EnrollmentResponse complete(
+                        Authentication authentication,
+
+                        @PathVariable Long id) {
+
+                return enrollmentService.complete(
+                                authentication.getName(),
+                                id);
+        }
+
+        /*
+         * REABRIR PRACTICA CONCLUIDA
+         */
+        @PatchMapping("/api/enrollments/{id}/reopen")
+
+        @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR_PRACTICAS', 'TUTOR_PRACTICAS')")
+
+        public EnrollmentResponse reopen(
+                        Authentication authentication,
+
+                        @PathVariable Long id) {
+
+                return enrollmentService.reopen(
+                                authentication.getName(),
+                                id);
+        }
+
+        /*
+         * ARCHIVAR PRACTICA CONCLUIDA
+         */
+        @PatchMapping("/api/enrollments/{id}/archive")
+
+        @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR_PRACTICAS', 'TUTOR_PRACTICAS')")
+
+        public EnrollmentResponse archive(
+                        Authentication authentication,
+
+                        @PathVariable Long id) {
+
+                return enrollmentService.archive(
+                                authentication.getName(),
+                                id);
+        }
+
+        /*
+         * DESARCHIVAR PRACTICA CONCLUIDA
+         */
+        @PatchMapping("/api/enrollments/{id}/unarchive")
+
+        @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR_PRACTICAS', 'TUTOR_PRACTICAS')")
+
+        public EnrollmentResponse unarchive(
+                        Authentication authentication,
+
+                        @PathVariable Long id) {
+
+                return enrollmentService.unarchive(
+                                authentication.getName(),
+                                id);
+        }
+
+        /*
+         * ARCHIVAR TODAS LAS PRACTICAS VISIBLES CONCLUIDAS
+         */
+        @PatchMapping("/api/enrollments/archive-completed")
+
+        @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR_PRACTICAS', 'TUTOR_PRACTICAS')")
+
+        public List<EnrollmentResponse> archiveAllCompleted(
+                        Authentication authentication) {
+
+                return enrollmentService.archiveAllCompleted(
+                                authentication.getName());
+        }
+
+        /*
          * ASIGNAR GRUPO A INSCRIPCIÓN
          */
         @PatchMapping("/api/enrollments/{id}/group/{groupId}")
@@ -158,6 +240,21 @@ public class EnrollmentController {
                         Authentication authentication) {
 
                 return enrollmentService.managedEnrollments(
+                                authentication.getName());
+        }
+
+        /*
+         * LISTA DIRECTA DE PRACTICAS
+         */
+        @GetMapping("/api/enrollments/practices")
+
+        @PreAuthorize("hasAnyRole('ESTUDIANTE', 'ADMIN', 'DIRECTOR_PRACTICAS', 'TUTOR_PRACTICAS', 'TUTOR_INSTITUCIONAL')")
+
+        public List<EnrollmentResponse> practiceEnrollments(
+
+                        Authentication authentication) {
+
+                return enrollmentService.practiceEnrollments(
                                 authentication.getName());
         }
 }

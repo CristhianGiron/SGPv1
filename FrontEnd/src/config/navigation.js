@@ -13,6 +13,7 @@
  * - roles: array de roles permitidos (vacío = disponible para todos)
  */
 import {
+  Archive,
   BookOpen,
   BarChart3,
   Bell,
@@ -21,6 +22,7 @@ import {
   ChevronDown,
   ClipboardCheck,
   ClipboardList,
+  BookMarked,
   FileQuestion,
   FileText,
   FileStack,
@@ -141,9 +143,27 @@ export const NAV_ITEMS = [
   },
   {
     id: 'courses',
-    label: 'Paralelos y grupos',
+    label: 'Paralelos y prácticas',
     Icon: GraduationCap,
-    roles: ['ROLE_TUTOR_PRACTICAS', 'ROLE_ADMIN', 'ROLE_DIRECTOR_PRACTICAS'],
+    roles: ['ROLE_ESTUDIANTE', 'ROLE_TUTOR_PRACTICAS', 'ROLE_ADMIN', 'ROLE_DIRECTOR_PRACTICAS'],
+  },
+  {
+    id: 'practice-archive',
+    label: 'Archivo de prácticas',
+    Icon: Archive,
+    roles: ['ROLE_ESTUDIANTE', 'ROLE_TUTOR_INSTITUCIONAL', 'ROLE_TUTOR_PRACTICAS', 'ROLE_ADMIN', 'ROLE_DIRECTOR_PRACTICAS'],
+  },
+  {
+    id: 'didactic-plans',
+    label: 'Planificaciones didácticas',
+    Icon: BookMarked,
+    roles: [
+      'ROLE_ESTUDIANTE',
+      'ROLE_TUTOR_INSTITUCIONAL',
+      'ROLE_TUTOR_PRACTICAS',
+      'ROLE_DIRECTOR_PRACTICAS',
+      'ROLE_ADMIN',
+    ],
   },
   {
     id: 'documents',
@@ -164,7 +184,14 @@ export const NAV_ITEMS = [
     id: 'schedules',
     label: 'Jornadas y asistencias',
     Icon: CalendarClock,
-    roles: ['ROLE_ESTUDIANTE', 'ROLE_TUTOR_INSTITUCIONAL', 'ROLE_DIRECTORA_INSTITUCION'],
+    roles: [
+      'ROLE_ESTUDIANTE',
+      'ROLE_TUTOR_INSTITUCIONAL',
+      'ROLE_DIRECTORA_INSTITUCION',
+      'ROLE_TUTOR_PRACTICAS',
+      'ROLE_DIRECTOR_PRACTICAS',
+      'ROLE_ADMIN',
+    ],
   },
   {
     id: 'institutions',
