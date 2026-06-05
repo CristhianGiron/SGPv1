@@ -2,7 +2,7 @@ import { ArrowRight, CheckCircle2, CircleDot } from "lucide-react";
 import { hasNotificationLink } from "../../utils/notificationLinks";
 
 const itemBaseClass =
-  "min-w-0 w-full overflow-hidden rounded-lg border border-line bg-panel p-3 text-left text-heading transition-colors hover:border-accent focus-visible:border-accent focus-visible:outline-none dark:border-line dark:bg-surface dark:text-ink dark:hover:border-accent dark:focus-visible:border-accent";
+  "sgp-color-card min-w-0 w-full overflow-hidden rounded-lg border border-line bg-panel p-3 text-left text-heading transition-colors hover:border-accent focus-visible:border-accent focus-visible:outline-none dark:border-line dark:bg-surface dark:text-ink dark:hover:border-accent dark:focus-visible:border-accent";
 
 const itemUnreadClass =
   "border-warning/50 bg-warning-soft dark:border-warning/40 dark:bg-warning-soft";
@@ -54,10 +54,10 @@ export function NotificationItem({ notification, onClick }) {
         </span>
         <span className="min-w-0 flex-1">
           <span className="flex min-w-0 items-center justify-between gap-3">
-            <span className="min-w-0 truncate text-sm font-[850] leading-tight text-heading dark:text-heading">
+            <span className="min-w-0 truncate text-sm font-medium leading-tight text-heading dark:text-heading">
               {notification.title}
             </span>
-            <span className={`inline-flex max-w-[7.5rem] flex-none items-center gap-1 rounded-md border px-2 py-1 text-[0.68rem] font-extrabold uppercase leading-none ${badgeClass}`}>
+            <span className={`inline-flex max-w-[7.5rem] flex-none items-center gap-1 rounded-md border px-2 py-1 text-[0.68rem] font-semibold uppercase leading-none ${badgeClass}`}>
               {actionLabel}
               {hasLink && (
                 <ArrowRight
@@ -67,10 +67,10 @@ export function NotificationItem({ notification, onClick }) {
               )}
             </span>
           </span>
-          <span className="mt-1.5 block whitespace-normal break-words text-sm leading-6 text-muted dark:text-muted">
+          <span className="mt-1.5 block whitespace-normal break-words text-sm leading-6 text-body dark:text-ink">
             {notification.message}
           </span>
-          <span className="mt-2.5 block truncate text-[0.72rem] font-extrabold uppercase leading-tight tracking-normal text-muted dark:text-muted">
+          <span className="mt-2.5 block truncate text-[0.72rem] font-medium uppercase leading-tight tracking-normal text-body dark:text-ink">
             {timestamp}
           </span>
         </span>

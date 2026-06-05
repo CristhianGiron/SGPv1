@@ -42,14 +42,14 @@ export function DataInspector({ data, moduleId, token }) {
 
             return (
               <section
-                className="scroll-mt-24 min-w-0 max-w-full rounded-lg border border-line bg-panel-soft p-3 dark:border-line dark:bg-surface-soft"
+                className="sgp-color-card scroll-mt-24 min-w-0 max-w-full rounded-lg border border-line bg-panel-soft p-3 dark:border-line dark:bg-surface-soft"
                 id={detailGroupDomId(group)}
                 key={group.title}
               >
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <h3 className="text-sm font-bold text-heading dark:text-heading">{group.title}</h3>
+                  <h3 className="text-sm font-medium text-heading dark:text-heading">{group.title}</h3>
                   {feedbackStatus && (
-                    <span className={`rounded-full px-2 py-1 text-xs font-bold ${sectionStatusClass(feedbackStatus.tone)}`}>
+                    <span className={`rounded-full px-2 py-1 text-xs font-medium ${sectionStatusClass(feedbackStatus.tone)}`}>
                       {feedbackStatus.label}
                     </span>
                   )}
@@ -61,7 +61,7 @@ export function DataInspector({ data, moduleId, token }) {
                         className={`grid min-w-0 grid-cols-[minmax(0,7.5rem)_minmax(0,1fr)] gap-3 text-sm max-sm:grid-cols-1 ${item.feedback ? feedbackInlineClass : ''}`}
                         key={item.key}
                       >
-                        <dt className="min-w-0 break-words text-muted dark:text-muted">{item.label}</dt>
+                        <dt className="min-w-0 break-words text-body dark:text-ink">{item.label}</dt>
                         <dd className="min-w-0 whitespace-pre-wrap break-words font-medium text-heading dark:text-heading">
                           <div className="min-w-0 break-words">{item.value}</div>
                           {item.feedbackMeta && (
@@ -74,7 +74,7 @@ export function DataInspector({ data, moduleId, token }) {
                 )}
                 {group.collections?.map((collection) => (
                   <div className="mt-3 min-w-0 max-w-full" key={collection.key}>
-                    <h4 className="text-xs font-extrabold uppercase text-muted dark:text-muted">{collection.title}</h4>
+                    <h4 className="text-xs font-semibold uppercase text-body dark:text-ink">{collection.title}</h4>
                     <div className="mt-2 min-w-0 max-w-full">
                       {isActivityWeeksCollection(collection.key) ? (
                         <ActivityWeeksAcademicTable weeks={collection.rows} />
@@ -98,8 +98,8 @@ export function DataInspector({ data, moduleId, token }) {
       )}
 
       {standaloneCollections.map((collection) => (
-        <section className="min-w-0 max-w-full rounded-lg border border-line bg-panel p-3 dark:border-line dark:bg-surface" key={collection.key}>
-          <h3 className="text-sm font-bold text-heading dark:text-heading">{collection.title}</h3>
+        <section className="sgp-color-card min-w-0 max-w-full rounded-lg border border-line bg-panel p-3 dark:border-line dark:bg-surface" key={collection.key}>
+          <h3 className="text-sm font-medium text-heading dark:text-heading">{collection.title}</h3>
           <div className="mt-3 min-w-0 max-w-full">
             {isActivityWeeksCollection(collection.key) ? (
               <ActivityWeeksAcademicTable weeks={collection.rows} />
@@ -136,10 +136,10 @@ export function DocumentApprovalStatus({ data }) {
   }
 
   return (
-    <section className="rounded-lg border border-line bg-panel p-3 dark:border-line dark:bg-surface">
+    <section className="sgp-color-card rounded-lg border border-line bg-panel p-3 dark:border-line dark:bg-surface">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h3 className="text-sm font-bold text-heading dark:text-heading">Estado de aprobacion</h3>
-        <span className={`rounded-full px-2.5 py-1 text-xs font-extrabold ${approvalToneClass(documentApprovalTone(data))}`}>
+        <h3 className="text-sm font-medium text-heading dark:text-heading">Estado de aprobacion</h3>
+        <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${approvalToneClass(documentApprovalTone(data))}`}>
           {formatValue(data.status || 'DRAFT', 'status')}
         </span>
       </div>
@@ -151,18 +151,18 @@ export function DocumentApprovalStatus({ data }) {
             key={review.key}
           >
             <div className="flex items-center justify-between gap-2">
-              <p className="m-0 text-sm font-extrabold text-heading dark:text-heading">{review.label}</p>
-              <span className={`rounded-full px-2 py-0.5 text-[0.7rem] font-extrabold ${approvalToneClass(review.tone)}`}>
+              <p className="m-0 text-sm font-semibold text-heading dark:text-heading">{review.label}</p>
+              <span className={`rounded-full px-2 py-0.5 text-[0.7rem] font-semibold ${approvalToneClass(review.tone)}`}>
                 {review.status}
               </span>
             </div>
             <dl className="mt-2 grid gap-1 text-xs leading-5">
               <div className="grid grid-cols-[4.5rem_minmax(0,1fr)] gap-2">
-                <dt className="font-bold text-muted">Por</dt>
+                <dt className="font-medium text-body">Por</dt>
                 <dd className="min-w-0 break-words text-heading dark:text-heading">{review.author || '-'}</dd>
               </div>
               <div className="grid grid-cols-[4.5rem_minmax(0,1fr)] gap-2">
-                <dt className="font-bold text-muted">Fecha</dt>
+                <dt className="font-medium text-body">Fecha</dt>
                 <dd className="min-w-0 break-words text-heading dark:text-heading">{review.at ? formatValue(review.at, 'reviewedAt') : '-'}</dd>
               </div>
             </dl>
@@ -171,7 +171,7 @@ export function DocumentApprovalStatus({ data }) {
       </div>
 
       {data.approvedAt && (
-        <p className="mt-3 text-xs font-bold text-accent-strong dark:text-accent-strong">
+        <p className="mt-3 text-xs font-medium text-accent-strong dark:text-accent-strong">
           Aprobacion final: {formatValue(data.approvedAt, 'approvedAt')}
         </p>
       )}
@@ -199,19 +199,19 @@ export function ActivityPlanScheduleMatrix({ weeks = [] }) {
           <thead>
             <tr>
               <th
-                className="border border-table-border bg-table-header px-2 py-2 text-center font-serif text-[12px] font-bold uppercase text-inverse dark:border-line dark:bg-table-header"
+                className="border border-table-border bg-table-header px-2 py-2 text-center font-serif text-[12px] font-medium uppercase text-table-ink dark:border-line dark:bg-table-header"
                 colSpan={schedule.weekColumns.length + 1}
               >
                 CRONOGRAMA DE ACTIVIDADES PRACTICAS PARA EL DESARROLLO DEL PIS
               </th>
             </tr>
             <tr>
-              <th className="border border-table-border bg-table-header px-2 py-1.5 text-center font-serif font-bold text-inverse dark:border-line dark:bg-table-header">
+              <th className="border border-table-border bg-table-header px-2 py-1.5 text-center font-serif font-medium text-table-ink dark:border-line dark:bg-table-header">
                 Actividades
               </th>
               {schedule.monthGroups.map((month) => (
                 <th
-                  className="border border-table-border bg-table-header px-2 py-1.5 text-center font-serif font-bold text-inverse dark:border-line dark:bg-table-header"
+                  className="border border-table-border bg-table-header px-2 py-1.5 text-center font-serif font-medium text-table-ink dark:border-line dark:bg-table-header"
                   colSpan={month.span}
                   key={month.key}
                 >
@@ -220,12 +220,12 @@ export function ActivityPlanScheduleMatrix({ weeks = [] }) {
               ))}
             </tr>
             <tr>
-              <th className="border border-table-border bg-table-header px-2 py-1.5 text-center font-serif font-bold text-inverse dark:border-line dark:bg-table-header">
+              <th className="border border-table-border bg-table-header px-2 py-1.5 text-center font-serif font-medium text-table-ink dark:border-line dark:bg-table-header">
                 Semanas
               </th>
               {schedule.weekColumns.map((week) => (
                 <th
-                  className="border border-table-border bg-table-header px-1 py-1.5 text-center font-serif font-bold text-inverse dark:border-line dark:bg-table-header"
+                  className="border border-table-border bg-table-header px-1 py-1.5 text-center font-serif font-medium text-table-ink dark:border-line dark:bg-table-header"
                   key={week.key}
                 >
                   {week.weekNumber}
@@ -284,10 +284,10 @@ export function ActivityWeeksAcademicTable({ weeks = [] }) {
           <tbody>
             {rows.map((week) => (
               <tr key={week.key}>
-                <th className="border border-table-border bg-table-header px-2 py-4 text-center font-bold uppercase text-inverse dark:border-line dark:bg-table-header">
+                <th className="border border-table-border bg-table-header px-2 py-4 text-center font-medium uppercase text-table-ink dark:border-line dark:bg-table-header">
                   SEMANA {week.weekNumber}
                 </th>
-                <th className="border border-table-border bg-table-header px-4 py-3 text-center font-bold uppercase text-inverse dark:border-line dark:bg-table-header">
+                <th className="border border-table-border bg-table-header px-4 py-3 text-center font-medium uppercase text-table-ink dark:border-line dark:bg-table-header">
                   {week.dateRange}
                 </th>
               </tr>
@@ -297,7 +297,7 @@ export function ActivityWeeksAcademicTable({ weeks = [] }) {
               return [
                 headerRow,
                 <tr key={`${week.key}-body`}>
-                  <th className="border border-table-border px-2 py-8 text-center font-bold text-table-ink dark:border-line dark:text-heading">
+                  <th className="border border-table-border px-2 py-8 text-center font-medium text-table-ink dark:border-line dark:text-heading">
                     Actividad
                   </th>
                   <td className="border border-table-border px-6 py-4 align-top dark:border-line">
@@ -322,11 +322,11 @@ export function ActivityWeeksAcademicTable({ weeks = [] }) {
 function SectionFeedbackThread({ entries }) {
   return (
     <div className="mt-4 rounded-lg border-l-[3px] border-accent bg-success-soft p-3 dark:border-accent dark:bg-accent-soft">
-      <h4 className="m-0 mb-2 text-xs font-black uppercase text-accent-strong dark:text-accent-strong">Retroalimentacion de la seccion</h4>
+      <h4 className="m-0 mb-2 text-xs font-semibold uppercase text-accent-strong dark:text-accent-strong">Retroalimentacion de la seccion</h4>
       <ol className="grid list-none gap-2 p-0 m-0">
         {entries.map((entry) => (
           <li className="border-t border-success/15 pt-2 first:border-t-0 first:pt-0 dark:border-accent/20" key={entry.id}>
-            <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs font-extrabold leading-5 text-success-strong dark:text-accent-strong">
+            <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs font-semibold leading-5 text-success-strong dark:text-accent-strong">
               <span>{entry.meta ? formatFeedbackMeta(entry.meta) : 'Retroalimentación registrada'}</span>
               {entry.entryLabel && <span>{entry.entryLabel}</span>}
             </div>
@@ -347,20 +347,20 @@ function DocumentTimeline({ events }) {
   }
 
   return (
-    <section className="rounded-lg border border-line bg-panel p-3 dark:border-line dark:bg-surface">
+    <section className="sgp-color-card rounded-lg border border-line bg-panel p-3 dark:border-line dark:bg-surface">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="min-w-0">
-          <h3 className="text-sm font-bold text-heading dark:text-heading">Linea de tiempo</h3>
-          <p className="mt-1 text-xs font-semibold text-muted">
+          <h3 className="text-sm font-medium text-heading dark:text-heading">Linea de tiempo</h3>
+          <p className="mt-1 text-xs font-semibold text-body">
             Consulta los movimientos y revisiones del documento.
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <span className="rounded-full bg-panel-soft px-2 py-1 text-xs font-bold text-muted dark:bg-surface-soft dark:text-muted">
+          <span className="rounded-full bg-panel-soft px-2 py-1 text-xs font-medium text-body dark:bg-surface-soft dark:text-ink">
             {timelineCountLabel(events.length)}
           </span>
           <button
-            className="inline-flex min-h-[2.25rem] items-center gap-2 rounded-lg border border-accent px-3 py-1.5 text-xs font-extrabold text-primary transition-colors hover:bg-primary hover:text-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-accent dark:text-accent-strong dark:hover:bg-hover-soft dark:hover:text-inverse"
+            className="inline-flex min-h-[2.25rem] items-center gap-2 rounded-lg border border-accent px-3 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-accent dark:text-accent-strong dark:hover:bg-hover-soft dark:hover:text-inverse"
             onClick={() => setOpen(true)}
             type="button"
           >
@@ -380,15 +380,15 @@ function DocumentTimeline({ events }) {
         <ol className="space-y-3">
           {events.map((event) => (
             <li className="grid gap-2 text-sm sm:grid-cols-[150px_1fr] sm:gap-3" key={event.id}>
-              <time className="text-xs font-semibold text-muted sm:pt-3">
+              <time className="text-xs font-semibold text-body sm:pt-3">
                 {formatValue(event.at, 'createdAt')}
               </time>
               <div className={`rounded-md border p-3 ${timelineToneClass(event.tone)}`}>
                 <div className="flex flex-wrap items-start justify-between gap-2">
-                  <div className="font-bold text-heading dark:text-heading">{event.title}</div>
+                  <div className="font-medium text-heading dark:text-heading">{event.title}</div>
                   {event.targetId && (
                     <button
-                      className="rounded-lg border border-accent px-2.5 py-1 text-xs font-extrabold text-primary transition-colors hover:bg-primary hover:text-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-accent dark:text-accent-strong dark:hover:bg-hover-soft"
+                      className="rounded-lg border border-accent px-2.5 py-1 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-accent dark:text-accent-strong dark:hover:bg-hover-soft"
                       onClick={() => handleGoToSection(event.targetId)}
                       type="button"
                     >
@@ -402,7 +402,7 @@ function DocumentTimeline({ events }) {
                   </p>
                 )}
                 {event.meta && (
-                  <div className="mt-2 text-xs font-bold uppercase tracking-wide text-muted">
+                  <div className="mt-2 text-xs font-medium uppercase tracking-wide text-body">
                     {event.meta}
                   </div>
                 )}
@@ -519,7 +519,7 @@ function approvalToneClass(tone) {
     case 'corrected':
       return 'bg-info-soft text-info-strong dark:bg-info-soft dark:text-info-strong';
     default:
-      return 'bg-panel-soft text-muted dark:bg-surface-soft dark:text-muted';
+      return 'bg-panel-soft text-body dark:bg-surface-soft dark:text-ink';
   }
 }
 
@@ -1068,7 +1068,7 @@ function sectionStatusClass(tone) {
     case 'observed':
       return 'bg-warning-soft text-warning-strong dark:bg-warning-soft dark:text-warning-strong';
     default:
-      return 'bg-panel-soft text-muted dark:bg-surface-soft dark:text-muted';
+      return 'bg-panel-soft text-body dark:bg-surface-soft dark:text-ink';
   }
 }
 
@@ -1522,7 +1522,7 @@ function EvidenceViewerLink({ url }) {
 
   return (
     <a
-      className="break-all text-sm font-extrabold text-primary hover:underline dark:text-accent-strong"
+      className="break-all text-sm font-semibold text-primary hover:underline dark:text-accent-strong"
       href={viewerLink}
       rel="noreferrer"
       target="_blank"

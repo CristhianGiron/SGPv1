@@ -17,9 +17,8 @@ import { formatDateTime } from '../utils/format';
 export function PracticeArchivePage() {
   const { token, roles } = useAuth();
   const confirm = useConfirm();
-  const canArchive = roles.some((role) =>
-    ['ROLE_ADMIN', 'ROLE_DIRECTOR_PRACTICAS', 'ROLE_TUTOR_PRACTICAS'].includes(role)
-  );
+  const canComplete = roles.includes('ROLE_DIRECTOR_PRACTICAS');
+  const canArchive = roles.includes('ROLE_ADMIN');
   const [practices, setPractices] = useState([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -33,6 +32,7 @@ export function PracticeArchivePage() {
     status: '',
     archived: '',
   });
+  const [groupBy, setGroupBy] = useState('academicCycle');
 
   const loadPractices = useCallback(async () => {
     setLoading(true);
@@ -61,10 +61,13 @@ export function PracticeArchivePage() {
     () => buildFilterOptions(practices, filters),
     [filters, practices]
   );
-  const pendingArchive = practices.filter((practice) => !practice.archived);
-  const canArchiveAll = canArchive
-    && pendingArchive.length > 0
-    && pendingArchive.every((practice) => practice.status === 'COMPLETED');
+  const practiceGroups = useMemo(
+    () => buildPracticeGroups(filteredPractices, groupBy),
+    [filteredPractices, groupBy]
+  );
+  const filteredArchivable = filteredPractices.filter(
+    (practice) => practice.status === 'COMPLETED' && !practice.archived
+  );
 
   async function runPracticeAction(path, confirmation, successMessage) {
     const accepted = await confirm(confirmation);
@@ -88,24 +91,53 @@ export function PracticeArchivePage() {
     }
   }
 
-  function archiveAllCompleted() {
-    runPracticeAction(
-      '/api/enrollments/archive-completed',
-      {
-        title: 'Archivar prácticas concluidas',
-        description: 'Se archivarán todas las prácticas visibles. Esta acción solo procede si todas están concluidas.',
-        confirmLabel: 'Archivar todo',
-        tone: 'warning',
-      },
-      'Prácticas archivadas'
-    );
+  async function runBatchArchive(rows, archived, confirmation, successMessage) {
+    const enrollmentIds = rows
+      .filter((practice) => practice.status === 'COMPLETED' && Boolean(practice.archived) !== archived)
+      .map((practice) => practice.id);
+
+    if (!enrollmentIds.length) {
+      setError(archived
+        ? 'No hay prácticas concluidas sin archivar en esta selección.'
+        : 'No hay prácticas archivadas para recuperar en esta selección.');
+      return;
+    }
+
+    const accepted = await confirm(confirmation);
+
+    if (!accepted) {
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+    setMessage('');
+
+    try {
+      await apiRequest('/api/enrollments/archive-batch', {
+        method: 'PATCH',
+        token,
+        body: {
+          enrollmentIds,
+          archived,
+        },
+      });
+      await loadPractices();
+      setMessage(successMessage);
+    } catch (requestError) {
+      setError(requestError.message);
+    } finally {
+      setLoading(false);
+    }
   }
 
   const columns = [
+
+    /*PROVICIONALMENTE COMENTADO YA QUE SON DEMASIADAS COLUMNAS Y ME GUSTARÍA MEJOR QUE ESTA TABLA ESTE COMPUESTA POR PARALELO DE PRACTICAS Y AL ARCHIVAR O DESARCHIVAR ARCHIVAR TODO EL PARALELO DE PRACTICAS PERO QUE LUEGO TAMBIEN PUEDA DESARCHIVAR O ARCHIVAR ALGUNA PRACTICA DE FORMA INDIVIDUAL, PERO PARA ESO HAY QUE CAMBIAR EL MODELO DE DATOS Y LA API PRIMERO, ASÍ QUE POR AHORA LO COMENTO PARA SIMPLIFICAR LA TABLa
     { key: 'facultyName', header: 'Facultad', render: (row) => row.facultyName || '-' },
     { key: 'careerName', header: 'Carrera', render: (row) => row.careerName || '-' },
     { key: 'academicCycleName', header: 'Ciclo', render: (row) => row.academicCycleName || row.courseAcademicCycle || '-' },
-    { key: 'courseName', header: 'Paralelo', render: (row) => row.courseName || '-' },
+    { key: 'courseName', header: 'Paralelo', render: (row) => row.courseName || '-' },*/
     { key: 'studentFullName', header: 'Estudiante', render: (row) => row.studentFullName || row.student || '-' },
     { key: 'groupName', header: 'Grupo', render: (row) => row.groupName || '-' },
     { key: 'practiceTutor', header: 'Tutor de prácticas', render: (row) => row.practiceTutor || '-' },
@@ -122,14 +154,14 @@ export function PracticeArchivePage() {
     { key: 'archivedAt', header: 'Archivado', render: (row) => row.archivedAt ? formatDateTime(row.archivedAt) : '-' },
   ];
 
-  if (canArchive) {
+  if (canArchive || canComplete) {
     columns.push({
       key: 'actions',
       header: 'Acciones',
       render: (row) => {
         const actions = [];
 
-        if (row.status === 'APPROVED') {
+        if (canComplete && row.status === 'APPROVED') {
           actions.push({
             key: 'complete',
             label: 'Concluir práctica',
@@ -149,7 +181,7 @@ export function PracticeArchivePage() {
           });
         }
 
-        if (row.status === 'COMPLETED' && !row.archived) {
+        if (canArchive && row.status === 'COMPLETED' && !row.archived) {
           actions.push({
             key: 'archive',
             label: 'Archivar',
@@ -169,7 +201,7 @@ export function PracticeArchivePage() {
           });
         }
 
-        if (row.status === 'COMPLETED' && row.archived) {
+        if (canArchive && row.status === 'COMPLETED' && row.archived) {
           actions.push({
             key: 'unarchive',
             label: 'Desarchivar',
@@ -188,6 +220,9 @@ export function PracticeArchivePage() {
               ),
           });
 
+        }
+
+        if (canComplete && row.status === 'COMPLETED' && row.archived) {
           actions.push({
             key: 'reopen',
             label: 'Reabrir práctica',
@@ -207,7 +242,7 @@ export function PracticeArchivePage() {
           });
         }
 
-        if (row.status === 'COMPLETED' && !row.archived) {
+        if (canComplete && row.status === 'COMPLETED' && !row.archived) {
           actions.push({
             key: 'reopen',
             label: 'Reabrir práctica',
@@ -232,6 +267,60 @@ export function PracticeArchivePage() {
     });
   }
 
+  const cohortColumns = [
+    ...buildCohortIdentityColumns(groupBy),
+    { key: 'total', header: 'Prácticas', render: (row) => row.total },
+    { key: 'approved', header: 'Aprobadas', render: (row) => row.approved },
+    { key: 'completed', header: 'Concluidas', render: (row) => row.completed },
+    { key: 'archivable', header: 'Por archivar', render: (row) => row.archivable },
+    { key: 'archived', header: 'Archivadas', render: (row) => row.archived },
+    {
+      key: 'state',
+      header: 'Estado',
+      render: (row) => (
+        <StatusBadge status={row.archivable > 0 ? 'COMPLETED' : row.archived > 0 ? 'ARCHIVED' : 'APPROVED'} />
+      ),
+    },
+    {
+      key: 'actions',
+      header: 'Acciones',
+      render: (row) => (
+        <CohortArchiveActions
+          loading={loading}
+          row={row}
+          onArchive={() =>
+            runBatchArchive(
+              row.rows,
+              true,
+              {
+                title: 'Archivar cohorte de prácticas',
+                description: 'Se archivarán las prácticas concluidas y sin archivar de esta cohorte. Las aprobadas o pendientes quedarán sin cambios.',
+                details: row.label,
+                confirmLabel: 'Archivar cohorte',
+                tone: 'warning',
+              },
+              'Cohorte archivada'
+            )
+          }
+          onUnarchive={() =>
+            runBatchArchive(
+              row.rows,
+              false,
+              {
+                title: 'Desarchivar cohorte de prácticas',
+                description: 'Se recuperarán las prácticas concluidas archivadas de esta cohorte.',
+                details: row.label,
+                confirmLabel: 'Desarchivar cohorte',
+                tone: 'warning',
+              },
+              'Cohorte desarchivada'
+            )
+          }
+        />
+      ),
+    },
+  ];
+
   return (
     <>
       <PageHeader
@@ -240,17 +329,6 @@ export function PracticeArchivePage() {
         description="Consulta todas las prácticas visibles y archiva o recupera las concluidas desde una sola tabla."
         action={(
           <ActionBar>
-            {canArchive && (
-              <PrimaryButton
-                disabled={loading || !canArchiveAll}
-                icon={Archive}
-                loading={loading}
-                onClick={archiveAllCompleted}
-                type="button"
-              >
-                Archivar todo
-              </PrimaryButton>
-            )}
             <SecondaryButton icon={RefreshCw} loading={loading} onClick={loadPractices} type="button">
               Actualizar
             </SecondaryButton>
@@ -260,20 +338,107 @@ export function PracticeArchivePage() {
 
       {error && <Alert tone="error">{error}</Alert>}
       {message && <Alert tone="success">{message}</Alert>}
-      {canArchive && !canArchiveAll && pendingArchive.length > 0 && (
+      {canArchive && !filteredArchivable.length && filteredPractices.length > 0 && (
         <Alert tone="info">
-          El archivo masivo se activa cuando todas las prácticas sin archivar están concluidas.
+          Para archivar, selecciona una cohorte con prácticas concluidas y usa la acción de su fila.
         </Alert>
       )}
 
-      <div className="grid gap-4 md:grid-cols-4">
-        <SummaryCard label="Pendientes" value={summary.pending} />
-        <SummaryCard label="Aprobadas" value={summary.approved} />
-        <SummaryCard label="Concluidas" value={summary.completed} />
-        <SummaryCard label="Archivadas" value={summary.archived} />
+      <div className="grid gap-3 md:grid-cols-4">
+        <SummaryCard icon={RotateCcw} label="Pendientes" value={summary.pending} variant="d" />
+        <SummaryCard icon={CheckCircle2} label="Aprobadas" value={summary.approved} variant="b" />
+        <SummaryCard icon={CheckCircle2} label="Concluidas" value={summary.completed} variant="c" />
+        <SummaryCard icon={Archive} label="Archivadas" value={summary.archived} variant="e" />
       </div>
 
-      <SectionCard title="Lista de prácticas">
+      {!canArchive && (
+      <section className="space-y-4">
+        <div className="flex flex-wrap items-end justify-between gap-3 border-b border-line pb-3 dark:border-line">
+          <div>
+            <h2 className="text-base font-medium text-heading dark:text-heading">Archivo por cohorte</h2>
+            <p className="text-sm text-body dark:text-ink">
+              Agrupa la lista filtrada para revisar prácticas por paralelo, ciclo o carrera.
+            </p>
+          </div>
+          <Field label="Agrupar por">
+            <Select value={groupBy} onChange={(event) => setGroupBy(event.target.value)}>
+              <option value="course">Paralelo</option>
+              <option value="academicCycle">Ciclo</option>
+              <option value="career">Carrera</option>
+            </Select>
+          </Field>
+        </div>
+
+        {practiceGroups.length ? (
+          <div className="grid gap-3 xl:grid-cols-2">
+            {practiceGroups.map((group, index) => (
+              <PracticeGroupPanel
+                key={group.key}
+                canArchive={canArchive}
+                group={group}
+                loading={loading}
+                variant={['a', 'b', 'c', 'd', 'e'][index % 5]}
+                onArchive={() =>
+                  runBatchArchive(
+                    group.rows,
+                    true,
+                    {
+                      title: 'Archivar cohorte',
+                      description: 'Se archivarán las prácticas concluidas y sin archivar de esta cohorte. Las pendientes o aprobadas quedarán sin cambios.',
+                      details: group.label,
+                      confirmLabel: 'Archivar cohorte',
+                      tone: 'warning',
+                    },
+                    'Cohorte archivada'
+                  )
+                }
+                onUnarchive={() =>
+                  runBatchArchive(
+                    group.rows,
+                    false,
+                    {
+                      title: 'Desarchivar cohorte',
+                      description: 'Se recuperarán las prácticas concluidas archivadas de esta cohorte.',
+                      details: group.label,
+                      confirmLabel: 'Desarchivar cohorte',
+                      tone: 'warning',
+                    },
+                    'Cohorte desarchivada'
+                  )
+                }
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-lg border border-dashed border-line bg-surface-soft p-5 text-sm text-body dark:border-line dark:bg-surface-soft dark:text-ink">
+            No hay prácticas para agrupar con los filtros actuales.
+          </div>
+        )}
+      </section>
+      )}
+
+      <SectionCard title={canArchive ? 'Cohortes de práctica' : 'Lista de prácticas'}>
+        {canArchive && (
+          <div className="mb-3 rounded-lg border border-line bg-surface-soft p-3 dark:border-line dark:bg-surface-soft">
+            <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_minmax(14rem,18rem)] md:items-end">
+              <div>
+                <h3 className="text-sm font-medium text-heading dark:text-heading">Vista por cohorte</h3>
+                <p className="mt-1 text-sm text-body dark:text-ink">
+                  Define cómo se agrupa la tabla principal para archivar prácticas.
+                </p>
+              </div>
+              <Field label="Cohorte">
+                <Select value={groupBy} onChange={(event) => setGroupBy(event.target.value)}>
+                  <option value="academicCycle">Por ciclo</option>
+                  <option value="course">Por paralelo</option>
+                  <option value="career">Por carrera</option>
+                  <option value="faculty">Por facultad</option>
+                </Select>
+              </Field>
+            </div>
+          </div>
+        )}
+
         <FilterPanel
           activeCount={countActiveFilters(filters, ['query'])}
           hasActiveFilters={countActiveFilters(filters) > 0}
@@ -288,7 +453,9 @@ export function PracticeArchivePage() {
               />
             </Field>
           )}
-          summary={`${filteredPractices.length} de ${practices.length} resultados`}
+          summary={canArchive
+            ? `${practiceGroups.length} cohorte(s), ${filteredPractices.length} práctica(s)`
+            : `${filteredPractices.length} de ${practices.length} resultados`}
           title="Filtrar prácticas"
         >
           <Field label="Facultad">
@@ -383,26 +550,161 @@ export function PracticeArchivePage() {
         </FilterPanel>
 
         <div className="mt-5">
-          <DataTable
-            columns={columns}
-            loading={loading}
-            rows={filteredPractices.slice().sort(comparePractices)}
-          />
+          {canArchive ? (
+            <DataTable
+              columns={cohortColumns}
+              keyField="key"
+              loading={loading}
+              rows={practiceGroups}
+            />
+          ) : (
+            <DataTable
+              columns={columns}
+              loading={loading}
+              rows={filteredPractices.slice().sort(comparePractices)}
+            />
+          )}
         </div>
       </SectionCard>
     </>
   );
 }
 
-function SummaryCard({ label, value }) {
+function SummaryCard({ icon: Icon, label, value, variant }) {
   return (
-    <SectionCard>
-      <div className="flex items-center justify-between gap-3">
-        <span className="text-sm font-bold text-muted dark:text-muted">{label}</span>
-        <span className="text-2xl font-extrabold text-heading dark:text-heading">{value}</span>
+    <section className={`sgp-visual-card sgp-visual-card-${variant} min-h-28 rounded-lg border p-4 shadow-card`}>
+      <div className="relative flex items-start justify-between gap-3">
+        <div>
+          <span className="text-xs font-medium uppercase leading-tight">{label}</span>
+          <span className="mt-3 block text-3xl font-medium leading-none text-heading dark:text-heading">{value}</span>
+        </div>
+        <span className="sgp-visual-card-icon grid h-10 w-10 flex-none place-items-center rounded-full border-4 border-panel shadow-card">
+          <Icon aria-hidden="true" size={19} />
+        </span>
       </div>
-    </SectionCard>
+    </section>
   );
+}
+
+function CohortArchiveActions({ loading, row, onArchive, onUnarchive }) {
+  const actions = [
+    {
+      key: 'archive',
+      label: 'Archivar cohorte',
+      icon: Archive,
+      disabled: loading || row.archivable <= 0,
+      onClick: onArchive,
+    },
+    {
+      key: 'unarchive',
+      label: 'Desarchivar cohorte',
+      icon: ArchiveRestore,
+      disabled: loading || row.archived <= 0,
+      onClick: onUnarchive,
+    },
+  ];
+
+  return <ActionMenu actions={actions} label="Acciones de cohorte" />;
+}
+
+function PracticeGroupPanel({ canArchive, group, loading, onArchive, onUnarchive, variant = 'a' }) {
+  const hasArchivable = group.archivable > 0;
+  const hasArchived = group.archived > 0;
+  const completionText = group.pending + group.approved > 0
+    ? `${group.pending + group.approved} sin concluir`
+    : 'Lista para archivo';
+
+  return (
+    <article className={`sgp-visual-card sgp-visual-card-${variant} rounded-lg border p-4 shadow-card`}>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="relative min-w-0">
+          <p className="text-xs font-medium uppercase tracking-wide">
+            {group.scopeLabel}
+          </p>
+          <h3 className="mt-1 truncate text-base font-medium text-heading dark:text-heading" title={group.label}>
+            {group.label}
+          </h3>
+          <p className="mt-1 text-sm">
+            {completionText}
+          </p>
+        </div>
+        <StatusBadge status={group.archivable > 0 ? 'COMPLETED' : group.archived > 0 ? 'ARCHIVED' : 'APPROVED'} />
+      </div>
+
+      <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+        <GroupMetric label="Total" value={group.total} />
+        <GroupMetric label="Concluidas" value={group.completed} />
+        <GroupMetric label="Por archivar" value={group.archivable} />
+        <GroupMetric label="Archivadas" value={group.archived} />
+      </div>
+
+      {canArchive && (
+        <div className="mt-4 flex flex-wrap gap-2">
+          <PrimaryButton
+            disabled={loading || !hasArchivable}
+            icon={Archive}
+            loading={loading}
+            onClick={onArchive}
+            type="button"
+          >
+            Archivar cohorte
+          </PrimaryButton>
+          <SecondaryButton
+            disabled={loading || !hasArchived}
+            icon={ArchiveRestore}
+            loading={loading}
+            onClick={onUnarchive}
+            type="button"
+          >
+            Desarchivar
+          </SecondaryButton>
+        </div>
+      )}
+    </article>
+  );
+}
+
+function GroupMetric({ label, value }) {
+  return (
+    <div className="relative rounded-md border border-inverse/30 bg-inverse/20 px-3 py-2">
+      <div className="text-xs font-medium">{label}</div>
+      <div className="text-lg font-medium text-heading dark:text-heading">{value}</div>
+    </div>
+  );
+}
+
+function buildCohortIdentityColumns(groupBy) {
+  if (groupBy === 'faculty') {
+    return [
+      { key: 'label', header: 'Facultad', render: (row) => row.label },
+      { key: 'careerCount', header: 'Carreras', render: (row) => row.careerCount },
+      { key: 'academicCycleCount', header: 'Ciclos', render: (row) => row.academicCycleCount },
+      { key: 'courseCount', header: 'Paralelos', render: (row) => row.courseCount },
+    ];
+  }
+
+  if (groupBy === 'career') {
+    return [
+      { key: 'label', header: 'Carrera', render: (row) => row.label },
+      { key: 'facultyNames', header: 'Facultad', render: (row) => row.facultyNames || '-' },
+      { key: 'academicCycleCount', header: 'Ciclos', render: (row) => row.academicCycleCount },
+      { key: 'courseCount', header: 'Paralelos', render: (row) => row.courseCount },
+    ];
+  }
+
+  if (groupBy === 'course') {
+    return [
+      { key: 'label', header: 'Paralelo', render: (row) => row.label },
+      { key: 'academicCycleNames', header: 'Ciclo', render: (row) => row.academicCycleNames || '-' },
+      { key: 'careerNames', header: 'Carrera', render: (row) => row.careerNames || '-' },
+    ];
+  }
+
+  return [
+    { key: 'label', header: 'Ciclo', render: (row) => row.label },
+    { key: 'careerNames', header: 'Carrera', render: (row) => row.careerNames || '-' },
+    { key: 'courseCount', header: 'Paralelos', render: (row) => row.courseCount },
+  ];
 }
 
 function buildSummary(practices) {
@@ -431,6 +733,102 @@ function emptyFilters() {
     course: '',
     status: '',
     archived: '',
+  };
+}
+
+function buildPracticeGroups(practices, groupBy) {
+  const groups = new Map();
+
+  practices.forEach((practice) => {
+    const group = getPracticeGroup(practice, groupBy);
+
+    if (!groups.has(group.key)) {
+      groups.set(group.key, {
+        ...group,
+        rows: [],
+        total: 0,
+        pending: 0,
+        approved: 0,
+        completed: 0,
+        archived: 0,
+        archivable: 0,
+        facultySet: new Set(),
+        careerSet: new Set(),
+        academicCycleSet: new Set(),
+        courseSet: new Set(),
+      });
+    }
+
+    const current = groups.get(group.key);
+    current.rows.push(practice);
+    current.total += 1;
+    current.pending += practice.status === 'PENDING' ? 1 : 0;
+    current.approved += practice.status === 'APPROVED' ? 1 : 0;
+    current.completed += practice.status === 'COMPLETED' ? 1 : 0;
+    current.archived += practice.archived ? 1 : 0;
+    current.archivable += practice.status === 'COMPLETED' && !practice.archived ? 1 : 0;
+    addSetValue(current.facultySet, practice.facultyName);
+    addSetValue(current.careerSet, practice.careerName);
+    addSetValue(current.academicCycleSet, practice.academicCycleName || practice.courseAcademicCycle);
+    addSetValue(current.courseSet, practice.courseName);
+  });
+
+  return Array.from(groups.values())
+    .map((group) => ({
+      ...group,
+      facultyNames: Array.from(group.facultySet).sort(compareText).join(', '),
+      careerNames: Array.from(group.careerSet).sort(compareText).join(', '),
+      academicCycleNames: Array.from(group.academicCycleSet).sort(compareText).join(', '),
+      careerCount: group.careerSet.size,
+      academicCycleCount: group.academicCycleSet.size,
+      courseCount: group.courseSet.size,
+    }))
+    .sort((left, right) => {
+      const byScope = compareText(left.scopeLabel, right.scopeLabel);
+      return byScope !== 0 ? byScope : compareText(left.label, right.label);
+    });
+}
+
+function addSetValue(set, value) {
+  const normalized = String(value || '').trim();
+
+  if (normalized) {
+    set.add(normalized);
+  }
+}
+
+function getPracticeGroup(practice, groupBy) {
+  if (groupBy === 'faculty') {
+    return {
+      key: `faculty:${getPracticeFilterValue(practice, 'faculty')}`,
+      label: practice.facultyName || 'Sin facultad',
+      scopeLabel: 'Facultad',
+    };
+  }
+
+  if (groupBy === 'career') {
+    return {
+      key: `career:${getPracticeFilterValue(practice, 'career')}`,
+      label: practice.careerName || 'Sin carrera',
+      scopeLabel: practice.facultyName || 'Carrera',
+    };
+  }
+
+  if (groupBy === 'academicCycle') {
+    return {
+      key: `cycle:${getPracticeFilterValue(practice, 'academicCycle')}`,
+      label: practice.academicCycleName || practice.courseAcademicCycle || 'Sin ciclo',
+      scopeLabel: practice.careerName || 'Ciclo',
+    };
+  }
+
+  return {
+    key: `course:${getPracticeFilterValue(practice, 'course')}`,
+    label: practice.courseName || 'Sin paralelo',
+    scopeLabel: [
+      practice.careerName,
+      practice.academicCycleName || practice.courseAcademicCycle,
+    ].filter(Boolean).join(' / ') || 'Paralelo',
   };
 }
 

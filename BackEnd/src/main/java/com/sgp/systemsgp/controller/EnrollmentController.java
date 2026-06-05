@@ -1,5 +1,6 @@
 package com.sgp.systemsgp.controller;
 
+import com.sgp.systemsgp.dto.enrollment.ArchivePracticeBatchRequest;
 import com.sgp.systemsgp.dto.enrollment.EnrollmentResponse;
 
 import com.sgp.systemsgp.service.EnrollmentService;
@@ -79,7 +80,7 @@ public class EnrollmentController {
          */
         @PatchMapping("/api/enrollments/{id}/complete")
 
-        @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR_PRACTICAS', 'TUTOR_PRACTICAS')")
+        @PreAuthorize("hasRole('DIRECTOR_PRACTICAS')")
 
         public EnrollmentResponse complete(
                         Authentication authentication,
@@ -96,7 +97,7 @@ public class EnrollmentController {
          */
         @PatchMapping("/api/enrollments/{id}/reopen")
 
-        @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR_PRACTICAS', 'TUTOR_PRACTICAS')")
+        @PreAuthorize("hasRole('DIRECTOR_PRACTICAS')")
 
         public EnrollmentResponse reopen(
                         Authentication authentication,
@@ -113,7 +114,7 @@ public class EnrollmentController {
          */
         @PatchMapping("/api/enrollments/{id}/archive")
 
-        @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR_PRACTICAS', 'TUTOR_PRACTICAS')")
+        @PreAuthorize("hasRole('ADMIN')")
 
         public EnrollmentResponse archive(
                         Authentication authentication,
@@ -130,7 +131,7 @@ public class EnrollmentController {
          */
         @PatchMapping("/api/enrollments/{id}/unarchive")
 
-        @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR_PRACTICAS', 'TUTOR_PRACTICAS')")
+        @PreAuthorize("hasRole('ADMIN')")
 
         public EnrollmentResponse unarchive(
                         Authentication authentication,
@@ -147,13 +148,30 @@ public class EnrollmentController {
          */
         @PatchMapping("/api/enrollments/archive-completed")
 
-        @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR_PRACTICAS', 'TUTOR_PRACTICAS')")
+        @PreAuthorize("hasRole('ADMIN')")
 
         public List<EnrollmentResponse> archiveAllCompleted(
                         Authentication authentication) {
 
                 return enrollmentService.archiveAllCompleted(
                                 authentication.getName());
+        }
+
+        /*
+         * ARCHIVAR O DESARCHIVAR PRACTICAS CONCLUIDAS POR LOTE
+         */
+        @PatchMapping("/api/enrollments/archive-batch")
+
+        @PreAuthorize("hasRole('ADMIN')")
+
+        public List<EnrollmentResponse> archiveBatch(
+                        Authentication authentication,
+
+                        @RequestBody ArchivePracticeBatchRequest request) {
+
+                return enrollmentService.archiveBatch(
+                                authentication.getName(),
+                                request);
         }
 
         /*

@@ -48,7 +48,7 @@ export function Alert({ tone = 'info', children, dismissible = true }) {
 
   return (
     <div
-      className={`fixed left-1/2 top-4 z-[100000] flex w-[min(34rem,calc(100vw-1.5rem))] -translate-x-1/2 items-start gap-3 rounded-lg border p-3 text-sm leading-6 shadow-soft ${styles[tone] || styles.info}`}
+      className={`fixed left-1/2 top-[calc(env(safe-area-inset-top)+4.25rem)] z-[100002] flex w-[min(34rem,calc(100vw-1.5rem))] -translate-x-1/2 items-start gap-3 rounded-lg border p-3 text-sm leading-6 shadow-soft ${styles[tone] || styles.info}`}
       role={tone === 'error' ? 'alert' : 'status'}
     >
       <Icon aria-hidden="true" size={18} />

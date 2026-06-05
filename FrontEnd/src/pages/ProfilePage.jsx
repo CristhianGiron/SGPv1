@@ -13,6 +13,8 @@ import { DataInspector } from '../components/DataInspector';
 import { Avatar } from '../components/Avatar';
 import { formatRole, joinText } from '../utils/format';
 
+const visualVariants = ['a', 'b', 'c', 'd', 'e'];
+
 export function ProfilePage() {
   const { token, profile, refreshProfile } = useAuth();
   const roles = useMemo(() => profile?.roles || [], [profile?.roles]);
@@ -200,14 +202,14 @@ export function ProfilePage() {
               <div className="flex items-center gap-4">
                 <Avatar profile={profile} size="lg" token={token} />
                 <div>
-                  <p className="text-xl font-bold text-heading dark:text-heading">
+                  <p className="text-xl font-medium text-heading dark:text-heading">
                     {joinText(profile?.names, profile?.lastNames) || profile?.username}
                   </p>
-                  <p className="text-sm text-muted">{profile?.institutionalEmail || 'Sin correo registrado'}</p>
+                  <p className="text-sm text-body">{profile?.institutionalEmail || 'Sin correo registrado'}</p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {roles.map((role) => (
                       <span
-                        className="inline-flex items-center rounded-full border border-accent/30 bg-accent-soft px-2.5 py-1 text-xs font-extrabold leading-none text-accent-strong dark:border-line dark:bg-surface-soft dark:text-muted"
+                        className="inline-flex items-center rounded-full border border-accent/30 bg-accent-soft px-2.5 py-1 text-xs font-semibold leading-none text-accent-strong dark:border-line dark:bg-surface-soft dark:text-ink"
                         key={role}
                       >
                         {formatRole(role)}
@@ -217,10 +219,10 @@ export function ProfilePage() {
                 </div>
               </div>
               <div className="grid gap-3 text-sm sm:grid-cols-2">
-                <ProfileMetric label="Facultad" value={profile?.faculty} />
-                <ProfileMetric label="Carrera" value={profile?.career} />
-                <ProfileMetric label={profile?.academicCycle ? 'Ciclo' : 'Grado'} value={profile?.academicCycle || profile?.grade} />
-                <ProfileMetric label="Institucion" value={profile?.academicInstitution || profile?.institution} />
+                <ProfileMetric icon={Building2} index={0} label="Facultad" value={profile?.faculty} />
+                <ProfileMetric icon={GraduationCap} index={1} label="Carrera" value={profile?.career} />
+                <ProfileMetric icon={BookOpen} index={2} label={profile?.academicCycle ? 'Ciclo' : 'Grado'} value={profile?.academicCycle || profile?.grade} />
+                <ProfileMetric icon={Building2} index={3} label="Institucion" value={profile?.academicInstitution || profile?.institution} />
               </div>
             </div>
           </SectionCard>
@@ -349,11 +351,22 @@ export function ProfilePage() {
   );
 }
 
-function ProfileMetric({ label, value }) {
+function ProfileMetric({ icon: Icon, index = 0, label, value }) {
+  const variant = visualVariants[index % visualVariants.length];
+
   return (
-    <div className="rounded-lg border border-line bg-panel-soft px-3 py-2 dark:border-line dark:bg-surface-soft">
-      <p className="text-xs font-bold uppercase text-muted">{label}</p>
-      <p className="mt-1 font-semibold text-heading dark:text-heading">{value || '-'}</p>
+    <div className={`sgp-visual-card sgp-visual-card-${variant} min-w-[9rem] rounded-lg border px-3 py-3 shadow-card`}>
+      <div className="relative flex items-start gap-3">
+        {Icon && (
+          <span className="sgp-visual-card-icon grid h-8 w-8 flex-none place-items-center rounded-full border-4 border-panel shadow-card">
+            <Icon aria-hidden="true" size={15} />
+          </span>
+        )}
+        <div className="min-w-0">
+          <p className="text-[0.72rem] font-medium uppercase leading-tight">{label}</p>
+          <p className="mt-1 break-words text-sm font-medium text-heading dark:text-heading">{value || '-'}</p>
+        </div>
+      </div>
     </div>
   );
 }
@@ -378,15 +391,15 @@ function MembershipSummary({ courses, currentEnrollment, enrollments, error, pro
     return (
       <SectionCard title="Mi pertenencia academica y de practica">
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-          <ProfileInfo icon={GraduationCap} label="Facultad" value={profile?.faculty} />
-          <ProfileInfo icon={GraduationCap} label="Carrera" value={profile?.career} />
-          <ProfileInfo icon={BookOpen} label="Asignatura" value={currentEnrollment?.subjectName} />
-          <ProfileInfo icon={BookOpen} label="Paralelo" value={currentEnrollment?.courseName} />
-          <ProfileInfo icon={Layers} label="Grupo" value={currentEnrollment?.groupName} />
-          <ProfileInfo icon={Building2} label="Institucion de practica" value={currentEnrollment?.educationalInstitutionName} />
-          <ProfileInfo icon={UsersRound} label="Tutor de practicas" value={currentEnrollment?.practiceTutor} />
-          <ProfileInfo icon={UsersRound} label="Tutor institucional" value={currentEnrollment?.institutionalTutor} />
-          <ProfileInfo label="Estado de inscripcion" value={formatEnrollmentStatus(currentEnrollment?.status)} />
+          <ProfileInfo icon={GraduationCap} index={0} label="Facultad" value={profile?.faculty} />
+          <ProfileInfo icon={GraduationCap} index={1} label="Carrera" value={profile?.career} />
+          <ProfileInfo icon={BookOpen} index={2} label="Asignatura" value={currentEnrollment?.subjectName} />
+          <ProfileInfo icon={BookOpen} index={3} label="Paralelo" value={currentEnrollment?.courseName} />
+          <ProfileInfo icon={Layers} index={4} label="Grupo" value={currentEnrollment?.groupName} />
+          <ProfileInfo icon={Building2} index={0} label="Institucion de practica" value={currentEnrollment?.educationalInstitutionName} />
+          <ProfileInfo icon={UsersRound} index={1} label="Tutor de practicas" value={currentEnrollment?.practiceTutor} />
+          <ProfileInfo icon={UsersRound} index={2} label="Tutor institucional" value={currentEnrollment?.institutionalTutor} />
+          <ProfileInfo index={3} label="Estado de inscripcion" value={formatEnrollmentStatus(currentEnrollment?.status)} />
         </div>
       </SectionCard>
     );
@@ -397,9 +410,10 @@ function MembershipSummary({ courses, currentEnrollment, enrollments, error, pro
       <SectionCard title="Paralelos asignados">
         {courses.length ? (
           <div className="grid gap-3 md:grid-cols-2">
-            {courses.slice(0, 6).map((course) => (
+            {courses.slice(0, 6).map((course, index) => (
               <ProfileInfo
                 icon={BookOpen}
+                index={index}
                 key={course.id}
                 label={course.subject || 'Paralelo'}
                 value={course.name}
@@ -408,7 +422,7 @@ function MembershipSummary({ courses, currentEnrollment, enrollments, error, pro
             ))}
           </div>
         ) : (
-          <p className="text-sm font-semibold text-muted">Aun no tienes paralelos asignados.</p>
+          <p className="text-sm font-semibold text-body">Aun no tienes paralelos asignados.</p>
         )}
       </SectionCard>
     );
@@ -418,10 +432,10 @@ function MembershipSummary({ courses, currentEnrollment, enrollments, error, pro
     return (
       <SectionCard title="Alcance de practica">
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-          <ProfileInfo icon={Building2} label="Institucion vinculada" value={profile?.institution} />
-          <ProfileInfo icon={UsersRound} label="Estudiantes relacionados" value={enrollments.length || null} />
-          <ProfileInfo icon={BookOpen} label="Paralelos relacionados" value={countUnique(enrollments, 'courseId') || null} />
-          <ProfileInfo icon={Layers} label="Grupos relacionados" value={countUnique(enrollments, 'groupId') || null} />
+          <ProfileInfo icon={Building2} index={0} label="Institucion vinculada" value={profile?.institution} />
+          <ProfileInfo icon={UsersRound} index={1} label="Estudiantes relacionados" value={enrollments.length || null} />
+          <ProfileInfo icon={BookOpen} index={2} label="Paralelos relacionados" value={countUnique(enrollments, 'courseId') || null} />
+          <ProfileInfo icon={Layers} index={3} label="Grupos relacionados" value={countUnique(enrollments, 'groupId') || null} />
         </div>
       </SectionCard>
     );
@@ -430,15 +444,23 @@ function MembershipSummary({ courses, currentEnrollment, enrollments, error, pro
   return null;
 }
 
-function ProfileInfo({ icon: Icon, label, meta, value }) {
+function ProfileInfo({ icon: Icon, index = 0, label, meta, value }) {
+  const variant = visualVariants[index % visualVariants.length];
+
   return (
-    <div className="min-w-0 rounded-lg border border-line bg-panel p-3 dark:border-line dark:bg-surface">
-      <div className="flex items-center gap-2 text-xs font-bold uppercase text-muted">
-        {Icon && <Icon aria-hidden="true" size={15} />}
-        <span>{label}</span>
+    <div className={`sgp-visual-card sgp-visual-card-${variant} min-w-0 rounded-lg border p-3 shadow-card`}>
+      <div className="relative flex items-start gap-3">
+        {Icon && (
+          <span className="sgp-visual-card-icon grid h-9 w-9 flex-none place-items-center rounded-full border-4 border-panel shadow-card">
+            <Icon aria-hidden="true" size={16} />
+          </span>
+        )}
+        <div className="min-w-0">
+          <p className="text-xs font-medium uppercase leading-tight">{label}</p>
+          <p className="mt-2 break-words text-sm font-medium text-heading dark:text-heading">{value || '-'}</p>
+          {meta && <p className="mt-1 text-xs font-medium text-body">{meta}</p>}
+        </div>
       </div>
-      <p className="mt-2 break-words text-sm font-extrabold text-heading dark:text-heading">{value || '-'}</p>
-      {meta && <p className="mt-1 text-xs font-semibold text-muted">{meta}</p>}
     </div>
   );
 }

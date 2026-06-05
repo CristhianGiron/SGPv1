@@ -35,10 +35,318 @@ body {
   grid-template-columns: var(--data-table-columns-mobile);
 }
 
+.sgp-page-canvas {
+  position: relative;
+  isolation: isolate;
+}
+
+.sgp-page-canvas::before {
+  content: "";
+  position: fixed;
+  right: 4vw;
+  top: 6rem;
+  z-index: -1;
+  pointer-events: none;
+  width: 11rem;
+  height: 11rem;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--module-color, var(--color-card-d)) 18%, transparent);
+  box-shadow:
+    -74vw 5rem 0 2rem color-mix(in srgb, var(--module-accent, var(--color-card-c)) 14%, transparent),
+    -12vw 32rem 0 5rem color-mix(in srgb, var(--color-card-b) 12%, transparent),
+    -52vw 46rem 0 3rem color-mix(in srgb, var(--color-card-e) 9%, transparent);
+}
+
+.sgp-page-header {
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--module-color, var(--color-card-c)) 32%, var(--color-line));
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--module-soft, var(--color-card-a-soft)) 46%, var(--color-panel));
+  box-shadow: var(--shadow-card);
+  padding: 1rem;
+}
+
+.sgp-page-header::before {
+  content: "";
+  position: absolute;
+  right: 1.2rem;
+  top: 1rem;
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: 9999px;
+  background: var(--module-accent, var(--color-card-b));
+  box-shadow:
+    -1rem 2.2rem 0 -0.55rem var(--module-color, var(--color-card-a)),
+    -2.4rem 0.8rem 0 -0.9rem color-mix(in srgb, var(--module-accent, var(--color-card-b)) 62%, var(--color-panel));
+  opacity: 0.18;
+}
+
+.sgp-page-header::after {
+  content: "";
+  position: absolute;
+  inset-inline: 1rem;
+  bottom: -1px;
+  height: 0;
+  border-bottom: 4px dotted var(--module-accent, var(--color-card-b));
+  box-shadow:
+    3.4rem 0 0 0 var(--module-color, var(--color-card-c)),
+    6.8rem 0 0 0 var(--color-card-d),
+    10.2rem 0 0 0 var(--color-card-e);
+}
+
+.sgp-section-card {
+  --sgp-section-color: var(--module-color, var(--color-card-a));
+  --sgp-section-soft: var(--module-soft, var(--color-card-a-soft));
+  border-color: color-mix(in srgb, var(--sgp-section-color) 34%, var(--color-line));
+  background: color-mix(in srgb, var(--sgp-section-soft) 18%, var(--color-panel));
+}
+
+.sgp-section-card:nth-of-type(5n + 2) {
+  --sgp-section-color: var(--module-accent, var(--color-card-b));
+  --sgp-section-soft: var(--module-accent-soft, var(--color-card-b-soft));
+}
+
+.sgp-section-card:nth-of-type(5n + 3) {
+  --sgp-section-color: var(--color-card-c);
+  --sgp-section-soft: var(--color-card-c-soft);
+}
+
+.sgp-section-card:nth-of-type(5n + 4) {
+  --sgp-section-color: var(--color-card-d);
+  --sgp-section-soft: var(--color-card-d-soft);
+}
+
+.sgp-section-card:nth-of-type(5n + 5) {
+  --sgp-section-color: var(--color-card-e);
+  --sgp-section-soft: var(--color-card-e-soft);
+}
+
+.sgp-section-card > span:first-child {
+  background: var(--sgp-section-color);
+  box-shadow:
+    0 2.2rem 0 0 color-mix(in srgb, var(--sgp-section-color) 72%, var(--color-panel)),
+    0 4.4rem 0 0 color-mix(in srgb, var(--sgp-section-color) 48%, var(--color-panel));
+}
+
+.sgp-color-card {
+  --sgp-card-color: var(--color-card-a);
+  --sgp-card-strong: var(--color-card-a-strong);
+  --sgp-card-soft: var(--color-card-a-soft);
+  border-color: color-mix(in srgb, var(--sgp-card-color) 46%, var(--color-line));
+  background: color-mix(in srgb, var(--sgp-card-soft) 56%, var(--color-panel));
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease,
+    background-color 180ms ease;
+}
+
+.sgp-color-card:nth-of-type(5n + 2) {
+  --sgp-card-color: var(--color-card-b);
+  --sgp-card-strong: var(--color-card-b-strong);
+  --sgp-card-soft: var(--color-card-b-soft);
+}
+
+.sgp-color-card:nth-of-type(5n + 3) {
+  --sgp-card-color: var(--color-card-c);
+  --sgp-card-strong: var(--color-card-c-strong);
+  --sgp-card-soft: var(--color-card-c-soft);
+}
+
+.sgp-color-card:nth-of-type(5n + 4) {
+  --sgp-card-color: var(--color-card-d);
+  --sgp-card-strong: var(--color-card-d-strong);
+  --sgp-card-soft: var(--color-card-d-soft);
+}
+
+.sgp-color-card:nth-of-type(5n + 5) {
+  --sgp-card-color: var(--color-card-e);
+  --sgp-card-strong: var(--color-card-e-strong);
+  --sgp-card-soft: var(--color-card-e-soft);
+}
+
+.sgp-color-card:hover {
+  border-color: color-mix(in srgb, var(--sgp-card-color) 78%, var(--color-line));
+  box-shadow: var(--shadow-soft);
+  transform: translateY(-2px);
+}
+
+.sgp-color-card::after {
+  content: "";
+  position: absolute;
+  right: -1.8rem;
+  top: -1.8rem;
+  width: 4.6rem;
+  height: 4.6rem;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--sgp-card-color) 16%, transparent);
+  pointer-events: none;
+}
+
+.sgp-color-card-accent {
+  background: var(--sgp-card-color, var(--color-primary));
+  color: var(--color-inverse);
+}
+
+.sgp-color-card-soft {
+  background: var(--sgp-card-soft, var(--color-primary-soft));
+  color: var(--sgp-card-strong, var(--color-primary-strong));
+}
+
+.sgp-visual-card {
+  position: relative;
+  overflow: hidden;
+  border-color: color-mix(in srgb, var(--sgp-card-color, var(--color-primary)) 45%, transparent);
+  background: var(--sgp-card-soft, var(--color-primary-soft));
+  color: var(--sgp-card-strong, var(--color-primary-strong));
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.sgp-visual-card::before {
+  content: "";
+  position: absolute;
+  right: -2rem;
+  top: -2.25rem;
+  width: 6rem;
+  height: 6rem;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--color-inverse) 26%, transparent);
+  transition: transform 220ms ease;
+}
+
+.sgp-visual-card::after {
+  content: "";
+  position: absolute;
+  bottom: -2.6rem;
+  left: 20%;
+  width: 5.5rem;
+  height: 5.5rem;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--color-inverse) 13%, transparent);
+}
+
+.sgp-visual-card:hover {
+  border-color: color-mix(in srgb, var(--sgp-card-color, var(--color-primary)) 78%, transparent);
+  box-shadow: var(--shadow-soft);
+  transform: translateY(-2px);
+}
+
+.sgp-visual-card:hover::before {
+  transform: scale(1.12);
+}
+
+.sgp-visual-card-a {
+  --sgp-card-color: var(--color-card-a);
+  --sgp-card-strong: var(--color-card-a-strong);
+  --sgp-card-soft: var(--color-card-a-soft);
+}
+
+.sgp-visual-card-b {
+  --sgp-card-color: var(--color-card-b);
+  --sgp-card-strong: var(--color-card-b-strong);
+  --sgp-card-soft: var(--color-card-b-soft);
+}
+
+.sgp-visual-card-c {
+  --sgp-card-color: var(--color-card-c);
+  --sgp-card-strong: var(--color-card-c-strong);
+  --sgp-card-soft: var(--color-card-c-soft);
+}
+
+.sgp-visual-card-d {
+  --sgp-card-color: var(--color-card-d);
+  --sgp-card-strong: var(--color-card-d-strong);
+  --sgp-card-soft: var(--color-card-d-soft);
+}
+
+.sgp-visual-card-e {
+  --sgp-card-color: var(--color-card-e);
+  --sgp-card-strong: var(--color-card-e-strong);
+  --sgp-card-soft: var(--color-card-e-soft);
+}
+
+.sgp-visual-card-icon {
+  background: var(--sgp-card-color, var(--color-primary));
+  color: var(--color-inverse);
+}
+
+.sgp-tab-strip > button {
+  --sgp-tab-color: var(--module-color, var(--color-card-a));
+  --sgp-tab-strong: var(--module-strong, var(--color-card-a-strong));
+  --sgp-tab-soft: var(--module-soft, var(--color-card-a-soft));
+}
+
+.sgp-tab-strip > button:nth-child(5n + 2) {
+  --sgp-tab-color: var(--module-accent, var(--color-card-b));
+  --sgp-tab-strong: var(--module-accent-strong, var(--color-card-b-strong));
+  --sgp-tab-soft: var(--module-accent-soft, var(--color-card-b-soft));
+}
+
+.sgp-tab-strip > button:nth-child(5n + 3) {
+  --sgp-tab-color: var(--color-card-c);
+  --sgp-tab-strong: var(--color-card-c-strong);
+  --sgp-tab-soft: var(--color-card-c-soft);
+}
+
+.sgp-tab-strip > button:nth-child(5n + 4) {
+  --sgp-tab-color: var(--color-card-d);
+  --sgp-tab-strong: var(--color-card-d-strong);
+  --sgp-tab-soft: var(--color-card-d-soft);
+}
+
+.sgp-tab-strip > button:nth-child(5n + 5) {
+  --sgp-tab-color: var(--color-card-e);
+  --sgp-tab-strong: var(--color-card-e-strong);
+  --sgp-tab-soft: var(--color-card-e-soft);
+}
+
+.sgp-table-shell {
+  position: relative;
+}
+
+.sgp-table-shell::before {
+  content: "";
+  display: flex;
+  height: 0.45rem;
+  background: var(--module-color, var(--color-card-c));
+  box-shadow:
+    12rem 0 0 0 var(--module-accent, var(--color-card-b)),
+    24rem 0 0 0 var(--color-card-d),
+    36rem 0 0 0 var(--color-card-e),
+    48rem 0 0 0 var(--module-color, var(--color-card-a));
+}
+
+.sgp-auth-color-bar {
+  background: var(--color-card-a);
+  box-shadow:
+    24vw 0 0 0 var(--color-card-b),
+    48vw 0 0 0 var(--color-card-c),
+    72vw 0 0 0 var(--color-card-d),
+    96vw 0 0 0 var(--color-card-e);
+}
+
+.sgp-dot-grid {
+  background: color-mix(in srgb, var(--color-card-c-soft) 28%, transparent);
+}
+
 @media (min-width: 1024px) {
   .data-table-grid {
     width: 100%;
     grid-template-columns: var(--data-table-columns-desktop);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sgp-color-card {
+    transition: none;
+  }
+
+  .sgp-color-card:hover,
+  .sgp-visual-card:hover {
+    transform: none;
   }
 }
 

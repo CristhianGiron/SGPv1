@@ -4,9 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.sgp.systemsgp.dto.enrollment.ArchivePracticeBatchRequest;
 import com.sgp.systemsgp.enums.EnrollmentStatus;
 import com.sgp.systemsgp.enums.RoleName;
 import com.sgp.systemsgp.exception.BadRequestException;
@@ -173,6 +175,67 @@ class EnrollmentServiceTest {
 
         verify(notificationService)
                 .notifyEnrollmentApproved(enrollment);
+    }
+
+    @Test
+    void archiveBatchArchivesCompletedPracticesAndAuditsEachOne() {
+
+        Enrollment firstEnrollment = Enrollment.builder()
+                .id(1L)
+                .account(Account.builder()
+                        .id(10L)
+                        .username("ana")
+                        .build())
+                .course(course())
+                .status(EnrollmentStatus.COMPLETED)
+                .archived(false)
+                .build();
+        Enrollment secondEnrollment = Enrollment.builder()
+                .id(2L)
+                .account(Account.builder()
+                        .id(11L)
+                        .username("luis")
+                        .build())
+                .course(course())
+                .status(EnrollmentStatus.COMPLETED)
+                .archived(false)
+                .build();
+
+        when(accountRepository.findByUsernameAndDeletedFalse("admin"))
+                .thenReturn(Optional.of(admin()));
+        when(enrollmentRepository.findAllById(any()))
+                .thenReturn(List.of(firstEnrollment, secondEnrollment));
+
+        var response = enrollmentService.archiveBatch(
+                "admin",
+                ArchivePracticeBatchRequest.builder()
+                        .enrollmentIds(List.of(1L, 2L))
+                        .archived(true)
+                        .build());
+
+        assertThat(response)
+                .hasSize(2);
+        assertThat(firstEnrollment.isArchived())
+                .isTrue();
+        assertThat(secondEnrollment.isArchived())
+                .isTrue();
+        assertThat(firstEnrollment.getArchivedAt())
+                .isNotNull();
+        assertThat(secondEnrollment.getArchivedAt())
+                .isNotNull();
+
+        verify(enrollmentRepository)
+                .saveAll(List.of(firstEnrollment, secondEnrollment));
+        verify(practiceAuditService, times(2))
+                .logEnrollmentAction(
+                        any(),
+                        any(),
+                        any(),
+                        any(),
+                        any(),
+                        any(),
+                        any(),
+                        any());
     }
 
     private Course course() {

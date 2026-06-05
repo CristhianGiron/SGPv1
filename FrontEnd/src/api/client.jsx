@@ -28,6 +28,10 @@ function buildUrl(path) {
   return `${API_BASE}${path}`;
 }
 
+export function apiUrl(path) {
+  return buildUrl(path);
+}
+
 /**
  * readResponse - Procesa la respuesta del servidor
  * Si es JSON, la parsea; si es texto, la retorna como string

@@ -17,12 +17,14 @@ const metricAccentClasses = [
 ];
 
 const metricIconClasses = [
-  'bg-primary-soft text-primary dark:bg-info-soft dark:text-info-strong',
-  'bg-accent-soft text-accent-strong dark:bg-accent-soft dark:text-accent-strong',
-  'bg-warning-soft text-warning-strong dark:bg-warning-soft dark:text-warning-strong',
-  'bg-danger-soft text-danger-strong dark:bg-danger-soft dark:text-danger-strong',
-  'bg-info-soft text-primary-strong dark:bg-info-soft dark:text-info-strong',
+  'sgp-visual-card-icon',
+  'sgp-visual-card-icon',
+  'sgp-visual-card-icon',
+  'sgp-visual-card-icon',
+  'sgp-visual-card-icon',
 ];
+
+const visualVariants = ['a', 'b', 'c', 'd', 'e'];
 
 export function ReportsPage() {
   const { token } = useAuth();
@@ -80,7 +82,7 @@ export function ReportsPage() {
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
             {(report?.summary || []).map((metric, index) => (
               <section
-                className="relative min-h-32 overflow-hidden rounded-lg border border-primary/15 bg-panel p-4 shadow-card transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-accent/30 hover:shadow-card dark:border-line dark:bg-surface"
+                className={`sgp-visual-card sgp-visual-card-${visualVariants[index % visualVariants.length]} min-h-32 rounded-lg border p-4 shadow-card`}
                 key={metric.key}
               >
                 <span
@@ -88,11 +90,11 @@ export function ReportsPage() {
                   className={`absolute inset-y-0 left-0 w-1 ${metricAccentClasses[index % metricAccentClasses.length]}`}
                 />
                 <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-xs font-extrabold uppercase tracking-normal text-muted">{metric.label}</p>
-                    <p className="mt-3 text-3xl font-extrabold leading-none text-heading dark:text-heading">{metric.value}</p>
+                  <div className="relative">
+                    <p className="text-xs font-medium uppercase tracking-normal">{metric.label}</p>
+                    <p className="mt-3 text-3xl font-medium leading-none text-heading dark:text-heading">{metric.value}</p>
                   </div>
-                  <span className={`grid h-10 w-10 flex-none place-items-center rounded-lg ${metricIconClasses[index % metricIconClasses.length]}`}>
+                  <span className={`relative grid h-10 w-10 flex-none place-items-center rounded-full border-4 border-panel shadow-card ${metricIconClasses[index % metricIconClasses.length]}`}>
                     <BarChart3 aria-hidden="true" size={20} />
                   </span>
                 </div>

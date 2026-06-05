@@ -11,6 +11,7 @@ import {
   X,
 } from "lucide-react";
 import { NAV_ITEMS, canAccess } from "../config/navigation";
+import { getModuleVisualStyle } from "../config/moduleVisuals";
 import { useAuth } from "../auth/AuthContext";
 import { formatRole, joinText } from "../utils/format";
 import { setHashRoute } from "../utils/routes";
@@ -26,22 +27,22 @@ const topbarDropdownBase =
   "absolute right-0 top-[calc(100%+0.6rem)] z-50 w-[min(26rem,calc(100vw-1rem))] min-w-0 overflow-hidden rounded-lg border border-line bg-panel text-ink shadow-soft transition-[opacity,transform] duration-150 dark:border-line dark:bg-surface dark:shadow-soft";
 
 const menuActionButton =
-  "flex w-full items-center gap-2 rounded-lg border border-accent bg-transparent px-3 py-2 text-sm font-extrabold text-primary transition-colors hover:border-primary hover:bg-primary hover:text-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 dark:text-ink dark:hover:bg-primary dark:hover:text-inverse";
+  "flex w-full items-center gap-2 rounded-lg border border-accent bg-transparent px-3 py-2 text-sm font-medium text-primary transition-colors hover:border-primary hover:bg-primary hover:text-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 dark:text-ink dark:hover:bg-primary dark:hover:text-inverse";
 
 const sidebarToggleButton =
   "grid min-h-9 min-w-9 place-items-center rounded-lg border border-line bg-panel-soft text-primary transition-colors hover:border-accent hover:bg-accent-soft hover:text-accent-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:bg-surface-soft dark:text-ink dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong";
 
 const navButtonBase =
-  "group relative flex min-h-11 w-full items-center rounded-lg border border-transparent text-left text-sm font-extrabold text-nav-text transition-colors hover:border-[color:var(--nav-accent-border)] hover:bg-[var(--nav-accent-soft)] hover:text-[color:var(--nav-accent-strong)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:text-nav-text";
+  "group relative flex min-h-11 w-full items-center rounded-lg border border-transparent text-left text-sm font-medium text-nav-text transition-colors hover:border-[color:var(--nav-accent-border)] hover:bg-[var(--nav-accent-soft)] hover:text-[color:var(--nav-accent-strong)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:text-nav-text";
 
 const navIconBase =
   "grid h-8 w-8 flex-none place-items-center rounded-lg border border-[color:var(--nav-accent-border)] bg-[var(--nav-accent-soft)] text-[color:var(--nav-accent-strong)] transition-colors group-hover:bg-panel/90 dark:group-hover:bg-panel/10";
 
 const navSubButtonBase =
-  "group flex min-h-9 w-full items-center gap-2 rounded-lg border border-transparent px-2.5 py-2 text-left text-xs font-bold text-nav-subtext transition-colors hover:border-[color:var(--nav-accent-border)] hover:bg-[var(--nav-accent-soft)] hover:text-[color:var(--nav-accent-strong)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:text-nav-subtext";
+  "group flex min-h-9 w-full items-center gap-2 rounded-lg border border-transparent px-2.5 py-2 text-left text-xs text-nav-subtext transition-colors hover:border-[color:var(--nav-accent-border)] hover:bg-[var(--nav-accent-soft)] hover:text-[color:var(--nav-accent-strong)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:text-nav-subtext";
 
 const mobileNavItemBase =
-  "group flex min-h-[3.25rem] w-full items-center gap-3 rounded-lg border border-line bg-panel-soft px-4 py-3 text-left text-base font-extrabold text-unl-graphite transition-colors hover:border-[color:var(--nav-accent-border)] hover:bg-[var(--nav-accent-soft)] hover:text-[color:var(--nav-accent-strong)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:bg-surface dark:text-ink";
+  "group flex min-h-[3.25rem] w-full items-center gap-3 rounded-lg border border-line bg-panel-soft px-4 py-3 text-left text-base font-medium text-unl-graphite transition-colors hover:border-[color:var(--nav-accent-border)] hover:bg-[var(--nav-accent-soft)] hover:text-[color:var(--nav-accent-strong)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:bg-surface dark:text-ink";
 
 const lightNavAccents = {
   default: {
@@ -55,6 +56,30 @@ const lightNavAccents = {
     marker: "var(--unl-green)",
     soft: "var(--unl-green-soft)",
     strong: "var(--unl-green-strong)",
+  },
+  gold: {
+    border: "color-mix(in srgb, var(--unl-gold) 34%, transparent)",
+    marker: "var(--unl-gold)",
+    soft: "var(--unl-gold-soft)",
+    strong: "var(--color-warning-strong)",
+  },
+  red: {
+    border: "color-mix(in srgb, var(--unl-red) 26%, transparent)",
+    marker: "var(--unl-red)",
+    soft: "var(--unl-red-soft)",
+    strong: "var(--unl-red-strong)",
+  },
+  teal: {
+    border: "color-mix(in srgb, var(--color-chart-8) 28%, transparent)",
+    marker: "var(--color-chart-8)",
+    soft: "color-mix(in srgb, var(--color-chart-8) 15%, var(--color-panel))",
+    strong: "var(--color-chart-8)",
+  },
+  violet: {
+    border: "color-mix(in srgb, var(--color-chart-7) 28%, transparent)",
+    marker: "var(--color-chart-7)",
+    soft: "color-mix(in srgb, var(--color-chart-7) 15%, var(--color-panel))",
+    strong: "var(--color-chart-7)",
   },
 };
 
@@ -92,10 +117,21 @@ const darkNavAccents = {
 };
 
 const lightNavAccentById = {
+  accounts: lightNavAccents.teal,
   courses: lightNavAccents.green,
-  institutions: lightNavAccents.green,
-  photos: lightNavAccents.green,
+  "didactic-plans": lightNavAccents.gold,
+  documents: lightNavAccents.teal,
+  forms: lightNavAccents.violet,
+  institutions: lightNavAccents.gold,
+  locations: lightNavAccents.teal,
+  notifications: lightNavAccents.violet,
+  "observation-forms": lightNavAccents.teal,
+  photos: lightNavAccents.red,
+  "practice-archive": lightNavAccents.teal,
+  profile: lightNavAccents.violet,
+  reports: lightNavAccents.violet,
   schedules: lightNavAccents.green,
+  universities: lightNavAccents.gold,
 };
 
 const darkNavAccentById = {
@@ -120,6 +156,14 @@ function navAccentStyle(itemId, isDark) {
     ? darkNavAccentById[itemId] || darkNavAccents.default
     : lightNavAccentById[itemId] || lightNavAccents.default;
 
+  return navAccentVars(accent);
+}
+
+function mainNavAccentStyle(isDark) {
+  return navAccentVars(isDark ? darkNavAccents.default : lightNavAccents.default);
+}
+
+function navAccentVars(accent) {
   return {
     "--nav-accent-border": accent.border,
     "--nav-accent-marker": accent.marker,
@@ -271,6 +315,10 @@ export function AppLayout({ route, routeChild, children }) {
     [searchEntries, searchQuery],
   );
   const activeRoute = routeChild ? `${route}/${routeChild}` : route;
+  const moduleVisualStyle = useMemo(
+    () => getModuleVisualStyle(activeRoute),
+    [activeRoute],
+  );
   const activeGroupId =
     visibleItems.find((item) =>
       getVisibleChildren(item, roles).some((child) => child.id === activeRoute),
@@ -384,7 +432,7 @@ export function AppLayout({ route, routeChild, children }) {
   }
 
   return (
-    <main className="min-h-screen bg-page text-ink">
+    <main className="min-h-screen bg-page text-ink" style={moduleVisualStyle}>
       <header className="sticky top-0 z-30 border-b-[3px] border-primary bg-panel shadow-card dark:border-line dark:bg-page print:hidden">
         <div className="bg-primary text-xs text-inverse">
           <div className="mx-auto flex min-h-9 w-full max-w-[96rem] items-center justify-between gap-4 px-3 py-0.5">
@@ -437,7 +485,7 @@ export function AppLayout({ route, routeChild, children }) {
                     <div className="relative">
                       <Search
                         aria-hidden="true"
-                        className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted"
+                        className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-body"
                         size={17}
                       />
                       <input
@@ -452,7 +500,7 @@ export function AppLayout({ route, routeChild, children }) {
                       {searchQuery && (
                         <button
                           aria-label="Limpiar búsqueda"
-                          className="absolute right-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-lg text-muted transition hover:bg-hover-soft hover:text-primary"
+                          className="absolute right-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-lg text-body transition hover:bg-hover-soft hover:text-primary"
                           onClick={() => setSearchQuery("")}
                           type="button"
                         >
@@ -465,13 +513,13 @@ export function AppLayout({ route, routeChild, children }) {
                   <div className="max-h-[min(26rem,calc(100vh-8rem))] overflow-y-auto p-2">
                     {searchResults.length > 0 ? (
                       <div className="grid gap-1">
-                        {searchResults.map((result) => {
+                        {searchResults.map((result, index) => {
                           const ResultIcon = result.Icon || Search;
 
                           return (
                             <button
                               className="flex min-h-14 w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition hover:bg-hover-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-soft"
-                              key={result.id}
+                              key={`${result.id}-${index}`}
                               onClick={() => navigateTo(result.routeId)}
                               type="button"
                             >
@@ -479,10 +527,10 @@ export function AppLayout({ route, routeChild, children }) {
                                 <ResultIcon aria-hidden="true" size={18} />
                               </span>
                               <span className="min-w-0">
-                                <span className="block truncate text-sm font-extrabold text-heading">
+                                <span className="block truncate text-sm font-semibold text-heading">
                                   {result.title}
                                 </span>
-                                <span className="mt-0.5 block truncate text-xs font-bold text-muted">
+                                <span className="mt-0.5 block truncate text-xs font-medium text-body">
                                   {result.category}
                                 </span>
                               </span>
@@ -491,7 +539,7 @@ export function AppLayout({ route, routeChild, children }) {
                         })}
                       </div>
                     ) : (
-                      <div className="rounded-lg border border-dashed border-line bg-panel-soft p-4 text-sm font-semibold leading-6 text-muted">
+                      <div className="rounded-lg border border-dashed border-line bg-panel-soft p-4 text-sm font-semibold leading-6 text-body">
                         No hay coincidencias. Prueba con el nombre de una pantalla, módulo o acción.
                       </div>
                     )}
@@ -514,7 +562,7 @@ export function AppLayout({ route, routeChild, children }) {
                     token={token}
                   />
                   <span className="min-w-0 leading-tight">
-                    <span className="block truncate text-xs font-extrabold text-inverse">
+                    <span className="block truncate text-xs font-semibold text-inverse">
                       {fullName}
                     </span>
                     <span className="block truncate text-[0.68rem] font-semibold text-inverse/75">
@@ -538,10 +586,10 @@ export function AppLayout({ route, routeChild, children }) {
                     <div className="flex min-w-0 items-center gap-3 border-b border-border px-1 pb-3">
                       <Avatar profile={profile} size="md" token={token} />
                       <div className="min-w-0">
-                        <p className="truncate text-sm font-[850] leading-tight text-unl-graphite dark:text-heading">
+                        <p className="truncate text-sm font-semibold leading-tight text-unl-graphite dark:text-heading">
                           {fullName}
                         </p>
-                        <p className="mt-1 truncate text-xs font-semibold leading-tight text-muted">
+                        <p className="mt-1 truncate text-xs font-semibold leading-tight text-body">
                           {profile?.institutionalEmail || profile?.username}
                         </p>
                       </div>
@@ -550,7 +598,7 @@ export function AppLayout({ route, routeChild, children }) {
                     <div className="flex flex-wrap gap-2 px-0.5">
                       {roles.map((role) => (
                         <span
-                          className="inline-flex rounded-full border border-accent bg-accent-soft px-2.5 py-1 text-xs font-extrabold leading-none text-accent-strong dark:bg-surface-soft dark:text-body"
+                          className="inline-flex rounded-full border border-accent bg-accent-soft px-2.5 py-1 text-xs font-semibold leading-none text-accent-strong dark:bg-surface-soft dark:text-body"
                           key={role}
                         >
                           {formatRole(role)}
@@ -560,10 +608,10 @@ export function AppLayout({ route, routeChild, children }) {
 
                     <div className="flex items-center justify-between gap-3 border-b border-border px-1 pb-3">
                       <div>
-                        <p className="text-sm font-[850] leading-tight text-unl-graphite dark:text-heading">
+                        <p className="text-sm font-semibold leading-tight text-unl-graphite dark:text-heading">
                           Apariencia
                         </p>
-                        <p className="mt-1 text-xs font-bold leading-tight text-muted">
+                        <p className="mt-1 text-xs font-medium leading-tight text-body">
                           Claro / oscuro
                         </p>
                       </div>
@@ -598,16 +646,16 @@ export function AppLayout({ route, routeChild, children }) {
       </header>
 
       <div
-        className="mx-auto grid w-full max-w-[96rem] grid-cols-1 gap-3 px-3 pb-5 pt-3 transition-[grid-template-columns] duration-200 lg:grid-cols-[var(--sidebar-layout-width)_minmax(0,1fr)]"
+        className="mx-auto grid w-full max-w-[96rem] grid-cols-1 gap-3 px-3 pb-4 pt-3 transition-[grid-template-columns] duration-200 lg:grid-cols-[var(--sidebar-layout-width)_minmax(0,1fr)]"
         style={{
-          "--sidebar-layout-width": sidebarCollapsed ? "74px" : "300px",
+          "--sidebar-layout-width": sidebarCollapsed ? "70px" : "280px",
         }}
       >
         <aside className="hidden lg:block print:hidden">
           <section
             className={cx(
               "fixed left-[max(0.75rem,calc((100vw-96rem)/2+0.75rem))] top-14 z-20 flex h-[calc(100vh-4.25rem)] w-[var(--sidebar-layout-width)] flex-col overflow-hidden rounded-lg border border-line bg-panel-soft shadow-card transition-[width,padding] duration-200 dark:border-line dark:bg-surface",
-              sidebarCollapsed ? "py-3 pl-2 pr-0" : "p-3",
+                sidebarCollapsed ? "py-3 pl-2 pr-0" : "p-2.5",
             )}
           >
             <div
@@ -617,7 +665,7 @@ export function AppLayout({ route, routeChild, children }) {
               )}
             >
               {!sidebarCollapsed && (
-                <p className="px-2 text-xs font-extrabold uppercase leading-tight tracking-normal text-primary">
+                <p className="px-2 text-xs font-semibold uppercase leading-tight tracking-normal text-primary">
                   Menu
                 </p>
               )}
@@ -659,7 +707,7 @@ export function AppLayout({ route, routeChild, children }) {
                 const isActive = itemIsActive || childIsActive;
 
                 return (
-                  <div className="grid min-w-0 gap-1" key={item.id} style={navAccentStyle(item.id, isDark)}>
+                  <div className="grid min-w-0 gap-1" key={item.id}>
                     <button
                       aria-current={
                         !item.isGroupHeader && activeRoute === item.id
@@ -680,6 +728,7 @@ export function AppLayout({ route, routeChild, children }) {
                           "!border-[color:var(--nav-accent-border)] bg-[var(--nav-accent-soft)] text-[color:var(--nav-accent-strong)]",
                       )}
                       onClick={() => handleNavItemClick(item, hasChildren)}
+                      style={mainNavAccentStyle(isDark)}
                       title={sidebarCollapsed ? item.label : undefined}
                       type="button"
                     >
@@ -722,6 +771,7 @@ export function AppLayout({ route, routeChild, children }) {
                         aria-label={`Submenu de ${item.label}`}
                         className="ml-4 mt-1 grid min-w-0 gap-1 border-l border-border pl-2"
                         role="group"
+                        style={navAccentStyle(item.id, isDark)}
                       >
                         {childItems.map((child) => {
                           const childActive = activeRoute === child.id;
@@ -764,7 +814,7 @@ export function AppLayout({ route, routeChild, children }) {
           </section>
         </aside>
 
-        <div className="grid min-w-0 content-start gap-4">{children}</div>
+        <div className="sgp-page-canvas grid min-w-0 content-start gap-3 rounded-lg px-0 pb-4">{children}</div>
       </div>
 
       <div
@@ -787,14 +837,14 @@ export function AppLayout({ route, routeChild, children }) {
         >
           <div className="flex items-center justify-between gap-4 border-b border-border bg-panel/90 px-4 py-3 dark:bg-page/95">
             <div className="flex min-w-0 items-center gap-3">
-              <div className="grid h-10 w-10 flex-none place-items-center rounded-lg border border-accent bg-primary text-xs font-black text-inverse">
+              <div className="grid h-10 w-10 flex-none place-items-center rounded-lg border border-accent bg-primary text-xs font-semibold text-inverse">
                 UNL
               </div>
               <div className="min-w-0">
-                <p className="text-xs font-extrabold uppercase leading-tight text-primary dark:text-info-strong">
+                <p className="text-xs font-semibold uppercase leading-tight text-primary dark:text-info-strong">
                   Universidad Nacional de Loja
                 </p>
-                <p className="mt-1 truncate text-sm font-black leading-tight text-unl-graphite dark:text-heading">
+                <p className="mt-1 truncate text-sm font-semibold leading-tight text-unl-graphite dark:text-heading">
                   Sistema de Gestion de Practicas
                 </p>
               </div>
@@ -812,10 +862,10 @@ export function AppLayout({ route, routeChild, children }) {
           <div className="m-4 flex items-center gap-3 rounded-lg border border-border bg-panel/90 p-3 shadow-card dark:bg-surface">
             <Avatar profile={profile} size="md" token={token} />
             <div className="min-w-0">
-              <p className="truncate text-sm font-extrabold text-unl-graphite dark:text-heading">
+              <p className="truncate text-sm font-semibold text-unl-graphite dark:text-heading">
                 {fullName}
               </p>
-              <p className="truncate text-xs font-semibold text-muted">
+              <p className="truncate text-xs font-semibold text-body">
                 {profile?.institutionalEmail || profile?.username}
               </p>
             </div>
@@ -824,10 +874,10 @@ export function AppLayout({ route, routeChild, children }) {
           <div className="mx-4 mb-4 grid gap-2 rounded-lg border border-border bg-surface-soft p-3 shadow-card">
             <div className="flex items-center justify-between gap-3 border-b border-border pb-3">
               <div>
-                <p className="text-sm font-[850] leading-tight text-unl-graphite dark:text-heading">
+                <p className="text-sm font-semibold leading-tight text-unl-graphite dark:text-heading">
                   Apariencia
                 </p>
-                <p className="mt-1 text-xs font-bold leading-tight text-muted">
+                <p className="mt-1 text-xs font-medium leading-tight text-body">
                   Claro / oscuro
                 </p>
               </div>
@@ -869,7 +919,6 @@ export function AppLayout({ route, routeChild, children }) {
                     isActive && hasChildren && "!border-[color:var(--nav-accent-border)]",
                   )}
                   key={item.id}
-                  style={navAccentStyle(item.id, isDark)}
                 >
                   <button
                     aria-current={
@@ -885,6 +934,7 @@ export function AppLayout({ route, routeChild, children }) {
                       hasChildren && "border-transparent bg-transparent",
                     )}
                     onClick={() => handleNavItemClick(item, hasChildren)}
+                    style={mainNavAccentStyle(isDark)}
                     type="button"
                   >
                     {item.Icon && (
@@ -900,6 +950,7 @@ export function AppLayout({ route, routeChild, children }) {
                       aria-label={`Submenu de ${item.label}`}
                       className="grid gap-1.5 pl-6"
                       role="group"
+                      style={navAccentStyle(item.id, isDark)}
                     >
                       {childItems.map((child) => {
                         const childActive = activeRoute === child.id;

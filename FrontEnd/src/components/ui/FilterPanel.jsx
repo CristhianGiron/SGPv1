@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { CheckCircle2, SlidersHorizontal, XCircle } from 'lucide-react';
 import { ActionBar, PrimaryButton, SecondaryButton } from './ActionBar';
 import { Modal } from './Modal';
-import { SectionCard } from './SectionCard';
 
 export function FilterPanel({
   activeCount = 0,
@@ -17,9 +16,11 @@ export function FilterPanel({
   const hasFilters = hasActiveFilters ?? activeCount > 0;
 
   return (
-    <SectionCard title={title}>
-      <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
-        {search}
+    <div className="rounded-lg border border-line bg-panel-soft p-3 dark:border-line dark:bg-surface-soft">
+      <div className="grid gap-3 lg:grid-cols-[minmax(16rem,34rem)_auto] lg:items-end lg:justify-between">
+        <div className="min-w-0 max-w-xl">
+          {search}
+        </div>
         <div className="flex items-end gap-2">
           <SecondaryButton icon={SlidersHorizontal} onClick={() => setOpen(true)} type="button">
             {hasFilters ? `Filtros (${activeCount})` : 'Filtros'}
@@ -31,7 +32,7 @@ export function FilterPanel({
           )}
         </div>
       </div>
-      {summary && <p className="mt-3 text-xs font-bold text-muted">{summary}</p>}
+      {summary && <p className="mt-3 text-xs font-medium text-body">{summary}</p>}
 
       <Modal maxWidth="max-w-4xl" onClose={() => setOpen(false)} open={open} title={title}>
         <div className="space-y-4">
@@ -50,6 +51,6 @@ export function FilterPanel({
           </ActionBar>
         </div>
       </Modal>
-    </SectionCard>
+    </div>
   );
 }

@@ -138,7 +138,7 @@ function StudentScheduleView() {
 
       <SectionCard
         title="Asistencias y faltas"
-        action={<span className="text-sm font-bold text-muted">{attendances.length} asistencias</span>}
+        action={<span className="text-sm font-medium text-body">{attendances.length} asistencias</span>}
       >
         <DataTable
           columns={attendanceColumns}
@@ -153,12 +153,12 @@ function StudentScheduleView() {
 
 function Metric({ icon: Icon = CalendarClock, label, value }) {
   return (
-    <div className="border-l border-line px-4 py-2 first:border-l-0 dark:border-line">
-      <div className="flex items-center gap-2 text-xs font-extrabold uppercase text-muted">
+    <div className="sgp-color-card rounded-lg border border-line px-4 py-3 shadow-card dark:border-line">
+      <div className="flex items-center gap-2 text-xs font-semibold uppercase text-body">
         <Icon aria-hidden="true" size={16} />
         {label}
       </div>
-      <p className="mt-2 text-2xl font-black text-heading dark:text-heading">{value}</p>
+      <p className="mt-2 text-2xl font-semibold text-heading dark:text-heading">{value}</p>
     </div>
   );
 }
@@ -174,7 +174,7 @@ function ScheduleMatrix({ periods }) {
     <div className="min-w-0 max-w-full overflow-hidden rounded-lg border border-line bg-panel shadow-card dark:border-line dark:bg-surface">
       <div className="min-w-0 max-w-full overflow-x-auto overscroll-x-contain">
         <table className="w-max min-w-full border-separate border-spacing-0 text-sm">
-          <thead className="bg-primary-soft text-left text-xs font-extrabold uppercase text-muted dark:bg-surface-soft dark:text-muted">
+          <thead className="bg-table-header text-left text-xs font-medium uppercase text-table-ink dark:bg-table-header dark:text-table-ink">
             <tr>
               <th className="border-b border-line px-4 py-3 dark:border-line" scope="col">Hora</th>
               {DAY_ORDER.map((day) => (
@@ -186,8 +186,8 @@ function ScheduleMatrix({ periods }) {
           </thead>
           <tbody>
             {timeRows.map((row) => (
-              <tr className="even:bg-panel-soft hover:bg-primary-soft dark:even:bg-page/40 dark:hover:bg-info-soft" key={row.slot}>
-                <th className="border-b border-line-soft bg-panel-soft px-4 py-3 text-left font-extrabold text-nav-text dark:border-line dark:bg-surface dark:text-body" scope="row">
+              <tr className="even:bg-panel-soft hover:bg-info-soft dark:even:bg-page/40 dark:hover:bg-info-soft" key={row.slot}>
+                <th className="border-b border-line-soft bg-panel-soft px-4 py-3 text-left font-semibold text-nav-text dark:border-line dark:bg-surface dark:text-body" scope="row">
                   {row.slot}
                 </th>
                 {DAY_ORDER.map((day) => (
@@ -196,13 +196,13 @@ function ScheduleMatrix({ periods }) {
                       <div className="space-y-2">
                         {row.byDay[day].map((period) => (
                           <div key={period.id || `${period.dayOfWeek}-${period.startTime}-${period.place}`}>
-                            <p className="font-bold text-heading dark:text-heading">{period.place || 'Jornada'}</p>
-                            {period.notes && <p className="text-xs text-muted">{period.notes}</p>}
+                            <p className="font-medium text-heading dark:text-heading">{period.place || 'Jornada'}</p>
+                            {period.notes && <p className="text-xs text-body">{period.notes}</p>}
                           </div>
                         ))}
                       </div>
                     ) : (
-                      <span className="text-muted dark:text-muted">-</span>
+                      <span className="text-body dark:text-ink">-</span>
                     )}
                   </td>
                 ))}

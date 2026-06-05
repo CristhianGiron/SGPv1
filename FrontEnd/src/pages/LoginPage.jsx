@@ -220,7 +220,7 @@ export function LoginPage() {
         }
       `}</style>
 
-      <div className="absolute inset-x-0 top-0 z-20 h-1.5 bg-gradient-to-r from-primary via-accent to-primary" />
+      <div className="sgp-auth-color-bar absolute inset-x-0 top-0 z-20 h-1.5" />
 
       <div className="fixed right-5 top-5 z-50 md:right-6 md:top-6">
         <ThemeToggle />
@@ -236,15 +236,7 @@ export function LoginPage() {
         className="absolute bottom-[-12rem] right-[-12rem] h-[34rem] w-[34rem] rounded-full bg-accent/18 blur-3xl dark:bg-accent-soft"
       />
 
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 opacity-[0.32] dark:opacity-[0.12]"
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, color-mix(in srgb, var(--color-primary) 10%, transparent) 1px, transparent 1px), linear-gradient(to bottom, color-mix(in srgb, var(--color-primary) 8%, transparent) 1px, transparent 1px)",
-          backgroundSize: "42px 42px",
-        }}
-      />
+      <div aria-hidden="true" className="sgp-dot-grid absolute inset-0 opacity-[0.22] dark:opacity-[0.1]" />
 
       <div className="login-viewport relative mx-auto flex w-full max-w-7xl items-center px-5 py-6 lg:px-8">
         <section className="login-layout grid w-full items-stretch gap-8 lg:grid-cols-[1fr_470px]">
@@ -260,27 +252,19 @@ export function LoginPage() {
               className="absolute bottom-[-5rem] right-[-4rem] h-64 w-64 rounded-full bg-accent/10 blur-3xl"
             />
 
-            <div
-              aria-hidden="true"
-              className="absolute inset-0 opacity-[0.28] dark:opacity-[0.1]"
-              style={{
-                backgroundImage:
-                  "linear-gradient(to right, color-mix(in srgb, var(--color-primary) 8%, transparent) 1px, transparent 1px), linear-gradient(to bottom, color-mix(in srgb, var(--color-primary) 6%, transparent) 1px, transparent 1px)",
-                backgroundSize: "34px 34px",
-              }}
-            />
+            <div aria-hidden="true" className="sgp-dot-grid absolute inset-0 opacity-[0.2] dark:opacity-[0.08]" />
 
             <div className="relative z-10">
               <div className="flex items-center gap-4">
-                <div className="login-brand-logo grid h-16 w-16 place-items-center rounded-2xl bg-primary text-lg font-black text-inverse shadow-card">
+                <div className="login-brand-logo grid h-16 w-16 place-items-center rounded-2xl bg-primary text-lg font-semibold text-inverse shadow-card">
                   UNL
                 </div>
 
                 <div>
-                  <p className="login-brand-school text-xs font-black uppercase tracking-[0.2em] text-muted dark:text-muted">
+                  <p className="login-brand-school text-xs font-semibold uppercase tracking-[0.2em] text-body dark:text-ink">
                     Universidad Nacional de Loja
                   </p>
-                  <p className="login-brand-system mt-1 text-lg font-black text-heading dark:text-heading">
+                  <p className="login-brand-system mt-1 text-lg font-semibold text-heading dark:text-heading">
                     Sistema de Gestión de Prácticas
                   </p>
                 </div>
@@ -288,15 +272,15 @@ export function LoginPage() {
             </div>
 
             <div className="login-hero relative z-10 flex min-h-0 flex-col justify-center py-8">
-              <p className="login-hero-badge inline-flex w-fit rounded-full border border-accent/25 bg-accent-soft px-4 py-2 text-xs font-black uppercase tracking-wide text-accent-strong dark:border-accent/30 dark:bg-accent-soft dark:text-accent-strong">
+              <p className="login-hero-badge inline-flex w-fit rounded-full border border-accent/25 bg-accent-soft px-4 py-2 text-xs font-semibold uppercase tracking-wide text-accent-strong dark:border-accent/30 dark:bg-accent-soft dark:text-accent-strong">
                 Portal institucional
               </p>
 
-              <h1 className="login-hero-title mt-6 max-w-[14ch] text-[clamp(2rem,3vw,3rem)] font-black leading-[1.04] tracking-tight text-primary dark:text-heading">
+              <h1 className="login-hero-title mt-6 max-w-[14ch] text-[clamp(2rem,3vw,3rem)] font-semibold leading-[1.04] tracking-tight text-primary dark:text-heading">
                 Gestiona tus prácticas con acceso seguro.
               </h1>
 
-              <p className="login-hero-text mt-4 max-w-md text-[15px] leading-7 text-muted dark:text-muted">
+              <p className="login-hero-text mt-4 max-w-md text-[15px] leading-7 text-body dark:text-ink">
                 Un espacio académico para registrar información, revisar
                 evidencias y mantener organizado el proceso de prácticas
                 preprofesionales.
@@ -309,15 +293,15 @@ export function LoginPage() {
           {/* Tarjeta derecha / formulario */}
           <div className="relative mx-auto w-full max-w-[470px] lg:max-w-none">
             <div className="mb-5 flex items-center gap-3 lg:hidden">
-              <div className="grid h-11 w-11 place-items-center rounded-xl bg-primary text-sm font-black text-inverse">
+              <div className="grid h-11 w-11 place-items-center rounded-xl bg-primary text-sm font-semibold text-inverse">
                 UNL
               </div>
 
               <div>
-                <p className="text-xs font-black uppercase text-muted dark:text-muted">
+                <p className="text-xs font-semibold uppercase text-body dark:text-ink">
                   Universidad Nacional de Loja
                 </p>
-                <p className="text-sm font-extrabold text-heading dark:text-heading">
+                <p className="text-sm font-semibold text-heading dark:text-heading">
                   Gestión de Prácticas
                 </p>
               </div>
@@ -340,20 +324,20 @@ export function LoginPage() {
               <div className="login-form-content relative z-10 m-auto w-full">
                 <div>
                   <div className="flex items-center gap-3">
-                    <div className="login-form-icon grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-primary to-accent text-inverse shadow-card">
+                    <div className="login-form-icon grid h-12 w-12 place-items-center rounded-2xl bg-card-e text-inverse shadow-card">
                       <ShieldCheck size={22} />
                     </div>
 
-                    <p className="inline-flex rounded-full border border-accent/25 bg-accent-soft px-3 py-2 text-[11px] font-black uppercase tracking-[0.2em] text-accent dark:border-accent/30 dark:bg-accent-soft dark:text-accent-strong">
+                    <p className="inline-flex rounded-full border border-accent/25 bg-accent-soft px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-accent dark:border-accent/30 dark:bg-accent-soft dark:text-accent-strong">
                       Acceso autorizado
                     </p>
                   </div>
 
-                  <h2 className="login-form-title mt-5 text-[2rem] font-black tracking-tight text-heading dark:text-heading">
+                  <h2 className="login-form-title mt-5 text-[2rem] font-semibold tracking-tight text-heading dark:text-heading">
                     Iniciar sesión
                   </h2>
 
-                  <p className="login-form-text mt-2 text-sm leading-6 text-muted dark:text-muted">
+                  <p className="login-form-text mt-2 text-sm leading-6 text-body dark:text-ink">
                     Ingresa tus credenciales institucionales para acceder al
                     sistema. Usa el usuario o correo con el que fue creada tu
                     cuenta.
@@ -413,7 +397,7 @@ export function LoginPage() {
                       <Fingerprint size={18} />
                     </span>
 
-                    <p className="login-security-text text-xs leading-5 text-muted dark:text-muted">
+                    <p className="login-security-text text-xs leading-5 text-body dark:text-ink">
                       El acceso está protegido y reservado para usuarios
                       registrados dentro del sistema institucional.
                     </p>
@@ -425,7 +409,7 @@ export function LoginPage() {
                   onClick={() => {
                     setHashRoute("register");
                   }}
-                  className="login-register-link mt-6 w-full text-center text-sm font-bold text-muted transition-colors hover:text-primary dark:text-muted dark:hover:text-info-strong"
+                  className="login-register-link mt-6 w-full text-center text-sm font-medium text-body transition-colors hover:text-primary dark:text-ink dark:hover:text-info-strong"
                 >
                   ¿No tienes cuenta? Solicitar registro
                 </button>
@@ -442,15 +426,7 @@ function AccessCredential() {
   return (
     <div className="relative z-10">
       <div className="login-credential relative rotate-[-1deg] overflow-hidden rounded-[2rem] border border-line bg-primary p-5 text-inverse shadow-soft">
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 opacity-[0.08]"
-          style={{
-            backgroundImage:
-              "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)",
-            backgroundSize: "28px 28px",
-          }}
-        />
+        <div aria-hidden="true" className="absolute inset-0 bg-inverse/5" />
 
         <div
           aria-hidden="true"
@@ -459,11 +435,11 @@ function AccessCredential() {
 
         <div className="relative flex items-start justify-between gap-5">
           <div>
-            <p className="login-credential-label text-xs font-black uppercase tracking-[0.22em] text-inverse/55">
+            <p className="login-credential-label text-xs font-semibold uppercase tracking-[0.22em] text-inverse/55">
               Credencial de acceso
             </p>
 
-            <h2 className="login-credential-title mt-3 max-w-xs text-[1.5rem] font-black leading-tight">
+            <h2 className="login-credential-title mt-3 max-w-xs text-[1.5rem] font-semibold leading-tight">
               Gestión académica institucional
             </h2>
 
@@ -495,7 +471,7 @@ function AccessPill({ icon: Icon, label }) {
         <Icon size={16} />
       </span>
 
-      <span className="login-pill-text truncate text-[10px] font-black uppercase tracking-wide text-inverse/75">
+      <span className="login-pill-text truncate text-[10px] font-semibold uppercase tracking-wide text-inverse/75">
         {label}
       </span>
     </div>

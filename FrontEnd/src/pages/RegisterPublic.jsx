@@ -345,7 +345,7 @@ export function RegisterStudentPage() {
         }
       `}</style>
 
-      <div className="absolute inset-x-0 top-0 z-20 h-1.5 bg-gradient-to-r from-primary via-accent to-primary" />
+      <div className="sgp-auth-color-bar absolute inset-x-0 top-0 z-20 h-1.5" />
 
       <div className="fixed right-5 top-5 z-50 md:right-6 md:top-6">
         <ThemeToggle />
@@ -361,15 +361,7 @@ export function RegisterStudentPage() {
         className="absolute bottom-[-12rem] right-[-12rem] h-[34rem] w-[34rem] rounded-full bg-accent/18 blur-3xl dark:bg-accent-soft"
       />
 
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 opacity-[0.32] dark:opacity-[0.12]"
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, color-mix(in srgb, var(--color-primary) 10%, transparent) 1px, transparent 1px), linear-gradient(to bottom, color-mix(in srgb, var(--color-primary) 8%, transparent) 1px, transparent 1px)",
-          backgroundSize: "42px 42px",
-        }}
-      />
+      <div aria-hidden="true" className="sgp-dot-grid absolute inset-0 opacity-[0.22] dark:opacity-[0.1]" />
 
       <div className="register-viewport relative mx-auto flex w-full max-w-7xl items-center px-5 py-6 lg:px-8">
         <section className="register-layout grid w-full items-stretch gap-8 lg:grid-cols-[0.9fr_1.35fr]">
@@ -384,27 +376,19 @@ export function RegisterStudentPage() {
               className="absolute bottom-[-5rem] right-[-4rem] h-64 w-64 rounded-full bg-accent/10 blur-3xl"
             />
 
-            <div
-              aria-hidden="true"
-              className="absolute inset-0 opacity-[0.28] dark:opacity-[0.1]"
-              style={{
-                backgroundImage:
-                  "linear-gradient(to right, color-mix(in srgb, var(--color-primary) 8%, transparent) 1px, transparent 1px), linear-gradient(to bottom, color-mix(in srgb, var(--color-primary) 6%, transparent) 1px, transparent 1px)",
-                backgroundSize: "34px 34px",
-              }}
-            />
+            <div aria-hidden="true" className="sgp-dot-grid absolute inset-0 opacity-[0.2] dark:opacity-[0.08]" />
 
             <div className="relative z-10">
               <div className="flex items-center gap-4">
-                <div className="grid h-16 w-16 place-items-center rounded-2xl bg-primary text-lg font-black text-inverse shadow-card">
+                <div className="grid h-16 w-16 place-items-center rounded-2xl bg-primary text-lg font-semibold text-inverse shadow-card">
                   UNL
                 </div>
 
                 <div>
-                  <p className="text-xs font-black uppercase tracking-[0.2em] text-muted dark:text-muted">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-body dark:text-ink">
                     Universidad Nacional de Loja
                   </p>
-                  <p className="mt-1 text-lg font-black text-heading dark:text-heading">
+                  <p className="mt-1 text-lg font-semibold text-heading dark:text-heading">
                     Sistema de Gestión de Prácticas
                   </p>
                 </div>
@@ -412,15 +396,15 @@ export function RegisterStudentPage() {
             </div>
 
             <div className="relative z-10 flex min-h-0 flex-col justify-center py-8">
-              <p className="inline-flex w-fit rounded-full border border-accent/25 bg-accent-soft px-4 py-2 text-xs font-black uppercase tracking-wide text-accent-strong dark:border-accent/30 dark:bg-accent-soft dark:text-accent-strong">
+              <p className="inline-flex w-fit rounded-full border border-accent/25 bg-accent-soft px-4 py-2 text-xs font-semibold uppercase tracking-wide text-accent-strong dark:border-accent/30 dark:bg-accent-soft dark:text-accent-strong">
                 Registro público
               </p>
 
-              <h1 className="register-hero-title mt-6 max-w-[13ch] text-[clamp(2rem,3vw,3rem)] font-black leading-[1.04] tracking-tight text-primary dark:text-heading">
+              <h1 className="register-hero-title mt-6 max-w-[13ch] text-[clamp(2rem,3vw,3rem)] font-semibold leading-[1.04] tracking-tight text-primary dark:text-heading">
                 Crea tu acceso institucional.
               </h1>
 
-              <p className="register-hero-text mt-4 max-w-md text-[15px] leading-7 text-muted dark:text-muted">
+              <p className="register-hero-text mt-4 max-w-md text-[15px] leading-7 text-body dark:text-ink">
                 Registra tu perfil, vincula tu rol académico y accede al sistema
                 de seguimiento de prácticas preprofesionales.
               </p>
@@ -448,21 +432,21 @@ export function RegisterStudentPage() {
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-3">
-                      <div className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-primary to-accent text-inverse shadow-card">
+                      <div className="grid h-12 w-12 place-items-center rounded-2xl bg-card-d text-inverse shadow-card">
                         <UserPlus size={22} />
                       </div>
 
-                      <p className="inline-flex rounded-full border border-accent/25 bg-accent-soft px-3 py-2 text-[11px] font-black uppercase tracking-[0.2em] text-accent dark:border-accent/30 dark:bg-accent-soft dark:text-accent-strong">
+                      <p className="inline-flex rounded-full border border-accent/25 bg-accent-soft px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-accent dark:border-accent/30 dark:bg-accent-soft dark:text-accent-strong">
                         Registro autorizado
                       </p>
                     </div>
 
                     <div key={activeRole} className="animate-role-slide">
-                      <h2 className="mt-5 text-[2rem] font-black tracking-tight text-heading dark:text-heading">
+                      <h2 className="mt-5 text-[2rem] font-semibold tracking-tight text-heading dark:text-heading">
                         {roleConfig.title}
                       </h2>
 
-                      <p className="mt-2 max-w-2xl text-sm leading-6 text-muted dark:text-muted">
+                      <p className="mt-2 max-w-2xl text-sm leading-6 text-body dark:text-ink">
                         {roleConfig.description}
                       </p>
 
@@ -474,7 +458,7 @@ export function RegisterStudentPage() {
                     onClick={() => {
                       setHashRoute("");
                     }}
-                    className="hidden shrink-0 items-center gap-2 rounded-full border border-line bg-panel px-4 py-2 text-sm font-bold text-muted transition hover:border-primary/30 hover:text-primary dark:border-line dark:bg-page dark:text-muted dark:hover:text-info-strong sm:inline-flex"
+                    className="hidden shrink-0 items-center gap-2 rounded-full border border-line bg-panel px-4 py-2 text-sm font-medium text-body transition hover:border-primary/30 hover:text-primary dark:border-line dark:bg-page dark:text-ink dark:hover:text-info-strong sm:inline-flex"
                   >
                     <LogIn size={16} />
                     Iniciar sesión
@@ -486,10 +470,10 @@ export function RegisterStudentPage() {
                     <button
                       aria-selected={activeRole === role.id}
                       className={[
-                        "rounded-2xl border px-3 py-2.5 text-sm font-black transition",
+                        "rounded-2xl border px-3 py-2.5 text-sm font-semibold transition",
                         activeRole === role.id
                           ? "border-accent bg-accent text-inverse shadow-lg shadow-accent/20"
-                          : "border-line bg-panel/80 text-muted hover:border-primary/30 hover:text-primary dark:border-line dark:bg-page dark:text-muted dark:hover:border-accent dark:hover:text-heading",
+                          : "border-line bg-panel/80 text-body hover:border-primary/30 hover:text-primary dark:border-line dark:bg-page dark:text-ink dark:hover:border-accent dark:hover:text-heading",
                       ].join(" ")}
                       key={role.id}
                       onClick={() => changeRole(role.id)}
@@ -777,7 +761,7 @@ export function RegisterStudentPage() {
                 <ProfileImagePicker file={file} onChange={setFile} />
 
                 <PrimaryButton
-                  className="h-12 w-full rounded-xl bg-primary font-bold text-primary-strong shadow-lg shadow-primary/20 transition hover:-translate-y-0.5 hover:bg-primary-strong dark:bg-accent dark:shadow-soft dark:hover:bg-accent-strong"
+                  className="h-12 w-full rounded-xl bg-primary font-medium text-primary-strong shadow-lg shadow-primary/20 transition hover:-translate-y-0.5 hover:bg-primary-strong dark:bg-accent dark:shadow-soft dark:hover:bg-accent-strong"
                   icon={UserPlus}
                   loading={loading}
                   type="submit"
@@ -799,14 +783,14 @@ export function RegisterStudentPage() {
                 </div>
               )}
 
-              <p className="mt-4 text-center text-xs text-muted dark:text-muted">
+              <p className="mt-4 text-center text-xs text-body dark:text-ink">
                 ¿Ya tienes una cuenta?{" "}
                 <button
                   type="button"
                   onClick={() => {
                     setHashRoute("");
                   }}
-                  className="font-bold text-primary transition hover:text-accent dark:text-body dark:hover:text-accent-strong"
+                  className="font-medium text-primary transition hover:text-accent dark:text-body dark:hover:text-accent-strong"
                 >
                   Iniciar sesión
                 </button>
@@ -823,15 +807,7 @@ function RegisterCredential() {
   return (
     <div className="relative z-10">
       <div className="register-credential relative rotate-[-1deg] overflow-hidden rounded-[2rem] border border-line bg-primary p-5 text-inverse shadow-soft">
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 opacity-[0.08]"
-          style={{
-            backgroundImage:
-              "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)",
-            backgroundSize: "28px 28px",
-          }}
-        />
+        <div aria-hidden="true" className="absolute inset-0 bg-inverse/5" />
 
         <div
           aria-hidden="true"
@@ -840,11 +816,11 @@ function RegisterCredential() {
 
         <div className="relative flex items-start justify-between gap-5">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.22em] text-inverse/55">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-inverse/55">
               Credencial de registro
             </p>
 
-            <h2 className="mt-3 max-w-xs text-[1.5rem] font-black leading-tight">
+            <h2 className="mt-3 max-w-xs text-[1.5rem] font-semibold leading-tight">
               Perfil académico institucional
             </h2>
 
@@ -885,7 +861,7 @@ function ProfileImagePicker({ file, onChange }) {
 
   return (
     <div>
-      <p className="mb-2 text-xs font-bold text-muted dark:text-muted">
+      <p className="mb-2 text-xs font-medium text-body dark:text-ink">
         Foto de perfil opcional
       </p>
 
@@ -903,11 +879,11 @@ function ProfileImagePicker({ file, onChange }) {
         </span>
 
         <span className="min-w-0 flex-1">
-          <span className="block text-sm font-black text-heading dark:text-heading">
+          <span className="block text-sm font-semibold text-heading dark:text-heading">
             {file ? "Foto seleccionada" : "Subir imagen de perfil"}
           </span>
 
-          <span className="mt-1 block truncate text-xs leading-5 text-muted dark:text-muted">
+          <span className="mt-1 block truncate text-xs leading-5 text-body dark:text-ink">
             {file
               ? file.name
               : "Usa una imagen JPG, PNG o WebP para identificar tu cuenta."}
@@ -932,7 +908,7 @@ function AccessPill({ icon: Icon, label }) {
         <Icon size={16} />
       </span>
 
-      <span className="truncate text-[10px] font-black uppercase tracking-wide text-inverse/75">
+      <span className="truncate text-[10px] font-semibold uppercase tracking-wide text-inverse/75">
         {label}
       </span>
     </div>
@@ -1058,7 +1034,7 @@ function SlideRoleContent({ activeRole, children }) {
 function CompactSection({ title, children }) {
   return (
     <section className="register-section mb-4 rounded-2xl border border-line bg-field-hover/80 p-3.5 dark:border-line dark:bg-surface-soft/70">
-      <h3 className="mb-3 px-1 text-[11px] font-black uppercase tracking-[0.2em] text-muted dark:text-muted">
+      <h3 className="mb-3 px-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-body dark:text-ink">
         {title}
       </h3>
 
@@ -1070,12 +1046,12 @@ function CompactSection({ title, children }) {
 function IconField({ icon: Icon, label, children }) {
   return (
     <div>
-      <p className="mb-2 text-xs font-bold text-muted dark:text-muted">
+      <p className="mb-2 text-xs font-medium text-body dark:text-ink">
         {label}
       </p>
 
       <div className="relative">
-        <span className="pointer-events-none absolute left-3 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-lg bg-panel text-muted shadow-sm dark:bg-page dark:text-muted">
+        <span className="pointer-events-none absolute left-3 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-lg bg-panel text-body shadow-sm dark:bg-page dark:text-ink">
           <Icon size={14} />
         </span>
 
@@ -1114,13 +1090,13 @@ function SearchableSelect({
 
   return (
     <div>
-      <p className="mb-2 text-xs font-bold text-muted dark:text-muted">
+      <p className="mb-2 text-xs font-medium text-body dark:text-ink">
         {label}
       </p>
 
       <div className="space-y-2">
         <div className="relative">
-          <span className="pointer-events-none absolute left-3 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-lg bg-panel text-muted shadow-sm dark:bg-page dark:text-muted">
+          <span className="pointer-events-none absolute left-3 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-lg bg-panel text-body shadow-sm dark:bg-page dark:text-ink">
             <Search size={14} />
           </span>
 
@@ -1134,7 +1110,7 @@ function SearchableSelect({
         </div>
 
         <div className="relative">
-          <span className="pointer-events-none absolute left-3 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-lg bg-panel text-muted shadow-sm dark:bg-page dark:text-muted">
+          <span className="pointer-events-none absolute left-3 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-lg bg-panel text-body shadow-sm dark:bg-page dark:text-ink">
             <Icon size={14} />
           </span>
 
@@ -1161,13 +1137,13 @@ function SearchableSelect({
         </div>
 
         {!loading && rows.length === 0 && (
-          <p className="text-xs font-semibold text-muted dark:text-muted">
+          <p className="text-xs font-semibold text-body dark:text-ink">
             No hay registros disponibles.
           </p>
         )}
 
         {query && options.length === 0 && rows.length > 0 && (
-          <p className="text-xs font-semibold text-muted dark:text-muted">
+          <p className="text-xs font-semibold text-body dark:text-ink">
             No hay coincidencias.
           </p>
         )}

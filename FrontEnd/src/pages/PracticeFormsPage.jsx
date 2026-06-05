@@ -78,7 +78,7 @@ const FORM_MODES = {
 };
 
 const CHOICE_TYPES = new Set(['SINGLE_CHOICE', 'MULTIPLE_CHOICE']);
-const choiceLabelClass = 'inline-flex min-h-[2.45rem] cursor-pointer items-center gap-2 rounded-lg border border-field-border bg-panel px-3 py-2 text-sm font-[850] text-body transition-colors hover:bg-field-hover dark:border-line dark:bg-surface dark:text-ink dark:hover:bg-hover-soft';
+const choiceLabelClass = 'inline-flex min-h-[2.45rem] cursor-pointer items-center gap-2 rounded-lg border border-field-border bg-panel px-3 py-2 text-sm font-semibold text-body transition-colors hover:bg-field-hover dark:border-line dark:bg-surface dark:text-ink dark:hover:bg-hover-soft';
 const questionEditorCardClass = 'overflow-hidden rounded-lg border border-border bg-panel shadow-card dark:border-line dark:bg-surface';
 const questionEditorHeaderClass = 'flex flex-wrap items-center justify-between gap-3 border-b border-line-soft bg-field px-4 py-3 dark:border-line dark:bg-surface-soft';
 const printableQuestionClass = 'rounded-lg border border-border bg-panel p-4 dark:border-line dark:bg-surface practice-form-print-question print:break-inside-avoid print:[page-break-inside:avoid] print:bg-panel print:shadow-none';
@@ -954,8 +954,8 @@ function PracticeFormBuilder({
             <div className={questionEditorCardClass} key={question.key}>
               <div className={questionEditorHeaderClass}>
                 <div>
-                  <p className="font-black text-heading dark:text-heading">Pregunta {index + 1}</p>
-                  <p className="text-xs font-bold uppercase text-muted dark:text-muted">{questionTypeLabel(question.type)}</p>
+                  <p className="font-semibold text-heading dark:text-heading">Pregunta {index + 1}</p>
+                  <p className="text-xs font-medium uppercase text-body dark:text-ink">{questionTypeLabel(question.type)}</p>
                 </div>
                 <ActionBar>
                   <SecondaryButton
@@ -1020,7 +1020,7 @@ function PracticeFormBuilder({
                 {CHOICE_TYPES.has(question.type) && (
                   <div className="space-y-3 lg:col-span-2">
                     <div className="flex items-center justify-between gap-3">
-                      <p className="mb-0 text-[0.82rem] font-extrabold text-body dark:text-muted">Opciones</p>
+                      <p className="mb-0 text-[0.82rem] font-semibold text-body dark:text-ink">Opciones</p>
                       <SecondaryButton icon={Plus} onClick={() => addOption(index)} type="button">
                         Agregar opcion
                       </SecondaryButton>
@@ -1189,11 +1189,11 @@ function PracticeFormDetail({
         <div className="practice-form-print-document space-y-5 print:text-[11pt] print:text-heading">
           <header className="practice-form-print-header flex items-start justify-between gap-4 border-b border-border pb-4">
             <div>
-              <p className="text-xs font-extrabold uppercase leading-tight tracking-normal text-primary dark:text-info-strong print:text-[10pt] print:text-table-ink">
+              <p className="text-xs font-semibold uppercase leading-tight tracking-normal text-primary dark:text-info-strong print:text-[10pt] print:text-table-ink">
                 {config.singular}
               </p>
-              <h2 className="text-2xl font-black leading-tight text-heading dark:text-heading print:text-[18pt] print:uppercase print:text-table-ink">{form.title}</h2>
-              {form.description && <p className="mt-2 text-sm leading-6 text-muted dark:text-muted">{form.description}</p>}
+              <h2 className="text-2xl font-semibold leading-tight text-heading dark:text-heading print:text-[18pt] print:uppercase print:text-table-ink">{form.title}</h2>
+              {form.description && <p className="mt-2 text-sm leading-6 text-body dark:text-ink">{form.description}</p>}
             </div>
             <span className="print:hidden">
               <StatusBadge status={form.status} />
@@ -1284,12 +1284,12 @@ function QuestionDetail({
     <article className={printableQuestionClass}>
       <div className="practice-form-print-question-header flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-xs font-black uppercase text-muted dark:text-muted">
+          <p className="text-xs font-semibold uppercase text-body dark:text-ink">
             Pregunta {question.order} | {questionTypeLabel(question.type)}
           </p>
-          <h3 className="mt-1 text-base font-black text-heading dark:text-heading">{question.prompt}</h3>
+          <h3 className="mt-1 text-base font-semibold text-heading dark:text-heading">{question.prompt}</h3>
         </div>
-        <span className="inline-flex items-center rounded-full border border-line bg-panel-soft px-2.5 py-1 text-xs font-extrabold leading-none text-muted dark:border-line dark:bg-surface-soft dark:text-muted print:hidden">
+        <span className="inline-flex items-center rounded-full border border-line bg-panel-soft px-2.5 py-1 text-xs font-semibold leading-none text-body dark:border-line dark:bg-surface-soft dark:text-ink print:hidden">
           {question.required ? 'Obligatoria' : 'Opcional'}
         </span>
       </div>
@@ -1307,7 +1307,7 @@ function QuestionDetail({
 
       {showAnswer && question.answer && (
         <div className="practice-form-print-answer mt-4 rounded-lg border border-line bg-panel p-3 dark:border-line dark:bg-surface">
-          <p className="mb-1.5 text-[0.82rem] font-extrabold text-body dark:text-muted">Respuesta</p>
+          <p className="mb-1.5 text-[0.82rem] font-semibold text-body dark:text-ink">Respuesta</p>
           <p className="whitespace-pre-wrap text-sm leading-6 text-heading dark:text-heading">{formatAnswer(question)}</p>
         </div>
       )}
@@ -1317,7 +1317,7 @@ function QuestionDetail({
       {showInterpretation && question.type === 'OPEN_TEXT' && question.answer && (
         <div className="practice-form-print-answer mt-4 rounded-lg border border-line bg-panel-soft p-3 dark:border-line dark:bg-surface-soft">
           <div className="mb-2 flex items-center justify-between gap-3">
-            <p className="mb-0 text-[0.82rem] font-extrabold text-body dark:text-muted">Interpretacion del estudiante</p>
+            <p className="mb-0 text-[0.82rem] font-semibold text-body dark:text-ink">Interpretacion del estudiante</p>
             {canInterpret && (
               <SecondaryButton
                 className="print:hidden"
@@ -1466,12 +1466,12 @@ function Tabulation({ question }) {
 
   return (
     <div className="mt-4 rounded-lg border border-line bg-panel p-3 dark:border-line dark:bg-surface">
-      <p className="mb-1.5 text-[0.82rem] font-extrabold text-body dark:text-muted">Tabulacion</p>
+      <p className="mb-1.5 text-[0.82rem] font-semibold text-body dark:text-ink">Tabulacion</p>
       {counts.length > 0 && (
         <div className="min-w-0 max-w-full overflow-hidden rounded-lg border border-line bg-panel shadow-card dark:border-line dark:bg-surface">
           <div className="min-w-0 max-w-full overflow-x-auto overscroll-x-contain">
             <table className="w-max min-w-full border-separate border-spacing-0 text-sm">
-              <thead className="bg-primary-soft text-left text-xs font-extrabold uppercase text-muted dark:bg-surface-soft dark:text-muted">
+              <thead className="bg-primary-soft text-left text-xs font-semibold uppercase text-body dark:bg-surface-soft dark:text-ink">
                 <tr>
                   <th className="border-b border-line px-4 py-3 dark:border-line">Valor</th>
                   <th className="border-b border-line px-4 py-3 dark:border-line">Frecuencia</th>
@@ -1504,7 +1504,7 @@ function Tabulation({ question }) {
 function InfoLine({ fallback = '-', label, value }) {
   return (
     <div className="practice-form-print-info-line">
-      <p className="text-xs font-black uppercase text-muted">{label}</p>
+      <p className="text-xs font-semibold uppercase text-body">{label}</p>
       <p className="mt-1 font-semibold text-heading dark:text-heading">{value || fallback}</p>
     </div>
   );

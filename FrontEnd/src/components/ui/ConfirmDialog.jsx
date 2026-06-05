@@ -116,18 +116,18 @@ function ConfirmModal({ request, onClose }) {
             </div>
             <div className="min-w-0 flex-1">
               <h2
-                className="text-base font-[850] leading-tight text-unl-graphite dark:text-heading"
+                className="text-base font-semibold leading-tight text-unl-graphite dark:text-heading"
                 id="confirm-dialog-title"
               >
                 {request.title}
               </h2>
-              <p className="mt-2 text-sm leading-6 text-muted">
+              <p className="mt-2 text-sm leading-6 text-body">
                 {request.description}
               </p>
             </div>
             <button
               aria-label="Cerrar confirmacion"
-              className="grid h-8 w-8 flex-none place-items-center rounded-lg border border-transparent text-muted transition-colors hover:border-accent hover:bg-accent-soft hover:text-primary dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong"
+              className="grid h-8 w-8 flex-none place-items-center rounded-lg border border-transparent text-body transition-colors hover:border-accent hover:bg-accent-soft hover:text-primary dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong"
               onClick={() => onClose(false)}
               type="button"
             >
@@ -136,14 +136,14 @@ function ConfirmModal({ request, onClose }) {
           </div>
 
           {request.details && (
-            <div className="border-b border-border bg-panel-soft px-4 py-3 text-sm font-bold leading-6 text-body dark:border-line dark:bg-surface-soft dark:text-body">
+            <div className="border-b border-border bg-panel-soft px-4 py-3 text-sm font-medium leading-6 text-body dark:border-line dark:bg-surface-soft dark:text-body">
               {request.details}
             </div>
           )}
 
           <div className="flex flex-col-reverse gap-2 p-4 sm:flex-row sm:justify-end">
             <button
-              className="inline-flex min-h-[2.55rem] items-center justify-center rounded-lg border border-accent bg-transparent px-4 py-2 text-sm font-extrabold text-primary transition-colors hover:border-primary hover:bg-primary hover:text-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:bg-surface dark:text-ink dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong"
+              className="inline-flex min-h-[2.55rem] items-center justify-center rounded-lg border border-accent bg-transparent px-4 py-2 text-sm font-semibold text-primary transition-colors hover:border-primary hover:bg-primary hover:text-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:bg-surface dark:text-ink dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong"
               onClick={() => onClose(false)}
               type="button"
             >
@@ -151,7 +151,7 @@ function ConfirmModal({ request, onClose }) {
             </button>
             <button
               className={cx(
-                'inline-flex min-h-[2.55rem] items-center justify-center rounded-lg border px-4 py-2 text-sm font-extrabold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35',
+                'inline-flex min-h-[2.55rem] items-center justify-center rounded-lg border px-4 py-2 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35',
                 tone.confirm
               )}
               onClick={() => onClose(true)}

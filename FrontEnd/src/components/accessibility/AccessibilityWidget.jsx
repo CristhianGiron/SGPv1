@@ -209,7 +209,7 @@ export default function AccessibilityWidget() {
         >
           <div className="flex flex-col gap-4">
             <div className="mb-4 flex items-start justify-between gap-3 ">
-              <h2 className="text-[16px] font-bold leading-tight text-accent dark:text-heading">
+              <h2 className="text-[16px] font-medium leading-tight text-accent dark:text-heading">
                 Herramientas de accesibilidad
               </h2>
 
@@ -219,9 +219,9 @@ export default function AccessibilityWidget() {
                 aria-label="Cerrar herramientas de accesibilidad"
                 className="
                 grid h-8 w-8 place-items-center rounded-full
-                bg-panel-soft text-muted transition
+                bg-panel-soft text-body transition
                 hover:bg-panel-soft
-                dark:bg-surface-soft dark:text-muted dark:hover:bg-line-strong
+                dark:bg-surface-soft dark:text-ink dark:hover:bg-line-strong
                 focus-visible:outline focus-visible:outline-3
                 focus-visible:outline-offset-2 focus-visible:outline-yellow-400
               "
@@ -351,7 +351,7 @@ function optionClass(active) {
     focus-visible:outline-offset-2 focus-visible:outline-yellow-400
     ${
       active
-        ? "bg-primary-soft font-bold text-primary dark:bg-hover-soft dark:text-accent-strong"
+        ? "bg-primary-soft font-medium text-primary dark:bg-hover-soft dark:text-accent-strong"
         : "text-heading hover:translate-x-0.5 hover:bg-accent-soft hover:text-primary dark:text-heading dark:hover:bg-hover-soft dark:hover:text-accent-strong"
     }
   `;

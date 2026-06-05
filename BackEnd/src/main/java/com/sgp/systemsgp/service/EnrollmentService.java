@@ -1,5 +1,6 @@
 package com.sgp.systemsgp.service;
 
+import com.sgp.systemsgp.dto.enrollment.ArchivePracticeBatchRequest;
 import com.sgp.systemsgp.dto.enrollment.EnrollmentResponse;
 import com.sgp.systemsgp.enums.EnrollmentStatus;
 import com.sgp.systemsgp.enums.RoleName;
@@ -26,9 +27,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -121,7 +124,7 @@ public class EnrollmentService {
 
         Account account = getAccount(username);
         Enrollment enrollment = getEnrollment(id);
-        validatePracticeLifecycleManagerCanManage(enrollment, account);
+        validatePracticeCompletionManagerCanManage(enrollment, account);
 
         if (enrollment.getStatus() != EnrollmentStatus.APPROVED) {
             throw new BadRequestException(
@@ -152,7 +155,7 @@ public class EnrollmentService {
 
         Account account = getAccount(username);
         Enrollment enrollment = getEnrollment(id);
-        validatePracticeLifecycleManagerCanManage(enrollment, account);
+        validatePracticeCompletionManagerCanManage(enrollment, account);
 
         if (enrollment.getStatus() != EnrollmentStatus.COMPLETED) {
             throw new BadRequestException(
@@ -184,7 +187,7 @@ public class EnrollmentService {
 
         Account account = getAccount(username);
         Enrollment enrollment = getEnrollment(id);
-        validatePracticeLifecycleManagerCanManage(enrollment, account);
+        validatePracticeArchiveManagerCanManage(enrollment, account);
         requireCompletedForArchive(enrollment);
 
         boolean previousArchived = enrollment.isArchived();
@@ -209,7 +212,7 @@ public class EnrollmentService {
 
         Account account = getAccount(username);
         Enrollment enrollment = getEnrollment(id);
-        validatePracticeLifecycleManagerCanManage(enrollment, account);
+        validatePracticeArchiveManagerCanManage(enrollment, account);
         requireCompletedForArchive(enrollment);
 
         boolean previousArchived = enrollment.isArchived();
@@ -273,6 +276,64 @@ public class EnrollmentService {
         enrollmentRepository.saveAll(visiblePractices);
 
         return visiblePractices
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+    @Transactional
+    public List<EnrollmentResponse> archiveBatch(
+            String username,
+            ArchivePracticeBatchRequest request) {
+
+        Account account = getAccount(username);
+        if (!canArchivePractices(account)) {
+            throw new BadRequestException(
+                    "No tienes permisos para archivar practicas");
+        }
+
+        Set<Long> enrollmentIds = request != null && request.getEnrollmentIds() != null
+                ? new LinkedHashSet<>(request.getEnrollmentIds())
+                : Set.of();
+
+        if (enrollmentIds.isEmpty()) {
+            throw new BadRequestException(
+                    "Selecciona al menos una práctica para gestionar");
+        }
+
+        List<Enrollment> enrollments = enrollmentRepository.findAllById(enrollmentIds);
+
+        if (enrollments.size() != enrollmentIds.size()) {
+            throw new NotFoundException(
+                    "Una o más prácticas seleccionadas no existen");
+        }
+
+        LocalDateTime changedAt = LocalDateTime.now();
+        boolean archive = request.isArchived();
+
+        enrollments.forEach(enrollment -> {
+            validatePracticeArchiveManagerCanManage(enrollment, account);
+            requireCompletedForArchive(enrollment);
+
+            boolean previousArchived = enrollment.isArchived();
+            enrollment.setArchived(archive);
+            enrollment.setArchivedAt(archive ? changedAt : null);
+            practiceAuditService.logEnrollmentAction(
+                    enrollment,
+                    account,
+                    archive ? "ARCHIVE_BATCH" : "UNARCHIVE_BATCH",
+                    enrollment.getStatus().name(),
+                    enrollment.getStatus().name(),
+                    previousArchived,
+                    enrollment.isArchived(),
+                    archive
+                            ? "Archivo masivo por grupo de prácticas"
+                            : "Desarchivo masivo por grupo de prácticas");
+        });
+
+        enrollmentRepository.saveAll(enrollments);
+
+        return enrollments
                 .stream()
                 .map(this::mapToResponse)
                 .toList();
@@ -616,11 +677,24 @@ public class EnrollmentService {
         validateDirectorCanManageCourse(enrollment.getCourse(), account);
     }
 
-    private void validatePracticeLifecycleManagerCanManage(
+    private void validatePracticeCompletionManagerCanManage(
             Enrollment enrollment,
             Account account) {
 
-        practiceAccessService.requirePracticeLifecycleAccess(enrollment, account);
+        if (!practiceAccessService.canConcludePractice(enrollment, account)) {
+            throw new BadRequestException(
+                    "Solo el director de prácticas puede concluir o reabrir prácticas de su carrera");
+        }
+    }
+
+    private void validatePracticeArchiveManagerCanManage(
+            Enrollment enrollment,
+            Account account) {
+
+        if (!practiceAccessService.canArchivePractice(account)) {
+            throw new BadRequestException(
+                    "Solo el admin puede archivar o desarchivar prácticas");
+        }
     }
 
     private void validateDirectorCanManageCourse(
@@ -696,9 +770,7 @@ public class EnrollmentService {
 
     private boolean canArchivePractices(Account account) {
 
-        return hasRole(account, RoleName.ROLE_ADMIN)
-                || hasRole(account, RoleName.ROLE_DIRECTOR_PRACTICAS)
-                || hasRole(account, RoleName.ROLE_TUTOR_PRACTICAS);
+        return practiceAccessService.canArchivePractice(account);
     }
 
     private List<Enrollment> visiblePracticeEnrollments(Account account) {

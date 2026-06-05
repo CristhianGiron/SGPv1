@@ -19,12 +19,12 @@ const colorThemes = {
       "--unl-gold": "#ad852d",
       "--unl-gold-soft": "#f1eadb",
       "--unl-graphite": "#20282d",
-      "--color-page": "#d1dde1",
-      "--color-surface": "#eef2ed",
-      "--color-surface-soft": "#dfe9e3",
+      "--color-page": "#e5edf0",
+      "--color-surface": "#f8fbf7",
+      "--color-surface-soft": "#edf4ef",
       "--color-ink": "#10232c",
       "--color-muted": "#586c74",
-      "--color-border": "#7fb35d",
+      "--color-border": "#a8c3b4",
       "--color-primary": "var(--color_primary)",
       "--color-primary-strong": "#03283a",
       "--color-primary-soft": "#d7e4e9",
@@ -692,12 +692,12 @@ function withSemanticTokens(tokens, mode) {
       : "color-mix(in srgb, var(--color-primary) 10%, var(--color-surface))",
     "--color-field-border": "var(--color-line)",
     "--color-table-border": isDark
-      ? "color-mix(in srgb, var(--color-primary) 56%, var(--color-border))"
-      : "color-mix(in srgb, var(--color-primary) 68%, var(--color-border))",
+      ? "color-mix(in srgb, var(--color-primary) 38%, var(--color-border))"
+      : "color-mix(in srgb, var(--color-primary) 36%, var(--color-border))",
     "--color-table-header": isDark
-      ? "color-mix(in srgb, var(--color-primary) 74%, var(--color-surface))"
-      : "var(--color-primary)",
-    "--color-table-ink": isDark ? "#e2e8f0" : "#111827",
+      ? "color-mix(in srgb, var(--color-primary) 22%, var(--color-surface))"
+      : "color-mix(in srgb, var(--color-primary) 16%, var(--color-surface))",
+    "--color-table-ink": "var(--color-heading)",
     "--color-inverse": "#ffffff",
     "--color-focus": "var(--color-accent)",
     "--color-focus-soft": isDark
@@ -730,10 +730,25 @@ function withSemanticTokens(tokens, mode) {
     "--color-chart-4": "var(--unl-green)",
     "--color-chart-5": "var(--color-primary-strong)",
     "--color-chart-6": "var(--color-accent-strong)",
-    "--color-chart-7": isDark ? "#a78bfa" : "#7f6bb0",
-    "--color-chart-8": isDark ? "#5eead4" : "#00a6a6",
-    "--color-chart-9": isDark ? "#f1a85b" : "#8a6a20",
-    "--color-chart-10": isDark ? "#b460a6" : "var(--unl-red-strong)",
+    "--color-chart-7": isDark ? "#c4b5fd" : "#8b5cf6",
+    "--color-chart-8": isDark ? "#5eead4" : "#06b6d4",
+    "--color-chart-9": isDark ? "#fdba74" : "#f97316",
+    "--color-chart-10": isDark ? "#f0abfc" : "#d946ef",
+    "--color-card-a": isDark ? "#38bdf8" : "#0ea5e9",
+    "--color-card-a-strong": isDark ? "#bae6fd" : "#075985",
+    "--color-card-a-soft": isDark ? "rgba(56, 189, 248, 0.16)" : "#e0f2fe",
+    "--color-card-b": isDark ? "#facc15" : "#f59e0b",
+    "--color-card-b-strong": isDark ? "#fef08a" : "#92400e",
+    "--color-card-b-soft": isDark ? "rgba(250, 204, 21, 0.16)" : "#fef3c7",
+    "--color-card-c": isDark ? "#2dd4bf" : "#14b8a6",
+    "--color-card-c-strong": isDark ? "#99f6e4" : "#115e59",
+    "--color-card-c-soft": isDark ? "rgba(45, 212, 191, 0.16)" : "#ccfbf1",
+    "--color-card-d": isDark ? "#fb923c" : "#f97316",
+    "--color-card-d-strong": isDark ? "#fed7aa" : "#9a3412",
+    "--color-card-d-soft": isDark ? "rgba(251, 146, 60, 0.16)" : "#ffedd5",
+    "--color-card-e": isDark ? "#fb7185" : "#e11d48",
+    "--color-card-e-strong": isDark ? "#fecdd3" : "#9f1239",
+    "--color-card-e-soft": isDark ? "rgba(251, 113, 133, 0.16)" : "#ffe4e6",
     "--color-print-page": "#ffffff",
     "--color-print-ink": "#111827",
     "--color-print-border": "#111827",
@@ -815,6 +830,23 @@ const config = {
           9: "var(--color-chart-9)",
           10: "var(--color-chart-10)",
         },
+        card: {
+          a: "var(--color-card-a)",
+          "a-strong": "var(--color-card-a-strong)",
+          "a-soft": "var(--color-card-a-soft)",
+          b: "var(--color-card-b)",
+          "b-strong": "var(--color-card-b-strong)",
+          "b-soft": "var(--color-card-b-soft)",
+          c: "var(--color-card-c)",
+          "c-strong": "var(--color-card-c-strong)",
+          "c-soft": "var(--color-card-c-soft)",
+          d: "var(--color-card-d)",
+          "d-strong": "var(--color-card-d-strong)",
+          "d-soft": "var(--color-card-d-soft)",
+          e: "var(--color-card-e)",
+          "e-strong": "var(--color-card-e-strong)",
+          "e-soft": "var(--color-card-e-soft)",
+        },
         unl: {
           blue: "var(--unl-blue)",
           green: "var(--unl-green)",
@@ -834,8 +866,28 @@ const config = {
       animation: {
         "role-slide": "role-slide 280ms ease-out both",
         "vertical-slide": "vertical-slide 16s linear infinite",
+        "soft-pop": "soft-pop 320ms ease-out both",
+        "gentle-float": "gentle-float 5.5s ease-in-out infinite",
       },
       keyframes: {
+        "soft-pop": {
+          "0%": {
+            opacity: "0",
+            transform: "translateY(10px) scale(0.98)",
+          },
+          "100%": {
+            opacity: "1",
+            transform: "translateY(0) scale(1)",
+          },
+        },
+        "gentle-float": {
+          "0%, 100%": {
+            transform: "translateY(0)",
+          },
+          "50%": {
+            transform: "translateY(-5px)",
+          },
+        },
         "role-slide": {
           "0%": {
             opacity: "0",

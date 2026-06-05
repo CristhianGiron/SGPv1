@@ -101,7 +101,7 @@ export function Avatar({ profile, token, size = 'md', className = '' }) {
 
   return (
     <div
-      className={`${sizes[size]} grid place-items-center rounded-full font-black text-inverse ring-2 ring-panel shadow-card dark:ring-surface-soft ${className}`}
+      className={`${sizes[size]} grid place-items-center rounded-full font-semibold text-inverse ring-2 ring-panel shadow-card dark:ring-surface-soft ${className}`}
       style={{ backgroundColor: fallbackColor }}
     >
       {initials}

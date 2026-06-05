@@ -5,25 +5,25 @@ import { Modal } from './Modal';
 import { formatValue } from '../../utils/format';
 
 const tableShellClass =
-  'min-w-0 max-w-full overflow-hidden rounded-lg border border-line bg-panel shadow-card dark:border-line dark:bg-surface';
+  'sgp-table-shell min-w-0 max-w-full overflow-hidden rounded-lg border border-line bg-panel shadow-card dark:border-line dark:bg-surface';
 
 const tableClass =
-  'w-max min-w-full border-separate border-spacing-0 text-sm';
+  'w-max min-w-full table-auto border-separate border-spacing-0 text-sm lg:w-full';
 
 const tableHeadClass =
-  'bg-primary-soft text-left text-xs font-extrabold uppercase text-muted dark:bg-surface-soft dark:text-muted';
+  'bg-[var(--module-table)] text-left text-xs font-medium uppercase text-[color:var(--module-table-ink)] dark:bg-[var(--module-table)] dark:text-[color:var(--module-table-ink)]';
 
 const tableCellClass =
-  'border-b border-line-soft px-4 py-3 align-middle text-body dark:border-line dark:text-ink';
+  'border-b border-line-soft px-3 py-2.5 align-middle text-body dark:border-line dark:text-ink';
 
 const fieldLabelClass =
-  'mb-1.5 block text-[0.82rem] font-extrabold text-body dark:text-muted';
+  'mb-1.5 block text-[0.82rem] font-medium text-body dark:text-ink';
 
 const fieldClass =
-  'min-h-[2.65rem] w-full rounded-lg border border-line bg-field px-3 py-2.5 text-sm text-heading outline-none transition-[background-color,border-color,box-shadow] placeholder:text-muted hover:border-line-strong focus:border-primary-strong focus:ring-4 focus:ring-focus-soft disabled:cursor-not-allowed disabled:bg-panel-soft disabled:text-muted dark:border-line dark:bg-page dark:text-heading dark:placeholder:text-muted dark:hover:border-line-strong dark:focus:border-info dark:focus:ring-focus-soft';
+  'min-h-[2.5rem] w-full rounded-lg border border-line bg-field px-3 py-2 text-sm text-heading outline-none transition-[background-color,border-color,box-shadow] placeholder:text-muted hover:border-line-strong focus:border-primary-strong focus:ring-4 focus:ring-focus-soft disabled:cursor-not-allowed disabled:bg-panel-soft disabled:text-muted dark:border-line dark:bg-page dark:text-heading dark:placeholder:text-muted dark:hover:border-line-strong dark:focus:border-info dark:focus:ring-focus-soft';
 
 const secondaryButtonClass =
-  'inline-flex min-h-[2.55rem] w-full items-center justify-center rounded-lg border border-accent bg-transparent px-4 py-2 text-sm font-extrabold text-primary transition-colors hover:border-primary hover:bg-primary hover:text-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 disabled:cursor-not-allowed disabled:opacity-60 dark:border-line dark:bg-surface dark:text-ink dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong';
+  'inline-flex min-h-[2.5rem] items-center justify-center rounded-lg border border-accent bg-accent-soft px-3 py-2 text-sm font-medium text-accent-strong transition-colors hover:border-accent-strong hover:bg-accent hover:text-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 disabled:cursor-not-allowed disabled:opacity-60 dark:border-accent/40 dark:bg-accent-soft dark:text-accent-strong dark:hover:border-accent dark:hover:bg-hover-soft';
 
 export function DataTable({
   columns,
@@ -36,18 +36,9 @@ export function DataTable({
 }) {
   const visibleColumns = columns.filter((column) => column.key !== 'id' && column.header !== 'ID');
   const actionColumn = visibleColumns.find((column) => column.key === 'actions');
-  const dataColumns = actionColumn
-    ? visibleColumns.filter((column) => column.key !== 'actions')
+  const renderedColumns = actionColumn
+    ? [...visibleColumns.filter((column) => column.key !== 'actions'), actionColumn]
     : visibleColumns;
-  const renderedColumns = actionColumn ? [...dataColumns, actionColumn] : visibleColumns;
-  const mobileDataGridTemplateColumns = dataColumns
-    .map((column) => (isParagraphColumn(column.key) ? 'minmax(18rem, 28rem)' : 'minmax(max-content, max-content)'))
-    .concat(actionColumn ? ['max-content'] : [])
-    .join(' ');
-  const desktopDataGridTemplateColumns = dataColumns
-    .map((column) => (isParagraphColumn(column.key) ? 'minmax(16rem, 2fr)' : 'minmax(0, 1fr)'))
-    .concat(actionColumn ? ['max-content'] : [])
-    .join(' ');
   const availableFilterFields = useMemo(
     () => (filterFields || buildDefaultFilterFields(rows)).filter((field) => fieldHasOptions(rows, field)),
     [filterFields, rows]
@@ -82,15 +73,20 @@ export function DataTable({
 
       {!effectiveRows?.length ? (
         <EmptyState text={hasFilters ? 'No se encontraron resultados con los filtros aplicados.' : emptyText} />
-      ) : !actionColumn ? (
+      ) : (
         <div className={tableShellClass} aria-busy={loading || undefined}>
           <div className="min-w-0 max-w-full overflow-x-auto overscroll-x-contain">
-            <table className="w-max min-w-full table-auto border-separate border-spacing-0 text-sm lg:w-full">
+            <table className={tableClass}>
+              <colgroup>
+                {renderedColumns.map((column) => (
+                  <col key={column.key} style={getColumnStyle(column.key)} />
+                ))}
+              </colgroup>
               <thead className={tableHeadClass}>
                 <tr>
-                  {visibleColumns.map((column) => (
+                  {renderedColumns.map((column) => (
                     <th
-                      className={`border-b border-line px-4 py-3 font-extrabold dark:border-line ${isParagraphColumn(column.key) ? 'min-w-[22rem]' : 'whitespace-nowrap'}`}
+                      className={`${getHeaderCellClass(column.key)} ${getHeaderWrapClass(column.key)}`}
                       key={column.key}
                       scope="col"
                     >
@@ -102,12 +98,12 @@ export function DataTable({
               <tbody>
                 {effectiveRows.map((row, rowIndex) => (
                   <tr
-                    className="even:bg-panel-soft hover:bg-primary-soft dark:even:bg-page/40 dark:hover:bg-info-soft"
+                    className={`${rowIndex % 2 === 1 ? 'bg-panel-soft dark:bg-page/40' : 'bg-panel dark:bg-surface'} hover:bg-info-soft dark:hover:bg-info-soft`}
                     key={row[keyField] || `${keyField}-${rowIndex}`}
                   >
-                    {visibleColumns.map((column) => (
+                    {renderedColumns.map((column) => (
                       <td
-                        className={`${tableCellClass} min-w-0 break-words ${isParagraphColumn(column.key) ? 'min-w-[22rem] whitespace-pre-wrap' : 'whitespace-nowrap'}`}
+                        className={`${getBodyCellClass(column.key)} ${getCellWrapClass(column.key)}`}
                         key={column.key}
                       >
                         {column.render ? column.render(row) : formatValue(row[column.key], column.key)}
@@ -117,50 +113,6 @@ export function DataTable({
                 ))}
               </tbody>
             </table>
-          </div>
-        </div>
-      ) : (
-        <div className={tableShellClass} aria-busy={loading || undefined}>
-          <div className="min-w-0 max-w-full overflow-x-auto overscroll-x-contain">
-            <div
-              className="data-table-grid grid w-max min-w-full text-sm"
-              role="table"
-              style={{
-                '--data-table-columns-mobile': mobileDataGridTemplateColumns,
-                '--data-table-columns-desktop': desktopDataGridTemplateColumns,
-              }}
-            >
-              {renderedColumns.map((column) => (
-                <div
-                  className={`border-b border-line bg-primary-soft px-4 py-3 text-left text-xs font-extrabold uppercase text-muted dark:border-line dark:bg-surface-soft dark:text-muted ${column.key === 'actions' ? 'sticky right-0 z-30 whitespace-nowrap shadow-card' : isParagraphColumn(column.key) ? 'break-words' : 'whitespace-nowrap'}`}
-                  key={column.key}
-                  role="columnheader"
-                >
-                  {column.header}
-                </div>
-              ))}
-
-              {effectiveRows.flatMap((row, rowIndex) =>
-                renderedColumns.map((column) => {
-                  const rowKey = row[keyField] || `${keyField}-${rowIndex}`;
-                  const evenRow = rowIndex % 2 === 1;
-                  const isActionColumn = column.key === 'actions';
-                  const cellTone = evenRow
-                    ? 'bg-panel-soft dark:bg-page/40'
-                    : 'bg-panel dark:bg-surface';
-
-                  return (
-                    <div
-                      className={`${tableCellClass} min-h-[3.25rem] min-w-0 ${cellTone} hover:bg-primary-soft dark:hover:bg-info-soft ${isActionColumn ? 'sticky right-0 z-20 whitespace-nowrap shadow-card' : isParagraphColumn(column.key) ? 'whitespace-pre-wrap break-words' : 'whitespace-nowrap'}`}
-                      key={`${rowKey}-${column.key}`}
-                      role="cell"
-                    >
-                      {column.render ? column.render(row) : formatValue(row[column.key], column.key)}
-                    </div>
-                  );
-                })
-              )}
-            </div>
           </div>
         </div>
       )}
@@ -199,8 +151,8 @@ function TableFilters({ fields, filters, rows, totalCount, visibleCount, onChang
 
   return (
     <div className="rounded-lg border border-line bg-panel-soft p-3 dark:border-line dark:bg-surface">
-      <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
-        <label className="block">
+      <div className="grid gap-3 lg:grid-cols-[minmax(16rem,34rem)_auto] lg:items-end lg:justify-between">
+        <label className="block min-w-0 max-w-xl">
           <span className={fieldLabelClass}>Buscar</span>
           <input
             className={fieldClass}
@@ -227,7 +179,7 @@ function TableFilters({ fields, filters, rows, totalCount, visibleCount, onChang
           </button>
         </div>
       </div>
-      <p className="mt-3 text-xs font-bold text-muted">
+      <p className="mt-3 text-xs font-medium text-body">
         {visibleCount} de {totalCount} resultados
       </p>
       <Modal
@@ -358,6 +310,79 @@ function isParagraphColumn(key = '') {
   return /activities|scheduledActivities|developedActivities|description|presentation|objective|methodology|antecedents|conclusion|recommendation|observation|observations|notes|feedback|suggestions|resources|approval|evidence|summary|result/i.test(key);
 }
 
+function isCompactColumn(key = '') {
+  return /^(actions|status|state|enabled|active|locked|archived|deleted|visible|read|id)$/i.test(key)
+    || /(status|state|date|at|count|total|number|code|cedula|phone|role)$/i.test(key);
+}
+
+function getColumnStyle(key = '') {
+  if (key === 'actions') {
+    return { width: '5.25rem' };
+  }
+
+  if (/^(status|state|enabled|active|locked|archived|deleted|visible|read)$/i.test(key)) {
+    return { width: '8rem' };
+  }
+
+  if (/^(id|code|codigo|cedula|phone|number)$/i.test(key) || /(code|codigo|cedula|phone|number)$/i.test(key)) {
+    return { width: '8.5rem' };
+  }
+
+  if (/(date|at)$/i.test(key)) {
+    return { width: '11rem' };
+  }
+
+  if (isParagraphColumn(key)) {
+    return { width: '24rem' };
+  }
+
+  if (/(student|name|nombre|title|titulo|institution|community|comunidad|career|faculty|course|parallel|paralelo|cohort|ciclo)$/i.test(key)) {
+    return { width: '16rem' };
+  }
+
+  return { width: '12rem' };
+}
+
+function getHeaderCellClass(key = '') {
+  const stickyClass = key === 'actions'
+    ? 'sticky right-0 z-30 bg-[var(--module-table)] text-center shadow-[-10px_0_18px_-18px_rgba(0,0,0,0.45)] dark:bg-[var(--module-table)]'
+    : 'bg-[var(--module-table)] dark:bg-[var(--module-table)]';
+
+  return `border-b border-[color:var(--module-table-border)] px-3 py-2.5 text-left font-medium dark:border-[color:var(--module-table-border)] ${stickyClass}`;
+}
+
+function getBodyCellClass(key = '') {
+  const stickyClass = key === 'actions'
+    ? 'sticky right-0 z-20 bg-inherit text-center shadow-[-10px_0_18px_-18px_rgba(0,0,0,0.45)]'
+    : 'bg-inherit';
+
+  return `${tableCellClass} min-w-0 ${stickyClass}`;
+}
+
+function getHeaderWrapClass(key = '') {
+  if (isCompactColumn(key)) {
+    return 'whitespace-nowrap';
+  }
+
+  if (isParagraphColumn(key)) {
+    return 'min-w-[18rem] whitespace-normal break-words [overflow-wrap:anywhere]';
+  }
+
+  return 'min-w-[10rem] max-w-[18rem] whitespace-normal break-words [overflow-wrap:anywhere]';
+}
+
+function getCellWrapClass(key = '') {
+  if (isCompactColumn(key)) {
+    return 'whitespace-nowrap';
+  }
+
+  if (isParagraphColumn(key)) {
+    return 'min-w-[18rem] whitespace-pre-wrap break-words [overflow-wrap:anywhere]';
+  }
+
+  return 'min-w-[10rem] max-w-[18rem] whitespace-normal break-words [overflow-wrap:anywhere]';
+}
+
 function hasActiveFilters(filters) {
   return Boolean(filters?.search?.trim())
     || Object.values(filters?.fields || {}).some((value) => Boolean(value));
@@ -440,7 +465,7 @@ function TableSkeleton({ columns }) {
             <tr>
               {columns.map((column) => (
                 <th
-                  className="border-b border-line px-4 py-3 font-extrabold dark:border-line"
+                  className="border-b border-line px-3 py-2.5 font-medium dark:border-line"
                   key={column.key}
                   scope="col"
                 >

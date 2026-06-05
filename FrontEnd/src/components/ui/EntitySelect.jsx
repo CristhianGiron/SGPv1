@@ -108,10 +108,10 @@ export function EntitySelect({
         ))}
       </select>
       {!loading && !error && visibleRows.length === 0 && (
-        <p className="text-xs text-muted">{emptyText}</p>
+        <p className="text-xs text-body">{emptyText}</p>
       )}
       {query && options.length === 0 && visibleRows.length > 0 && (
-        <p className="text-xs text-muted">No hay coincidencias.</p>
+        <p className="text-xs text-body">No hay coincidencias.</p>
       )}
     </div>
   );

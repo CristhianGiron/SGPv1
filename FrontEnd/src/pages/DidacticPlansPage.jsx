@@ -368,14 +368,14 @@ export function DidacticPlansPage() {
           description={selectedPlan ? `${selectedPlan.authorName} | ${selectedPlan.studentName}` : 'Basada en el formato del Plan de Unidad Didáctica'}
           action={selectedPlan && <StatusBadge status={selectedPlan.status} />}
         >
-          <div className="space-y-5">
+          <div className="space-y-4">
             {selectedPlan?.recommendations && (
               <Alert tone="warning">
                 Recomendaciones de {selectedPlan.recommendedByName || 'revisor'}: {selectedPlan.recommendations}
               </Alert>
             )}
 
-            <div className="grid gap-4 lg:grid-cols-2">
+            <div className="grid gap-3 lg:grid-cols-2 xl:grid-cols-3">
               <Field label="Inscripción">
                 <Select
                   disabled={!canEditSelected}
@@ -460,7 +460,7 @@ export function DidacticPlansPage() {
 
             <div className="space-y-3">
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <p className="text-sm font-[850] text-heading dark:text-heading">Planificación por semanas</p>
+                <p className="text-sm font-medium text-heading dark:text-heading">Planificación por semanas</p>
                 {canEditSelected && (
                   <SecondaryButton icon={Plus} onClick={addWeek}>
                     Agregar semana
@@ -468,9 +468,9 @@ export function DidacticPlansPage() {
                 )}
               </div>
               {draft.weekPlans.map((week, index) => (
-                <div key={`${index}-${week.id || 'new'}`} className="rounded-lg border border-line bg-panel-soft p-3 dark:border-line dark:bg-surface-soft">
+                <div key={`${index}-${week.id || 'new'}`} className="sgp-color-card rounded-lg border border-line bg-panel-soft p-3 dark:border-line dark:bg-surface-soft">
                   <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-                    <p className="text-sm font-extrabold text-heading dark:text-heading">Semana {index + 1}</p>
+                    <p className="text-sm font-medium text-heading dark:text-heading">Semana {index + 1}</p>
                     {canEditSelected && draft.weekPlans.length > 1 && (
                       <DangerButton icon={Trash2} onClick={() => removeWeek(index)}>
                         Quitar
@@ -512,7 +512,7 @@ export function DidacticPlansPage() {
               ))}
             </div>
 
-            <div className="rounded-lg border border-line bg-panel-soft p-3 dark:border-line dark:bg-surface-soft">
+            <div className="sgp-color-card rounded-lg border border-line bg-panel-soft p-3 dark:border-line dark:bg-surface-soft">
               <div className="grid gap-3 lg:grid-cols-[1fr_auto] lg:items-end">
                 <Field label="Subir PDF de planificación">
                   <FileInput disabled={!canEditSelected} accept="application/pdf" onChange={(event) => setPdfFile(event.target.files?.[0] || null)} />
@@ -522,7 +522,7 @@ export function DidacticPlansPage() {
                 </SecondaryButton>
               </div>
               {selectedPlan?.hasUploadedPdf && (
-                <p className="mt-2 text-xs font-bold text-muted">
+                <p className="mt-2 text-xs font-medium text-body">
                   PDF cargado: {selectedPlan.uploadedPdfFilename || 'planificación.pdf'}
                 </p>
               )}
@@ -537,7 +537,7 @@ export function DidacticPlansPage() {
                   <PrimaryButton icon={Send} loading={saving} onClick={submitSelected}>
                     Enviar
                   </PrimaryButton>
-                  {pdfFile && <span className="inline-flex items-center gap-2 text-sm font-bold text-muted"><FileUp size={16} /> PDF listo para cargar</span>}
+                  {pdfFile && <span className="inline-flex items-center gap-2 text-sm font-medium text-body"><FileUp size={16} /> PDF listo para cargar</span>}
                 </>
               )}
               {selectedPlan && selectedAuthorIsMe && selectedPlan.status !== 'SUBMITTED' && (
@@ -557,7 +557,7 @@ export function DidacticPlansPage() {
           action={selectedPlan && <StatusBadge status={selectedPlan.status} />}
         >
           {selectedPlan ? (
-            <div className="space-y-5">
+            <div className="space-y-4">
               <PlanDetail plan={selectedPlan} />
 
               <ActionBar>
@@ -668,7 +668,7 @@ function PlanDetail({ plan }) {
       </div>
 
       <div className="space-y-3">
-        <p className="text-sm font-[850] text-heading dark:text-heading">Planificación por semanas</p>
+        <p className="text-sm font-medium text-heading dark:text-heading">Planificación por semanas</p>
         {plan.weekPlans?.length ? (
           plan.weekPlans.map((week, index) => (
             <div
@@ -676,10 +676,10 @@ function PlanDetail({ plan }) {
               key={week.id || `${week.weekNumber}-${index}`}
             >
               <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-                <p className="text-sm font-extrabold text-heading dark:text-heading">
+                <p className="text-sm font-medium text-heading dark:text-heading">
                   Semana {week.weekNumber || index + 1}
                 </p>
-                <p className="text-xs font-bold text-muted">
+                <p className="text-xs font-medium text-body">
                   {[week.startDate, week.endDate].filter(Boolean).join(' - ') || 'Sin fechas'}
                 </p>
               </div>
@@ -699,7 +699,7 @@ function PlanDetail({ plan }) {
       </div>
 
       {plan.hasUploadedPdf && (
-        <div className="rounded-lg border border-line bg-panel-soft p-3 text-sm font-bold text-muted dark:border-line dark:bg-surface-soft">
+        <div className="sgp-color-card rounded-lg border border-line bg-panel-soft p-3 text-sm font-medium text-body dark:border-line dark:bg-surface-soft">
           PDF cargado: {plan.uploadedPdfFilename || 'planificación.pdf'}
         </div>
       )}
@@ -709,9 +709,9 @@ function PlanDetail({ plan }) {
 
 function DetailValue({ label, value }) {
   return (
-    <div className="rounded-lg border border-line bg-panel-soft p-3 dark:border-line dark:bg-surface-soft">
-      <p className="text-xs font-extrabold uppercase text-muted">{label}</p>
-      <p className="mt-1 min-h-5 break-words text-sm font-bold text-heading dark:text-heading">
+    <div className="sgp-color-card rounded-lg border border-line bg-panel-soft p-3 dark:border-line dark:bg-surface-soft">
+      <p className="text-xs font-medium uppercase text-body">{label}</p>
+      <p className="mt-1 min-h-5 break-words text-sm font-medium text-heading dark:text-heading">
         {value || '-'}
       </p>
     </div>
@@ -720,8 +720,8 @@ function DetailValue({ label, value }) {
 
 function LongValue({ label, value }) {
   return (
-    <div className="rounded-lg border border-line bg-panel p-3 dark:border-line dark:bg-surface">
-      <p className="text-xs font-extrabold uppercase text-muted">{label}</p>
+    <div className="sgp-color-card rounded-lg border border-line bg-panel p-3 dark:border-line dark:bg-surface">
+      <p className="text-xs font-medium uppercase text-body">{label}</p>
       <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-6 text-heading dark:text-heading">
         {value || '-'}
       </p>

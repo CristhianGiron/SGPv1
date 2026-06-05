@@ -52,19 +52,26 @@ class PracticeAccessServiceTest {
     }
 
     @Test
-    void practiceLifecycleCanBeManagedByAssignedPracticeTutorAndAdmin() {
+    void practiceCompletionAndArchiveHaveSeparateManagers() {
 
         Account practiceTutor = account(10L, RoleName.ROLE_TUTOR_PRACTICAS);
-        Account anotherTutor = account(11L, RoleName.ROLE_TUTOR_PRACTICAS);
+        Account director = account(11L, RoleName.ROLE_DIRECTOR_PRACTICAS);
         Account admin = account(12L, RoleName.ROLE_ADMIN);
         Account student = account(13L, RoleName.ROLE_ESTUDIANTE);
-        Course course = course(20L, career(1L, "Educacion"), practiceTutor);
+        Career education = career(1L, "Educacion");
+        director.setCareer(education);
+        Course course = course(20L, education, practiceTutor);
         Enrollment enrollment = enrollment(30L, student, course);
 
-        assertThat(service.canManagePracticeLifecycle(enrollment, practiceTutor)).isTrue();
-        assertThat(service.canManagePracticeLifecycle(enrollment, admin)).isTrue();
-        assertThat(service.canManagePracticeLifecycle(enrollment, anotherTutor)).isFalse();
-        assertThat(service.canManagePracticeLifecycle(enrollment, student)).isFalse();
+        assertThat(service.canConcludePractice(enrollment, director)).isTrue();
+        assertThat(service.canConcludePractice(enrollment, admin)).isFalse();
+        assertThat(service.canConcludePractice(enrollment, practiceTutor)).isFalse();
+        assertThat(service.canConcludePractice(enrollment, student)).isFalse();
+
+        assertThat(service.canArchivePractice(admin)).isTrue();
+        assertThat(service.canArchivePractice(director)).isFalse();
+        assertThat(service.canArchivePractice(practiceTutor)).isFalse();
+        assertThat(service.canArchivePractice(student)).isFalse();
     }
 
     private static Enrollment enrollment(Long id, Account student, Course course) {

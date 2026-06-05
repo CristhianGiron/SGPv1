@@ -68,6 +68,61 @@ class SecurityConfigTest {
         assertGetAllowed("/api/final-reports/1/pdf", "TUTOR_INSTITUCIONAL");
     }
 
+    @Test
+    void coordinationReportsAreReachableForAdminAndDirectorOnly() throws Exception {
+
+        assertGetAllowed("/api/reports/coordination", "ADMIN");
+        assertGetAllowed("/api/reports/coordination", "DIRECTOR_PRACTICAS");
+
+        mockMvc.perform(get("/api/reports/coordination")
+                        .with(user("student01").roles("ESTUDIANTE")))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void practiceCompletionEndpointsAreOnlyReachableForDirector() throws Exception {
+
+        mockMvc.perform(patch("/api/enrollments/1/complete")
+                        .with(user("director.practicas").roles("DIRECTOR_PRACTICAS"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(patch("/api/enrollments/1/complete")
+                        .with(user("admin").roles("ADMIN"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isForbidden());
+
+        mockMvc.perform(patch("/api/enrollments/1/reopen")
+                        .with(user("tutor.practicas").roles("TUTOR_PRACTICAS"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void archiveBatchEndpointIsOnlyReachableForAdmin() throws Exception {
+
+        mockMvc.perform(patch("/api/enrollments/archive-batch")
+                        .with(user("admin").roles("ADMIN"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(patch("/api/enrollments/archive-batch")
+                        .with(user("director.practicas").roles("DIRECTOR_PRACTICAS"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isForbidden());
+
+        mockMvc.perform(patch("/api/enrollments/archive-batch")
+                        .with(user("tutor.institucional").roles("TUTOR_INSTITUCIONAL"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isForbidden());
+    }
+
     private void assertPatchAllowedForDirector(String path) throws Exception {
         mockMvc.perform(patch(path)
                         .with(user("director.practicas").roles("DIRECTOR_PRACTICAS"))
@@ -148,6 +203,22 @@ class SecurityConfigTest {
 
         @GetMapping("/api/final-reports/{id}/pdf")
         void exportFinalReportPdf(@PathVariable Long id) {
+        }
+
+        @GetMapping("/api/reports/coordination")
+        void coordinationReport() {
+        }
+
+        @PatchMapping("/api/enrollments/archive-batch")
+        void archivePracticeBatch() {
+        }
+
+        @PatchMapping("/api/enrollments/{id}/complete")
+        void completePractice(@PathVariable Long id) {
+        }
+
+        @PatchMapping("/api/enrollments/{id}/reopen")
+        void reopenPractice(@PathVariable Long id) {
         }
     }
 }

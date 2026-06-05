@@ -82,17 +82,27 @@ public class PracticeAccessService {
                 || isDirectorForCourse(enrollment != null ? enrollment.getCourse() : null, account);
     }
 
-    public boolean canManagePracticeLifecycle(Enrollment enrollment, Account account) {
+    public boolean canConcludePractice(Enrollment enrollment, Account account) {
 
-        return isAdmin(account)
-                || isDirectorForCourse(enrollment != null ? enrollment.getCourse() : null, account)
-                || isPracticeTutorForEnrollment(enrollment, account);
+        return isDirectorForCourse(enrollment != null ? enrollment.getCourse() : null, account);
     }
 
-    public void requirePracticeLifecycleAccess(Enrollment enrollment, Account account) {
+    public boolean canArchivePractice(Account account) {
 
-        if (!canManagePracticeLifecycle(enrollment, account)) {
-            throw new AccessDeniedException("No tienes permisos para gestionar esta práctica");
+        return isAdmin(account);
+    }
+
+    public void requirePracticeCompletionAccess(Enrollment enrollment, Account account) {
+
+        if (!canConcludePractice(enrollment, account)) {
+            throw new AccessDeniedException("Solo el director de prácticas puede concluir o reabrir esta práctica");
+        }
+    }
+
+    public void requirePracticeArchiveAccess(Account account) {
+
+        if (!canArchivePractice(account)) {
+            throw new AccessDeniedException("Solo el admin puede archivar o desarchivar prácticas");
         }
     }
 

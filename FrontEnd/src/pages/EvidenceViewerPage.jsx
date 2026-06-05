@@ -77,9 +77,9 @@ export function EvidenceViewerPage() {
 
       <SectionCard>
         {!sourceUrl ? (
-          <p className="text-sm text-muted">No se recibio un enlace de evidencia.</p>
+          <p className="text-sm text-body">No se recibio un enlace de evidencia.</p>
         ) : loading ? (
-          <p className="text-sm text-muted">Cargando imagen...</p>
+          <p className="text-sm text-body">Cargando imagen...</p>
         ) : imageUrl ? (
           <div className="space-y-3">
             <div className="overflow-hidden rounded-lg border border-line bg-panel-soft dark:border-line dark:bg-surface-soft">
@@ -89,10 +89,10 @@ export function EvidenceViewerPage() {
                 src={imageUrl}
               />
             </div>
-            <p className="break-all text-xs text-muted">{sourceUrl}</p>
+            <p className="break-all text-xs text-body">{sourceUrl}</p>
           </div>
         ) : (
-          <p className="text-sm text-muted">No hay imagen disponible.</p>
+          <p className="text-sm text-body">No hay imagen disponible.</p>
         )}
       </SectionCard>
     </>

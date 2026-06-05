@@ -17,33 +17,77 @@ export function SectionCard({
   const canCollapse = collapsible ?? Boolean(title || description);
   const [collapsed, setCollapsed] = useState(defaultCollapsed);
 
+  if (collapsed) {
+    return (
+      <section
+        className={cx(
+          'sgp-section-card relative min-w-0 overflow-hidden rounded-lg border border-line bg-panel px-3 py-2 text-ink shadow-card dark:border-line-soft dark:bg-surface',
+          className,
+        )}
+      >
+        <span
+          aria-hidden="true"
+          className="absolute inset-y-0 left-0 w-0.5 bg-primary opacity-70"
+        />
+        <div className="flex min-h-9 items-center justify-between gap-3">
+          <div className="min-w-0">
+            {title && (
+              <h2 className="truncate text-base font-medium leading-none text-heading dark:text-heading">
+                {title}
+              </h2>
+            )}
+          </div>
+          <div className="flex flex-none items-center gap-2">
+            {action}
+            {canCollapse && (
+              <button
+                aria-expanded="false"
+                className="grid h-9 w-9 flex-none place-items-center rounded-lg border border-accent bg-transparent text-primary transition-colors hover:border-primary hover:bg-primary hover:text-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:bg-surface-soft dark:text-ink dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong"
+                onClick={() => setCollapsed(false)}
+                title="Expandir seccion"
+                type="button"
+              >
+                <ChevronDown
+                  aria-hidden="true"
+                  className="-rotate-90 transition-transform"
+                  size={18}
+                />
+              </button>
+            )}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section
       className={cx(
-        'relative min-w-0 overflow-hidden rounded-lg border border-primary/15 bg-panel p-4 text-ink shadow-card dark:border-line-soft dark:bg-surface',
+        'relative min-w-0 overflow-hidden rounded-lg border border-line bg-panel text-ink shadow-card dark:border-line-soft dark:bg-surface',
+        'sgp-section-card',
+        'p-3 sm:p-4',
         className,
       )}
     >
       <span
         aria-hidden="true"
-        className="absolute inset-y-0 left-0 w-1 bg-primary opacity-80"
+        className="absolute inset-y-0 left-0 w-0.5 bg-primary opacity-70"
       />
       {(title || description || action) && (
         <div
           className={cx(
-            'mb-4 flex flex-col gap-3 border-b border-line-soft pb-4 sm:flex-row sm:items-start sm:justify-between dark:border-line-soft',
-            collapsed && 'mb-0 border-b-transparent pb-0',
+            'mb-3 flex flex-col gap-3 border-b border-line-soft pb-3 sm:flex-row sm:items-start sm:justify-between dark:border-line-soft',
           )}
         >
           {(title || description) && (
             <div className="min-w-0">
               {title && (
-                <h2 className="text-base font-[850] leading-tight text-heading dark:text-heading">
+                <h2 className="text-base font-medium leading-tight text-heading dark:text-heading">
                   {title}
                 </h2>
               )}
               {description && (
-                <p className="mt-1 text-sm leading-6 text-muted dark:text-muted">
+                <p className="mt-1 text-sm leading-6 text-body dark:text-ink">
                   {description}
                 </p>
               )}
@@ -54,7 +98,7 @@ export function SectionCard({
             {canCollapse && (
               <button
                 aria-expanded={!collapsed}
-                className="grid min-h-9 min-w-9 place-items-center rounded-lg border border-accent bg-transparent text-primary transition-colors hover:border-primary hover:bg-primary hover:text-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:bg-surface-soft dark:text-ink dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong"
+                className="grid h-9 w-9 flex-none place-items-center rounded-lg border border-accent bg-transparent text-primary transition-colors hover:border-primary hover:bg-primary hover:text-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:bg-surface-soft dark:text-ink dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong"
                 onClick={() => setCollapsed((current) => !current)}
                 title={collapsed ? 'Expandir seccion' : 'Contraer seccion'}
                 type="button"
@@ -69,12 +113,7 @@ export function SectionCard({
           </div>
         </div>
       )}
-      <div
-        className={cx(
-          'min-w-0 overflow-hidden transition-[max-height,opacity] duration-200',
-          collapsed ? 'max-h-0 opacity-0' : 'max-h-[5600px] opacity-100',
-        )}
-      >
+      <div className="min-w-0 overflow-hidden transition-[max-height,opacity] duration-200">
         {children}
       </div>
     </section>

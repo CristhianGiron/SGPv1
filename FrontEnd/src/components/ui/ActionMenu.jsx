@@ -138,7 +138,7 @@ export function ActionMenu({ actions, label = 'Acciones' }) {
               <button
                 key={action.key ?? `${action.label}-${index}`}
                 type="button"
-                className="flex w-full items-center gap-3 bg-transparent px-4 py-3 text-left text-sm font-bold text-body transition-colors hover:bg-primary hover:text-inverse disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:bg-transparent disabled:hover:text-body dark:text-ink dark:hover:bg-hover-soft dark:hover:text-accent-strong dark:disabled:hover:text-ink"
+                className="flex w-full items-center gap-3 bg-transparent px-4 py-3 text-left text-sm font-medium text-body transition-colors hover:bg-primary hover:text-inverse disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:bg-transparent disabled:hover:text-body dark:text-ink dark:hover:bg-hover-soft dark:hover:text-accent-strong dark:disabled:hover:text-ink"
                 disabled={action.disabled}
                 onClick={() => handleAction(action)}
               >

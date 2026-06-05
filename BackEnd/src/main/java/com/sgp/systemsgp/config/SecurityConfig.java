@@ -129,15 +129,17 @@ public class SecurityConfig {
                                                 .requestMatchers(HttpMethod.PATCH, "/api/enrollments/*/group/*")
                                                 .hasAnyRole("ADMIN", "TUTOR_PRACTICAS")
                                                 .requestMatchers(HttpMethod.PATCH, "/api/enrollments/*/complete")
-                                                .hasAnyRole("ADMIN", "DIRECTOR_PRACTICAS", "TUTOR_PRACTICAS")
+                                                .hasRole("DIRECTOR_PRACTICAS")
                                                 .requestMatchers(HttpMethod.PATCH, "/api/enrollments/*/reopen")
-                                                .hasAnyRole("ADMIN", "DIRECTOR_PRACTICAS", "TUTOR_PRACTICAS")
+                                                .hasRole("DIRECTOR_PRACTICAS")
                                                 .requestMatchers(HttpMethod.PATCH, "/api/enrollments/*/archive")
-                                                .hasAnyRole("ADMIN", "DIRECTOR_PRACTICAS", "TUTOR_PRACTICAS")
+                                                .hasRole("ADMIN")
                                                 .requestMatchers(HttpMethod.PATCH, "/api/enrollments/*/unarchive")
-                                                .hasAnyRole("ADMIN", "DIRECTOR_PRACTICAS", "TUTOR_PRACTICAS")
+                                                .hasRole("ADMIN")
                                                 .requestMatchers(HttpMethod.PATCH, "/api/enrollments/archive-completed")
-                                                .hasAnyRole("ADMIN", "DIRECTOR_PRACTICAS", "TUTOR_PRACTICAS")
+                                                .hasRole("ADMIN")
+                                                .requestMatchers(HttpMethod.PATCH, "/api/enrollments/archive-batch")
+                                                .hasRole("ADMIN")
                                                 .requestMatchers("/api/enrollments/**")
                                                 .hasAnyRole("ADMIN", "DIRECTOR_PRACTICAS", "TUTOR_PRACTICAS",
                                                                 "TUTOR_INSTITUCIONAL")
@@ -386,6 +388,9 @@ public class SecurityConfig {
                                                 .hasAnyRole("ESTUDIANTE", "TUTOR_INSTITUCIONAL",
                                                                 "DIRECTORA_INSTITUCION", "TUTOR_PRACTICAS",
                                                                 "DIRECTOR_PRACTICAS", "ADMIN")
+
+                                                .requestMatchers(HttpMethod.GET, "/api/reports/**")
+                                                .hasAnyRole("ADMIN", "DIRECTOR_PRACTICAS")
 
                                                 .requestMatchers(HttpMethod.DELETE, "/api/institutions/*/force").hasRole("ADMIN")
                                                 .requestMatchers("/api/institutions", "/api/institutions/**")

@@ -23,12 +23,12 @@ const EMPTY_ANNOUNCEMENT = {
 };
 
 const roleOptionClass =
-  'flex min-h-10 items-center gap-2 rounded-lg border border-line bg-panel px-3 py-2 text-sm font-bold text-body dark:border-line dark:bg-surface dark:text-ink';
+  'flex min-h-10 items-center gap-2 rounded-lg border border-line bg-panel px-3 py-2 text-sm font-medium text-body dark:border-line dark:bg-surface dark:text-ink';
 
 const roleCheckboxClass = 'h-4 w-4 accent-accent dark:accent-accent';
 
 const refreshButtonClass =
-  'inline-flex min-h-9 items-center justify-center rounded-lg border border-accent bg-transparent px-3 py-2 text-sm font-extrabold text-primary transition-colors hover:border-primary-strong hover:bg-primary-strong hover:text-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:bg-surface-soft dark:text-ink dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong';
+  'inline-flex min-h-9 items-center justify-center rounded-lg border border-accent bg-transparent px-3 py-2 text-sm font-medium text-primary transition-colors hover:border-primary-strong hover:bg-primary-strong hover:text-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:bg-surface-soft dark:text-ink dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong';
 
 const skeletonClass =
   'min-h-[4.5rem] rounded-lg border border-line bg-panel-soft dark:border-line dark:bg-surface-soft';
@@ -197,7 +197,7 @@ export function NotificationsPage() {
             </Field>
 
             <div>
-              <p className="mb-1.5 text-[0.82rem] font-extrabold text-body dark:text-muted">Destinatarios</p>
+              <p className="mb-1.5 text-[0.82rem] font-semibold text-body dark:text-ink">Destinatarios</p>
               <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                 <label className={roleOptionClass}>
                   <input
@@ -240,8 +240,8 @@ export function NotificationsPage() {
       <div className="rounded-lg border border-line bg-panel p-4 shadow-card dark:border-line dark:bg-surface dark:shadow-soft">
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm font-[850] leading-tight text-heading dark:text-heading">Notificaciones recientes</p>
-            <p className="mt-0.5 text-xs font-bold leading-tight text-muted">Tienes {unreadCount} notificaciones sin leer.</p>
+            <p className="text-sm font-medium leading-tight text-heading dark:text-heading">Notificaciones recientes</p>
+            <p className="mt-0.5 text-xs font-medium leading-tight text-body">Tienes {unreadCount} notificaciones sin leer.</p>
           </div>
           <button
             type="button"
@@ -260,12 +260,12 @@ export function NotificationsPage() {
         ) : error ? (
           <div className="rounded-lg border border-danger bg-danger-soft p-3 text-sm leading-6 text-danger-strong dark:border-danger/40 dark:bg-danger-soft dark:text-danger-strong">{error}</div>
         ) : notifications.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-line bg-panel-soft p-4 text-center text-sm leading-6 text-muted dark:border-line dark:bg-surface-soft dark:text-muted">
+          <div className="rounded-lg border border-dashed border-line bg-panel-soft p-4 text-center text-sm leading-6 text-body dark:border-line dark:bg-surface-soft dark:text-ink">
             Todavía no tienes notificaciones.
           </div>
         ) : recentNotifications.length === 0 ? (
           <div className="grid gap-3">
-            <div className="rounded-lg border border-dashed border-line bg-panel-soft p-4 text-center text-sm leading-6 text-muted dark:border-line dark:bg-surface-soft dark:text-muted">
+            <div className="rounded-lg border border-dashed border-line bg-panel-soft p-4 text-center text-sm leading-6 text-body dark:border-line dark:bg-surface-soft dark:text-ink">
               No tienes notificaciones recientes.
             </div>
 
@@ -273,7 +273,7 @@ export function NotificationsPage() {
               <section className="mt-1 overflow-hidden rounded-lg border border-line bg-panel-soft dark:border-line dark:bg-surface-soft">
                 <button
                   type="button"
-                  className="flex min-h-12 w-full items-center justify-between gap-3 px-4 py-3 text-left text-sm font-[850] text-heading transition-colors hover:bg-hover-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:text-heading"
+                  className="flex min-h-12 w-full items-center justify-between gap-3 px-4 py-3 text-left text-sm font-medium text-heading transition-colors hover:bg-hover-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:text-heading"
                   aria-expanded={archivedOpen}
                   onClick={() => setArchivedOpen((current) => !current)}
                 >
@@ -282,7 +282,7 @@ export function NotificationsPage() {
                   </span>
                   <ChevronDown
                     aria-hidden="true"
-                    className={`flex-none text-muted transition-transform ${archivedOpen ? 'rotate-180' : ''}`}
+                    className={`flex-none text-body transition-transform ${archivedOpen ? 'rotate-180' : ''}`}
                     size={18}
                   />
                 </button>
@@ -331,7 +331,7 @@ export function NotificationsPage() {
               <section className="mt-1 overflow-hidden rounded-lg border border-line bg-panel-soft dark:border-line dark:bg-surface-soft">
                 <button
                   type="button"
-                  className="flex min-h-12 w-full items-center justify-between gap-3 px-4 py-3 text-left text-sm font-[850] text-heading transition-colors hover:bg-hover-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:text-heading"
+                  className="flex min-h-12 w-full items-center justify-between gap-3 px-4 py-3 text-left text-sm font-medium text-heading transition-colors hover:bg-hover-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:text-heading"
                   aria-expanded={archivedOpen}
                   onClick={() => setArchivedOpen((current) => !current)}
                 >
@@ -340,7 +340,7 @@ export function NotificationsPage() {
                   </span>
                   <ChevronDown
                     aria-hidden="true"
-                    className={`flex-none text-muted transition-transform ${archivedOpen ? 'rotate-180' : ''}`}
+                    className={`flex-none text-body transition-transform ${archivedOpen ? 'rotate-180' : ''}`}
                     size={18}
                   />
                 </button>

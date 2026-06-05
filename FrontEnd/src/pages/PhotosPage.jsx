@@ -259,7 +259,7 @@ export function PhotosPage() {
       {isStudent && activeView === 'upload' && (
         <SectionCard
           title="Agregar evidencia"
-          action={<span className="text-sm text-muted">{approvedEnrollments.length} paralelos activos</span>}
+          action={<span className="text-sm text-body">{approvedEnrollments.length} paralelos activos</span>}
         >
           {approvedEnrollments.length === 0 && (
             <Alert tone="info">Necesitas una inscripcion aprobada en un paralelo activo para subir evidencias.</Alert>
@@ -358,7 +358,7 @@ function isActiveApprovedEnrollment(enrollment) {
 
 function PhotoSection({ title, photos, token, emptyText, canDelete = false, onDelete, onDownload, onOpen }) {
   return (
-    <SectionCard title={title} action={<span className="text-sm text-muted">{photos.length}</span>}>
+    <SectionCard title={title} action={<span className="text-sm text-body">{photos.length}</span>}>
       {photos.length === 0 ? (
         <EmptyState text={emptyText} />
       ) : (
@@ -529,7 +529,7 @@ function GroupedPhotoSection({ photos, token, emptyText, onDownload, onOpen }) {
 
   if (photos.length === 0) {
     return (
-      <SectionCard title="Evidencias por estudiante" action={<span className="text-sm text-muted">0</span>}>
+      <SectionCard title="Evidencias por estudiante" action={<span className="text-sm text-body">0</span>}>
         <EmptyState text={emptyText} />
       </SectionCard>
     );
@@ -539,7 +539,7 @@ function GroupedPhotoSection({ photos, token, emptyText, onDownload, onOpen }) {
     <div className="space-y-5">
       {groups.map((group) => (
         <SectionCard
-          action={<span className="text-sm text-muted">{group.photos.length}</span>}
+          action={<span className="text-sm text-body">{group.photos.length}</span>}
           description={group.description}
           key={group.key}
           title={group.label}
@@ -613,22 +613,22 @@ function PhotoCard({ photo, token, canDelete = false, onDelete, onDownload, onOp
   }
 
   return (
-    <article className="overflow-hidden rounded-lg border border-line bg-panel dark:border-line dark:bg-surface">
+    <article className="sgp-color-card overflow-hidden rounded-lg border border-line bg-panel dark:border-line dark:bg-surface">
       <PhotoPreview photo={photo} token={token} onOpen={onOpen} />
       <div className="space-y-3 p-3">
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className="text-sm font-semibold text-heading dark:text-heading">{photo.courseName || photo.originalFilename}</p>
-            <p className="text-xs text-muted">{photo.studentFullName || photo.studentUsername || 'Estudiante'}</p>
-            <p className="text-xs text-muted">Evidencia de practica</p>
+            <p className="text-xs text-body">{photo.studentFullName || photo.studentUsername || 'Estudiante'}</p>
+            <p className="text-xs text-body">Evidencia de practica</p>
           </div>
           <StatusBadge status={photo.practiceDate ? 'COMPLETED' : 'DRAFT'} />
         </div>
         {photo.description && <p className="line-clamp-3 text-sm text-body dark:text-body">{photo.description}</p>}
         <div className="flex items-center justify-between gap-3">
           <ActionBar>
-            <span className="text-xs text-muted">{photo.practiceDate || 'Sin fecha'}</span>
-            <span className="text-xs text-muted">{formatBytes(photo.fileSize)}</span>
+            <span className="text-xs text-body">{photo.practiceDate || 'Sin fecha'}</span>
+            <span className="text-xs text-body">{formatBytes(photo.fileSize)}</span>
           </ActionBar>
           <ActionMenu actions={actions} label="Acciones de evidencia" />
         </div>
@@ -678,7 +678,7 @@ function PhotoPreview({ photo, token, onOpen }) {
 
   if (!source || failed) {
     return (
-      <div className="flex aspect-[4/3] items-center justify-center bg-panel-soft text-sm font-medium text-muted dark:bg-surface-soft">
+      <div className="flex aspect-[4/3] items-center justify-center bg-panel-soft text-sm font-medium text-body dark:bg-surface-soft">
         {failed ? 'Vista no disponible' : 'Cargando'}
       </div>
     );

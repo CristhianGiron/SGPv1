@@ -12,7 +12,7 @@ const bellButtonClass =
 const unreadIconClass = 'text-accent dark:text-accent-strong';
 
 const smallActionButtonClass =
-  'inline-flex min-h-8 items-center justify-center rounded-lg border border-accent bg-transparent px-2.5 py-1.5 text-xs font-extrabold text-primary transition-colors hover:border-primary-strong hover:bg-primary-strong hover:text-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:bg-surface-soft dark:text-ink dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong';
+  'inline-flex min-h-8 items-center justify-center rounded-lg border border-accent bg-transparent px-2.5 py-1.5 text-xs font-medium text-primary transition-colors hover:border-primary-strong hover:bg-primary-strong hover:text-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:bg-surface-soft dark:text-ink dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong';
 
 const closeButtonClass =
   'inline-grid min-h-8 w-8 place-items-center rounded-lg border border-accent bg-transparent text-primary transition-colors hover:border-primary-strong hover:bg-primary-strong hover:text-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:bg-surface-soft dark:text-ink dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong';
@@ -21,7 +21,7 @@ const dropdownPanelClass =
   'absolute right-0 top-[calc(100%+0.6rem)] z-50 w-[min(26rem,calc(100vw-1rem))] min-w-0 overflow-hidden rounded-lg border border-line bg-panel text-ink opacity-0 shadow-soft transition-[opacity,transform] duration-150 dark:border-line dark:bg-surface dark:shadow-soft';
 
 const panelMessageClass =
-  'rounded-lg border border-dashed border-line bg-panel-soft p-4 text-sm leading-6 text-muted dark:border-line dark:bg-surface-soft dark:text-muted';
+  'rounded-lg border border-dashed border-line bg-panel-soft p-4 text-sm leading-6 text-body dark:border-line dark:bg-surface-soft dark:text-ink';
 
 export function NotificationBell() {
   const {
@@ -111,7 +111,7 @@ export function NotificationBell() {
         )}
 
         {unreadCount > 0 && (
-          <span className="absolute -right-[0.28rem] -top-[0.28rem] inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1.5 text-[0.62rem] font-[850] leading-none text-inverse dark:bg-accent dark:text-page">
+          <span className="absolute -right-[0.28rem] -top-[0.28rem] inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1.5 text-[0.62rem] font-semibold leading-none text-inverse dark:bg-accent dark:text-page">
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
         )}
@@ -126,11 +126,11 @@ export function NotificationBell() {
       >
         <div className="flex min-w-0 items-center justify-between gap-3 border-b border-line p-3 dark:border-border">
           <div className="min-w-0">
-            <p className="text-sm font-[850] leading-tight text-heading dark:text-heading">
+            <p className="text-sm font-medium leading-tight text-heading dark:text-heading">
               Notificaciones
             </p>
 
-            <p className="mt-0.5 text-xs font-bold leading-tight text-muted">
+            <p className="mt-0.5 text-xs font-medium leading-tight text-body">
               {unreadCount} sin leer
             </p>
           </div>
@@ -181,7 +181,7 @@ export function NotificationBell() {
                 <section className="mt-1 overflow-hidden rounded-lg border border-line bg-panel-soft dark:border-line dark:bg-surface-soft">
                   <button
                     type="button"
-                    className="flex min-h-11 w-full items-center justify-between gap-3 px-3 py-2 text-left text-sm font-[850] text-heading transition-colors hover:bg-hover-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:text-heading"
+                    className="flex min-h-11 w-full items-center justify-between gap-3 px-3 py-2 text-left text-sm font-medium text-heading transition-colors hover:bg-hover-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:text-heading"
                     aria-expanded={archivedOpen}
                     onClick={() => setArchivedOpen((current) => !current)}
                   >
@@ -190,7 +190,7 @@ export function NotificationBell() {
                     </span>
                     <ChevronDown
                       aria-hidden="true"
-                      className={`flex-none text-muted transition-transform ${archivedOpen ? 'rotate-180' : ''}`}
+                      className={`flex-none text-body transition-transform ${archivedOpen ? 'rotate-180' : ''}`}
                       size={17}
                     />
                   </button>
@@ -223,7 +223,7 @@ export function NotificationBell() {
                 <section className="mt-1 overflow-hidden rounded-lg border border-line bg-panel-soft dark:border-line dark:bg-surface-soft">
                   <button
                     type="button"
-                    className="flex min-h-11 w-full items-center justify-between gap-3 px-3 py-2 text-left text-sm font-[850] text-heading transition-colors hover:bg-hover-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:text-heading"
+                    className="flex min-h-11 w-full items-center justify-between gap-3 px-3 py-2 text-left text-sm font-medium text-heading transition-colors hover:bg-hover-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:text-heading"
                     aria-expanded={archivedOpen}
                     onClick={() => setArchivedOpen((current) => !current)}
                   >
@@ -232,7 +232,7 @@ export function NotificationBell() {
                     </span>
                     <ChevronDown
                       aria-hidden="true"
-                      className={`flex-none text-muted transition-transform ${archivedOpen ? 'rotate-180' : ''}`}
+                      className={`flex-none text-body transition-transform ${archivedOpen ? 'rotate-180' : ''}`}
                       size={17}
                     />
                   </button>
@@ -260,7 +260,7 @@ export function NotificationBell() {
             setOpen(false);
             setHashRoute('notifications');
           }}
-          className="mx-3 mb-3 inline-flex min-h-9 w-[calc(100%-1.5rem)] items-center justify-center rounded-lg border border-primary bg-primary px-4 py-2 text-sm font-[850] text-inverse transition-colors hover:border-primary-strong hover:bg-primary-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-accent dark:bg-accent dark:hover:border-accent-strong dark:hover:bg-accent-strong"
+          className="mx-3 mb-3 inline-flex min-h-9 w-[calc(100%-1.5rem)] items-center justify-center rounded-lg border border-primary bg-primary px-4 py-2 text-sm font-medium text-inverse transition-colors hover:border-primary-strong hover:bg-primary-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-accent dark:bg-accent dark:hover:border-accent-strong dark:hover:bg-accent-strong"
         >
           Ver todas las notificaciones
         </button>

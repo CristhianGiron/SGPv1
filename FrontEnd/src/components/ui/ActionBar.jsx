@@ -1,13 +1,13 @@
 import { Loader2 } from 'lucide-react';
 
 const baseButton =
-  'inline-flex min-h-[2.55rem] items-center justify-center rounded-lg border px-4 py-2 text-sm font-extrabold leading-tight transition-[background-color,border-color,color,transform] hover:-translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 max-sm:w-full';
+  'inline-flex min-h-[2.45rem] items-center justify-center rounded-lg border px-3.5 py-2 text-sm font-medium leading-tight transition-[background-color,border-color,color,transform] hover:-translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 max-sm:w-full';
 
 const primaryButton =
-  'border-accent bg-transparent text-primary hover:border-primary hover:bg-primary hover:text-inverse dark:border-accent dark:text-accent-strong dark:hover:border-accent-strong dark:hover:bg-hover-soft dark:hover:text-inverse';
+  'border-primary bg-primary text-inverse shadow-card hover:border-primary-strong hover:bg-primary-strong dark:border-accent dark:bg-hover-soft dark:text-accent-strong dark:hover:border-accent-strong dark:hover:bg-accent-soft';
 
 const secondaryButton =
-  'border-accent bg-transparent text-primary hover:border-primary hover:bg-primary hover:text-inverse dark:border-line dark:bg-surface dark:text-ink dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong';
+  'border-accent bg-accent-soft text-accent-strong hover:border-accent-strong hover:bg-accent hover:text-inverse dark:border-line dark:bg-surface dark:text-ink dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong';
 
 const closeButton =
   'border-accent bg-transparent text-inverse hover:border-primary hover:bg-primary hover:text-inverse dark:border-line dark:bg-surface dark:text-ink dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong';

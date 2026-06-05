@@ -133,7 +133,7 @@ function cx(...classes) {
 }
 
 const reviewChoiceBaseClass =
-  "inline-flex min-h-[2.45rem] items-center gap-2 rounded-lg border border-field-border bg-panel px-3 py-2 text-sm font-[850] text-body transition-colors hover:bg-field-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:bg-surface dark:text-ink dark:hover:bg-hover-soft";
+  "inline-flex min-h-[2.45rem] items-center gap-2 rounded-lg border border-field-border bg-panel px-3 py-2 text-sm font-semibold text-body transition-colors hover:bg-field-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:bg-surface dark:text-ink dark:hover:bg-hover-soft";
 const reviewChoiceActiveClass =
   "border-accent bg-accent-soft text-primary-strong hover:bg-accent-soft dark:border-accent dark:bg-hover-soft dark:text-accent-strong dark:hover:bg-hover-soft";
 const reviewSectionClass =
@@ -145,11 +145,11 @@ const reviewFieldClass =
   "min-w-0 border-b border-line-soft pb-3 last:border-b-0 last:pb-0 dark:border-line";
 const reviewValueClass =
   "m-0 whitespace-pre-wrap break-words text-sm leading-6 text-body dark:text-heading";
-const reviewEmptyClass = "m-0 text-sm text-muted";
+const reviewEmptyClass = "m-0 text-sm text-body";
 const reviewArrayItemClass =
   "space-y-3 rounded-lg border border-line-soft bg-field-hover p-3 dark:border-line dark:bg-surface";
 const reviewArrayIndexClass =
-  "text-[0.82rem] font-[850] text-primary-strong dark:text-accent-strong";
+  "text-[0.82rem] font-semibold text-primary-strong dark:text-accent-strong";
 const feedbackIconBaseClass =
   "relative grid h-[2.1rem] w-[2.1rem] flex-none place-items-center rounded-full border border-line bg-panel text-primary-strong transition-colors hover:border-primary hover:bg-accent-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:bg-surface dark:text-accent-strong dark:hover:border-accent dark:hover:bg-hover-soft";
 const feedbackIconActiveClass =
@@ -1371,7 +1371,7 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
                   >
                     {action.body ? (
                       <div className="space-y-3">
-                        <h3 className="text-sm font-extrabold text-heading dark:text-heading">
+                        <h3 className="text-sm font-semibold text-heading dark:text-heading">
                           {action.label}
                         </h3>
                         {isFeedbackReviewBody(actionBodies[action.label]) ? (
@@ -1553,7 +1553,7 @@ function DocumentDraftStatus({ editable = false, readiness }) {
   return (
     <Alert tone={editable ? "info" : "warning"}>
       <div className="space-y-2">
-        <p className="font-extrabold">
+        <p className="font-semibold">
           Borrador parcial: {readiness.completed} de {readiness.total} apartados completos.
         </p>
         <p>
@@ -1565,7 +1565,7 @@ function DocumentDraftStatus({ editable = false, readiness }) {
           ))}
         </ul>
         {readiness.missing.length > visibleMissing.length && (
-          <p className="text-xs font-bold">
+          <p className="text-xs font-medium">
             Y {readiness.missing.length - visibleMissing.length} pendiente(s) mas.
           </p>
         )}
@@ -1763,7 +1763,7 @@ function EvidenceLinkPicker({
             <div className="mt-1 space-y-1">
               {directLink ? (
                 <a
-                  className="break-all text-xs font-extrabold text-primary hover:underline dark:text-accent-strong"
+                  className="break-all text-xs font-semibold text-primary hover:underline dark:text-accent-strong"
                   href={directLink}
                   rel="noreferrer"
                   target="_blank"
@@ -1771,7 +1771,7 @@ function EvidenceLinkPicker({
                   {directLink}
                 </a>
               ) : (
-                <p className="break-all text-xs text-muted">{value}</p>
+                <p className="break-all text-xs text-body">{value}</p>
               )}
             </div>
           )}
@@ -1803,9 +1803,9 @@ function EvidenceLinkPicker({
         title="Seleccionar evidencia"
       >
         {loading ? (
-          <p className="text-sm text-muted">Cargando evidencias...</p>
+          <p className="text-sm text-body">Cargando evidencias...</p>
         ) : photos.length === 0 ? (
-          <p className="text-sm text-muted">
+          <p className="text-sm text-body">
             No hay evidencias fotograficas disponibles para esta inscripcion.
           </p>
         ) : (
@@ -1827,10 +1827,10 @@ function EvidenceLinkPicker({
               >
                 <EvidencePhotoPreview photo={photo} token={token} />
                 <div className="space-y-1 p-3">
-                  <p className="text-sm font-extrabold text-heading dark:text-heading">
+                  <p className="text-sm font-semibold text-heading dark:text-heading">
                     {photo.description || photo.originalFilename || "Evidencia"}
                   </p>
-                  <p className="text-xs text-muted">
+                  <p className="text-xs text-body">
                     {[photo.practiceDate, photo.courseName]
                       .filter(Boolean)
                       .join(" | ") || "Sin detalles"}
@@ -1931,7 +1931,7 @@ function EvidencePhotoPreview({ photo, token }) {
 
   if (!source || failed) {
     return (
-      <div className="flex aspect-[4/3] items-center justify-center bg-panel-soft text-sm font-semibold text-muted dark:bg-surface-soft">
+      <div className="flex aspect-[4/3] items-center justify-center bg-panel-soft text-sm font-semibold text-body dark:bg-surface-soft">
         {failed ? "Vista no disponible" : "Cargando imagen"}
       </div>
     );
@@ -2014,7 +2014,7 @@ function ReviewFeedbackForm({
           )}
           role="status"
         >
-          <p className="font-extrabold">{decisionState.title}</p>
+          <p className="font-semibold">{decisionState.title}</p>
           <p className="mt-0.5">{decisionState.description}</p>
         </div>
       </div>
@@ -2087,7 +2087,7 @@ function ReviewSection({
   return (
     <article className={reviewSectionClass}>
       <div className={reviewSectionHeaderClass}>
-        <h3 className="text-sm font-[850] leading-tight text-heading dark:text-heading">
+        <h3 className="text-sm font-semibold leading-tight text-heading dark:text-heading">
           {section.title}
         </h3>
       </div>
@@ -2231,7 +2231,7 @@ function ListFilters({
           </SecondaryButton>
         </div>
       </div>
-      <p className="mt-3 text-xs font-bold text-muted">
+      <p className="mt-3 text-xs font-medium text-body">
         {visibleCount} de {totalCount} registros
       </p>
       <Modal
@@ -2544,7 +2544,7 @@ function ReviewValue({ field = "", label, value }) {
 
   return (
     <div className={`${reviewFieldClass} ${wide ? "md:col-span-2" : ""}`}>
-      <span className="text-[0.78rem] font-extrabold uppercase text-body dark:text-muted">
+      <span className="text-[0.78rem] font-semibold uppercase text-body dark:text-ink">
         {label}
       </span>
       <p className={reviewValueClass}>{formatValue(value, field)}</p>
@@ -2572,7 +2572,7 @@ function ReviewArray({ config, items }) {
   if (config.key === "scheduleWeeks") {
     return (
       <div className="grid gap-2">
-        <span className="text-[0.78rem] font-extrabold uppercase text-body dark:text-muted">
+        <span className="text-[0.78rem] font-semibold uppercase text-body dark:text-ink">
           {config.label}
         </span>
         <ActivityPlanScheduleMatrix weeks={items} />
@@ -2582,7 +2582,7 @@ function ReviewArray({ config, items }) {
 
   return (
     <div className="grid gap-2">
-      <span className="text-[0.78rem] font-extrabold uppercase text-body dark:text-muted">
+      <span className="text-[0.78rem] font-semibold uppercase text-body dark:text-ink">
         {config.label}
       </span>
       <div className="space-y-3">
@@ -2664,11 +2664,11 @@ function FeedbackComposer({ label, value, onChange, onSubmit, sentAt }) {
         </button>
         <div className="min-w-0 flex-1 rounded-lg border border-danger bg-danger-soft p-3 dark:border-line dark:bg-surface">
           <div className="mb-1 flex flex-wrap items-center gap-x-3 gap-y-1">
-            <span className="text-[0.78rem] font-extrabold uppercase text-body dark:text-muted">
+            <span className="text-[0.78rem] font-semibold uppercase text-body dark:text-ink">
               {label}
             </span>
             {hasValue && sentAt && (
-              <span className="text-xs leading-5 text-danger-strong dark:text-muted">
+              <span className="text-xs leading-5 text-danger-strong dark:text-ink">
                 Enviado: {formatValue(sentAt, "reviewedAt")}
               </span>
             )}
@@ -2710,7 +2710,7 @@ function EntryFeedbackList({ entries, value, onChange, onSendFeedback }) {
 
   return (
     <div className="grid gap-2">
-      <span className="text-[0.78rem] font-extrabold uppercase text-body dark:text-muted">
+      <span className="text-[0.78rem] font-semibold uppercase text-body dark:text-ink">
         Actividades registradas
       </span>
       <div className="space-y-3">

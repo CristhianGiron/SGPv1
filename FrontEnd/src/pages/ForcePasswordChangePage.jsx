@@ -59,9 +59,9 @@ export function ForcePasswordChangePage() {
               <ShieldCheck size={26} />
             </div>
 
-            <p className="mt-4 inline-flex items-center rounded-full border border-accent/30 bg-accent-soft px-3 py-2 text-xs font-black leading-none text-accent-strong dark:border-accent/40 dark:bg-accent-soft dark:text-accent-strong">Actualización requerida</p>
-            <h1 className="mt-4 text-2xl font-black text-heading dark:text-heading">Cambia tu contraseña</h1>
-            <p className="mt-2 text-sm leading-6 text-muted">
+            <p className="mt-4 inline-flex items-center rounded-full border border-accent/30 bg-accent-soft px-3 py-2 text-xs font-semibold leading-none text-accent-strong dark:border-accent/40 dark:bg-accent-soft dark:text-accent-strong">Actualización requerida</p>
+            <h1 className="mt-4 text-2xl font-semibold text-heading dark:text-heading">Cambia tu contraseña</h1>
+            <p className="mt-2 text-sm leading-6 text-body">
               {joinText(profile?.names, profile?.lastNames) || profile?.username}, antes de continuar debes
               reemplazar la contraseña asignada inicialmente.
             </p>
