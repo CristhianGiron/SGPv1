@@ -654,7 +654,7 @@ export function AppLayout({ route, routeChild, children }) {
         <aside className="hidden lg:block print:hidden">
           <section
             className={cx(
-              "fixed left-[max(0.75rem,calc((100vw-96rem)/2+0.75rem))] top-14 z-20 flex h-[calc(100vh-4.25rem)] w-[var(--sidebar-layout-width)] flex-col overflow-hidden rounded-lg border border-line bg-panel-soft shadow-card transition-[width,padding] duration-200 dark:border-line dark:bg-surface",
+              "sgp-sidebar-shell fixed left-[max(0.75rem,calc((100vw-96rem)/2+0.75rem))] top-14 z-20 flex h-[calc(100vh-4.25rem)] w-[var(--sidebar-layout-width)] flex-col overflow-hidden rounded-lg border transition-[width,padding] duration-200",
                 sidebarCollapsed ? "py-3 pl-2 pr-0" : "p-2.5",
             )}
           >
@@ -828,7 +828,7 @@ export function AppLayout({ route, routeChild, children }) {
       >
         <div
           className={cx(
-            "grid h-full min-h-full w-[min(100%,420px)] grid-rows-[auto_auto_auto_1fr] bg-page shadow-soft transition-transform duration-200",
+            "sgp-sidebar-shell grid h-full min-h-full w-[min(100%,420px)] grid-rows-[auto_auto_auto_1fr] shadow-soft transition-transform duration-200",
             mobileMenuOpen ? "translate-x-0" : "-translate-x-full",
           )}
           role="dialog"

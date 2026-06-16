@@ -40,6 +40,24 @@ body {
   isolation: isolate;
 }
 
+.sgp-sidebar-shell {
+  background:
+    color-mix(in srgb, var(--color-primary) 18%, var(--color-panel-soft));
+  border-color: color-mix(in srgb, var(--color-primary) 42%, var(--color-line));
+  box-shadow:
+    inset -1px 0 0 color-mix(in srgb, var(--color-primary) 24%, transparent),
+    var(--shadow-card);
+}
+
+html.dark .sgp-sidebar-shell {
+  background:
+    color-mix(in srgb, var(--color-primary) 24%, var(--color-surface-soft));
+  border-color: color-mix(in srgb, var(--color-primary) 48%, var(--color-line));
+  box-shadow:
+    inset -1px 0 0 color-mix(in srgb, var(--color-inverse) 10%, transparent),
+    var(--shadow-card);
+}
+
 .sgp-page-canvas::before {
   content: "";
   position: fixed;
