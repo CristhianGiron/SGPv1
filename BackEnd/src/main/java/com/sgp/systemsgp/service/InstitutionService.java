@@ -186,9 +186,6 @@ public class InstitutionService {
 
                                 .institutionalValues(request.getInstitutionalValues())
 
-                                .educationLevels(
-                                                request.getEducationLevels())
-
                                 .agreementActive(
                                                 Boolean.TRUE.equals(
                                                                 request.getAgreementActive()))
@@ -204,6 +201,10 @@ public class InstitutionService {
                                 .deleted(false)
 
                                 .build();
+
+                if (request.getEducationLevels() != null) {
+                        institution.setEducationLevels(request.getEducationLevels());
+                }
 
                 institutionRepository.save(institution);
 

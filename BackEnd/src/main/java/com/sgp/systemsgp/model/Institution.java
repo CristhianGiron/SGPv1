@@ -9,6 +9,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "institutions")
@@ -132,14 +133,29 @@ public class Institution {
     /*
      * NIVELES EDUCATIVOS
      */
-    @ElementCollection(targetClass = EducationLevel.class)
+    @OneToMany(mappedBy = "institution", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<InstitutionEducationLevel> educationLevelEntries;
 
-    @CollectionTable(name = "institution_education_levels", joinColumns = @JoinColumn(name = "institution_id"))
+    public Set<EducationLevel> getEducationLevels() {
+        if (this.educationLevelEntries == null) {
+            return null;
+        }
+        return this.educationLevelEntries.stream().map(InstitutionEducationLevel::getEducationLevel)
+                .collect(Collectors.toSet());
+    }
 
-    @Column(name = "education_level")
-
-    @Enumerated(EnumType.STRING)
-    private Set<EducationLevel> educationLevels;
+    public void setEducationLevels(Set<EducationLevel> educationLevels) {
+        if (educationLevels == null) {
+            if (this.educationLevelEntries != null) {
+                this.educationLevelEntries.clear();
+            }
+            return;
+        }
+        Set<InstitutionEducationLevel> entries = educationLevels.stream()
+                .map(level -> InstitutionEducationLevel.builder().educationLevel(level).institution(this).build())
+                .collect(Collectors.toSet());
+        this.educationLevelEntries = entries;
+    }
 
     /*
      * FACULTADES
