@@ -12,6 +12,8 @@
 
 # Referencia de funciones y hooks
 
+Los imports de los ejemplos se muestran desde un archivo ubicado en `FrontEnd/src/`; ajuste la profundidad relativa al usarlos dentro de una funcionalidad. Consulte la [estructura vigente](../estructura-proyecto.md).
+
 Esta referencia reúne ejemplos del cliente API, autenticación, rutas y controles. Para contexto de práctica, recuperación de borradores, agenda y manejo de diálogos, consulte [componentes de experiencia](componentes-experiencia.md). Las firmas y exportaciones del código son la referencia al modificar una función.
 
 
@@ -19,10 +21,10 @@ Esta referencia reúne ejemplos del cliente API, autenticación, rutas y control
 
 ### useAuth() - Acceso a Autenticación Global
 
-**Ubicación:** `auth/AuthContext.jsx`
+**Ubicación:** `features/auth/context/AuthContext.jsx`
 
 ```javascript
-import { useAuth } from '../auth/AuthContext';
+import { useAuth } from './features/auth/context/AuthContext';
 
 function MyComponent() {
   const {
@@ -76,7 +78,7 @@ logout();  // Limpia tokens y perfil
 **Ubicación:** `utils/routes.js`
 
 ```javascript
-import { useHashRoute } from '../utils/routes';
+import { useHashRoute } from './utils/routes';
 
 function MyComponent() {
   const route = useHashRoute();  // String: 'dashboard', 'courses', etc
@@ -105,10 +107,10 @@ if (route === 'courses') {
 
 ### apiRequest() - Llamadas HTTP
 
-**Ubicación:** `api/client.jsx`
+**Ubicación:** `api/client.js`
 
 ```javascript
-import { apiRequest } from '../api/client';
+import { apiRequest } from './api/client';
 
 // Sintaxis
 const data = await apiRequest(path, options);
@@ -177,10 +179,10 @@ try {
 
 ### toQuery() - Construir Query String
 
-**Ubicación:** `api/client.jsx`
+**Ubicación:** `api/client.js`
 
 ```javascript
-import { toQuery } from '../api/client';
+import { toQuery } from './api/client';
 
 // Convierte objeto a query string
 const query = toQuery({ page: 0, size: 20, search: 'test' });
@@ -199,10 +201,10 @@ toQuery({ page: 0, search: '', city: 'Guayaquil' });
 
 ### apiBlob() - Descargar Archivos
 
-**Ubicación:** `api/client.jsx`
+**Ubicación:** `api/client.js`
 
 ```javascript
-import { apiBlob } from '../api/client';
+import { apiBlob } from './api/client';
 
 // Descargar y abrir/guardar archivo
 const blob = await apiBlob('/api/photos/123/file', token);
@@ -217,10 +219,10 @@ link.click();
 
 ### unwrapPage() - Parsear Respuestas Paginadas
 
-**Ubicación:** `api/client.jsx`
+**Ubicación:** `api/client.js`
 
 ```javascript
-import { unwrapPage } from '../api/client';
+import { unwrapPage } from './api/client';
 
 // El backend puede retornar:
 // 1. Array directo: [item1, item2, ...]
@@ -242,7 +244,7 @@ unwrapPage(payload2);  // → [{ id: 1 }]
 ### joinText() - Unir Múltiples Strings
 
 ```javascript
-import { joinText } from '../utils/format';
+import { joinText } from './utils/format';
 
 joinText('Juan', 'Pérez', null);  // → 'Juan Pérez'
 joinText('Ana', '', 'María');      // → 'Ana María'
@@ -254,7 +256,7 @@ joinText(null, null);              // → ''
 ### formatRole() - Convertir Rol a Texto
 
 ```javascript
-import { formatRole } from '../utils/format';
+import { formatRole } from './utils/format';
 
 formatRole('ROLE_ADMIN');           // → 'Admin'
 formatRole('ROLE_ESTUDIANTE');      // → 'Estudiante'
@@ -266,7 +268,7 @@ formatRole('ROLE_TUTOR_PRACTICAS'); // → 'Tutor Practicas'
 ### formatDate() - Fecha Localizada
 
 ```javascript
-import { formatDate } from '../utils/format';
+import { formatDate } from './utils/format';
 
 formatDate('2024-05-15T10:30:00');  // → '15 may 2024'
 formatDate('2024-12-25');           // → '25 dic 2024'
@@ -278,7 +280,7 @@ formatDate(null);                   // → '-'
 ### formatDateTime() - Fecha y Hora
 
 ```javascript
-import { formatDateTime } from '../utils/format';
+import { formatDateTime } from './utils/format';
 
 formatDateTime('2024-05-15T14:30:00');  // → '15 may 2024 14:30'
 formatDateTime('2024-12-25T09:00:00');  // → '25 dic 2024 09:00'
@@ -289,7 +291,7 @@ formatDateTime('2024-12-25T09:00:00');  // → '25 dic 2024 09:00'
 ### formatBytes() - Tamaño de Archivo
 
 ```javascript
-import { formatBytes } from '../utils/format';
+import { formatBytes } from './utils/format';
 
 formatBytes(512);           // → '512 B'
 formatBytes(1024);          // → '1.0 KB'
@@ -302,7 +304,7 @@ formatBytes(1073741824);    // → '1.0 GB'
 ### formatEnum() - Convertir ENUM a Texto
 
 ```javascript
-import { formatEnum } from '../utils/format';
+import { formatEnum } from './utils/format';
 
 formatEnum('ESTADO_ACTIVO');        // → 'Estado Activo'
 formatEnum('TIPO_ESTUDIANTE');      // → 'Tipo Estudiante'
@@ -314,7 +316,7 @@ formatEnum(null);                   // → '-'
 ### labelFromKey() - Clave a Etiqueta
 
 ```javascript
-import { labelFromKey } from '../utils/format';
+import { labelFromKey } from './utils/format';
 
 labelFromKey('firstName');      // → 'First Name'
 labelFromKey('email_address');  // → 'Email Address'
@@ -326,7 +328,7 @@ labelFromKey('ID');             // → 'I D'
 ### formatValue() - Formateo Genérico
 
 ```javascript
-import { formatValue } from '../utils/format';
+import { formatValue } from './utils/format';
 
 formatValue('2024-05-15', 'createdAt');  // → '15 may 2024'
 formatValue('ACTIVO', 'status');        // → 'Activo'
@@ -339,7 +341,7 @@ formatValue(null);                      // → '-'
 ### firstValue() - Obtener Primer Valor No Vacío
 
 ```javascript
-import { firstValue } from '../utils/format';
+import { firstValue } from './utils/format';
 
 const obj = { firstName: '', fullName: 'Juan Pérez', displayName: 'JP' };
 
@@ -359,7 +361,7 @@ firstValue(obj, ['unknown']);
 ### getHashRoute() - Leer Ruta Actual
 
 ```javascript
-import { getHashRoute } from '../utils/routes';
+import { getHashRoute } from './utils/routes';
 
 // Sin hook (síncrono)
 const route = getHashRoute();  // 'dashboard', 'courses', etc
@@ -370,7 +372,7 @@ const route = getHashRoute();  // 'dashboard', 'courses', etc
 ### setHashRoute() - Cambiar Ruta
 
 ```javascript
-import { setHashRoute } from '../utils/routes';
+import { setHashRoute } from './utils/routes';
 
 // Cambiar a otra página
 setHashRoute('courses');       // URL → /#/courses
@@ -386,12 +388,12 @@ setHashRoute('dashboard');     // URL → /#/dashboard
 
 ## Funciones de Storage
 
-**Ubicación:** `auth/storage.jsx`
+**Ubicación:** `features/auth/authStorage.js`
 
 ### getStoredAuth() - Obtener Tokens Guardados
 
 ```javascript
-import { getStoredAuth } from '../auth/storage';
+import { getStoredAuth } from './features/auth/authStorage';
 
 // Obtener tokens guardados en localStorage
 const auth = getStoredAuth();
@@ -404,7 +406,7 @@ const auth = getStoredAuth();
 ### storeAuth() - Guardar Tokens
 
 ```javascript
-import { storeAuth } from '../auth/storage';
+import { storeAuth } from './features/auth/authStorage';
 
 // Guardar tokens después de login
 storeAuth({
@@ -419,7 +421,7 @@ storeAuth({
 ### clearStoredAuth() - Limpiar Tokens
 
 ```javascript
-import { clearStoredAuth } from '../auth/storage';
+import { clearStoredAuth } from './features/auth/authStorage';
 
 // Eliminar tokens al hacer logout
 clearStoredAuth();
@@ -434,7 +436,7 @@ clearStoredAuth();
 ### canAccess() - Verificar Acceso
 
 ```javascript
-import { canAccess, NAV_ITEMS } from '../config/navigation';
+import { canAccess, NAV_ITEMS } from './config/navigation';
 
 const item = NAV_ITEMS.find(i => i.id === 'admin-panel');
 const roles = ['ROLE_ESTUDIANTE'];
@@ -524,8 +526,8 @@ const visibleItems = NAV_ITEMS.filter(item =>
 
 ```javascript
 import { useEffect, useState } from 'react';
-import { useAuth } from '../auth/AuthContext';
-import { apiRequest } from '../api/client';
+import { useAuth } from './features/auth/context/AuthContext';
+import { apiRequest } from './api/client';
 
 function MyComponent() {
   const { token } = useAuth();
@@ -572,11 +574,11 @@ function MyComponent() {
 
 ```javascript
 import { useState } from 'react';
-import { useAuth } from '../auth/AuthContext';
-import { apiRequest } from '../api/client';
-import { PrimaryButton } from '../components/ui/ActionBar';
-import { Input, Field } from '../components/ui/FormControls';
-import { Alert } from '../components/ui/Alert';
+import { useAuth } from './features/auth/context/AuthContext';
+import { apiRequest } from './api/client';
+import { PrimaryButton } from './components/ui/ActionBar';
+import { Input, Field } from './components/ui/FormControls';
+import { Alert } from './components/ui/Alert';
 
 function MyForm() {
   const { token } = useAuth();
@@ -643,7 +645,7 @@ function MyForm() {
 ### Pattern 3: Condicional por Rol
 
 ```javascript
-import { useAuth } from '../auth/AuthContext';
+import { useAuth } from './features/auth/context/AuthContext';
 
 function MyComponent() {
   const { hasRole, roles } = useAuth();

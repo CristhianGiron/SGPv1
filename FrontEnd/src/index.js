@@ -13,7 +13,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
+import App from './app/App';
 import './styles/academic.css';
 import { initializeThemeMode } from './hooks/useThemeMode';
 

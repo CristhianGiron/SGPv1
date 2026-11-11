@@ -13,13 +13,13 @@
 // Local production assets and synthetic API; no operational database or credentials.
 const fs=require('fs'),path=require('path'),assert=require('node:assert/strict');
 const project=path.resolve(__dirname,'../../..');
-const puppeteer=require(path.join(project,'FrontEnd/node_modules/puppeteer-core'));
-const root=process.env.SGP_QA_BUILD_PATH||'/tmp/sgp-continuity-build';
+const puppeteer=require('./runtime.cjs').puppeteer;
+const root=require('./runtime.cjs').buildPath;
 const output=process.env.SGP_QA_OUTPUT||'/tmp/sgp-continuity-browser.json';
 const origin='http://sgp-continuity.test';
 const token=signature=>'header.'+Buffer.from(JSON.stringify({sid:'qa-session'})).toString('base64url')+'.'+signature;
 (async()=>{
- const browser=await puppeteer.launch({executablePath:'/usr/bin/google-chrome',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
+ const browser=await puppeteer.launch({executablePath: require('./runtime.cjs').chromePath,headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
  const checks=[],errors=[];
  try{
   for(const width of [390,1440]){

@@ -47,17 +47,17 @@ npm run build
 
 | Área | Responsabilidad |
 | --- | --- |
-| `src/App.js` | Composición principal, sesión y selección de página |
-| `src/auth/` | Contexto de autenticación y persistencia de credenciales |
+| `src/app/App.jsx` | Composición principal, sesión y selección de página |
+| `src/features/auth/` | Contexto de autenticación y persistencia de credenciales |
 | `src/api/` | Cliente HTTP usado por las páginas y componentes |
 | `src/config/` | Navegación, páginas, módulos de endpoints y recursos |
-| `src/pages/` | Vistas y flujos de cada módulo |
-| `src/components/` | Componentes de dominio y CRUD reutilizable |
+| `src/features/<funcionalidad>/pages/` | Vistas y flujos de cada módulo |
+| `src/components/` | Primitivas, formularios y accesibilidad compartidos |
 | `src/components/ui/` | Controles visuales compartidos |
-| `src/layout/` | Estructura visual común |
+| `src/app/layout/` | Estructura visual común |
 | `src/utils/` | Rutas, formato e indicadores de dominio |
-| `src/contexts/` | Contexto de práctica e institución |
-| `src/hooks/` | Borradores, notificaciones, temas y manejo de diálogos |
+| `src/contexts/` | Contexto institucional transversal; el contexto de práctica pertenece a `features/practices/context/` |
+| `src/hooks/` | Borradores, temas y manejo de diálogos; notificaciones mantiene su hook en su funcionalidad |
 
 Para los nombres y firmas de hooks, funciones y componentes, consulte la
 [referencia de funciones](referencia-funciones.md).
@@ -87,7 +87,7 @@ encajan en ese patrón.
 
 ## Añadir o modificar una página
 
-1. Implementar la vista en `src/pages/`.
+1. Implementar la vista en `src/features/<funcionalidad>/pages/`.
 2. Registrar la ruta y el componente en la configuración central de páginas.
 3. Configurar su entrada de menú y roles en `src/config/navigation.js`.
 4. Si corresponde, definir el recurso en `src/config/resources.js` o el módulo

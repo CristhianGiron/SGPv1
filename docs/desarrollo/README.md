@@ -33,3 +33,5 @@ La sección de producción de la guía de entornos identifica limitaciones pendi
 - [Mantenimiento documental](../mantenimiento-documentacion.md).
 
 [Volver al índice documental](../README.md).
+
+- [Estructura y convenciones del proyecto](estructura-proyecto.md).

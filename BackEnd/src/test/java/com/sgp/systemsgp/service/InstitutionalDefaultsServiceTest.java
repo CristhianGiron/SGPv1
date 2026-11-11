@@ -11,6 +11,13 @@
  */
 
 package com.sgp.systemsgp.service;
+import com.sgp.systemsgp.model.Career;
+import com.sgp.systemsgp.model.Faculty;
+import com.sgp.systemsgp.model.Institution;
+import com.sgp.systemsgp.repository.AccountRepository;
+import com.sgp.systemsgp.repository.CareerRepository;
+import com.sgp.systemsgp.repository.FacultyRepository;
+import com.sgp.systemsgp.repository.InstitutionRepository;
 
 import com.sgp.systemsgp.config.InstitutionalDefaultsProperties;
 import com.sgp.systemsgp.enums.InstitutionType;

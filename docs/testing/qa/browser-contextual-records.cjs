@@ -12,8 +12,8 @@
 
 // Context-aware forms and record tables; all API requests use isolated fixtures.
 const fs=require('fs'),path=require('path'),http=require('http');
-const project=path.resolve(__dirname,'../../..'),root=path.join(project,'FrontEnd/build');
-const puppeteer=require(path.join(project,'FrontEnd/node_modules/puppeteer-core'));
+const project=path.resolve(__dirname,'../../..'),root=require('./runtime.cjs').buildPath;
+const puppeteer=require('./runtime.cjs').puppeteer;
 const output=path.join(project,'docs/testing/evidencias/contexto-y-tablas');fs.mkdirSync(output,{recursive:true});
 const practices=[
  {id:7,courseId:10,courseName:'Práctica de informática A',studentFullName:'Ana Muñoz',status:'APPROVED',courseActive:true,educationalInstitutionName:'Colegio de prácticas',institutionalTutor:'Tutora asignada',institutionDirector:'Directora asignada'},
@@ -22,7 +22,7 @@ const practices=[
 (async()=>{
  const server=http.createServer((req,res)=>{const file=path.resolve(root,'.'+(req.url.split('?')[0]==='/'?'/index.html':req.url.split('?')[0]));if(!file.startsWith(root+'/')||!fs.existsSync(file)){res.writeHead(404);return res.end();}res.setHeader('Content-Type',({'.js':'application/javascript','.css':'text/css','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.json':'application/json'})[path.extname(file)]||'text/html');fs.createReadStream(file).pipe(res);});
  await new Promise(r=>server.listen(0,'127.0.0.1',r));const origin='http://127.0.0.1:'+server.address().port;
- const browser=await puppeteer.launch({executablePath:'/usr/bin/google-chrome',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});const checks=[],errors=[];
+ const browser=await puppeteer.launch({executablePath: require('./runtime.cjs').chromePath,headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});const checks=[],errors=[];
  try{for(const width of [390,1440])for(const role of ['ROLE_ESTUDIANTE','ROLE_TUTOR_PRACTICAS','ROLE_TUTOR_INSTITUCIONAL','ROLE_ADMIN']){
   const page=await browser.newPage();await page.setViewport({width,height:1000});page.on('pageerror',e=>errors.push({width,role,message:e.message}));let multiple=false,visits=0;const writes=[];
   await page.evaluateOnNewDocument(()=>{localStorage.clear();localStorage.setItem('sgp-auth',JSON.stringify({accessToken:'fixture'}));localStorage.setItem('sgp-theme-mode','light');});

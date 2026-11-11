@@ -11,6 +11,8 @@
  */
 
 package com.sgp.systemsgp.service;
+import com.sgp.systemsgp.service.documentversion.PracticeDocumentVersionService;
+import com.sgp.systemsgp.service.pdf.PdfExportService;
 
 import com.sgp.systemsgp.dto.completedactivity.CompletedActivityRecordEntryFeedbackRequest;
 import com.sgp.systemsgp.dto.completedactivity.CompletedActivityRecordEntryRequest;
@@ -73,6 +75,7 @@ public class CompletedActivityRecordService {
     private static final Pattern PRIVATE_PHOTO_CONTENT_PATTERN =
             Pattern.compile("/api/practice-photos/(\\d+)/content");
 
+    private final PracticeDocumentVersionService documentVersions;
     private final CompletedActivityRecordRepository completedActivityRecordRepository;
     private final EnrollmentRepository enrollmentRepository;
     private final AccountRepository accountRepository;
@@ -227,7 +230,10 @@ public class CompletedActivityRecordService {
 
     @Transactional
     public byte[] exportApprovedPdf(Long id, String username) {
-        return renderPdf(id, username, true);
+        var document=getById(id,username);
+        validateApprovedForExport(document.getStatus());
+        byte[] retained=documentVersions.retainedPdf(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L6,id);
+        return retained==null?renderPdf(id,username,true):retained;
     }
 
     @Transactional
@@ -276,6 +282,7 @@ public class CompletedActivityRecordService {
 
         validateStudentOwnsRecord(student, record);
         validateEditable(record);
+        documentVersions.baseline(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L6,record.getId(),record.getEnrollment(),username,mapToResponse(record),null);
 
         if (request.getEducationalInstitutionId() != null) {
             Institution institution = resolveEducationalInstitution(
@@ -306,6 +313,7 @@ public class CompletedActivityRecordService {
 
         validateStudentOwnsRecord(student, record);
         validateEditable(record);
+        documentVersions.baseline(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L6,record.getId(),record.getEnrollment(),username,mapToResponse(record),null);
 
         if (record.getStatus() != CompletedActivityRecordStatus.SUBMITTED) {
             startNewReviewCycle(record);
@@ -317,6 +325,7 @@ public class CompletedActivityRecordService {
         record.setSubmittedAt(LocalDateTime.now());
 
         completedActivityRecordRepository.save(record);
+        documentVersions.record(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L6,record.getId(),record.getEnrollment(),username,"SUBMITTED",mapToResponse(record),"APPROVED".equals(record.getStatus().name()) ? () -> renderPdf(record.getId(),username,true) : null);
         notificationService.notifyCompletedActivityRecordSubmitted(record);
 
         return mapToResponse(record);
@@ -333,6 +342,7 @@ public class CompletedActivityRecordService {
 
         validateCanReview(record, tutor);
         PracticeAccessService.requireOperationalEnrollment(record.getEnrollment());
+        documentVersions.baseline(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L6,record.getId(),record.getEnrollment(),username,mapToResponse(record),"APPROVED".equals(record.getStatus().name()) ? () -> renderPdf(record.getId(),username,true) : null);
 
         ReviewWorkflowStateMachine.ensureReviewable(
                 record.getStatus(),
@@ -349,6 +359,7 @@ public class CompletedActivityRecordService {
         }
 
         completedActivityRecordRepository.save(record);
+        documentVersions.record(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L6,record.getId(),record.getEnrollment(),username,"REVIEWED",mapToResponse(record),"APPROVED".equals(record.getStatus().name()) ? () -> renderPdf(record.getId(),username,true) : null);
 
         if (request.getApproved() != null) {
             notificationService.notifyCompletedActivityRecordReviewed(record);

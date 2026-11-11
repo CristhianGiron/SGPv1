@@ -20,7 +20,7 @@ La [auditoría integral del 7 de noviembre de 2026](informes/2026-11-07/auditori
 - [Evidencias JSON](evidencias/README.md): salidas reproducibles de los scripts.
 - [Usuarios y escenarios de demostración](datos/usuarios-demostracion.md): datos locales y preparación de ejemplos.
 
-La última revisión del [acceso institucional](informes/2026-11-01/revision-acceso-institucional-2026-11-01.md) registra 133 pruebas frontend y diez vistas de escritorio/móvil con ambos temas, mediante fixtures. La revisión de [bandeja, agenda y diálogos](informes/2026-11-01/revision-bandeja-agenda-dialogos-2026-11-01.md): 128 pruebas frontend y 103 rutas de seis roles con fixtures. El [informe de experiencia por práctica](informes/2026-11-01/revision-experiencia-practicas-2026-11-01.md) registra 121 pruebas de backend de esa entrega. Estos números son resultados documentados, no una ejecución realizada cada vez que se reorganizan los archivos.
+La revisión histórica del [acceso institucional](informes/2026-11-01/revision-acceso-institucional-2026-11-01.md) registra 133 pruebas frontend y diez vistas de escritorio/móvil con ambos temas, mediante fixtures. La revisión de [bandeja, agenda y diálogos](informes/2026-11-01/revision-bandeja-agenda-dialogos-2026-11-01.md): 128 pruebas frontend y 103 rutas de seis roles con fixtures. El [informe de experiencia por práctica](informes/2026-11-01/revision-experiencia-practicas-2026-11-01.md) registra 121 pruebas de backend de esa entrega. Estos números son resultados documentados, no una ejecución realizada cada vez que se reorganizan los archivos.
 
 Los informes del 26 de octubre y las revisiones anteriores del 1 de noviembre conservan sus conteos originales. Consulte cada alcance antes de comparar resultados.
 
@@ -43,7 +43,7 @@ El backend utiliza el perfil de pruebas H2 según su configuración de test. Las
 
 ## Ejecutar comprobaciones de interfaz
 
-Desde `SGPv1` y después de compilar el frontend:
+Desde `SGPv1`, después de instalar el [entorno de QA](qa/README.md) y compilar el frontend:
 
 | Comando | Qué revisa |
 | --- | --- |
@@ -56,7 +56,7 @@ Desde `SGPv1` y después de compilar el frontend:
 | `node docs/testing/qa/browser-action-colors.cjs` | Contraste de acciones y paletas |
 | `node docs/testing/qa/browser-routes.cjs` | Matriz de navegación complementaria |
 
-Los scripts Chrome usan el frontend compilado y requieren Chrome en `/usr/bin/google-chrome` y `puppeteer-core` disponible en las dependencias locales. Las peticiones API se simulan en estos recorridos. Consulte la cabecera de cada script para sus fixtures y salidas.
+Los scripts Chrome usan el frontend compilado. Instale sus dependencias con `npm ci --prefix docs/testing/qa`; el [entorno de QA](qa/README.md) describe Node, Chrome y las variables de configuración. Las peticiones API se simulan en estos recorridos. Consulte la cabecera de cada script para sus fixtures y salidas.
 
 Los resultados JSON se escriben en `evidencias/`; las capturas se generan en `/tmp`. Las evidencias se pueden sobrescribir al repetir el script, mientras que los informes fechados conservan el contexto de una revisión.
 

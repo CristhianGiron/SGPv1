@@ -53,12 +53,12 @@ public class EnrollmentService {
 
     private static final List<EnrollmentStatus> VISIBLE_PRACTICE_STATUSES = List.of(
             EnrollmentStatus.APPROVED,
-            EnrollmentStatus.COMPLETED);
+            EnrollmentStatus.COMPLETED, EnrollmentStatus.SUSPENDED, EnrollmentStatus.WITHDRAWN);
 
     private static final List<EnrollmentStatus> PRACTICE_LIST_STATUSES = List.of(
             EnrollmentStatus.PENDING,
             EnrollmentStatus.APPROVED,
-            EnrollmentStatus.COMPLETED);
+            EnrollmentStatus.COMPLETED, EnrollmentStatus.SUSPENDED, EnrollmentStatus.WITHDRAWN);
 
     private final EnrollmentRepository enrollmentRepository;
     private final AccountRepository accountRepository;
@@ -413,6 +413,52 @@ public class EnrollmentService {
         enrollmentRepository.save(enrollment);
 
         return mapToResponse(enrollment);
+    }
+
+    @Transactional
+    public String applyIncidentDecision(String username,Long enrollmentId,com.sgp.systemsgp.enums.practiceincident.PracticeIncidentType type,Long targetGroupId) {
+        var actor=getAccount(username);
+        var enrollment=enrollmentRepository.findForUpdate(enrollmentId).orElseThrow(()->new NotFoundException("Práctica no encontrada"));
+        if(practiceAccessService.isStudentForEnrollment(enrollment,actor)||!practiceAccessService.isDirectorForCourse(enrollment.getCourse(),actor))throw new AccessDeniedException("Solo dirección de la carrera puede aplicar cambios académicos ajenos a su propia práctica");
+        if(enrollment.isArchived())throw new BadRequestException("La práctica está archivada");
+        var before=enrollment.getStatus();
+        if(type==com.sgp.systemsgp.enums.practiceincident.PracticeIncidentType.OTHER)return "Sin cambio de estado académico";
+        if(type==com.sgp.systemsgp.enums.practiceincident.PracticeIncidentType.RESUMPTION) {
+            if(before!=EnrollmentStatus.SUSPENDED)throw new BadRequestException("Solo se puede reanudar una práctica suspendida");
+            validateAccountCanEnroll(enrollment.getAccount());validateCourseAvailable(enrollment.getCourse());
+            courseRepository.findForUpdate(enrollment.getCourse().getId()).orElseThrow(()->new NotFoundException("Paralelo no encontrado"));
+            courseMembershipService.requireMembership(enrollment.getAccount(),enrollment.getCourse());
+            if(enrollment.getPractice()==null)validateAvailableCapacity(enrollment.getCourse());
+            else if(enrollmentRepository.countByPractice_IdAndStatus(enrollment.getPractice().getId(),EnrollmentStatus.APPROVED)>=enrollment.getPractice().getCapacity())
+                throw new BadRequestException("La práctica alcanzó el límite de cupos");
+            if(enrollment.getGroup()!=null){validateGroupAvailable(enrollment.getGroup());validateGroupCapacity(enrollment,enrollment.getGroup());}
+            validateAssignedTutor(enrollment.getCourse().getPracticeTutor(),RoleName.ROLE_TUTOR_PRACTICAS);
+            validateAssignedTutor(InstitutionalAssignmentResolver.institutionalTutor(enrollment),RoleName.ROLE_TUTOR_INSTITUCIONAL);
+            enrollment.setStatus(EnrollmentStatus.APPROVED);
+        }else{
+            if(before!=EnrollmentStatus.APPROVED&&before!=EnrollmentStatus.SUSPENDED)throw new BadRequestException("La incidencia requiere una práctica activa o suspendida");
+            if(type==com.sgp.systemsgp.enums.practiceincident.PracticeIncidentType.SUSPENSION){
+                if(before!=EnrollmentStatus.APPROVED)throw new BadRequestException("La práctica ya está suspendida");enrollment.setStatus(EnrollmentStatus.SUSPENDED);
+            }else if(type==com.sgp.systemsgp.enums.practiceincident.PracticeIncidentType.WITHDRAWAL)enrollment.setStatus(EnrollmentStatus.WITHDRAWN);
+            else{
+                if(targetGroupId==null)throw new BadRequestException("Selecciona el nuevo grupo receptor");
+                courseRepository.findForUpdate(enrollment.getCourse().getId()).orElseThrow(()->new NotFoundException("Paralelo no encontrado"));
+                var group=getGroup(targetGroupId);
+                if(!group.getCourse().getId().equals(enrollment.getCourse().getId()))throw new BadRequestException("El grupo debe pertenecer al paralelo de la práctica");
+                validateGroupAvailable(group);validateGroupCapacity(enrollment,group);
+                var oldTutor=InstitutionalAssignmentResolver.institutionalTutor(enrollment);
+                var oldInstitution=InstitutionalAssignmentResolver.educationalInstitution(enrollment);
+                var newTutor=group.getInstitutionalTutor();validateAssignedTutor(newTutor,RoleName.ROLE_TUTOR_INSTITUCIONAL);
+                if(newTutor.getInstitution()==null)throw new BadRequestException("El tutor del grupo debe tener institución");
+                boolean sameInstitution=oldInstitution!=null&&oldInstitution.getId().equals(newTutor.getInstitution().getId());
+                if(type==com.sgp.systemsgp.enums.practiceincident.PracticeIncidentType.CHANGE_INSTITUTION&&sameInstitution)throw new BadRequestException("Selecciona un grupo de otra institución");
+                if(type==com.sgp.systemsgp.enums.practiceincident.PracticeIncidentType.CHANGE_INSTITUTIONAL_TUTOR&&(!sameInstitution||oldTutor!=null&&oldTutor.getId().equals(newTutor.getId())))
+                    throw new BadRequestException("Elige otro tutor institucional dentro de la misma institución");
+                var oldGroup=enrollment.getGroup();enrollment.setGroup(group);enrollmentRepository.saveAndFlush(enrollment);
+                return "Grupo "+(oldGroup==null?"sin grupo":oldGroup.getName())+" → "+group.getName()+"; tutor institucional "+(oldTutor==null?"sin tutor":oldTutor.getUsername())+" -> "+newTutor.getUsername();
+            }
+        }
+        enrollmentRepository.saveAndFlush(enrollment);return before.name()+" -> "+enrollment.getStatus().name();
     }
 
     public void cancel(Long id, String username) {

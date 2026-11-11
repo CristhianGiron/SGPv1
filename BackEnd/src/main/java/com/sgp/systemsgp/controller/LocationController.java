@@ -11,6 +11,12 @@
  */
 
 package com.sgp.systemsgp.controller;
+import com.sgp.systemsgp.dto.location.CantonResponse;
+import com.sgp.systemsgp.dto.location.CreateCantonRequest;
+import com.sgp.systemsgp.dto.location.CreateParishRequest;
+import com.sgp.systemsgp.dto.location.CreateProvinceRequest;
+import com.sgp.systemsgp.dto.location.ParishResponse;
+import com.sgp.systemsgp.dto.location.ProvinceResponse;
 
 import com.sgp.systemsgp.dto.location.*;
 

@@ -10,7 +10,7 @@
  * @nota          Implementa el componente PageHeader de la interfaz del SGP.
  */
 
-import { usePracticeWorkspace } from '../../contexts/PracticeWorkspaceContext';
+import { usePracticeWorkspace } from '../../features/practices/context/PracticeWorkspaceContext';
 import { useEffect, useState } from 'react';
 import { Info } from 'lucide-react';
 import { apiRequest, apiUrl } from '../../api/client';

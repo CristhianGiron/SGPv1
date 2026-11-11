@@ -13,7 +13,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { DataTable } from './DataTable';
 let mockOwner=1;
-jest.mock('../../auth/AuthContext',()=>({useAuth:()=>({profile:{id:mockOwner}})}));
+jest.mock('../../features/auth/context/AuthContext',()=>({useAuth:()=>({profile:{id:mockOwner}})}));
 const columns=[{key:'name',header:'Nombre'},{key:'status',header:'Estado'},{key:'actions',header:'Acciones',render:()=> <button>Ver registro</button>}];
 const rows=Array.from({length:23},(_,i)=>({id:i+1,name:`Registro ${i+1}`,status:i%2?'DRAFT':'SUBMITTED'}));
 beforeEach(()=>{localStorage.clear();mockOwner=1;});
@@ -62,7 +62,7 @@ test('mobile records retain filters and actions when resized back to a desktop t
 });
 
 test('practice context removes repeated identities while supplementary data stays accessible',()=>{
- const {PracticeWorkspaceContext}=require('../../contexts/PracticeWorkspaceContext');
+ const {PracticeWorkspaceContext}=require('../../features/practices/context/PracticeWorkspaceContext');
  const entries=[{id:7,title:'Documento de la práctica',courseName:'Paralelo A',studentFullName:'Ana',status:'DRAFT',createdAt:'2026-11-07T08:00:00'}];
  const fields=[{key:'title',header:'Documento'},{key:'courseName',header:'Paralelo'},{key:'studentFullName',header:'Estudiante'},{key:'status',header:'Estado'},{key:'createdAt',header:'Creado'},columns.at(-1)];
  render(<PracticeWorkspaceContext.Provider value={{id:3}}><DataTable rows={entries} columns={fields} enableFilters/></PracticeWorkspaceContext.Provider>);

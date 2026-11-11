@@ -1,0 +1,317 @@
+10:31:32.453 [main] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:mariadb://127.0.0.1:56135/sgp_migration_legacy_test?user=root (MariaDB 11.8)
+10:31:32.474 [main] WARN org.flywaydb.core.internal.database.base.Database -- Using MariaDB 11.8 which is newer than the version Flyway has been verified with. The latest verified version of MariaDB is 11.7.
+10:31:32.532 [main] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table `sgp_migration_legacy_test`.`flyway_schema_history` does not exist yet
+10:31:32.538 [main] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 27 migrations (execution time 00:00.041s)
+10:31:32.547 [main] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table `sgp_migration_legacy_test`.`flyway_schema_history` ...
+10:31:32.609 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema `sgp_migration_legacy_test`: << Empty Schema >>
+10:31:32.675 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_legacy_test` to version "1 - baseline schema"
+10:31:32.961 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_legacy_test` to version "2 - feedback review cycle"
+10:31:32.966 [main] WARN org.flywaydb.core.internal.sqlscript.DefaultSqlScriptExecutor -- DB: Table 'feedback_history_entries' already exists (SQL State:  - Error Code: 1050)
+10:31:32.969 [main] INFO org.flywaydb.core.internal.sqlscript.DefaultSqlScriptExecutor -- +---+
+| 1 |
++---+
+| 1 |
++---+
+
+10:31:32.971 [main] INFO org.flywaydb.core.internal.sqlscript.DefaultSqlScriptExecutor -- +---+
+| 1 |
++---+
+| 1 |
++---+
+
+10:31:32.973 [main] INFO org.flywaydb.core.internal.sqlscript.DefaultSqlScriptExecutor -- +---+
+| 1 |
++---+
+| 1 |
++---+
+
+10:31:32.974 [main] INFO org.flywaydb.core.internal.sqlscript.DefaultSqlScriptExecutor -- +---+
+| 1 |
++---+
+| 1 |
++---+
+
+10:31:32.975 [main] INFO org.flywaydb.core.internal.sqlscript.DefaultSqlScriptExecutor -- +---+
+| 1 |
++---+
+| 1 |
++---+
+
+10:31:32.988 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_legacy_test` to version "3 - student practice forms"
+10:31:33.007 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_legacy_test` to version "4 - drop document approval columns"
+10:31:33.008 [main] INFO org.flywaydb.core.internal.sqlscript.DefaultSqlScriptExecutor -- +---+
+| 1 |
++---+
+| 1 |
++---+
+
+10:31:33.009 [main] INFO org.flywaydb.core.internal.sqlscript.DefaultSqlScriptExecutor -- +---+
+| 1 |
++---+
+| 1 |
++---+
+
+10:31:33.011 [main] INFO org.flywaydb.core.internal.sqlscript.DefaultSqlScriptExecutor -- +---+
+| 1 |
++---+
+| 1 |
++---+
+
+10:31:33.019 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_legacy_test` to version "5 - account career scope"
+10:31:33.034 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_legacy_test` to version "6 - grade parallel scope"
+10:31:33.061 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_legacy_test` to version "7 - university parallel subject hierarchy"
+10:31:33.076 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_legacy_test` to version "8 - practice photo public links"
+10:31:33.099 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_legacy_test` to version "9 - practice form kind"
+10:31:33.109 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_legacy_test` to version "10 - practice form drafts"
+10:31:33.118 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_legacy_test` to version "11 - didactic plans"
+10:31:33.149 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_legacy_test` to version "12 - enrollment practice archive"
+10:31:33.156 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_legacy_test` to version "13 - practice audit logs"
+10:31:33.162 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_legacy_test` to version "14 - entity cover and logo images"
+10:31:33.181 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_legacy_test` to version "15 - final report letterhead"
+10:31:33.191 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_legacy_test` to version "16 - workspace drafts"
+10:31:33.199 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_legacy_test` to version "17 - interface images"
+10:31:33.210 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_legacy_test` to version "18 - institution education levels primary key"
+10:31:33.219 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_legacy_test` to version "19 - practice answer options primary key"
+10:31:33.229 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_legacy_test` to version "20 - unique intermediate values"
+10:31:33.247 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 20 migrations to schema `sgp_migration_legacy_test`, now at version v20 (execution time 00:00.409s)
+10:31:33.306 [main] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:mariadb://127.0.0.1:56135/sgp_migration_legacy_test?user=root (MariaDB 11.8)
+10:31:33.309 [main] WARN org.flywaydb.core.internal.database.base.Database -- Using MariaDB 11.8 which is newer than the version Flyway has been verified with. The latest verified version of MariaDB is 11.7.
+10:31:33.337 [main] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 27 migrations (execution time 00:00.023s)
+10:31:33.341 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema `sgp_migration_legacy_test`: 20
+10:31:33.344 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_legacy_test` to version "21 - academic course student memberships"
+10:31:33.353 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_legacy_test` to version "22 - staff assigned practice offerings"
+10:31:33.367 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_legacy_test` to version "23 - one active parallel per cycle"
+10:31:33.381 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_legacy_test` to version "24 - sessions and institutional plan revisions"
+10:31:33.393 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_legacy_test` to version "25 - practice incidents"
+10:31:33.406 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_legacy_test` to version "26 - practice document versions"
+10:31:33.421 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_legacy_test` to version "27 - practice deadlines"
+10:31:33.428 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 7 migrations to schema `sgp_migration_legacy_test`, now at version v27 (execution time 00:00.036s)
+10:31:33.464 [main] WARN org.mariadb.jdbc.message.server.ErrorPacket -- Error: 1062-23000: Duplicate entry '901-999' for key 'uk_student_practice'
+10:31:33.468 [main] WARN org.mariadb.jdbc.message.server.ErrorPacket -- Error: 1062-23000: Duplicate entry '901-901' for key 'uk_student_active_cycle'
+10:31:33.481 [main] WARN org.flywaydb.core.internal.database.base.Database -- Using MariaDB 11.8 which is newer than the version Flyway has been verified with. The latest verified version of MariaDB is 11.7.
+10:31:33.509 [main] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 27 migrations (execution time 00:00.022s)
+10:31:33.512 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema `sgp_migration_legacy_test`: 27
+10:31:33.513 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Schema `sgp_migration_legacy_test` is up to date. No migration necessary.
+10:31:33.566 [main] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:mariadb://127.0.0.1:56135/sgp_migration_test?user=root (MariaDB 11.8)
+10:31:33.567 [main] WARN org.flywaydb.core.internal.database.base.Database -- Using MariaDB 11.8 which is newer than the version Flyway has been verified with. The latest verified version of MariaDB is 11.7.
+10:31:33.584 [main] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table `sgp_migration_test`.`flyway_schema_history` does not exist yet
+10:31:33.585 [main] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 27 migrations (execution time 00:00.014s)
+10:31:33.588 [main] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table `sgp_migration_test`.`flyway_schema_history` ...
+10:31:33.595 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema `sgp_migration_test`: << Empty Schema >>
+10:31:33.621 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_test` to version "1 - baseline schema"
+10:31:33.849 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_test` to version "2 - feedback review cycle"
+10:31:33.849 [main] WARN org.flywaydb.core.internal.sqlscript.DefaultSqlScriptExecutor -- DB: Table 'feedback_history_entries' already exists (SQL State:  - Error Code: 1050)
+10:31:33.850 [main] INFO org.flywaydb.core.internal.sqlscript.DefaultSqlScriptExecutor -- +---+
+| 1 |
++---+
+| 1 |
++---+
+
+10:31:33.851 [main] INFO org.flywaydb.core.internal.sqlscript.DefaultSqlScriptExecutor -- +---+
+| 1 |
++---+
+| 1 |
++---+
+
+10:31:33.852 [main] INFO org.flywaydb.core.internal.sqlscript.DefaultSqlScriptExecutor -- +---+
+| 1 |
++---+
+| 1 |
++---+
+
+10:31:33.853 [main] INFO org.flywaydb.core.internal.sqlscript.DefaultSqlScriptExecutor -- +---+
+| 1 |
++---+
+| 1 |
++---+
+
+10:31:33.854 [main] INFO org.flywaydb.core.internal.sqlscript.DefaultSqlScriptExecutor -- +---+
+| 1 |
++---+
+| 1 |
++---+
+
+10:31:33.861 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_test` to version "3 - student practice forms"
+10:31:33.873 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_test` to version "4 - drop document approval columns"
+10:31:33.875 [main] INFO org.flywaydb.core.internal.sqlscript.DefaultSqlScriptExecutor -- +---+
+| 1 |
++---+
+| 1 |
++---+
+
+10:31:33.876 [main] INFO org.flywaydb.core.internal.sqlscript.DefaultSqlScriptExecutor -- +---+
+| 1 |
++---+
+| 1 |
++---+
+
+10:31:33.877 [main] INFO org.flywaydb.core.internal.sqlscript.DefaultSqlScriptExecutor -- +---+
+| 1 |
++---+
+| 1 |
++---+
+
+10:31:33.883 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_test` to version "5 - account career scope"
+10:31:33.895 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_test` to version "6 - grade parallel scope"
+10:31:33.918 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_test` to version "7 - university parallel subject hierarchy"
+10:31:33.931 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_test` to version "8 - practice photo public links"
+10:31:33.939 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_test` to version "9 - practice form kind"
+10:31:33.945 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_test` to version "10 - practice form drafts"
+10:31:33.951 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_test` to version "11 - didactic plans"
+10:31:33.985 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_test` to version "12 - enrollment practice archive"
+10:31:33.991 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_test` to version "13 - practice audit logs"
+10:31:33.997 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_test` to version "14 - entity cover and logo images"
+10:31:34.015 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_test` to version "15 - final report letterhead"
+10:31:34.023 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_test` to version "16 - workspace drafts"
+10:31:34.028 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_test` to version "17 - interface images"
+10:31:34.038 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_test` to version "18 - institution education levels primary key"
+10:31:34.045 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_test` to version "19 - practice answer options primary key"
+10:31:34.052 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_test` to version "20 - unique intermediate values"
+10:31:34.060 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_test` to version "21 - academic course student memberships"
+10:31:34.067 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_test` to version "22 - staff assigned practice offerings"
+10:31:34.082 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_test` to version "23 - one active parallel per cycle"
+10:31:34.090 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_test` to version "24 - sessions and institutional plan revisions"
+10:31:34.097 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_test` to version "25 - practice incidents"
+10:31:34.108 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_test` to version "26 - practice document versions"
+10:31:34.119 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema `sgp_migration_test` to version "27 - practice deadlines"
+10:31:34.123 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 27 migrations to schema `sgp_migration_test`, now at version v27 (execution time 00:00.349s)
+10:31:34.132 [main] WARN org.flywaydb.core.internal.database.base.Database -- Using MariaDB 11.8 which is newer than the version Flyway has been verified with. The latest verified version of MariaDB is 11.7.
+10:31:34.154 [main] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 27 migrations (execution time 00:00.019s)
+10:31:34.163 [main] WARN org.flywaydb.core.internal.database.base.Database -- Using MariaDB 11.8 which is newer than the version Flyway has been verified with. The latest verified version of MariaDB is 11.7.
+10:31:34.184 [main] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 27 migrations (execution time 00:00.017s)
+10:31:34.186 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema `sgp_migration_test`: 27
+10:31:34.186 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Schema `sgp_migration_test` is up to date. No migration necessary.
+10:31:34.374 [main] INFO org.springframework.boot.devtools.restart.RestartApplicationListener -- Restart disabled due to context in which it is running
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.6)
+
+2026-11-11T10:31:35.398-05:00  INFO 41907 --- [           main] o.a.maven.surefire.booter.ForkedBooter   : Starting ForkedBooter v3.5.5 using Java 21.0.13.0.3 with PID 41907 (started by cristhian in /tmp/sgp-restructure/backend)
+2026-11-11T10:31:35.401-05:00  INFO 41907 --- [           main] o.a.maven.surefire.booter.ForkedBooter   : The following 2 profiles are active: "prod", "test"
+2026-11-11T10:31:36.878-05:00  INFO 41907 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-11T10:31:37.121-05:00  INFO 41907 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 231 ms. Found 42 JPA repository interfaces.
+2026-11-11T10:31:38.467-05:00  INFO 41907 --- [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 0 (http)
+2026-11-11T10:31:38.495-05:00  INFO 41907 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-11-11T10:31:38.496-05:00  INFO 41907 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.21]
+2026-11-11T10:31:38.576-05:00  INFO 41907 --- [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 3119 ms
+2026-11-11T10:31:38.791-05:00  INFO 41907 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-11-11T10:31:38.823-05:00  INFO 41907 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.mariadb.jdbc.Connection@78e50fca
+2026-11-11T10:31:38.825-05:00  INFO 41907 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-11-11T10:31:38.846-05:00  INFO 41907 --- [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mariadb://127.0.0.1:56135/sgp_migration_boot_test?user=root&characterEncoding=UTF-8&connectionCollation=utf8mb4_unicode_ci (MariaDB 11.8)
+2026-11-11T10:31:38.848-05:00  WARN 41907 --- [           main] o.f.c.internal.database.base.Database    : Using MariaDB 11.8 which is newer than the version Flyway has been verified with. The latest verified version of MariaDB is 11.7.
+2026-11-11T10:31:38.860-05:00  INFO 41907 --- [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Schema history table `sgp_migration_boot_test`.`flyway_schema_history` does not exist yet
+2026-11-11T10:31:38.861-05:00  INFO 41907 --- [           main] o.f.core.internal.command.DbValidate     : Successfully validated 27 migrations (execution time 00:00.009s)
+2026-11-11T10:31:38.865-05:00  INFO 41907 --- [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table `sgp_migration_boot_test`.`flyway_schema_history` ...
+2026-11-11T10:31:38.874-05:00  INFO 41907 --- [           main] o.f.core.internal.command.DbMigrate      : Current version of schema `sgp_migration_boot_test`: << Empty Schema >>
+2026-11-11T10:31:38.894-05:00  INFO 41907 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `sgp_migration_boot_test` to version "1 - baseline schema"
+2026-11-11T10:31:39.133-05:00  INFO 41907 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `sgp_migration_boot_test` to version "2 - feedback review cycle"
+2026-11-11T10:31:39.134-05:00  WARN 41907 --- [           main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: Table 'feedback_history_entries' already exists (SQL State:  - Error Code: 1050)
+2026-11-11T10:31:39.135-05:00  INFO 41907 --- [           main] o.f.c.i.s.DefaultSqlScriptExecutor       : +---+
+| 1 |
++---+
+| 1 |
++---+
+
+2026-11-11T10:31:39.136-05:00  INFO 41907 --- [           main] o.f.c.i.s.DefaultSqlScriptExecutor       : +---+
+| 1 |
++---+
+| 1 |
++---+
+
+2026-11-11T10:31:39.137-05:00  INFO 41907 --- [           main] o.f.c.i.s.DefaultSqlScriptExecutor       : +---+
+| 1 |
++---+
+| 1 |
++---+
+
+2026-11-11T10:31:39.138-05:00  INFO 41907 --- [           main] o.f.c.i.s.DefaultSqlScriptExecutor       : +---+
+| 1 |
++---+
+| 1 |
++---+
+
+2026-11-11T10:31:39.145-05:00  INFO 41907 --- [           main] o.f.c.i.s.DefaultSqlScriptExecutor       : +---+
+| 1 |
++---+
+| 1 |
++---+
+
+2026-11-11T10:31:39.150-05:00  INFO 41907 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `sgp_migration_boot_test` to version "3 - student practice forms"
+2026-11-11T10:31:39.160-05:00  INFO 41907 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `sgp_migration_boot_test` to version "4 - drop document approval columns"
+2026-11-11T10:31:39.161-05:00  INFO 41907 --- [           main] o.f.c.i.s.DefaultSqlScriptExecutor       : +---+
+| 1 |
++---+
+| 1 |
++---+
+
+2026-11-11T10:31:39.162-05:00  INFO 41907 --- [           main] o.f.c.i.s.DefaultSqlScriptExecutor       : +---+
+| 1 |
++---+
+| 1 |
++---+
+
+2026-11-11T10:31:39.163-05:00  INFO 41907 --- [           main] o.f.c.i.s.DefaultSqlScriptExecutor       : +---+
+| 1 |
++---+
+| 1 |
++---+
+
+2026-11-11T10:31:39.167-05:00  INFO 41907 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `sgp_migration_boot_test` to version "5 - account career scope"
+2026-11-11T10:31:39.177-05:00  INFO 41907 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `sgp_migration_boot_test` to version "6 - grade parallel scope"
+2026-11-11T10:31:39.194-05:00  INFO 41907 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `sgp_migration_boot_test` to version "7 - university parallel subject hierarchy"
+2026-11-11T10:31:39.207-05:00  INFO 41907 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `sgp_migration_boot_test` to version "8 - practice photo public links"
+2026-11-11T10:31:39.216-05:00  INFO 41907 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `sgp_migration_boot_test` to version "9 - practice form kind"
+2026-11-11T10:31:39.225-05:00  INFO 41907 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `sgp_migration_boot_test` to version "10 - practice form drafts"
+2026-11-11T10:31:39.233-05:00  INFO 41907 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `sgp_migration_boot_test` to version "11 - didactic plans"
+2026-11-11T10:31:39.262-05:00  INFO 41907 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `sgp_migration_boot_test` to version "12 - enrollment practice archive"
+2026-11-11T10:31:39.272-05:00  INFO 41907 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `sgp_migration_boot_test` to version "13 - practice audit logs"
+2026-11-11T10:31:39.279-05:00  INFO 41907 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `sgp_migration_boot_test` to version "14 - entity cover and logo images"
+2026-11-11T10:31:39.295-05:00  INFO 41907 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `sgp_migration_boot_test` to version "15 - final report letterhead"
+2026-11-11T10:31:39.304-05:00  INFO 41907 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `sgp_migration_boot_test` to version "16 - workspace drafts"
+2026-11-11T10:31:39.310-05:00  INFO 41907 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `sgp_migration_boot_test` to version "17 - interface images"
+2026-11-11T10:31:39.319-05:00  INFO 41907 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `sgp_migration_boot_test` to version "18 - institution education levels primary key"
+2026-11-11T10:31:39.331-05:00  INFO 41907 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `sgp_migration_boot_test` to version "19 - practice answer options primary key"
+2026-11-11T10:31:39.342-05:00  INFO 41907 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `sgp_migration_boot_test` to version "20 - unique intermediate values"
+2026-11-11T10:31:39.352-05:00  INFO 41907 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `sgp_migration_boot_test` to version "21 - academic course student memberships"
+2026-11-11T10:31:39.360-05:00  INFO 41907 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `sgp_migration_boot_test` to version "22 - staff assigned practice offerings"
+2026-11-11T10:31:39.377-05:00  INFO 41907 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `sgp_migration_boot_test` to version "23 - one active parallel per cycle"
+2026-11-11T10:31:39.387-05:00  INFO 41907 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `sgp_migration_boot_test` to version "24 - sessions and institutional plan revisions"
+2026-11-11T10:31:39.395-05:00  INFO 41907 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `sgp_migration_boot_test` to version "25 - practice incidents"
+2026-11-11T10:31:39.408-05:00  INFO 41907 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `sgp_migration_boot_test` to version "26 - practice document versions"
+2026-11-11T10:31:39.421-05:00  INFO 41907 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `sgp_migration_boot_test` to version "27 - practice deadlines"
+2026-11-11T10:31:39.428-05:00  INFO 41907 --- [           main] o.f.core.internal.command.DbMigrate      : Successfully applied 27 migrations to schema `sgp_migration_boot_test`, now at version v27 (execution time 00:00.377s)
+2026-11-11T10:31:39.626-05:00  INFO 41907 --- [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-11-11T10:31:39.727-05:00  INFO 41907 --- [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.12.Final
+2026-11-11T10:31:40.399-05:00  INFO 41907 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-11T10:31:40.461-05:00  WARN 41907 --- [           main] org.hibernate.orm.deprecation            : HHH90000025: MariaDBDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-11-11T10:31:40.473-05:00  INFO 41907 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:mariadb://127.0.0.1:56135/sgp_migration_boot_test?user=root&characterEncoding=UTF-8&connectionCollation=utf8mb4_unicode_ci]
+	Database driver: MariaDB Connector/J
+	Database dialect: MariaDBDialect
+	Database version: 11.8.6
+	Default catalog/schema: sgp_migration_boot_test/undefined
+	Autocommit mode: undefined/unknown
+	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-11T10:31:43.583-05:00  INFO 41907 --- [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-11T10:31:43.630-05:00  INFO 41907 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-11T10:31:43.728-05:00  INFO 41907 --- [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-11-11T10:31:47.499-05:00  INFO 41907 --- [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2026-11-11T10:31:49.394-05:00  INFO 41907 --- [           main] c.s.s.w.NotificationWebSocketConfig      : Registering WebSocket handler at /ws/notifications
+2026-11-11T10:31:50.364-05:00  INFO 41907 --- [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 38037 (http) with context path '/'
+2026-11-11T10:31:50.375-05:00  INFO 41907 --- [           main] o.a.maven.surefire.booter.ForkedBooter   : Started ForkedBooter in 16.016 seconds (process running for 19.641)
+2026-11-11T10:31:50.388-05:00  WARN 41907 --- [           main] o.f.c.internal.database.base.Database    : Using MariaDB 11.8 which is newer than the version Flyway has been verified with. The latest verified version of MariaDB is 11.7.
+2026-11-11T10:31:50.599-05:00  INFO 41907 --- [           main] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-11-11T10:31:50.600-05:00  INFO 41907 --- [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-11-11T10:31:50.612-05:00  INFO 41907 --- [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-11T10:31:50.614-05:00  INFO 41907 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-11-11T10:31:50.617-05:00  INFO 41907 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

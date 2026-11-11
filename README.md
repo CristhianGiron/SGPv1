@@ -46,3 +46,5 @@ consulte la [guía de configuración de entornos](docs/desarrollo/configuracion-
 - [Pruebas, informes y evidencias](docs/testing/README.md).
 
 Los [prototipos HTML/CSS](prototipos-interfaces/README.md) se conservan como material de diseño independiente del frontend React.
+
+- [Estructura y convenciones del proyecto](docs/desarrollo/estructura-proyecto.md).

@@ -13,9 +13,9 @@
 // Isolated browser fixtures: no calls reach the real backend.
 const fs = require('fs'), path = require('path'), http = require('http');
 const project = path.resolve(__dirname, '../../..');
-const puppeteer = require(path.join(project, 'FrontEnd/node_modules/puppeteer-core'));
+const puppeteer = require('./runtime.cjs').puppeteer;
 const { routes } = require('./check-contracts.cjs').buildConfig();
-const root = path.join(project, 'FrontEnd/build');
+const root = require('./runtime.cjs').buildPath;
 let coverFixture = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jD3cAAAAASUVORK5CYII=', 'base64');
 const coverFixturePath = '/tmp/sgp-cover-fixture.png';fs.writeFileSync(coverFixturePath, coverFixture);
 const practices = [
@@ -23,7 +23,7 @@ const practices = [
  { id: 8, courseId: 20, courseName: 'Práctica anterior', status: 'COMPLETED', archived: true, courseActive: false, studentFullName: 'Luis Prueba' },
 ];
 (async () => {
- const browser = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: true, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
+ const browser = await puppeteer.launch({ executablePath: require('./runtime.cjs').chromePath, headless: true, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
  const fixturePage = await browser.newPage();
  const png = await fixturePage.evaluate(() => { const canvas = document.createElement('canvas');canvas.width = 256;canvas.height = 128;const ctx = canvas.getContext('2d');ctx.fillStyle = '#c7dbef';ctx.fillRect(0,0,256,128);ctx.fillStyle = '#284b74';ctx.fillRect(60,30,136,98);return canvas.toDataURL('image/png').split(',')[1]; });
  coverFixture = Buffer.from(png, 'base64');fs.writeFileSync(coverFixturePath, coverFixture);await fixturePage.close();

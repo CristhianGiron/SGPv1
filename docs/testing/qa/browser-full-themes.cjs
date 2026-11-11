@@ -12,14 +12,14 @@
 
 // Account and appearance in Chrome, with isolated API fixtures.
 const fs=require('fs'),path=require('path'),http=require('http');
-const project=path.resolve(__dirname,'../../..'),root=path.join(project,'FrontEnd/build');
-const puppeteer=require(path.join(project,'FrontEnd/node_modules/puppeteer-core'));
+const project=path.resolve(__dirname,'../../..'),root=require('./runtime.cjs').buildPath;
+const puppeteer=require('./runtime.cjs').puppeteer;
 const desktopOnly=process.argv.includes('--desktop');
 const output=path.join(project,'docs/testing/evidencias/temas-completos');fs.mkdirSync(output,{recursive:true});
 (async()=>{
  const server=http.createServer((req,res)=>{const f=path.resolve(root,'.'+(req.url.split('?')[0]==='/'?'/index.html':req.url.split('?')[0]));if(!f.startsWith(root+'/')||!fs.existsSync(f)){res.writeHead(404);return res.end();}res.setHeader('Content-Type',({'.js':'application/javascript','.css':'text/css','.svg':'image/svg+xml','.png':'image/png','.json':'application/json'})[path.extname(f)]||'text/html');fs.createReadStream(f).pipe(res);});
  await new Promise(r=>server.listen(0,'127.0.0.1',r));const origin='http://127.0.0.1:'+server.address().port;
- const browser=await puppeteer.launch({executablePath:'/usr/bin/google-chrome',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});const checks=[],errors=[];
+ const browser=await puppeteer.launch({executablePath: require('./runtime.cjs').chromePath,headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});const checks=[],errors=[];
  try{for(const theme of (desktopOnly?['light']:['light','dark']))for(const width of (desktopOnly?[1440]:[320,390,768,1440])){
   const page=await browser.newPage();await page.setViewport({width,height:width<768?844:1000});page.on('pageerror',e=>errors.push({theme,width,message:e.message}));
   await page.evaluateOnNewDocument(()=>{if(!sessionStorage.getItem('qa-initialized')){localStorage.clear();localStorage.setItem('sgp-auth',JSON.stringify({accessToken:'fixture'}));sessionStorage.setItem('qa-initialized','yes');}});

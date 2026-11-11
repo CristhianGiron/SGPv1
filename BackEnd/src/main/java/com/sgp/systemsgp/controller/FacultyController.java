@@ -11,6 +11,9 @@
  */
 
 package com.sgp.systemsgp.controller;
+import com.sgp.systemsgp.dto.faculty.CreateFacultyRequest;
+import com.sgp.systemsgp.dto.faculty.FacultyResponse;
+import com.sgp.systemsgp.dto.faculty.UpdateFacultyRequest;
 
 import com.sgp.systemsgp.dto.faculty.*;
 import com.sgp.systemsgp.service.FacultyService;

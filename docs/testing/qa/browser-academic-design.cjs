@@ -13,9 +13,9 @@
 // Visual and keyboard QA against the compiled application, with isolated API fixtures.
 const fs = require('fs'), path = require('path'), http = require('http');
 const project = path.resolve(__dirname, '../../..');
-const puppeteer = require(path.join(project, 'FrontEnd/node_modules/puppeteer-core'));
+const puppeteer = require('./runtime.cjs').puppeteer;
 const defaults = require(path.join(project, 'FrontEnd/src/config/institutionalDefaults.json'));
-const root = path.join(project, 'FrontEnd/build');
+const root = require('./runtime.cjs').buildPath;
 const output = path.join(project, 'docs/testing/evidencias/diseno-academico');
 fs.mkdirSync(output, { recursive: true });
 const practices = [{id:7,courseId:10,courseName:'Prácticas de informática',status:'APPROVED',courseActive:true,studentFullName:'Ana Torres',educationalInstitutionName:'Unidad Educativa de Ejemplo',academicCycleName:'Quinto ciclo',groupName:'Grupo A'}];
@@ -29,7 +29,7 @@ const accounts = [{id:2,username:'ana.torres',names:'Ana',lastNames:'Torres',rol
  });
  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
  const origin = 'http://127.0.0.1:' + server.address().port;
- const browser = await puppeteer.launch({executablePath:'/usr/bin/google-chrome',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
+ const browser = await puppeteer.launch({executablePath: require('./runtime.cjs').chromePath,headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
  const checks = [], errors = [];
  try {
   for (const mode of ['light','dark']) {

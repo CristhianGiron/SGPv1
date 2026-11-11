@@ -11,6 +11,22 @@
  */
 
 package com.sgp.systemsgp.service;
+import com.sgp.systemsgp.dto.course.CourseResponse;
+import com.sgp.systemsgp.dto.course.CreateCourseRequest;
+import com.sgp.systemsgp.dto.institution.CreateInstitutionRequest;
+import com.sgp.systemsgp.dto.institution.InstitutionResponse;
+import com.sgp.systemsgp.dto.institution.UpdateInstitutionRequest;
+import com.sgp.systemsgp.exception.BadRequestException;
+import com.sgp.systemsgp.exception.NotFoundException;
+import com.sgp.systemsgp.model.Account;
+import com.sgp.systemsgp.model.Course;
+import com.sgp.systemsgp.model.EntityImage;
+import com.sgp.systemsgp.model.Institution;
+import com.sgp.systemsgp.repository.AccountRepository;
+import com.sgp.systemsgp.repository.CourseRepository;
+import com.sgp.systemsgp.repository.EnrollmentRepository;
+import com.sgp.systemsgp.repository.EntityImageRepository;
+import com.sgp.systemsgp.repository.InstitutionRepository;
 
 import com.sgp.systemsgp.dto.course.*;
 import com.sgp.systemsgp.dto.institution.*;

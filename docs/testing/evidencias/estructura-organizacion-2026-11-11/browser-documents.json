@@ -1,0 +1,12 @@
+{
+  "mode": "Chrome con API simulada; persistencia y permisos reales comprobados en integración H2",
+  "checks": [
+    "Autoguardado confirmado en el servidor",
+    "Recuperación explícita desde otro equipo sin almacenamiento local compartido",
+    "Conflicto entre equipos conserva la edición local hasta elegir una versión",
+    "Guardar y abrir PDF autorizado en diálogo",
+    "Vista previa sin desbordamiento a 390 px",
+    "Descarga del expediente de la práctica seleccionada"
+  ],
+  "errors": []
+}

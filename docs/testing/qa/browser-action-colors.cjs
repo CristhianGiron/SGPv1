@@ -13,13 +13,13 @@
 // Measure production CSS in Chrome, including all palettes and dark mode.
 const fs = require('fs'), path = require('path');
 const project = path.resolve(__dirname, '../../..');
-const puppeteer = require(path.join(project, 'FrontEnd/node_modules/puppeteer-core'));
+const puppeteer = require('./runtime.cjs').puppeteer;
 (async () => {
- const browser = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: true, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
+ const browser = await puppeteer.launch({ executablePath: require('./runtime.cjs').chromePath, headless: true, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
  const results = [];
  try {
   const page = await browser.newPage();await page.setViewport({ width: 1100, height: 850 });
-  const folder = path.join(project, 'FrontEnd/build/static/css');
+  const folder = path.join(require('./runtime.cjs').buildPath, 'static/css');
   const css = fs.readFileSync(path.join(folder, fs.readdirSync(folder).find(file => file.endsWith('.css'))), 'utf8');
   await page.setContent(`<style>${css}\n*{transition:none!important}</style><main style="padding:32px;display:grid;gap:16px;grid-template-columns:repeat(4,1fr)"></main>`);
   for (const palette of ['unl', 'claro', 'bosque']) for (const mode of ['light', 'dark']) {

@@ -1,0 +1,53 @@
+{
+  "checks": [
+    {
+      "width": 390,
+      "automaticRefresh": true
+    },
+    {
+      "width": 390,
+      "planReturnedWithReason": true
+    },
+    {
+      "width": 390,
+      "immutableRevisionVisible": true
+    },
+    {
+      "width": 390,
+      "planNoHorizontalOverflow": true
+    },
+    {
+      "width": 390,
+      "answeredInterviewInHistory": true
+    },
+    {
+      "width": 390,
+      "logoutAllReturnsToLogin": true
+    },
+    {
+      "width": 1440,
+      "automaticRefresh": true
+    },
+    {
+      "width": 1440,
+      "planReturnedWithReason": true
+    },
+    {
+      "width": 1440,
+      "immutableRevisionVisible": true
+    },
+    {
+      "width": 1440,
+      "planNoHorizontalOverflow": true
+    },
+    {
+      "width": 1440,
+      "answeredInterviewInHistory": true
+    },
+    {
+      "width": 1440,
+      "logoutAllReturnsToLogin": true
+    }
+  ],
+  "errors": []
+}

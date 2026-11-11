@@ -1,0 +1,200 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          useNotifications.js
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Gestiona el estado y la integración de useNotifications en la interfaz React.
+ */
+
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { apiRequest, getApiBaseUrl } from '../../../api/client';
+import { useAuth } from '../../auth/context/AuthContext';
+
+export function useNotifications() {
+  const { token } = useAuth();
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const socketRef = useRef(null);
+  const notificationStateRef = useRef(new Map());
+  const sourceRef = useRef(Symbol('notifications'));
+  const socketOpenedRef = useRef(false);
+
+  const buildWebSocketUrl = useCallback(() => {
+    const apiBase = getApiBaseUrl();
+    const url = apiBase
+      ? new URL(apiBase, window.location.origin)
+      : new URL(window.location.origin);
+    const localDevHost = ['localhost', '127.0.0.1'].includes(url.hostname);
+
+    if (!apiBase && localDevHost && url.port !== '8080') {
+      url.port = '8080';
+    }
+
+    url.protocol = url.protocol === 'https:' ? 'wss:' : 'ws:';
+    url.pathname = '/ws/notifications';
+    url.search = `token=${encodeURIComponent(token)}`;
+
+    return url.toString();
+  }, [token]);
+
+  const loadNotifications = useCallback(async () => {
+    if (!token) {
+      setNotifications([]);
+      setUnreadCount(0);
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const [items, countPayload] = await Promise.all([
+        apiRequest('/api/notifications/me', { token }),
+        apiRequest('/api/notifications/me/count', { token }),
+      ]);
+
+      const loaded = Array.isArray(items) ? items : [];
+      notificationStateRef.current = new Map(loaded.map((item) => [item.id, item]));
+      setNotifications(loaded);
+      setUnreadCount(Number(countPayload?.count || 0));
+    } catch (err) {
+      setError(err?.message || 'No se pudieron cargar las notificaciones');
+    } finally {
+      setLoading(false);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    function syncNotifications(event) {
+      if (event.detail !== sourceRef.current) loadNotifications();
+    }
+    window.addEventListener('sgp-notifications-changed', syncNotifications);
+    return () => window.removeEventListener('sgp-notifications-changed', syncNotifications);
+  }, [loadNotifications]);
+
+  useEffect(() => {
+    if (!token) {
+      setNotifications([]);
+      setUnreadCount(0);
+      return undefined;
+    }
+
+    loadNotifications();
+
+    if (!token) {
+      return undefined;
+    }
+
+    const webSocketUrl = buildWebSocketUrl();
+
+    let ws;
+    try {
+      ws = new WebSocket(webSocketUrl);
+    } catch (err) {
+      console.error('WebSocket constructor failed', err);
+      setError('Error de conexión WebSocket de notificaciones');
+      return undefined;
+    }
+
+    socketRef.current = ws;
+    socketOpenedRef.current = false;
+
+    ws.onopen = () => {
+      socketOpenedRef.current = true;
+      console.debug('Notification WebSocket opened');
+    };
+
+    ws.onmessage = (event) => {
+      try {
+        const payload = JSON.parse(event.data);
+        if (payload && payload.id) {
+          const previous = notificationStateRef.current.get(payload.id);
+          const delta = (payload.read ? 0 : 1) - (previous && !previous.read ? 1 : 0);
+          notificationStateRef.current.set(payload.id, payload);
+          setNotifications((current) => [payload, ...current.filter((item) => item.id !== payload.id)]);
+          setUnreadCount((current) => Math.max(0, current + delta));
+        }
+      } catch (err) {
+        console.warn('Error parsing notification websocket payload', err);
+      }
+    };
+
+    ws.onerror = (event) => {
+      if (!socketOpenedRef.current) {
+        console.debug('Notification WebSocket error before open', event);
+      } else {
+        console.warn('Notification WebSocket error', event);
+        setError('Error de conexión WebSocket de notificaciones');
+      }
+    };
+
+    ws.onclose = (event) => {
+      if (!socketOpenedRef.current && event.code === 1006) {
+        console.debug('Notification WebSocket closed before open (possible dev-mode cleanup)', event);
+      } else {
+        console.warn('Notification WebSocket closed', event.code, event.reason, event.wasClean);
+      }
+    };
+
+    return () => {
+      ws.close();
+      socketRef.current = null;
+      socketOpenedRef.current = false;
+    };
+  }, [loadNotifications, buildWebSocketUrl, token]);
+
+  const markAsRead = useCallback(
+    async (id) => {
+      if (!token) {
+        return null;
+      }
+
+      try {
+        const updated = await apiRequest(`/api/notifications/${id}/read`, {
+          method: 'PATCH',
+          token,
+        });
+        await loadNotifications();
+        window.dispatchEvent(new CustomEvent('sgp-notifications-changed', { detail: sourceRef.current }));
+        return updated;
+      } catch (err) {
+        setError(err?.message || 'No se pudo marcar la notificación como leída');
+        return null;
+      }
+    },
+    [loadNotifications, token],
+  );
+
+  const markAllAsRead = useCallback(async () => {
+    if (!token) {
+      return;
+    }
+
+    try {
+      await apiRequest('/api/notifications/read-all', {
+        method: 'PATCH',
+        token,
+      });
+      await loadNotifications();
+      window.dispatchEvent(new CustomEvent('sgp-notifications-changed', { detail: sourceRef.current }));
+    } catch (err) {
+      setError(err?.message || 'No se pudieron marcar todas las notificaciones como leídas');
+    }
+  }, [loadNotifications, token]);
+
+  return {
+    notifications,
+    unreadCount,
+    loading,
+    error,
+    refresh: loadNotifications,
+    markAsRead,
+    markAllAsRead,
+  };
+}

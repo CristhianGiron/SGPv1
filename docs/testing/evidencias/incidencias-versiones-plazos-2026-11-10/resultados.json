@@ -1,0 +1,369 @@
+{
+  "date": "2026-11-10",
+  "backend": {
+    "fullSuite": {
+      "cases": 252,
+      "passed": 250,
+      "skipped": 2,
+      "failures": 0,
+      "errors": 0
+    },
+    "suitesWithOptInMigrationResults": [
+      {
+        "name": "com.sgp.systemsgp.SystemsgpApplicationTests",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.config.JwtServiceTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.config.SecurityConfigTest",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.controller.DocumentControllerFlowTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.AccountServiceRecoveryTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.ActivityEvaluationServiceTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.ActivityPlanServiceTest",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.CompletedActivityRecordServiceTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.ContinuityWorkflowTest",
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.CoordinationReportServiceTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.CourseMembershipWorkflowTest",
+        "tests": 19,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.CourseServiceTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.EnrollmentServiceTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.EntityImageIntegrationTest",
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.FacultyServiceTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.FinalReportServiceTest",
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.GradeServiceTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.InstitutionalDefaultsServiceTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.MigrationChainMariaDbTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.NotificationServiceTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.PdfExportServiceTest",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.PdfReferenceLayoutTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.PracticeAccessServiceTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.PracticeAttendanceConcurrencyTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.PracticeAuthorizationRegressionTest",
+        "tests": 12,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.PracticeFollowUpReportServiceTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.PracticeGovernanceConcurrencyTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.PracticeGovernanceWorkflowTest",
+        "tests": 26,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.PracticeImageValidatorTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.PracticeLifecycleIntegrityTest",
+        "tests": 21,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.PracticePhotoServiceTest",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.PracticeReportServiceTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.PracticeScheduleServiceTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.PracticeWorkflowRegressionTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.QaUserWorkflowsTest",
+        "tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.RoleSeparationIntegrationTest",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.websocket.NotificationSessionRevocationTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ]
+  },
+  "frontend": {
+    "suites": 59,
+    "tests": 212,
+    "failures": 0
+  },
+  "mariadb": {
+    "tests": 2,
+    "failures": 0,
+    "migrations": 27,
+    "isolated": true,
+    "verifiedDate": "2026-11-11"
+  },
+  "browser": {
+    "checks": 18,
+    "widths": [
+      390,
+      1440
+    ],
+    "errors": 0,
+    "syntheticApi": true
+  },
+  "build": "Compiled successfully",
+  "operationalDatabaseManuallyModified": false,
+  "sourceSha256": {
+    "BackEnd/src/main/java/com/sgp/systemsgp/config/PracticeReminderScheduler.java": "f7d43036ebc4e7d6b04fba0ffcb21190e75b7e076d8a1cab289f3326d24a7687",
+    "BackEnd/src/main/java/com/sgp/systemsgp/config/SecurityConfig.java": "8a40f8d06304626bdcc2b028ad6211748a60ea8f74ac075db6e9d6d975d9654b",
+    "BackEnd/src/main/java/com/sgp/systemsgp/controller/PracticeDeadlineController.java": "618fb6fe13b67fba332abd1e142d6824ea5ae93bf9675098fc075708f3b54996",
+    "BackEnd/src/main/java/com/sgp/systemsgp/controller/PracticeDocumentVersionController.java": "11b400cad9f33383c5d9b7a7ea9ca9e49b20402e62c524ca8339209d549241ad",
+    "BackEnd/src/main/java/com/sgp/systemsgp/controller/PracticeIncidentController.java": "c6c5444093f854d15937d6fa960b502b9b01824e9424a5e8f2ce366e2306b413",
+    "BackEnd/src/main/java/com/sgp/systemsgp/dto/enrollment/PracticeDeadlineRequest.java": "c8ece811f1d883a152e4a0adb46264c1bd4f508a789f5450a537156c28e6416b",
+    "BackEnd/src/main/java/com/sgp/systemsgp/dto/enrollment/PracticeDeadlineResponse.java": "3eb2ff4d05a4b7db662716c7c2261fda111c988c695791e546e34c7e231c1cee",
+    "BackEnd/src/main/java/com/sgp/systemsgp/dto/enrollment/PracticeDocumentVersionSummary.java": "d3bb84f8883905585ebd7fc685b7065772c7527433282f7b852eeea649e911e9",
+    "BackEnd/src/main/java/com/sgp/systemsgp/dto/enrollment/PracticeIncidentRequests.java": "6f169cd9fcac037d0c75c88df8a32b834fb46d8f7efd02e1d8f582b22aaac897",
+    "BackEnd/src/main/java/com/sgp/systemsgp/dto/enrollment/PracticeIncidentResponse.java": "983c0e5c09a66614fb44ff814c1f60c1e268f8c7f2ab665678dba4353cd6c723",
+    "BackEnd/src/main/java/com/sgp/systemsgp/enums/EnrollmentStatus.java": "d63a77224e03a7c280018150022e1e42da49e1676db064e03651941de16b4eef",
+    "BackEnd/src/main/java/com/sgp/systemsgp/enums/PracticeDeadlineStage.java": "9f9ed0e9b55ed82598c2fd77fe427bad67e4eecca5ebbc3d48bb358dfba34a02",
+    "BackEnd/src/main/java/com/sgp/systemsgp/enums/PracticeDocumentKind.java": "879ad469d65d9f9dcd87a7b0e8d28400eeb33fbaaa85aeddfbb7955b4d63b165",
+    "BackEnd/src/main/java/com/sgp/systemsgp/enums/PracticeIncidentStatus.java": "d3168f00cba65dbc9700bf7c6354cca88d252f7c542ab5361a93bc8b5c4478d3",
+    "BackEnd/src/main/java/com/sgp/systemsgp/enums/PracticeIncidentType.java": "14c6a7f8218d6e767d94b304879074099faba9b2e7aae20d19c63280b2bfbf96",
+    "BackEnd/src/main/java/com/sgp/systemsgp/exception/GlobalExceptionHandler.java": "279fa29b39ad4a7fd985de279c4ecc3b32648591accbe33032e655c13edc205a",
+    "BackEnd/src/main/java/com/sgp/systemsgp/model/ActivityEvaluation.java": "29219701ad4cc20e23633b55ff9b658eb6624f5ea0f85e5adf784d2dafe95931",
+    "BackEnd/src/main/java/com/sgp/systemsgp/model/ActivityPlan.java": "7b363786245acc95b2ed8595d1d6547a34710982033760a590ea1115cef6bd34",
+    "BackEnd/src/main/java/com/sgp/systemsgp/model/CompletedActivityRecord.java": "52fc5bedd08f224ae4fe9c11675c6b3a66717ce20f59630a4775d304d56a5c19",
+    "BackEnd/src/main/java/com/sgp/systemsgp/model/Enrollment.java": "d00fc2d65c46de18a498f75a265410b3778d46bb106449eccebe48be8ced5c9e",
+    "BackEnd/src/main/java/com/sgp/systemsgp/model/FinalReport.java": "4f995d20a8a9f627095fc2338f82ec77bf019c6e0406556685005797b7aae98d",
+    "BackEnd/src/main/java/com/sgp/systemsgp/model/PracticeDeadline.java": "6498903cd839fae98a2da3daffa6071a1311d1ed6b3267e4e39ed7ca908336ba",
+    "BackEnd/src/main/java/com/sgp/systemsgp/model/PracticeDeadlineNotice.java": "c22bc3da2ddab796cdc4b5d8ca90f3d715c788b5106b13e1c4c631ea7a4f6ba9",
+    "BackEnd/src/main/java/com/sgp/systemsgp/model/PracticeDocumentVersion.java": "73d5cec91833c4f8fab36e202f0f7d4a8bc051927a41fb03730cfe45e152f5ac",
+    "BackEnd/src/main/java/com/sgp/systemsgp/model/PracticeFollowUpReport.java": "622da39f2929a74c81427c36b3bdbf4dc63c2ee8dbb1cd7d0d20cc128a2aa0cb",
+    "BackEnd/src/main/java/com/sgp/systemsgp/model/PracticeIncident.java": "bc2a0ba422a2bbc857eaaad6679637fe16fc0b90662504fa291dfdc8c5d5b6f6",
+    "BackEnd/src/main/java/com/sgp/systemsgp/model/PracticeIncidentEvent.java": "f6cb260fede9b6c25c1da0025c48ce2eccfa3a8642dbd83c0cf362e849f2178e",
+    "BackEnd/src/main/java/com/sgp/systemsgp/model/PracticeReport.java": "58f42a7516d293949168088f312338a885b203ec5970bb38e0928c0ca758b396",
+    "BackEnd/src/main/java/com/sgp/systemsgp/repository/EnrollmentRepository.java": "9bbc0caa501dfd67be98a1e314dd48992174abe7829bd888d0ba602149397a9e",
+    "BackEnd/src/main/java/com/sgp/systemsgp/repository/PracticeDeadlineNoticeRepository.java": "919c3d3669ee26bc4cb7bd10b46003fae6cbf009929e1c42a5ce04c2ec52d225",
+    "BackEnd/src/main/java/com/sgp/systemsgp/repository/PracticeDeadlineRepository.java": "b7273d6ce68bd8297946c7e79e8d340319c4ad05a49e4035ca01260a90d41e87",
+    "BackEnd/src/main/java/com/sgp/systemsgp/repository/PracticeDocumentVersionRepository.java": "47c96ac67bed7e779bd2ac973910d371125ce26623d998dc8fb3aecabd21171d",
+    "BackEnd/src/main/java/com/sgp/systemsgp/repository/PracticeIncidentEventRepository.java": "b1501ad6df28ac4ce099f1d25b0a0cafe1381796833547bca4772051f21e2898",
+    "BackEnd/src/main/java/com/sgp/systemsgp/repository/PracticeIncidentRepository.java": "565b485634659da672126fb4c8ebb747ddd922ed80b6bba5fc5eea850e47e320",
+    "BackEnd/src/main/java/com/sgp/systemsgp/service/ActivityEvaluationService.java": "7a160a4057972eeb37106fd512591f5d471815db845e712891693e8e56efb338",
+    "BackEnd/src/main/java/com/sgp/systemsgp/service/ActivityPlanService.java": "89e1a315299138178b106cdec9ac163079e44a95b7fd72e3535f537e34e6a670",
+    "BackEnd/src/main/java/com/sgp/systemsgp/service/CompletedActivityRecordService.java": "161d18fdef90a886f97231c664b921113c23a476d57116b160fbecd8c0f5bbfa",
+    "BackEnd/src/main/java/com/sgp/systemsgp/service/EnrollmentService.java": "a1544cbd7beb7580da98cf946af85522ea3451cde15ddb8e5f749b00c0fed301",
+    "BackEnd/src/main/java/com/sgp/systemsgp/service/FinalReportService.java": "eeb7afc7092c3efdd2766bcf07ea8b5ddebcefa605783b1f9826122391aaeba5",
+    "BackEnd/src/main/java/com/sgp/systemsgp/service/PracticeArchiveExportService.java": "673b37f235d3742f93a5709c86dfe639d19b70e840429ab91de571a637d1cc89",
+    "BackEnd/src/main/java/com/sgp/systemsgp/service/PracticeAuditService.java": "ef5e1bc4564677d6c786b919d663e916dba3d53c02cd67961f33d2ac59356f16",
+    "BackEnd/src/main/java/com/sgp/systemsgp/service/PracticeCompletionService.java": "716bb74fdcefb31570e36ca8407e8cce3d9b91db2f83f541d5027b0628aeb107",
+    "BackEnd/src/main/java/com/sgp/systemsgp/service/PracticeDeadlineService.java": "442136899230b92db2d105749d3e43f7dcaddf393ef1c07371ab5da58c154745",
+    "BackEnd/src/main/java/com/sgp/systemsgp/service/PracticeDocumentBaselineService.java": "b02a788e296493c7b93331bb40311692353995a3052bdeff969e47937a311a49",
+    "BackEnd/src/main/java/com/sgp/systemsgp/service/PracticeDocumentVersionService.java": "826de1d163c02461539ccbeec7ddc917e526c9bbecab927fe8ce75b769b4c0a5",
+    "BackEnd/src/main/java/com/sgp/systemsgp/service/PracticeFollowUpReportService.java": "4e824a74b2e4da8711d95bfb9a08e4e6e1b86f604c926c3c9f1f3ace52ca89ed",
+    "BackEnd/src/main/java/com/sgp/systemsgp/service/PracticeIncidentService.java": "6fdbec2e94480a0508bba1d50629a99c19d92ff78c6ebfc04838611af89fd779",
+    "BackEnd/src/main/java/com/sgp/systemsgp/service/PracticeReportService.java": "fd269d0035062ff88a70a4e6527bb97768e5c3d6d3a7bc9bb9ca9a25eedd4746",
+    "BackEnd/src/main/resources/db/migration/V25__practice_incidents.sql": "b961429da981130dc6915a7334da9b4499c5b3f78ee6ed4828ab35b2bc5fef9f",
+    "BackEnd/src/main/resources/db/migration/V26__practice_document_versions.sql": "b3a4090964eef6f143d7291292c21d590852a0b50ad5b424807864c82e98731f",
+    "BackEnd/src/main/resources/db/migration/V27__practice_deadlines.sql": "a0b4be0cb8846e251f86abacae6c6bb39df93d9b36450a641242f695ad31e90b",
+    "BackEnd/src/test/java/com/sgp/systemsgp/service/ActivityEvaluationServiceTest.java": "105d807be1432cfcc2538358399d05eab7ec4e88fc9f28595ca436a261055262",
+    "BackEnd/src/test/java/com/sgp/systemsgp/service/ActivityPlanServiceTest.java": "19bc18d0c060a183ae1cd502af206c1463b97c55ab0421d99535da0065c47466",
+    "BackEnd/src/test/java/com/sgp/systemsgp/service/CompletedActivityRecordServiceTest.java": "26734a176d0934cac9e280263f69ad1acb5e8d2fe67bde87e9f4a7aba638e35d",
+    "BackEnd/src/test/java/com/sgp/systemsgp/service/FinalReportServiceTest.java": "710fe39a355d4872316e6ef07159222baf8615490b52561da57c7b95220582ef",
+    "BackEnd/src/test/java/com/sgp/systemsgp/service/MigrationChainMariaDbTest.java": "9c3af930062f09ea9fac01298d5a405e22b63ec10dae45ab80d41f9f4c92630a",
+    "BackEnd/src/test/java/com/sgp/systemsgp/service/PracticeFollowUpReportServiceTest.java": "0860970b2dab9390acee18370b5662bc767b0baae2cc2dba6f865d58bd0ef046",
+    "BackEnd/src/test/java/com/sgp/systemsgp/service/PracticeGovernanceConcurrencyTest.java": "4d88d58234e8c769d4428fecf49dca247f8cb3f378a5d11a0b34138328b6cfba",
+    "BackEnd/src/test/java/com/sgp/systemsgp/service/PracticeGovernanceWorkflowTest.java": "9c9d627bebf5e11ec9be335fc811cecd4a95c2fe6b1edb61dbefb706be4e37ff",
+    "BackEnd/src/test/java/com/sgp/systemsgp/service/PracticeReportServiceTest.java": "22c51a33ce53afed5da8ab0a6052f206021a08162bff5beafcfd7cab5009afdb",
+    "FrontEnd/src/components/ui/StatusBadge.jsx": "e3c936f57be5aa8c1df0199d3786de03f9083a8f7623e9b7b72630d46a66589b",
+    "FrontEnd/src/config/practiceManagement.js": "bd7bce974d1b23597936ba551cee2711a7671ca7abc180cc17e08931666bd85a",
+    "FrontEnd/src/config/practiceWorkflow.js": "b1ce276d9a7deeaa6a408f3cd77e498d3863d47c16b1080e42931b8db6ac839b",
+    "FrontEnd/src/pages/PracticeDeadlinesPage.jsx": "102756890eb66034e83015cf6b0816ae148bd47a59f0e99157a82c6c207169a0",
+    "FrontEnd/src/pages/PracticeDocumentVersionsPage.jsx": "83e6dc9e91aa3eaae8f9dba31ccdc387b4de223d0f2902a55388cec548d76654",
+    "FrontEnd/src/pages/PracticeGovernance.test.jsx": "38f9ea45034184eeb4487c123565c97b62e8181daf292170f841085def24f1a3",
+    "FrontEnd/src/pages/PracticeIncidentsPage.jsx": "a563f65d08594b42c5bc154ddb1e503e329439da7e75e82d582ca5ce035b7a74",
+    "FrontEnd/src/pages/PracticeWorkspacePage.jsx": "5e35b907dcc5df75a14372e3a9e6b8d91488d7678d07e2c271901a5dd5178ec8",
+    "FrontEnd/src/utils/format.js": "b99b829ecf36adcc01f9c4e71f964fdd9bc0e86b171f1a2cde6a870be0c341d4",
+    "FrontEnd/src/utils/practiceExperience.js": "f1ae4648b1a067227cde2bc897a216e34d3cb51fb62e2d4cda5011e13cd29d9f",
+    "docs/testing/qa/browser-practice-governance.cjs": "2ee9ae87cbb72b9954e2c2c244e60463814ff16284465c23d61b58fd130c762c"
+  }
+}

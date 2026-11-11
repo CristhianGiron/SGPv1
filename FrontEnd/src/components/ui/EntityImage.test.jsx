@@ -12,7 +12,7 @@
 
 import { fireEvent, render, screen } from '@testing-library/react';
 import { EntityImagePicker, entityImagePayload, imageValidation } from './EntityImage';
-jest.mock('../../auth/AuthContext', () => ({ useAuth: () => ({ token: 'test' }) }));
+jest.mock('../../features/auth/context/AuthContext', () => ({ useAuth: () => ({ token: 'test' }) }));
 beforeEach(() => { URL.createObjectURL = jest.fn(() => 'blob:preview');URL.revokeObjectURL = jest.fn(); });
 test('optional image preserves JSON and selected images travel with the creation payload', async () => {
  const data = { name: 'Práctica', academicCycleId: 7 };

@@ -11,6 +11,14 @@
  */
 
 package com.sgp.systemsgp.service;
+import com.sgp.systemsgp.exception.BadRequestException;
+import com.sgp.systemsgp.exception.NotFoundException;
+import com.sgp.systemsgp.model.Account;
+import com.sgp.systemsgp.model.Course;
+import com.sgp.systemsgp.model.CourseStudentMembership;
+import com.sgp.systemsgp.repository.AccountRepository;
+import com.sgp.systemsgp.repository.CourseRepository;
+import com.sgp.systemsgp.repository.CourseStudentMembershipRepository;
 
 import com.sgp.systemsgp.dto.course.CourseStudentResponse;
 import com.sgp.systemsgp.enums.RoleName;

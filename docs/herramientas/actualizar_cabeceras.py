@@ -45,7 +45,7 @@ SPECIAL = {
     'SecurityConfig': 'Configura la autenticación y las reglas de autorización de las rutas de la API.',
     'JwtService': 'Gestiona los tokens JWT utilizados en la autenticación de la API.',
     'LoginPage': 'Presenta el acceso institucional y envía las credenciales al flujo de autenticación del sistema.',
-    'RegisterPublic': 'Presenta el registro público de estudiantes y sus datos de acceso.',
+    'RegisterStudentPage': 'Presenta el registro público de estudiantes y sus datos de acceso.',
     'ForcePasswordChangePage': 'Permite actualizar la contraseña cuando la cuenta requiere un cambio inicial.',
     'PracticeWorkspacePage': 'Presenta las prácticas asignadas y permite abrir las actividades de cada práctica.',
     'CoursesPage': 'Permite gestionar los paralelos, sus prácticas, estudiantes, grupos y asignaciones autorizadas.',
@@ -170,7 +170,7 @@ def description(path, text):
     if path.suffix in {'.js', '.jsx', '.cjs'}:
         if path.as_posix() == 'FrontEnd/src/index.js':
             return ['Inicia la interfaz React y monta los proveedores y componentes principales del sistema.']
-        if name == 'App.js':
+        if name in {'App.js', 'App.jsx'}:
             return ['Compone la aplicación web y resuelve las rutas según la sesión y los permisos del usuario.']
         folder = path.parent.name
         if folder == 'config':

@@ -34,6 +34,9 @@ import com.sgp.systemsgp.enums.EnrollmentStatus;
 @Builder
 public class Enrollment {
 
+    @Version
+    private long rowVersion;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

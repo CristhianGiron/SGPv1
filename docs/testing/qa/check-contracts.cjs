@@ -35,7 +35,7 @@ return {routes,requests};
 function checkContracts() {
  const {requests}=buildConfig();const mappings=[];
  const controllerRoot=path.join(project,'BackEnd/src/main/java/com/sgp/systemsgp/controller');
- for(const file of fs.readdirSync(controllerRoot).filter(f=>f.endsWith('.java'))){
+ for(const file of fs.readdirSync(controllerRoot,{recursive:true}).filter(f=>f.endsWith('.java'))){
   const source=fs.readFileSync(path.join(controllerRoot,file),'utf8');
   const header=source.split('public class')[0];
   const base=header.match(/@RequestMapping\("([^"]+)"\)/)?.[1]||'';

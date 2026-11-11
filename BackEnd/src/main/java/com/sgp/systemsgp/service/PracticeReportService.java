@@ -11,6 +11,8 @@
  */
 
 package com.sgp.systemsgp.service;
+import com.sgp.systemsgp.service.documentversion.PracticeDocumentVersionService;
+import com.sgp.systemsgp.service.pdf.PdfExportService;
 
 import com.sgp.systemsgp.dto.practicereport.CreatePracticeReportRequest;
 import com.sgp.systemsgp.dto.practicereport.PracticeReportActivityWeekRequest;
@@ -61,6 +63,7 @@ public class PracticeReportService {
     private static final List<PracticeReportStatus> REVIEWER_VISIBLE_STATUSES =
             List.of(PracticeReportStatus.SUBMITTED, PracticeReportStatus.APPROVED);
 
+    private final PracticeDocumentVersionService documentVersions;
     private final PracticeReportRepository practiceReportRepository;
     private final EnrollmentRepository enrollmentRepository;
     private final CourseRepository courseRepository;
@@ -212,7 +215,10 @@ public class PracticeReportService {
     }
 
     public byte[] exportApprovedPdf(Long id, String username) {
-        return renderPdf(id, username, true);
+        var document=getById(id,username);
+        validateApprovedForExport(document.getStatus());
+        byte[] retained=documentVersions.retainedPdf(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L1,id);
+        return retained==null?renderPdf(id,username,true):retained;
     }
 
     @Transactional
@@ -278,6 +284,7 @@ public class PracticeReportService {
 
         validateStudentOwnsReport(student, report);
         validateEditable(report);
+        documentVersions.baseline(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L1,report.getId(),report.getEnrollment(),username,mapToResponse(report),null);
 
         if (request.getEducationalInstitutionId() != null) {
             Institution institution = resolveEducationalInstitution(
@@ -308,6 +315,7 @@ public class PracticeReportService {
 
         validateStudentOwnsReport(student, report);
         validateEditable(report);
+        documentVersions.baseline(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L1,report.getId(),report.getEnrollment(),username,mapToResponse(report),null);
 
         if (report.getStatus() != PracticeReportStatus.SUBMITTED) {
             startNewReviewCycle(report);
@@ -319,6 +327,7 @@ public class PracticeReportService {
         report.setSubmittedAt(LocalDateTime.now());
 
         practiceReportRepository.save(report);
+        documentVersions.record(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L1,report.getId(),report.getEnrollment(),username,"SUBMITTED",mapToResponse(report),"APPROVED".equals(report.getStatus().name()) ? () -> renderPdf(report.getId(),username,true) : null);
         notificationService.notifyPracticeReportSubmitted(report);
 
         return mapToResponse(report);
@@ -335,6 +344,7 @@ public class PracticeReportService {
 
         validateCanReview(report, tutor);
         PracticeAccessService.requireOperationalEnrollment(report.getEnrollment());
+        documentVersions.baseline(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L1,report.getId(),report.getEnrollment(),username,mapToResponse(report),"APPROVED".equals(report.getStatus().name()) ? () -> renderPdf(report.getId(),username,true) : null);
 
         ReviewWorkflowStateMachine.ensureReviewable(
                 report.getStatus(),
@@ -350,6 +360,7 @@ public class PracticeReportService {
         }
 
         practiceReportRepository.save(report);
+        documentVersions.record(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L1,report.getId(),report.getEnrollment(),username,"REVIEWED",mapToResponse(report),"APPROVED".equals(report.getStatus().name()) ? () -> renderPdf(report.getId(),username,true) : null);
 
         if (request.getApproved() != null) {
             notificationService.notifyPracticeReportReviewed(report);

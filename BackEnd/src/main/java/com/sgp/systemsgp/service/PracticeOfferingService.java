@@ -11,6 +11,18 @@
  */
 
 package com.sgp.systemsgp.service;
+import com.sgp.systemsgp.dto.enrollment.CreatePracticeOfferingRequest;
+import com.sgp.systemsgp.dto.enrollment.PracticeOfferingResponse;
+import com.sgp.systemsgp.exception.BadRequestException;
+import com.sgp.systemsgp.exception.NotFoundException;
+import com.sgp.systemsgp.model.Course;
+import com.sgp.systemsgp.model.CourseStudentMembership;
+import com.sgp.systemsgp.model.PracticeOffering;
+import com.sgp.systemsgp.repository.AccountRepository;
+import com.sgp.systemsgp.repository.CourseRepository;
+import com.sgp.systemsgp.repository.CourseStudentMembershipRepository;
+import com.sgp.systemsgp.repository.EnrollmentRepository;
+import com.sgp.systemsgp.repository.PracticeOfferingRepository;
 
 import com.sgp.systemsgp.dto.enrollment.*;
 import com.sgp.systemsgp.dto.course.CourseStudentResponse;

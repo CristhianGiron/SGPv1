@@ -103,13 +103,13 @@ Flyway también gestiona el esquema de desarrollo. El baseline automático queda
 En produccion no se debe usar `ddl-auto=update`. El perfil `prod` usa
 `validate` y Flyway queda habilitado.
 
-Las migraciones viven en `BackEnd/src/main/resources/db/migration` y forman una cadena única V1–V23. Spring Boot 4 usa `spring-boot-starter-flyway` junto con `flyway-mysql`; tener solamente `flyway-core` no activa su autoconfiguración.
+Las migraciones viven en `BackEnd/src/main/resources/db/migration` y forman una cadena única V1–V27. Spring Boot 4 usa `spring-boot-starter-flyway` junto con `flyway-mysql`; tener solamente `flyway-core` no activa su autoconfiguración.
 
 La numeración conserva V2 (retroalimentación), V3 (formularios), V4 (eliminación de aprobación) y V12 (archivo). Las adiciones que colisionaban pasan a V17 (imágenes de interfaz), V18 y V19 (claves de tablas intermedias), y V20 (unicidad). Los scripts históricos conservados no se modifican.
 
 El perfil productivo usa `baseline-on-migrate=false`: una base existente sin historial debe reconciliarse explícitamente antes del despliegue. Consultar `flyway_schema_history` y comparar versión, script y checksum con la cadena actual, especialmente si se aplicó la variante de imágenes como V12 o alguna variante de claves como V2/V3/V4. No ejecutar `repair`, renumerar registros históricos ni habilitar baseline automáticamente para ocultar una divergencia. Crear respaldo y un procedimiento específico para el historial encontrado. La transición local ejecutada el 9 de noviembre de 2026 se documenta en el [registro de aplicación](../testing/informes/2026-11-09/aplicacion-migraciones-local.md). Ese historial corresponde únicamente a esta instalación.
 
-La comprobación aislada se ejecuta con `python3 docs/testing/qa/check-migrations-isolated.py`; requiere MariaDB instalado y crea tres bases en una instancia temporal. Comprueba las 23 migraciones, la actualización V20→V23 con inscripciones existentes, validación/repetición sin cambios y arranque automático con Flyway y `ddl-auto=validate`. El motor de esta prueba es MariaDB, con su driver y dialecto; una instalación MySQL debe validarse también con su versión y copia del esquema de destino.
+La comprobación aislada se ejecuta con `python3 docs/testing/qa/check-migrations-isolated.py`; requiere MariaDB instalado y crea tres bases en una instancia temporal. Comprueba las 27 migraciones, la actualización V20→V27 con inscripciones existentes, validación/repetición sin cambios y arranque automático con Flyway y `ddl-auto=validate`. El motor de esta prueba es MariaDB, con su driver y dialecto; una instalación MySQL debe validarse también con su versión y copia del esquema de destino.
 
 Variables minimas:
 
@@ -175,3 +175,18 @@ export SPRING_JPA_HIBERNATE_DIALECT=org.hibernate.dialect.MariaDBDialect
 V21 crea `course_student_memberships` y conserva como pertenencias los vínculos estudiante/paralelo de las inscripciones existentes en estado PENDING, APPROVED o COMPLETED. No asigna paralelos por compartir ciclo ni concede pertenencia a partir de solicitudes rechazadas. Las asignaciones nuevas se gestionan desde dirección o administración.
 
 La migración debe aplicarse mediante el historial Flyway antes de arrancar el código actualizado sobre un entorno existente. `ddl-auto=update` por sí solo puede crear la tabla, pero no ejecuta el traslado de datos de V21. El arranque por defecto habilita Flyway y usa Hibernate en modo `validate`; no usar `update` como sustituto de las migraciones. No active Flyway ni aplique SQL a una base con historial divergente sin reconciliar antes lo descrito en esta guía. La validación adjunta utiliza bases temporales, no modifica la instalación real.
+
+
+## Incidencias, versiones y plazos
+
+La [segunda etapa de gestión de prácticas](../testing/informes/2026-11-10/incidencias-versiones-plazos-etapa2.md) incorpora las migraciones V25–V27. La aplicación mantiene Flyway habilitado y Hibernate en `validate`; un backend antiguo no debe seguir escribiendo al actualizarlo a los estados nuevos.
+
+Los avisos de plazos son internos. Configuración opcional:
+
+```properties
+app.practice.reminders-enabled=true
+app.practice.reminders-initial-delay-ms=60000
+app.practice.reminders-delay-ms=3600000
+```
+
+Las fechas límite se introducen e interpretan en `America/Guayaquil`. No se activa el planificador con el perfil `test`. Los PDF de versiones conservadas aumentan el tamaño de la base; la política de respaldos y capacidad de almacenamiento debe incluirlos.

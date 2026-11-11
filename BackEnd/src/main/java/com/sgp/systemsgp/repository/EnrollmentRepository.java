@@ -23,6 +23,10 @@ import java.util.List;
 public interface EnrollmentRepository
                 extends JpaRepository<Enrollment, Long> {
 
+    @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
+    @org.springframework.data.jpa.repository.Query("select e from Enrollment e where e.id=:id")
+    java.util.Optional<Enrollment> findForUpdate(@org.springframework.data.repository.query.Param("id") Long id);
+
     boolean existsByGroup_IdAndAccount_IdAndStatus(Long groupId, Long accountId, EnrollmentStatus status);
     @org.springframework.data.jpa.repository.Query("select count(distinct e.account.id) from Enrollment e where e.group.id=:groupId and e.status=:status")
     long countStudentsInGroup(@org.springframework.data.repository.query.Param("groupId") Long groupId,

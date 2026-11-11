@@ -13,7 +13,7 @@
 // UI checks with isolated API fixtures; no requests reach the real database.
 const fs = require('fs'), path = require('path'), http = require('http');
 const project = path.resolve(__dirname, '../../..');
-const puppeteer = require(path.join(project,'FrontEnd/node_modules/puppeteer-core'));
+const puppeteer = require('./runtime.cjs').puppeteer;
 const source = fs.readFileSync(path.join(project,'FrontEnd/src/config/endpointModules.js'),'utf8').replace(/export (const|function) /g,'$1 ');
 const modules = new Function(source+';return DOCUMENT_MODULES;')();
 const sample = modules[0].sample;
@@ -21,11 +21,11 @@ const practice = {id:7,courseId:10,courseName:'Prácticas de informática',stude
 const today = new Date();const iso = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
 const schedule = {id:11,enrollmentId:7,courseName:practice.courseName,studentFullName:practice.studentFullName,startDate:'2026-01-01',endDate:'2027-12-31',periods:['MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY','SUNDAY'].map((day,index)=>({id:index+1,dayOfWeek:day,startTime:'08:00:00',endTime:'12:00:00',place:'Laboratorio'})),attendances:[{id:1,status:'PRESENT',totalMinutes:240,attendanceDate:iso}]};
 (async()=>{
- const root=path.join(project,'FrontEnd/build');
+ const root=require('./runtime.cjs').buildPath;
  const server=http.createServer((req,res)=>{const file=path.resolve(root,'.'+(req.url.split('?')[0]==='/'?'/index.html':req.url.split('?')[0]));if(!file.startsWith(root+'/')||!fs.existsSync(file)){res.writeHead(404);return res.end();}res.setHeader('Content-Type',file.endsWith('.js')?'application/javascript':file.endsWith('.css')?'text/css':'text/html');fs.createReadStream(file).pipe(res);});
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
  const origin='http://127.0.0.1:'+server.address().port;
- const browser=await puppeteer.launch({executablePath:'/usr/bin/google-chrome',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
+ const browser=await puppeteer.launch({executablePath: require('./runtime.cjs').chromePath,headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
  const errors=[],checks=[],requests=[];let role='ROLE_ESTUDIANTE',partial=false;
  const doc=()=>({...sample,id:21,enrollmentId:7,courseName:practice.courseName,studentFullName:practice.studentFullName,status:role==='ROLE_ESTUDIANTE'?'DRAFT':'SUBMITTED',presentation:'Presentación inicial',createdAt:'2026-10-01T10:00:00',submittedAt:role==='ROLE_ESTUDIANTE'?null:'2026-10-02T10:00:00'});
  try {

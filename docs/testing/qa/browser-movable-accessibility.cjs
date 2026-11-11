@@ -12,14 +12,14 @@
 
 // Actual mouse and touch drags against the compiled app. API fixtures are isolated.
 const fs=require('fs'),path=require('path'),http=require('http');
-const project=path.resolve(__dirname,'../../..'),root=path.join(project,'FrontEnd/build');
-const puppeteer=require(path.join(project,'FrontEnd/node_modules/puppeteer-core'));
+const project=path.resolve(__dirname,'../../..'),root=require('./runtime.cjs').buildPath;
+const puppeteer=require('./runtime.cjs').puppeteer;
 const output=process.env.SGP_QA_OUTPUT || path.join(project,'docs/testing/evidencias/accesibilidad-movil');fs.mkdirSync(output,{recursive:true});
 const positionKey='sgp-accessibility-position';
 (async()=>{
  const server=http.createServer((req,res)=>{const f=path.resolve(root,'.'+(req.url.split('?')[0]==='/'?'/index.html':req.url.split('?')[0]));if(!f.startsWith(root+'/')||!fs.existsSync(f)){res.writeHead(404);return res.end();}res.setHeader('Content-Type',({'.js':'application/javascript','.css':'text/css','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.json':'application/json'})[path.extname(f)]||'text/html');fs.createReadStream(f).pipe(res);});
  await new Promise(r=>server.listen(0,'127.0.0.1',r));const origin='http://127.0.0.1:'+server.address().port;
- const browser=await puppeteer.launch({executablePath:'/usr/bin/google-chrome',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});const checks=[],errors=[];
+ const browser=await puppeteer.launch({executablePath: require('./runtime.cjs').chromePath,headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});const checks=[],errors=[];
  try{for(const mode of ['light','dark'])for(const width of [320,390,1440]){
   const touch=width<768,height=touch?844:1000,page=await browser.newPage();await page.setViewport({width,height,isMobile:touch,hasTouch:touch});page.on('pageerror',e=>errors.push({mode,width,message:e.message}));
   await page.evaluateOnNewDocument(mode=>{if(!sessionStorage.getItem('drag-ready')){localStorage.clear();localStorage.setItem('sgp-auth',JSON.stringify({accessToken:'fixture'}));localStorage.setItem('sgp-theme-mode',mode);sessionStorage.setItem('drag-ready','yes');}},mode);

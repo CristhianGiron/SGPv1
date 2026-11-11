@@ -11,6 +11,11 @@
  */
 
 package com.sgp.systemsgp.dto.institution;
+import com.sgp.systemsgp.enums.EducationLevel;
+import com.sgp.systemsgp.enums.EducationModality;
+import com.sgp.systemsgp.enums.InstitutionSupport;
+import com.sgp.systemsgp.enums.InstitutionType;
+import com.sgp.systemsgp.enums.SchoolRegime;
 
 import java.util.Set;
 

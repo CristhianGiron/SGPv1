@@ -18,10 +18,10 @@ Referencia para modificar los flujos recientes sin perder contexto de práctica,
 
 | Elemento | Ubicación | Uso |
 | --- | --- | --- |
-| `PracticeWorkspacePage` | `pages/PracticeWorkspacePage.jsx` | Selecciona práctica y apartado, verifica disponibilidad y monta el contenido |
-| `usePracticeWorkspace()` | `contexts/PracticeWorkspaceContext.jsx` | Devuelve la práctica seleccionada o `null` fuera de ese contexto |
-| `usePracticeRequest()` | `contexts/PracticeWorkspaceContext.jsx` | Filtra resultados al contexto y comprueba el `enrollmentId` de operaciones |
-| `PracticeOverview` | `components/PracticeOverview.jsx` | Carga indicadores, siguiente paso, próximas jornadas e historial |
+| `PracticeWorkspacePage` | `features/practices/pages/PracticeWorkspacePage.jsx` | Selecciona práctica y apartado, verifica disponibilidad y monta el contenido |
+| `usePracticeWorkspace()` | `features/practices/context/PracticeWorkspaceContext.js` | Devuelve la práctica seleccionada o `null` fuera de ese contexto |
+| `usePracticeRequest()` | `features/practices/context/PracticeWorkspaceContext.js` | Filtra resultados al contexto y comprueba el `enrollmentId` de operaciones |
+| `PracticeOverview` | `features/practices/components/PracticeOverview.jsx` | Carga indicadores, siguiente paso, próximas jornadas e historial |
 | `practiceExperience` | `utils/practiceExperience.js` | Selección de fuentes autorizadas, recomendaciones y eventos |
 
 El filtro de contexto no es autorización. Los servicios del backend siguen comprobando rol, asignación y alcance. Los identificadores de un evento de historial no deben confundirse con identificadores de inscripción.

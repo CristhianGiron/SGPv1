@@ -13,19 +13,19 @@
 // Real Chrome UI, two isolated browser contexts, simulated authorized API. No production data.
 const fs = require('fs'), path = require('path'), http = require('http');
 const project = path.resolve(__dirname, '../../..');
-const puppeteer = require(path.join(project, 'FrontEnd/node_modules/puppeteer-core'));
+const puppeteer = require('./runtime.cjs').puppeteer;
 const source = fs.readFileSync(path.join(project,'FrontEnd/src/config/endpointModules.js'),'utf8').replace(/export (const|function) /g,'$1 ');
 const modules = new Function(source+';return DOCUMENT_MODULES;')();
 const sample = modules.find(m=>m.id==='activity-plans').sample;
 const practice = {id:7,courseId:10,courseName:'Prácticas de informática',studentFullName:'María Muñoz',status:'APPROVED',courseActive:true};
 let document = {...sample,id:21,enrollmentId:7,courseName:practice.courseName,studentFullName:practice.studentFullName,status:'DRAFT',presentation:'Presentación inicial'};
 const drafts = new Map(), requests = [], errors = [], checks = [];
-const output = path.join(project,'docs/testing/evidencias/borradores-pdf-expediente'); fs.mkdirSync(output,{recursive:true});
+const output = process.env.SGP_QA_OUTPUT_DIR || path.join(project,'docs/testing/evidencias/borradores-pdf-expediente'); fs.mkdirSync(output,{recursive:true});
 (async()=>{
- const root=path.join(project,'FrontEnd/build');
+ const root=require('./runtime.cjs').buildPath;
  const server=http.createServer((req,res)=>{const file=path.resolve(root,'.'+(req.url.split('?')[0]==='/'?'/index.html':req.url.split('?')[0]));if(!file.startsWith(root+'/')||!fs.existsSync(file)){res.writeHead(404);return res.end();}res.setHeader('Content-Type',({'.js':'application/javascript','.css':'text/css','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.json':'application/json'})[path.extname(file)]||'text/html');fs.createReadStream(file).pipe(res);});
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const origin='http://127.0.0.1:'+server.address().port;
- const browser=await puppeteer.launch({executablePath:'/usr/bin/google-chrome',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
+ const browser=await puppeteer.launch({executablePath: require('./runtime.cjs').chromePath,headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
  try {
   const printer=await browser.newPage();await printer.setContent('<h1>VISTA PREVIA</h1><p>María Muñoz · Gestión de prácticas</p>');const pdf=await printer.pdf();await printer.close();
   async function pageIn(context){

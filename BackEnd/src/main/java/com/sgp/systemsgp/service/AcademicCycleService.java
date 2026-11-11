@@ -11,6 +11,9 @@
  */
 
 package com.sgp.systemsgp.service;
+import com.sgp.systemsgp.dto.academiccycle.AcademicCycleResponse;
+import com.sgp.systemsgp.dto.academiccycle.CreateAcademicCycleRequest;
+import com.sgp.systemsgp.dto.academiccycle.UpdateAcademicCycleRequest;
 
 import com.sgp.systemsgp.dto.academiccycle.*;
 import com.sgp.systemsgp.exception.BadRequestException;

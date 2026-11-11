@@ -13,9 +13,9 @@
 // Actual browser geometry and animation regression checks with isolated fixtures.
 const fs = require('fs'), path = require('path'), http = require('http');
 const project = path.resolve(__dirname, '../../..');
-const puppeteer = require(path.join(project, 'FrontEnd/node_modules/puppeteer-core'));
+const puppeteer = require('./runtime.cjs').puppeteer;
 const defaults = require(path.join(project, 'FrontEnd/src/config/institutionalDefaults.json'));
-const root = path.join(project, 'FrontEnd/build');
+const root = require('./runtime.cjs').buildPath;
 const debug = process.argv.includes('--debug');
 const output = debug ? '/tmp/sgp-motion-debug' : path.join(project, 'docs/testing/evidencias/movimiento-interfaz');
 fs.mkdirSync(output, { recursive: true });
@@ -29,7 +29,7 @@ const imageFixture = fs.readFileSync(path.join(project, 'FrontEnd/src/assets/bra
  });
  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
  const origin = 'http://127.0.0.1:' + server.address().port;
- const browser = await puppeteer.launch({executablePath:'/usr/bin/google-chrome',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
+ const browser = await puppeteer.launch({executablePath: require('./runtime.cjs').chromePath,headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
  const checks = [], errors = [];
  try {
   for (const mode of (debug ? ['light'] : ['light','dark'])) for (const photo of (debug ? [false] : [false,true])) for (const width of (debug ? [1440] : [390,1024,1440])) {

@@ -13,11 +13,11 @@
 // Local browser QA. API fixtures never reach the real backend.
 const fs=require('fs'),path=require('path'),http=require('http');
 const project=path.resolve(__dirname,'../../..');
-const puppeteer=require(path.join(project,'FrontEnd/node_modules/puppeteer-core'));
-const root=path.join(project,'FrontEnd/build');
+const puppeteer=require('./runtime.cjs').puppeteer;
+const root=require('./runtime.cjs').buildPath;
 const {routes}=require('./check-contracts.cjs').buildConfig();
 (async()=>{
- const browser=await puppeteer.launch({executablePath:'/usr/bin/google-chrome',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
+ const browser=await puppeteer.launch({executablePath: require('./runtime.cjs').chromePath,headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
  const server=http.createServer((req,res)=>{const pathname=new URL(req.url,'http://localhost').pathname;const file=path.resolve(root,'.'+(pathname==='/'?'/index.html':pathname));if(!file.startsWith(root+'/')||!fs.existsSync(file)){res.writeHead(404);return res.end();}res.setHeader('Content-Type',file.endsWith('.js')?'application/javascript':file.endsWith('.css')?'text/css':'text/html');fs.createReadStream(file).pipe(res);});
  await new Promise(r=>server.listen(0,'127.0.0.1',r));const origin='http://127.0.0.1:'+server.address().port;
  const results=[],errors=[];let interactions=0;

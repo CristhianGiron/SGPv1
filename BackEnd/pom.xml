@@ -23,8 +23,8 @@
 	<groupId>com.sgp</groupId>
 	<artifactId>systemsgp</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name/>
-	<description/>
+	<name>SGP Backend</name>
+	<description>API del Sistema de Gestión de Prácticas académicas</description>
 	<url/>
 	<licenses>
 		<license/>

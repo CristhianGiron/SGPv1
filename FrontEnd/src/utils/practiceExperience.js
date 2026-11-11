@@ -54,7 +54,7 @@ export function experienceEvents(practice, documents, audits = []) {
    events.push({ id: `${entry.key}/${row.id}/${field}`, date: row[field], title, description: entry.label, actor });
   }
  }
- const labels = { ASSIGN_STUDENT:'Práctica asignada por personal académico', COMPLETE_PRACTICE:'Práctica concluida', REOPEN_PRACTICE:'Práctica reabierta', ARCHIVE_PRACTICE:'Práctica archivada', UNARCHIVE_PRACTICE:'Práctica recuperada del archivo', ARCHIVE_ALL_COMPLETED:'Práctica archivada con su cohorte', ARCHIVE_BATCH:'Práctica archivada en lote', UNARCHIVE_BATCH:'Práctica recuperada del archivo en lote' };
+ const labels = { INCIDENT_OPEN:'Incidencia registrada', INCIDENT_ASSIGNED:'Incidencia asignada', INCIDENT_UNDER_REVIEW:'Incidencia en evaluación', INCIDENT_RESOLVED:'Incidencia resuelta', INCIDENT_REJECTED:'Incidencia rechazada', DEADLINE_UPDATED:'Plazo académico actualizado', ASSIGN_STUDENT:'Práctica asignada por personal académico', COMPLETE_PRACTICE:'Práctica concluida', REOPEN_PRACTICE:'Práctica reabierta', ARCHIVE_PRACTICE:'Práctica archivada', UNARCHIVE_PRACTICE:'Práctica recuperada del archivo', ARCHIVE_ALL_COMPLETED:'Práctica archivada con su cohorte', ARCHIVE_BATCH:'Práctica archivada en lote', UNARCHIVE_BATCH:'Práctica recuperada del archivo en lote' };
  for (const row of audits) events.push({ id: 'audit/'+row.id, date: row.createdAt, title: labels[row.action] || 'Cambio registrado', actor: row.actorName, description: row.details });
  return events.filter(event => Number.isFinite(Date.parse(event.date))).sort((a,b) => Date.parse(b.date)-Date.parse(a.date));
 }

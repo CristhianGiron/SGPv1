@@ -12,14 +12,14 @@
 
 // Responsive record lists with isolated admin API fixtures.
 const fs=require('fs'),path=require('path'),http=require('http');
-const project=path.resolve(__dirname,'../../..'),root=path.join(project,'FrontEnd/build');
-const puppeteer=require(path.join(project,'FrontEnd/node_modules/puppeteer-core'));
+const project=path.resolve(__dirname,'../../..'),root=require('./runtime.cjs').buildPath;
+const puppeteer=require('./runtime.cjs').puppeteer;
 const output=path.join(project,'docs/testing/evidencias/mejoras-ux');fs.mkdirSync(output,{recursive:true});
 const rows=[{id:2,username:'maria',names:'María',lastNames:'Muñoz',roles:['ROLE_ESTUDIANTE'],enabled:true},{id:3,username:'luis',names:'Luis',lastNames:'Peñafiel',roles:['ROLE_ESTUDIANTE'],enabled:false}];
 (async()=>{
  const server=http.createServer((req,res)=>{const file=path.resolve(root,'.'+(req.url.split('?')[0]==='/'?'/index.html':req.url.split('?')[0]));if(!file.startsWith(root+'/')||!fs.existsSync(file)){res.writeHead(404);return res.end();}res.setHeader('Content-Type',({'.js':'application/javascript','.css':'text/css','.svg':'image/svg+xml','.png':'image/png','.json':'application/json'})[path.extname(file)]||'text/html');fs.createReadStream(file).pipe(res);});
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const origin='http://127.0.0.1:'+server.address().port;
- const browser=await puppeteer.launch({executablePath:'/usr/bin/google-chrome',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});const checks=[],errors=[];
+ const browser=await puppeteer.launch({executablePath: require('./runtime.cjs').chromePath,headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});const checks=[],errors=[];
  try{for(const theme of ['light','dark'])for(const width of [360,390,1440]){
   const page=await browser.newPage();await page.setViewport({width,height:1000});page.on('pageerror',e=>errors.push(e.message));
   await page.evaluateOnNewDocument(theme=>{localStorage.clear();localStorage.setItem('sgp-auth',JSON.stringify({accessToken:'fixture'}));localStorage.setItem('sgp-theme-mode',theme);},theme);

@@ -14,7 +14,7 @@ import { act, render, screen } from '@testing-library/react';
 import { PdfPreviewDialog } from './PdfPreviewDialog';
 import { apiBlob } from '../../api/client';
 jest.mock('../../api/client', () => ({ apiBlob: jest.fn() }));
-jest.mock('../../auth/AuthContext', () => ({ useAuth: () => ({ token: 'private-token' }) }));
+jest.mock('../../features/auth/context/AuthContext', () => ({ useAuth: () => ({ token: 'private-token' }) }));
 beforeEach(() => { apiBlob.mockReset(); URL.createObjectURL = jest.fn(() => 'blob:private-preview'); URL.revokeObjectURL = jest.fn(); });
 test('fetches the authorized PDF without exposing the token in the iframe and frees its URL on close', async () => {
   apiBlob.mockResolvedValue(new Blob(['%PDF'], { type: 'application/pdf' }));

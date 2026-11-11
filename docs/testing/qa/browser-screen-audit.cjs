@@ -12,8 +12,8 @@
 
 // Audit discovery: actual navigation and every currently visible tab, isolated API data.
 const fs=require('fs'),path=require('path'),http=require('http');
-const project=path.resolve(__dirname,'../../..'),root=path.join(project,'FrontEnd/build');
-const puppeteer=require(path.join(project,'FrontEnd/node_modules/puppeteer-core'));
+const project=path.resolve(__dirname,'../../..'),root=require('./runtime.cjs').buildPath;
+const puppeteer=require('./runtime.cjs').puppeteer;
 const {routes}=require('./check-contracts.cjs').buildConfig();
 const source=fs.readFileSync(path.join(project,'FrontEnd/src/config/endpointModules.js'),'utf8').replace(/export (const|function) /g,'$1 ');
 const modules=new Function(source+';return [...DOCUMENT_MODULES,...SCHEDULE_MODULES];')();
@@ -31,7 +31,7 @@ const rowsAccount=[{id:2,username:'student.fixture',names:'Ana',lastNames:'Muño
 (async()=>{
  const server=http.createServer((req,res)=>{const file=path.resolve(root,'.'+(req.url.split('?')[0]==='/'?'/index.html':req.url.split('?')[0]));if(!file.startsWith(root+'/')||!fs.existsSync(file)){res.writeHead(404);return res.end();}res.setHeader('Content-Type',({'.js':'application/javascript','.css':'text/css','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.json':'application/json'})[path.extname(file)]||'text/html');fs.createReadStream(file).pipe(res);});
  await new Promise(r=>server.listen(0,'127.0.0.1',r));const origin='http://127.0.0.1:'+server.address().port;
- const browser=await puppeteer.launch({executablePath:'/usr/bin/google-chrome',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});const records=[],errors=[];
+ const browser=await puppeteer.launch({executablePath: require('./runtime.cjs').chromePath,headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});const records=[],errors=[];
  const save=()=>fs.writeFileSync(path.join(output,contextual?'contextos-modales.json':'pantallas.json'),JSON.stringify({date:'2026-11-07',mode:'Chrome with isolated fixtures; route and visible-tab discovery',records,errors},null,2)+'\n');
  try{for(const role of (contextual?['ROLE_ADMIN','ROLE_TUTOR_PRACTICAS']:[...new Set(routes.map(r=>r.role))]))for(const width of [390,1440]){
   const page=await browser.newPage();page.setDefaultTimeout(6000);await page.setViewport({width,height:1000});let currentRoute='',visit=0;

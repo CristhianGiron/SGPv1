@@ -11,6 +11,8 @@
  */
 
 package com.sgp.systemsgp.service;
+import com.sgp.systemsgp.service.documentversion.PracticeDocumentVersionService;
+import com.sgp.systemsgp.service.pdf.PdfExportService;
 import com.sgp.systemsgp.repository.CompletedActivityRecordRepository;
 import com.sgp.systemsgp.model.CompletedActivityRecord;
 import org.springframework.web.multipart.MultipartFile;
@@ -66,6 +68,7 @@ public class FinalReportService {
     private static final List<FinalReportStatus> REVIEWER_VISIBLE_STATUSES =
             List.of(FinalReportStatus.SUBMITTED, FinalReportStatus.APPROVED);
 
+    private final PracticeDocumentVersionService documentVersions;
     private final FinalReportRepository finalReportRepository;
     private final EnrollmentRepository enrollmentRepository;
     private final AccountRepository accountRepository;
@@ -113,8 +116,11 @@ public class FinalReportService {
         validateInstitutionalTutorCanWork(report, getAccount(username));
         if (report.getStatus() != FinalReportStatus.APPROVED || report.getLetterheadImage() != null)
             throw new BadRequestException("Esta opción solo permite completar el membrete faltante de un L.3 ya aprobado");
+        PracticeAccessService.requireOperationalEnrollment(report.getEnrollment());
+        documentVersions.baseline(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L3,report.getId(),report.getEnrollment(),username,mapToResponse(report),null);
         report.setLetterheadImage(EntityImageService.decode(image));
         finalReportRepository.save(report);
+        documentVersions.record(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L3,report.getId(),report.getEnrollment(),username,"LEGACY_LETTERHEAD_ATTACHED",mapToResponse(report),()->renderPdf(report.getId(),username,true));
         return mapToResponse(report);
     }
 
@@ -322,7 +328,10 @@ public class FinalReportService {
     }
 
     public byte[] exportApprovedPdf(Long id, String username) {
-        return renderPdf(id, username, true);
+        var document=getById(id,username);
+        validateApprovedForExport(document.getStatus());
+        byte[] retained=documentVersions.retainedPdf(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L3,id);
+        return retained==null?renderPdf(id,username,true):retained;
     }
 
     @Transactional
@@ -384,6 +393,7 @@ public class FinalReportService {
 
         validateStudentOwnsReport(student, report);
         validateEditable(report);
+        documentVersions.baseline(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L3,report.getId(),report.getEnrollment(),username,mapToResponse(report),null);
 
         if (request.getEducationalInstitutionId() != null) {
             Institution institution = resolveEducationalInstitution(
@@ -413,6 +423,7 @@ public class FinalReportService {
 
         validateStudentOwnsReport(student, report);
         validateEditable(report);
+        documentVersions.baseline(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L3,report.getId(),report.getEnrollment(),username,mapToResponse(report),null);
 
         if (report.getStatus() != FinalReportStatus.SUBMITTED) {
             startNewReviewCycle(report);
@@ -424,6 +435,7 @@ public class FinalReportService {
         report.setSubmittedAt(LocalDateTime.now());
 
         finalReportRepository.save(report);
+        documentVersions.record(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L3,report.getId(),report.getEnrollment(),username,"SUBMITTED",mapToResponse(report),"APPROVED".equals(report.getStatus().name()) ? () -> renderPdf(report.getId(),username,true) : null);
         notificationService.notifyFinalReportSubmitted(report);
 
         return mapToResponse(report);
@@ -440,6 +452,7 @@ public class FinalReportService {
 
         validateInstitutionalTutorCanWork(report, tutor);
         validateInstitutionalSectionEditable(report);
+        documentVersions.baseline(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L3,report.getId(),report.getEnrollment(),username,mapToResponse(report),"APPROVED".equals(report.getStatus().name()) ? () -> renderPdf(report.getId(),username,true) : null);
 
         if (request.getCompletedHours() != null || request.getCompletedMinutes() != null) {
             Integer previous = completedPracticeMinutes(report);
@@ -459,6 +472,7 @@ public class FinalReportService {
         resetReviewDecision(report);
 
         finalReportRepository.save(report);
+        documentVersions.record(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L3,report.getId(),report.getEnrollment(),username,"INSTITUTIONAL_SECTION",mapToResponse(report),"APPROVED".equals(report.getStatus().name()) ? () -> renderPdf(report.getId(),username,true) : null);
 
         return mapToResponse(report);
     }
@@ -474,6 +488,7 @@ public class FinalReportService {
 
         validatePracticeTutorCanReview(report, tutor);
         validateReviewable(report);
+        documentVersions.baseline(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L3,report.getId(),report.getEnrollment(),username,mapToResponse(report),"APPROVED".equals(report.getStatus().name()) ? () -> renderPdf(report.getId(),username,true) : null);
 
         if (Boolean.TRUE.equals(request.getApproved())) {
             validateInstitutionalSectionComplete(report);
@@ -493,6 +508,7 @@ public class FinalReportService {
         }
 
         finalReportRepository.save(report);
+        documentVersions.record(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L3,report.getId(),report.getEnrollment(),username,"REVIEWED",mapToResponse(report),"APPROVED".equals(report.getStatus().name()) ? () -> renderPdf(report.getId(),username,true) : null);
 
         if (request.getApproved() != null) {
             notificationService.notifyFinalReportReviewedByPracticeTutor(report);
@@ -514,6 +530,7 @@ public class FinalReportService {
 
         validateDirectorCanReview(report, director);
         validateReviewable(report);
+        documentVersions.baseline(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L3,report.getId(),report.getEnrollment(),username,mapToResponse(report),"APPROVED".equals(report.getStatus().name()) ? () -> renderPdf(report.getId(),username,true) : null);
         applyDirectorFeedback(report, request);
         saveDirectorFeedbackComments(report, request, director);
 
@@ -528,6 +545,7 @@ public class FinalReportService {
         }
 
         finalReportRepository.save(report);
+        documentVersions.record(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L3,report.getId(),report.getEnrollment(),username,"REVIEWED",mapToResponse(report),"APPROVED".equals(report.getStatus().name()) ? () -> renderPdf(report.getId(),username,true) : null);
 
         if (request.getApproved() != null) {
             notificationService.notifyFinalReportReviewedByDirector(report);
@@ -549,6 +567,7 @@ public class FinalReportService {
 
         validateInstitutionalTutorCanWork(report, tutor);
         validateReviewable(report);
+        documentVersions.baseline(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L3,report.getId(),report.getEnrollment(),username,mapToResponse(report),"APPROVED".equals(report.getStatus().name()) ? () -> renderPdf(report.getId(),username,true) : null);
 
         if (Boolean.TRUE.equals(request.getApproved())) {
             validateInstitutionalSectionComplete(report);
@@ -568,6 +587,7 @@ public class FinalReportService {
         }
 
         finalReportRepository.save(report);
+        documentVersions.record(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L3,report.getId(),report.getEnrollment(),username,"REVIEWED",mapToResponse(report),"APPROVED".equals(report.getStatus().name()) ? () -> renderPdf(report.getId(),username,true) : null);
 
         if (request.getApproved() != null) {
             notificationService.notifyFinalReportReviewedByInstitutionalTutor(report);

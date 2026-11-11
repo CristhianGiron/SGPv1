@@ -39,12 +39,12 @@ Resultado inicial: código de salida 1, 2 aprobados y 6 fallidos.
 
 | # | Severidad | Hallazgo | Evidencia |
 |---|---|---|---|
-| 1 | Media | El menú lateral móvil no se cierra con `Escape`. | Al abrir el diálogo “Menu principal” y pulsar Escape, sigue visible tras 10 s. [AppLayout.jsx](../../../../FrontEnd/src/layout/AppLayout.jsx) |
-| 2 | Media | Pulsar el backdrop fuera del menú no lo cierra. | En viewport de 768 px, el clic en la zona oscura exterior al panel deja el diálogo abierto. [AppLayout.jsx](../../../../FrontEnd/src/layout/AppLayout.jsx) |
-| 3 | Media | El menú móvil no bloquea el desplazamiento de la página subyacente. | Con el menú abierto, `overflow` calculado de `body` y `html` sigue siendo `visible`. [AppLayout.jsx](../../../../FrontEnd/src/layout/AppLayout.jsx) |
-| 4 | Media | Los modales generales no bloquean el scroll de fondo. | En el modal “Filtrar fotografías”, `overflow` de `body` y `html` permanece `visible`. La vista ampliada de evidencias sí implementa este bloqueo, por lo que el comportamiento es inconsistente entre overlays. [Modal.jsx](../../../../FrontEnd/src/components/ui/Modal.jsx) y [PhotosPage.jsx](../../../../FrontEnd/src/pages/PhotosPage.jsx) |
+| 1 | Media | El menú lateral móvil no se cierra con `Escape`. | Al abrir el diálogo “Menu principal” y pulsar Escape, sigue visible tras 10 s. [AppLayout.jsx](../../../../FrontEnd/src/app/layout/AppLayout.jsx) |
+| 2 | Media | Pulsar el backdrop fuera del menú no lo cierra. | En viewport de 768 px, el clic en la zona oscura exterior al panel deja el diálogo abierto. [AppLayout.jsx](../../../../FrontEnd/src/app/layout/AppLayout.jsx) |
+| 3 | Media | El menú móvil no bloquea el desplazamiento de la página subyacente. | Con el menú abierto, `overflow` calculado de `body` y `html` sigue siendo `visible`. [AppLayout.jsx](../../../../FrontEnd/src/app/layout/AppLayout.jsx) |
+| 4 | Media | Los modales generales no bloquean el scroll de fondo. | En el modal “Filtrar fotografías”, `overflow` de `body` y `html` permanece `visible`. La vista ampliada de evidencias sí implementa este bloqueo, por lo que el comportamiento es inconsistente entre overlays. [Modal.jsx](../../../../FrontEnd/src/components/ui/Modal.jsx) y [PhotosPage.jsx](../../../../FrontEnd/src/features/evidence/pages/PhotosPage.jsx) |
 | 5 | Media | Los modales no mueven el foco al diálogo al abrirse. | Al abrir “Filtrar fotografías”, el foco permanece fuera del elemento `role="dialog"`. Esto dificulta el uso por teclado y tecnologías de asistencia, pese a que el diálogo declara `aria-modal="true"`. [Modal.jsx](../../../../FrontEnd/src/components/ui/Modal.jsx) |
-| 6 | Baja | La animación del menú móvil ignora la preferencia de movimiento reducido. | Con `prefers-reduced-motion: reduce`, el menú conserva `transition-duration: 0.2s`. La regla CSS actual solo desactiva algunas transiciones de tarjetas. [index.css](../../../../FrontEnd/src/index.css) y [AppLayout.jsx](../../../../FrontEnd/src/layout/AppLayout.jsx) |
+| 6 | Baja | La animación del menú móvil ignora la preferencia de movimiento reducido. | Con `prefers-reduced-motion: reduce`, el menú conserva `transition-duration: 0.2s`. La regla CSS actual solo desactiva algunas transiciones de tarjetas. [index.css](../../../../FrontEnd/src/index.css) y [AppLayout.jsx](../../../../FrontEnd/src/app/layout/AppLayout.jsx) |
 
 ## Correcciones aplicadas y verificación
 

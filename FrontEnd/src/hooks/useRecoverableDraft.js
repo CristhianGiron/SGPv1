@@ -11,7 +11,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useAuth } from '../auth/AuthContext';
+import { useAuth } from '../features/auth/context/AuthContext';
 import { useServerDraft } from './useServerDraft';
 
 // Keys contain account and document scope, never credentials or tokens.

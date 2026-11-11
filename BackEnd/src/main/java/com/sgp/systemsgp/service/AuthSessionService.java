@@ -11,6 +11,11 @@
  */
 
 package com.sgp.systemsgp.service;
+import com.sgp.systemsgp.model.Account;
+import com.sgp.systemsgp.model.AuthSession;
+import com.sgp.systemsgp.model.Role;
+import com.sgp.systemsgp.repository.AccountRepository;
+import com.sgp.systemsgp.repository.AuthSessionRepository;
 import com.sgp.systemsgp.config.JwtService;
 import com.sgp.systemsgp.dto.auth.AuthResponse;
 import com.sgp.systemsgp.model.*;

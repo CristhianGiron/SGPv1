@@ -17,7 +17,7 @@
         "Define las reglas de .gitignore para las herramientas del proyecto."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "714e98ff86c78ed094e5965821f9692bd041a704c86958ce20032c37c0a5dab8"
+      "contenidoSinCabeceraSha256": "08dc66d7c89e69bf8faae1f088485a57856378ee8aa4f4d95c4c07bbd5574651"
     },
     {
       "ruta": ".hintrc",
@@ -111,7 +111,7 @@
         "Define las dependencias y el proceso de construcción del backend con Maven."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "610fbfcfd779d8f3a6cbdbc90fb501bd2e8d90f2a4d8629d8aa7cd349566e405"
+      "contenidoSinCabeceraSha256": "318bf28c30d4cba7934ebcccefd1dab31ca2de636895e6175a25558600cc2a84"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/SystemsgpApplication.java",
@@ -204,6 +204,15 @@
       "contenidoSinCabeceraSha256": "157ea8abf5a9709498b0249e2acb25e68b4c1e55b0d1b02d803334e27cc5eb57"
     },
     {
+      "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/config/PracticeReminderScheduler.java",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Configura los componentes de el módulo Practice Reminder Scheduler en el backend."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "26c803c9f31d75e43225eefb199636d4ecc584ca9e15c859104d01530f06c4ae"
+    },
+    {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/config/RateLimitingFilter.java",
       "fecha": "2026-11-09 11:08:16",
       "notas": [
@@ -228,7 +237,7 @@
         "Configura la autenticación y las reglas de autorización de las rutas de la API."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "76564f11726cd93eb295b8e8d6f38415b5496fce39d041b655e259e253be7476"
+      "contenidoSinCabeceraSha256": "9162a5298058bacca2ebaf1230c332245882ae7a8e0831fdfb37cbf7bd439e82"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/controller/AcademicCycleController.java",
@@ -237,7 +246,7 @@
         "Expone las operaciones HTTP relacionadas con los ciclos académicos."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "0b8e9bd30ff20d329845c023f3f8b59c05509233ef4f9316f922d4d73f6281de"
+      "contenidoSinCabeceraSha256": "905288289ba6b80433e856088029d56702a514bccdc7843544f94fff7b2628f8"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/controller/AccountController.java",
@@ -363,7 +372,7 @@
         "Expone las operaciones HTTP relacionadas con las imágenes de las entidades."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "f937f35d8d1aebe4070958b4833b05b730519f25041a25f664926ff3e2d149f5"
+      "contenidoSinCabeceraSha256": "e569d1aa9328ec9f499f9cc14f6a7a3b83b511fc628a23adfe72c7e169d107c8"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/controller/FacultyController.java",
@@ -372,7 +381,7 @@
         "Expone las operaciones HTTP relacionadas con las facultades universitarias."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "0e440040c809d2d18b0d43fe768a0c0e016107899c0c0a9a7bc12016d5576584"
+      "contenidoSinCabeceraSha256": "5155c652f4015f722a98f6269218d90c857a4eb584dd13dd2cb80fbc1a69c691"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/controller/FinalReportController.java",
@@ -408,7 +417,7 @@
         "Expone las operaciones HTTP relacionadas con las instituciones."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "de56d05029f62faa734758c7fe8e4c502dd4b2b9f51dd37e3d369c1916b93bc0"
+      "contenidoSinCabeceraSha256": "78596a9959292792a621ffee2b92424f1abae9eecc24a2c687b37caeb89f1e1d"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/controller/InterfaceImageController.java",
@@ -426,7 +435,7 @@
         "Expone las operaciones HTTP relacionadas con los catálogos geográficos."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "53761a6f019ee18bbc1efb75254f7609ae00a44a65f90b9a07035a803f24e062"
+      "contenidoSinCabeceraSha256": "e248c74e954fbd8cfc34ab2db4431b732f95b66d70d440fa6de73072ac1f17a3"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/controller/NotificationController.java",
@@ -489,7 +498,7 @@
         "Expone la creación de prácticas y la inscripción de estudiantes por personal autorizado."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "342debcd1a32e09e2913d5f6fc2c2648471bf00c3415f0f1dc083da92973b0d4"
+      "contenidoSinCabeceraSha256": "ab6b157d059262ac8baf41b4e74a657010c78db2961626927c3f48e400ebca50"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/controller/PracticePhotoController.java",
@@ -562,6 +571,33 @@
       ],
       "cabeceraEnArchivo": true,
       "contenidoSinCabeceraSha256": "08fa55ad9257d0820bd76300c32382f9f4b6a2ebcbdf2f26f1cd09ea498789af"
+    },
+    {
+      "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/controller/documentversion/PracticeDocumentVersionController.java",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Expone las operaciones HTTP relacionadas con el módulo Practice Document Version Controller."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "1d05e75591fa2bb1842c4cb66333c01041bd4d90b80938c259d76444319941f4"
+    },
+    {
+      "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/controller/practicedeadline/PracticeDeadlineController.java",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Expone las operaciones HTTP relacionadas con el módulo Practice Deadline Controller."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "6119b884a86352fd744b1207a0440a9aa73f7c0243194926fe6c054dfba6c50c"
+    },
+    {
+      "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/controller/practiceincident/PracticeIncidentController.java",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Expone las operaciones HTTP relacionadas con el módulo Practice Incident Controller."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "e281b7c58a7373fd6d34222388c76fdad3f3e557693513f58a304928c3ca50b9"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/dto/academiccycle/AcademicCycleResponse.java",
@@ -1077,6 +1113,51 @@
       "contenidoSinCabeceraSha256": "25dcc0f45229b1dbc10c56e6ca95525a4373e33aed2bd05964c8b8724e630f75"
     },
     {
+      "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/dto/enrollment/documentversion/PracticeDocumentVersionSummary.java",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Define los datos de respuesta para el módulo Practice Document Version Summary."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "7644ce152436951c51d979489e47ae05b828b2eec4421f7d59879b19d2869d79"
+    },
+    {
+      "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/dto/enrollment/practicedeadline/PracticeDeadlineRequest.java",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Define los datos de entrada para el módulo Practice Deadline Request."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "28d1612b517b175f32ba5e8118f96dc843cf2d1ce748f381b8868f4cc758ade6"
+    },
+    {
+      "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/dto/enrollment/practicedeadline/PracticeDeadlineResponse.java",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Define los datos de respuesta para el módulo Practice Deadline Response."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "85a9874806370ba4199ac70b4cb98f0e402f3572da8ab02e35a186305fa20c27"
+    },
+    {
+      "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/dto/enrollment/practiceincident/PracticeIncidentRequests.java",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Define los datos de respuesta para el módulo Practice Incident Requests."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "e6416698a851cef08d6212df664dc63e3d111c80223c81f04af0f6d495a59fda"
+    },
+    {
+      "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/dto/enrollment/practiceincident/PracticeIncidentResponse.java",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Define los datos de respuesta para el módulo Practice Incident Response."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "dbe6bcc474e4ed219a6d00b540de7fbd7b09f67ea5fcdcd21bee7377706797fc"
+    },
+    {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/dto/error/ErrorResponse.java",
       "fecha": "2026-11-09 11:08:16",
       "notas": [
@@ -1254,7 +1335,7 @@
         "Define los datos de entrada para las instituciones."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "261b45d43b89da4606e917acd91abd7c70349841c5610e92f2ef6df048dd8132"
+      "contenidoSinCabeceraSha256": "5955b882100dfdc978f9f8fac9f712c44cf78cd312561bcaa9ee7eeed2c50bf9"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/dto/institution/InstitutionResponse.java",
@@ -1272,7 +1353,7 @@
         "Define los datos de entrada para las instituciones."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "e0e6fb050b97f555fed12cb0c92a0c8ef1e2601be515f3dc585aebe7cd60acf6"
+      "contenidoSinCabeceraSha256": "c8667ccfc13552f7f0b19cc1688cd065918ac15758259d22ea1bab4bc530dc16"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/dto/interfaceimage/InterfaceImageFileResponse.java",
@@ -1821,7 +1902,7 @@
         "Define los valores permitidos de las inscripciones y prácticas asignadas."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "3c0a3930ecc01d46a4d27663b1d3220b269c8f7af14f12e23d32e1fcddb8a0d7"
+      "contenidoSinCabeceraSha256": "4b8445d2d1b4504302dc57571f073e8f515de520a728a07a8c48969bec88356c"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/enums/FeedbackDocumentType.java",
@@ -1932,6 +2013,42 @@
       "contenidoSinCabeceraSha256": "eb73087c520761598d30ad671caeb3aa54b210e94805c46a025414b3f89fd642"
     },
     {
+      "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/enums/documentversion/PracticeDocumentKind.java",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Define los valores permitidos de el módulo Practice Document Kind."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "b9ebccd9db1884858c6322ebd7b09a12c22f3f35b05c3d67f0dbd81fe6d2b5db"
+    },
+    {
+      "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/enums/practicedeadline/PracticeDeadlineStage.java",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Define los valores permitidos de el módulo Practice Deadline Stage."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "dcf55750e0cebd6e72104b5f3e14a293a9a71783993c20b3cd22c9c9e41621b5"
+    },
+    {
+      "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/enums/practiceincident/PracticeIncidentStatus.java",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Define los valores permitidos de el módulo Practice Incident Status."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "afe0b6f486ec787eea0e712e311694415b6b66f348e744050973969f3253702c"
+    },
+    {
+      "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/enums/practiceincident/PracticeIncidentType.java",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Define los valores permitidos de el módulo Practice Incident Type."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "6581fce21800c639ebb72f5ae45e4cf1adf104a456b504f0165491d4ec1459a7"
+    },
+    {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/exception/BadRequestException.java",
       "fecha": "2026-11-09 11:08:16",
       "notas": [
@@ -1947,7 +2064,7 @@
         "Define el tratamiento de errores de el módulo Global Exception Handler."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "d993782eac05f7ab53d456a0aafd91cb258cc02c9ab0c2df60f8bfc3dd6a6e3a"
+      "contenidoSinCabeceraSha256": "b1840076ef182660aef9b8071c47aec05ade0c21bac67e17a2f78a3e4ca8465e"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/exception/NotFoundException.java",
@@ -1983,7 +2100,7 @@
         "Representa los datos persistentes de la evaluación de actividades (L.4)."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "0eab5a9869119b3e65bc71cb1e0f538a8e9a2302dc9283e4e0473c83bbaf09dd"
+      "contenidoSinCabeceraSha256": "37c9d04e9e78db35f40a19702aca598fa7c166157bdc3d60a7e5cb9818486061"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/model/ActivityEvaluationAspect.java",
@@ -2001,7 +2118,7 @@
         "Representa los datos persistentes de el plan de actividades (L.2)."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "a2a077f176ce326222a3a581750bda5ac6573587f50eb75fd3c738aafdc55e24"
+      "contenidoSinCabeceraSha256": "4db9ad27de3c332cb3dd2f884536aa4c2d12abb2804990246f2f0129e5cd2913"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/model/ActivityPlanActivityWeek.java",
@@ -2055,7 +2172,7 @@
         "Representa los datos persistentes de el registro de actividades cumplidas (L.6)."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "7f775b9dd57a5b91b0f21161911902e734bc9c9c2210c20c17a1009d921fd553"
+      "contenidoSinCabeceraSha256": "91e2f518f02aed850b4be1cf675268116c94ce24eff84057c5c8d0891e522d26"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/model/CompletedActivityRecordEntry.java",
@@ -2127,7 +2244,7 @@
         "Representa los datos persistentes de las inscripciones y prácticas asignadas."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "727044556a3fe0383ea297bf73f92246c108fb27663fa2b12dd383a6e75ca2d4"
+      "contenidoSinCabeceraSha256": "eab3edb9ac9b528434c619af34d3a2fd637b1349ed9027f34f0eaf5bf0b380a8"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/model/EntityImage.java",
@@ -2172,7 +2289,7 @@
         "Representa los datos persistentes de el informe del tutor institucional (L.3)."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "011784c32f7d5b7b1feafc654124a547d7b49f53fc3130f0ec5b4abe1d134885"
+      "contenidoSinCabeceraSha256": "a8df6dc5262823e1a0c6e283f67ade2bf142295f7be4d8c5012fa99e4bc81385"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/model/FinalReportActivityWeek.java",
@@ -2208,7 +2325,7 @@
         "Representa los datos persistentes de las instituciones."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "064ee14eef6815be80885946f5650c6feb5b91ed64a7b93094871631803f597e"
+      "contenidoSinCabeceraSha256": "14d9b50a48d60ab59a960a80f825ce6a037d41cc4d57c13895028ff6dedcc384"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/model/InstitutionEducationLevel.java",
@@ -2280,7 +2397,7 @@
         "Representa los datos persistentes de el seguimiento de prácticas (L.5)."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "c1dfec2e1cb24e7504295c1bbce8e1b838e1eac81b4dede29d46a352f5587ccf"
+      "contenidoSinCabeceraSha256": "8dddfeb8bcd9a59089674686e51788cd9eec3d14e242032007d8ddebbb98a043"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/model/PracticeFollowUpSession.java",
@@ -2316,7 +2433,7 @@
         "Representa los datos persistentes de el informe de actividades cumplidas (L.1)."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "5d2719b8d4c1f7385e917ef4f10d03c8de442e2164fe3d763e7242a148b39d47"
+      "contenidoSinCabeceraSha256": "7cf2f520009109c4122ed77e65af2ea92ee6b0f31ba6e20d1a9ba9c41c5c75c2"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/model/PracticeReportActivityWeek.java",
@@ -2445,6 +2562,15 @@
       "contenidoSinCabeceraSha256": "1f54fad29580f2ab8a22e8eece80215f8090309c093dd005e5b82e8e2d640d92"
     },
     {
+      "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/model/documentversion/PracticeDocumentVersion.java",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Representa los datos persistentes de el módulo Practice Document Version."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "6b1afd556a845217a1cc1868993be970acf17c3622efaad9ba32988efb766cd9"
+    },
+    {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/model/listener/AuditEntityListener.java",
       "fecha": "2026-11-09 11:08:16",
       "notas": [
@@ -2452,6 +2578,42 @@
       ],
       "cabeceraEnArchivo": true,
       "contenidoSinCabeceraSha256": "7fd4c5f759f5a2c15bb727bcdc9182ded8725a80121f02d787e3c05528cca745"
+    },
+    {
+      "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/model/practicedeadline/PracticeDeadline.java",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Representa los datos persistentes de el módulo Practice Deadline."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "a496dff9663e7d8ad7b32cf873988f6b2155ebdd0610b13b4dcc3a7586516494"
+    },
+    {
+      "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/model/practicedeadline/PracticeDeadlineNotice.java",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Representa los datos persistentes de el módulo Practice Deadline Notice."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "166a6bd7f99fb00a036344b774e5c1db1f4400ab1b414dd2dcbe243849d1378e"
+    },
+    {
+      "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/model/practiceincident/PracticeIncident.java",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Representa los datos persistentes de el módulo Practice Incident."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "b405bcff750b72e7c7ebccd988d0873b80b9f2f389084db6e20a1efd08496447"
+    },
+    {
+      "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/model/practiceincident/PracticeIncidentEvent.java",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Representa los datos persistentes de el módulo Practice Incident Event."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "f5c5c811169005b4dfee88fdebfd81512595dac090fa5641aca39b99c63f90d2"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/repository/AcademicCycleRepository.java",
@@ -2577,7 +2739,7 @@
         "Define las consultas de persistencia para las inscripciones y prácticas asignadas."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "550775de1612b0df5a27d3d3d984d81d02f393c9127a63738fdd4ba1fd2662a5"
+      "contenidoSinCabeceraSha256": "6ee0223e63cbe37c14cca7ea354cb2855e29c1cb90552c782d4b0f2ded87b35a"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/repository/EntityImageRepository.java",
@@ -2787,13 +2949,58 @@
       "contenidoSinCabeceraSha256": "dff08f2915becdcc15d486e2fe054504bb505af8c8842a975158b0e9dfdb49ce"
     },
     {
+      "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/repository/documentversion/PracticeDocumentVersionRepository.java",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Define las consultas de persistencia para el módulo Practice Document Version Repository."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "94a5df843b582a2f53beed8efb7e4142ad6571fcbd0f4597ce31ed7378229d87"
+    },
+    {
+      "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/repository/practicedeadline/PracticeDeadlineNoticeRepository.java",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Define las consultas de persistencia para el módulo Practice Deadline Notice Repository."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "feda89852b69e92fe8a6404efda5a6768aae584f8befec5a9de6c2497c82286c"
+    },
+    {
+      "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/repository/practicedeadline/PracticeDeadlineRepository.java",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Define las consultas de persistencia para el módulo Practice Deadline Repository."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "cfdc3ec84411544e458e50e4bcbdd210955a7762745732f45ca5c004e2a4e387"
+    },
+    {
+      "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/repository/practiceincident/PracticeIncidentEventRepository.java",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Define las consultas de persistencia para el módulo Practice Incident Event Repository."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "60b39511caf27e8175e55fddefcfc96559dea46b085a0578ddeded1a8019429a"
+    },
+    {
+      "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/repository/practiceincident/PracticeIncidentRepository.java",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Define las consultas de persistencia para el módulo Practice Incident Repository."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "3fd47f5b01a36d0b18fad44f9b4bae5876bd5c706567e811c0ce2e821fa2d4ad"
+    },
+    {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/service/AcademicCatalogAccess.java",
       "fecha": "2026-11-09 11:08:16",
       "notas": [
         "Implementa el componente AcademicCatalogAccess del backend del SGP."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "d1ba879b534228019d1d8cdf9d2fa36b89875acb483dc123aa6f4bfab5f122f4"
+      "contenidoSinCabeceraSha256": "0fdd540f59f479ff163f2ceddf7a8ab77a3f5203b5f25d832c5e430a197ad34b"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/service/AcademicCycleService.java",
@@ -2802,7 +3009,7 @@
         "Implementa la lógica de aplicación de los ciclos académicos."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "611a762f1f0991a41680ce470f3219468f24c0d0485b1c1cb87f63c17001a4f6"
+      "contenidoSinCabeceraSha256": "0181fb911ef2efa337dcf1b3fd408d1e4675996619f1ca969dc5e2649e9b8de0"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/service/AccountService.java",
@@ -2820,7 +3027,7 @@
         "Implementa la lógica de aplicación de la evaluación de actividades (L.4)."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "34651c52dc719e42b1c9afa461ee159a88dbfbe259fa8b0ae9bdcd4212bb449c"
+      "contenidoSinCabeceraSha256": "a571cd4c59d8bfb4f83bfd6b28787542eb914f3becdeb8dd05f8252f88578400"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/service/ActivityPlanService.java",
@@ -2829,7 +3036,7 @@
         "Implementa la lógica de aplicación de el plan de actividades (L.2)."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "3ec4a3c165d034d8b751464aa4576bc0d723fe4c787f0fb8a097ad1a9e0c28ae"
+      "contenidoSinCabeceraSha256": "0fe9455e18afe0a30e68dc18269a817a504cfdb46eaaf33723f25b95e2143493"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/service/AdminAccountService.java",
@@ -2856,7 +3063,7 @@
         "Implementa la lógica de aplicación de la autenticación de usuarios."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "b4a15d6402241c9f3b2b0b6869cc8b24a8d8267062916e3e1bbdfeddbcf01c08"
+      "contenidoSinCabeceraSha256": "8a2241cb177c1dd0beb7ac2f7d3b85545b318573647f104a4f7809d7243a9cb8"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/service/BootstrapService.java",
@@ -2883,7 +3090,7 @@
         "Implementa la lógica de aplicación de el registro de actividades cumplidas (L.6)."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "65b5e7a877f053821db813f949509b7cc9e1e250aa50841f753dfa88d52376c2"
+      "contenidoSinCabeceraSha256": "3ea05a80bdd89e4341d5955df4866af589f0653d13b91f65fb2a09100e580f12"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/service/CoordinationReportService.java",
@@ -2901,7 +3108,7 @@
         "Gestiona la pertenencia académica a paralelos y comprueba la compatibilidad del ciclo."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "98dfbcdd73bf6c1bdc0f87d3d1499b4e6c1929a452097a07b58f595ce2f9e5e7"
+      "contenidoSinCabeceraSha256": "9e27318c61e501b9e19a77c0c722f0f83d01af0e51770b9900d6eea724db9f9d"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/service/CourseService.java",
@@ -2937,7 +3144,7 @@
         "Implementa el componente DocumentPdfData del backend del SGP."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "7b9b7a6f1e060dd9065b1a03f3d8ffc4e6c62bc1a08a71dc4aed4323beda9d5b"
+      "contenidoSinCabeceraSha256": "341213f7cf75b2bb05c18d4b06324c980743f3208ae252070ddd1242047408e8"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/service/EnrollmentService.java",
@@ -2946,7 +3153,7 @@
         "Gestiona la asignación administrativa de estudiantes y el ciclo de vida de sus prácticas."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "353e5c46a466b90ea930f5827d08aa021c33c05fd67ecad9c9ce330935731c14"
+      "contenidoSinCabeceraSha256": "dd176e20ca2d4510adddda9dc5bdf6325d6ca3a986cfef5e24f97934138a5557"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/service/EntityImageService.java",
@@ -2955,7 +3162,7 @@
         "Implementa la lógica de aplicación de las imágenes de las entidades."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "4e2ab98a4455547198a4cdc8b176072e6e0770e6973d188ba674bc855c14d887"
+      "contenidoSinCabeceraSha256": "7bc24aed1fb098a65ba2acdba913b2364b3ace9c9ae0367f03a0d68fbfdf48ab"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/service/FacultyService.java",
@@ -2964,7 +3171,7 @@
         "Implementa la lógica de aplicación de las facultades universitarias."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "6da8073cb2a4a9474ba63d402038ce668a40c61a647842dd095efcdd125f2f9c"
+      "contenidoSinCabeceraSha256": "4be7644fa17e8d5878fe0687ee34b951bf879a0eb81af8d927a0089690f0693d"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/service/FeedbackCommentService.java",
@@ -2982,7 +3189,7 @@
         "Implementa la lógica de aplicación de el informe del tutor institucional (L.3)."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "15620d2b2532c0d2609fb9ff612f1f97ec57459f20e5f9492910c479bc31ce83"
+      "contenidoSinCabeceraSha256": "c91ea775d753f39eef405e922b60916eb68fe0da2bb0cd2bb07aa3ee87ac1c0e"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/service/GradeParallelService.java",
@@ -3018,7 +3225,7 @@
         "Implementa la lógica de aplicación de las instituciones."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "4cf32806a0a1b1cc1aeec67a16b9c01ccbe612aff6a9d8d15df581262f55d8dd"
+      "contenidoSinCabeceraSha256": "01729c4b78d370ace733530b89ff689e1aabe3f63c6213c7609aa87eba4a4ee7"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/service/InstitutionalAssignmentResolver.java",
@@ -3036,7 +3243,7 @@
         "Implementa la lógica de aplicación de las instituciones."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "3bfcadb3c5a75d7e2cb5d8906b9f1b90c6f68d556a14dd24186b9184f94f9579"
+      "contenidoSinCabeceraSha256": "207da21ef1232ddbac618458ac3db220ae8e66a6d6f2a5dbc1ba1438a7285028"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/service/InterfaceImageService.java",
@@ -3054,7 +3261,7 @@
         "Implementa la lógica de aplicación de los catálogos geográficos."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "545a763c07590461e47c43149dd854775d3ce278ea697be405cce67dc4725887"
+      "contenidoSinCabeceraSha256": "ec7731fbdf0bda89730645fd0294e3e4de5bd02ea4dae8a3b29929014ec10ab8"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/service/NotificationService.java",
@@ -3064,15 +3271,6 @@
       ],
       "cabeceraEnArchivo": true,
       "contenidoSinCabeceraSha256": "3da0f4fae901ae0934754e01d9a0cd819b0ec397ad688d17f8cbbf58b490583a"
-    },
-    {
-      "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/service/PdfExportService.java",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Implementa la lógica de aplicación de los documentos PDF."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "fe09e2796a0f21527ab205e997d154f82483243d92574db2f15b23bb9ba438fc"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/service/PdfPreview.java",
@@ -3099,7 +3297,7 @@
         "Reúne los documentos y evidencias autorizados de una práctica para exportar su expediente ZIP."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "f6ef146998e7a632bb793e8787058d14c8529c9dd5f7e8c8b0c0b80a1ef810a0"
+      "contenidoSinCabeceraSha256": "4be2615f266be616a10520e3e912af945900a7df9073d0ef0e189543dd4e85f3"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/service/PracticeAuditService.java",
@@ -3108,7 +3306,7 @@
         "Implementa la lógica de aplicación de el módulo Practice Audit Service."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "581827388ad931f9985c691c76e2b1eb5bd38a936941aad2752d2b535e280680"
+      "contenidoSinCabeceraSha256": "4d3b37fc765d4e7b12f31d4925e73f251e222849614afcfff071fd715812a65e"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/service/PracticeCompletionService.java",
@@ -3117,7 +3315,7 @@
         "Calcula las advertencias documentales y de horas para el cierre manual de una práctica."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "aff92eb6b7632409fa7d118d1bb66d3ebeba8a2fd13f30fff754116c1fc2cefb"
+      "contenidoSinCabeceraSha256": "9fb6da1715693116d507dc559c91ac90bcbddbf1dbf7b295d503c5c5fd8bf9a5"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/service/PracticeFollowUpReportService.java",
@@ -3126,7 +3324,7 @@
         "Implementa la lógica de aplicación de el seguimiento de prácticas (L.5)."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "e7da5d0ee5ef00517ec1e0cba45f8996df78bce781f0f558ebfe7d666945eecc"
+      "contenidoSinCabeceraSha256": "b9d3ca483e53ee1b023c5dcbe4609c9285cdf6693d3e8d166dd3d395d49411bb"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/service/PracticeFormService.java",
@@ -3153,7 +3351,7 @@
         "Gestiona las prácticas ofrecidas a un paralelo y su período de inscripción."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "251f2fbbf725afd20d2274b3dcfe4556e108605a9c9901126e6cfbcdb7a03008"
+      "contenidoSinCabeceraSha256": "f5362ac6d65a045a9a24ccca1b08994c52e30720245decbc88eb2f4390abde7e"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/service/PracticePeriod.java",
@@ -3180,7 +3378,7 @@
         "Implementa la lógica de aplicación de el informe de actividades cumplidas (L.1)."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "3360a78a75f2037fcac200a03095d967945309a9f9fafb364b2668bfa0cc2757"
+      "contenidoSinCabeceraSha256": "44d34986508b83a338fc12784db08a4c52dff90ede762493c459dc354655dab9"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/service/PracticeScheduleService.java",
@@ -3217,6 +3415,96 @@
       ],
       "cabeceraEnArchivo": true,
       "contenidoSinCabeceraSha256": "e8ae134195ebafa784f5a70954a0e89d44716f62a4ef27897fdda9c8178018ef"
+    },
+    {
+      "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/service/documentversion/PracticeDocumentBaselineService.java",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Implementa la lógica de aplicación de el módulo Practice Document Baseline Service."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "d11124c7b6f4a0de991b7879afcd073c08762665af10504dc7f0bcceab6301bb"
+    },
+    {
+      "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/service/documentversion/PracticeDocumentVersionService.java",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Implementa la lógica de aplicación de el módulo Practice Document Version Service."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "ddc498bb6de068b1bb3276398502c4363231b83b4e9f05d5b90b152580a4b13e"
+    },
+    {
+      "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/service/pdf/ActivityEvaluationPdfWriter.java",
+      "fecha": "2026-11-11 10:29:41",
+      "notas": [
+        "Implementa el componente ActivityEvaluationPdfWriter del backend del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "97949f9ccde5fbd1e0bc301db2d3d76aef29840365eeaacf864b15d85ec23cc7"
+    },
+    {
+      "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/service/pdf/CompletedActivityRecordPdfWriter.java",
+      "fecha": "2026-11-11 10:29:41",
+      "notas": [
+        "Implementa el componente CompletedActivityRecordPdfWriter del backend del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "1403727b6a68d45f54d75c0c8d8205bb742977f884bd0c093a1780df71241c08"
+    },
+    {
+      "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/service/pdf/PdfExportService.java",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Implementa la lógica de aplicación de los documentos PDF."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "d86c31dda332f2201faaadc8c9d1d13f614d24aeccbbdcb07e26c1a5a1a9e246"
+    },
+    {
+      "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/service/pdf/PdfLayoutSupport.java",
+      "fecha": "2026-11-11 10:29:41",
+      "notas": [
+        "Implementa el componente PdfLayoutSupport del backend del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "7c2b14215fb366181ace391f2149e96dead1eed0a025be4b46130c5574b152cc"
+    },
+    {
+      "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/service/pdf/PdfWriter.java",
+      "fecha": "2026-11-11 10:29:41",
+      "notas": [
+        "Implementa el componente PdfWriter del backend del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "6015a64817ecc45ac015449b61f09a67fad26717c224ebd99fccd0dd108c3e33"
+    },
+    {
+      "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/service/pdf/PracticeFollowUpReportPdfWriter.java",
+      "fecha": "2026-11-11 10:29:41",
+      "notas": [
+        "Implementa el componente PracticeFollowUpReportPdfWriter del backend del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "9e5681f4270c1b7460e88f88f9d7957f38ccedbf37a231a40c7840473169fdff"
+    },
+    {
+      "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/service/practicedeadline/PracticeDeadlineService.java",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Implementa la lógica de aplicación de el módulo Practice Deadline Service."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "5c7300a2aeeb1ed4c4d9e3bbba4553d1c765f106cdbcae7b5a88563b2378b675"
+    },
+    {
+      "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/service/practiceincident/PracticeIncidentService.java",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Implementa la lógica de aplicación de el módulo Practice Incident Service."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "ef5af23857be292a4784bb5704f4f8366fe1f7538cd62c29c9f051453b35bd75"
     },
     {
       "ruta": "BackEnd/src/main/java/com/sgp/systemsgp/specification/CourseSpecification.java",
@@ -3500,6 +3788,36 @@
       "sha256": "23fa0af22cb4b4fe64aef8a0a3ae74bf231afaec0fa87a4cbb858bdd0aea0176"
     },
     {
+      "ruta": "BackEnd/src/main/resources/db/migration/V25__practice_incidents.sql",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Define la migración V25: practice incidents del esquema de datos."
+      ],
+      "cabeceraEnArchivo": false,
+      "motivo": "Migración histórica: conservar los checksums de Flyway.",
+      "sha256": "b961429da981130dc6915a7334da9b4499c5b3f78ee6ed4828ab35b2bc5fef9f"
+    },
+    {
+      "ruta": "BackEnd/src/main/resources/db/migration/V26__practice_document_versions.sql",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Define la migración V26: practice document versions del esquema de datos."
+      ],
+      "cabeceraEnArchivo": false,
+      "motivo": "Migración histórica: conservar los checksums de Flyway.",
+      "sha256": "b3a4090964eef6f143d7291292c21d590852a0b50ad5b424807864c82e98731f"
+    },
+    {
+      "ruta": "BackEnd/src/main/resources/db/migration/V27__practice_deadlines.sql",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Define la migración V27: practice deadlines del esquema de datos."
+      ],
+      "cabeceraEnArchivo": false,
+      "motivo": "Migración histórica: conservar los checksums de Flyway.",
+      "sha256": "a0b4be0cb8846e251f86abacae6c6bb39df93d9b36450a641242f695ad31e90b"
+    },
+    {
       "ruta": "BackEnd/src/main/resources/db/migration/V2__feedback_review_cycle.sql",
       "fecha": "2026-11-09 11:08:16",
       "notas": [
@@ -3631,7 +3949,7 @@
         "Comprueba el comportamiento de la evaluación de actividades (L.4) mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "f25557e5fd1abc3ff4e45dcda4e18190a8dacfc56891e795650e5bb9f070c102"
+      "contenidoSinCabeceraSha256": "0d6ec26d9b7b6d2d671bc1bd0ac1eb2120f02f36730edc87fb2b32ff58fe59a6"
     },
     {
       "ruta": "BackEnd/src/test/java/com/sgp/systemsgp/service/ActivityPlanServiceTest.java",
@@ -3640,7 +3958,7 @@
         "Comprueba el comportamiento de el plan de actividades (L.2) mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "8fe55295874b634a425ccc1a6b67620a309cf6a5deaa4daf0407132f3f88e1da"
+      "contenidoSinCabeceraSha256": "f34ed6a5424244088d30e8afc8674f8b56371bd5e9d198364c29adc95d6198e6"
     },
     {
       "ruta": "BackEnd/src/test/java/com/sgp/systemsgp/service/CompletedActivityRecordServiceTest.java",
@@ -3649,7 +3967,7 @@
         "Comprueba el comportamiento de el registro de actividades cumplidas (L.6) mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "4568e2a504bf48c344936e4fde1000689e7797b488011d9dfb8056c835f85899"
+      "contenidoSinCabeceraSha256": "0274e5cdc791d9156307eb7ef3202df9ae8340567b71a365a9b65498e927785b"
     },
     {
       "ruta": "BackEnd/src/test/java/com/sgp/systemsgp/service/ContinuityWorkflowTest.java",
@@ -3658,7 +3976,7 @@
         "Comprueba el comportamiento de el módulo Continuity Workflow Test mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "7973892619616e62092bcfb6291bba469dc79a3a40dbaec02a35e567c42abee2"
+      "contenidoSinCabeceraSha256": "f418b0e93f46e85ea6490197960a0390311acdbdd6b2cd119cacabe2e2fd1fea"
     },
     {
       "ruta": "BackEnd/src/test/java/com/sgp/systemsgp/service/CoordinationReportServiceTest.java",
@@ -3667,7 +3985,7 @@
         "Comprueba el comportamiento de el módulo Coordination Report Service Test mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "448bfe1f6c85aa0dd7154baaa4350be9a1fdee76677747e732e6413da7bf2cbd"
+      "contenidoSinCabeceraSha256": "101115e052045742d45cb9a83ba143d40feaf1cb6fbcaab32b2c788f29d36c28"
     },
     {
       "ruta": "BackEnd/src/test/java/com/sgp/systemsgp/service/CourseMembershipWorkflowTest.java",
@@ -3676,7 +3994,7 @@
         "Comprueba el comportamiento de los paralelos académicos mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "1001a603599e2c4056b8ceacdd7f99a62324432a010b7c56c9cd6c79bef3d730"
+      "contenidoSinCabeceraSha256": "6d7816e54d1533c2ff00d89a50fc50262aed0f05e5ee4696665e8f5b4d39f0a0"
     },
     {
       "ruta": "BackEnd/src/test/java/com/sgp/systemsgp/service/CourseServiceTest.java",
@@ -3703,7 +4021,7 @@
         "Comprueba el comportamiento de las imágenes de las entidades mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "fd9f85103b8f1e4a8d682ca7c469ad86cee2923a3c5713bec3892610f212d502"
+      "contenidoSinCabeceraSha256": "fe6fd87e88b3b0d3fff026b05f05c3556b4031b21f193292614823796411e06a"
     },
     {
       "ruta": "BackEnd/src/test/java/com/sgp/systemsgp/service/FacultyServiceTest.java",
@@ -3721,7 +4039,7 @@
         "Comprueba el comportamiento de el informe del tutor institucional (L.3) mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "71be45dec0e55bb6cc1e298e95064ee25bdb32fefc46e0c3ae3c42e56708768c"
+      "contenidoSinCabeceraSha256": "981023470459e080e55f285ea472007656e0f2b5c5139a07c098bc92e695a65f"
     },
     {
       "ruta": "BackEnd/src/test/java/com/sgp/systemsgp/service/GradeServiceTest.java",
@@ -3739,7 +4057,7 @@
         "Comprueba el comportamiento de las instituciones mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "c4fdd08dcf675102507f930f0ae3ba9d0c748980e787c81b1a497a96b284b1b6"
+      "contenidoSinCabeceraSha256": "50823d91c830f307072b864bd14d3bbb123270b0acc0a1abefcbf86b695df94c"
     },
     {
       "ruta": "BackEnd/src/test/java/com/sgp/systemsgp/service/MigrationChainMariaDbTest.java",
@@ -3748,7 +4066,7 @@
         "Comprueba el comportamiento de el módulo Migration Chain Maria Db Test mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "79ef88d32759ff5ec212738343fb596f7848161e6ffd8d67120ae24463b0c4dd"
+      "contenidoSinCabeceraSha256": "36a17a793a080fdb70334cb7c76e45276209d407ba5c07bbb34b0773d2a3440e"
     },
     {
       "ruta": "BackEnd/src/test/java/com/sgp/systemsgp/service/NotificationServiceTest.java",
@@ -3758,24 +4076,6 @@
       ],
       "cabeceraEnArchivo": true,
       "contenidoSinCabeceraSha256": "14574619f239f5041d47460651f716001253516ff67831b7992ec8e33d88bed5"
-    },
-    {
-      "ruta": "BackEnd/src/test/java/com/sgp/systemsgp/service/PdfExportServiceTest.java",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Comprueba el comportamiento de los documentos PDF mediante pruebas de regresión."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "03a727ddfaf5c97fd406503c80e7547a40fe049a6d1dac26d31616666df0689a"
-    },
-    {
-      "ruta": "BackEnd/src/test/java/com/sgp/systemsgp/service/PdfReferenceLayoutTest.java",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Comprueba el comportamiento de los documentos PDF mediante pruebas de regresión."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "d8e560ddb30d23d01673e8f183fbd8068547aa4a7edef1f2c0f931c6ef5d8f5d"
     },
     {
       "ruta": "BackEnd/src/test/java/com/sgp/systemsgp/service/PracticeAccessServiceTest.java",
@@ -3793,7 +4093,7 @@
         "Comprueba el comportamiento de la asistencia a prácticas mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "27ac293efbbb5e6e09e0af2ee65ad4e6f5b96b08c135673419ea3e0bffc69cc4"
+      "contenidoSinCabeceraSha256": "77ca175f922ae538dfc3da991b6a7b2f04a5559db57f49af4b4d79b0e2a687d6"
     },
     {
       "ruta": "BackEnd/src/test/java/com/sgp/systemsgp/service/PracticeAuthorizationRegressionTest.java",
@@ -3802,7 +4102,7 @@
         "Comprueba el comportamiento de la autenticación de usuarios mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "d77378de61465123da9c46163cd416280833035a5a7f7ac40350da0120134912"
+      "contenidoSinCabeceraSha256": "eef91dafd1aa498c00ade49f3b5b53071ff4df3f1efa6cdb053eddbdf7fa6590"
     },
     {
       "ruta": "BackEnd/src/test/java/com/sgp/systemsgp/service/PracticeFollowUpReportServiceTest.java",
@@ -3811,7 +4111,25 @@
         "Comprueba el comportamiento de el seguimiento de prácticas (L.5) mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "1c71e6170a4d5f1551beafc659c2859111b45e81392eed1ffdccbb8c682c86ee"
+      "contenidoSinCabeceraSha256": "aa167ca6b0f7c53227c61143e88a678ff981176d9ac01881bb2d732aff85bbcd"
+    },
+    {
+      "ruta": "BackEnd/src/test/java/com/sgp/systemsgp/service/PracticeGovernanceConcurrencyTest.java",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Comprueba el comportamiento de el módulo Practice Governance Concurrency Test mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "bbce156e914c2776e67bad7e8ae03de800d47095ee2e942834db09ca82eaf93e"
+    },
+    {
+      "ruta": "BackEnd/src/test/java/com/sgp/systemsgp/service/PracticeGovernanceWorkflowTest.java",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Comprueba el comportamiento de el módulo Practice Governance Workflow Test mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "582b56ae23dee5dad550700860db64cb66726df94cd9e1b8c973c1440b406a69"
     },
     {
       "ruta": "BackEnd/src/test/java/com/sgp/systemsgp/service/PracticeImageValidatorTest.java",
@@ -3829,7 +4147,7 @@
         "Comprueba el comportamiento de el módulo Practice Lifecycle Integrity Test mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "8fe62a3bbe1d368919fefaca4f6a1c4ef7ac8da92256501ae504060bea5fa381"
+      "contenidoSinCabeceraSha256": "c0561943be29b6c45216f71b4d853f256a7d883ac5f005fdccda3e8a9b159553"
     },
     {
       "ruta": "BackEnd/src/test/java/com/sgp/systemsgp/service/PracticePhotoServiceTest.java",
@@ -3847,7 +4165,7 @@
         "Comprueba el comportamiento de el informe de actividades cumplidas (L.1) mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "63a3a2425feb199fe68e3c4b062f37746d7ed28c114245893026070a6461bb65"
+      "contenidoSinCabeceraSha256": "3524331b871288c7901eec98540fe46e15d60b0f8309dc5d75af9c534d1e27d0"
     },
     {
       "ruta": "BackEnd/src/test/java/com/sgp/systemsgp/service/PracticeScheduleServiceTest.java",
@@ -3865,7 +4183,7 @@
         "Comprueba el comportamiento de el módulo Practice Workflow Regression Test mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "f065bd458b75142ca49de96ba90c25a7d607b32dc45de355f65ace660fa626cb"
+      "contenidoSinCabeceraSha256": "c649f3e3dab8539bb04953cee29e6cbd3abf4c9a7a1774c2c0bfc35c1ebc776a"
     },
     {
       "ruta": "BackEnd/src/test/java/com/sgp/systemsgp/service/QaUserWorkflowsTest.java",
@@ -3874,7 +4192,7 @@
         "Comprueba el comportamiento de el módulo Qa User Workflows Test mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "5229456cde53405f9780d78e44982fa2d246125a2000e7773dc1876dd8f0e730"
+      "contenidoSinCabeceraSha256": "0f9e4368c59be2c642e1f59b61df2c2e8ce54303e507eeee3db7f350a04904e0"
     },
     {
       "ruta": "BackEnd/src/test/java/com/sgp/systemsgp/service/RoleSeparationIntegrationTest.java",
@@ -3883,7 +4201,25 @@
         "Comprueba el comportamiento de el módulo Role Separation Integration Test mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "889d4810dfecbaca920e64723945038e9f0c63bfb9a29e850c542712b97b6119"
+      "contenidoSinCabeceraSha256": "d83705b89833684c081e84f033a9a056fb7e48ff9095ab55c40eb7735f7bc85f"
+    },
+    {
+      "ruta": "BackEnd/src/test/java/com/sgp/systemsgp/service/pdf/PdfExportServiceTest.java",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Comprueba el comportamiento de los documentos PDF mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "2a3797a2fc57d395cb8a1e3740b350a5471c01ec566bde46af7188e63d14d072"
+    },
+    {
+      "ruta": "BackEnd/src/test/java/com/sgp/systemsgp/service/pdf/PdfReferenceLayoutTest.java",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Comprueba el comportamiento de los documentos PDF mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "f56ef3c3633ea95a70c1bd8270b57dafd7d785f37ef3b3314729635ccccee234"
     },
     {
       "ruta": "BackEnd/src/test/java/com/sgp/systemsgp/websocket/NotificationSessionRevocationTest.java",
@@ -3920,7 +4256,7 @@
       ],
       "cabeceraEnArchivo": false,
       "motivo": "JSON no admite comentarios; los metadatos se registran en este índice.",
-      "sha256": "9dbfb0ecfdf63fb9cc03b3d0ace5d9ac60579ceed24eeb60f4dc0ca446ddd0eb"
+      "sha256": "34a252817321604a834a42b83de94f385eed0bcd1a5196a7d3983c24ad534443"
     },
     {
       "ruta": "FrontEnd/package.json",
@@ -3930,7 +4266,7 @@
       ],
       "cabeceraEnArchivo": false,
       "motivo": "JSON no admite comentarios; los metadatos se registran en este índice.",
-      "sha256": "21ac08515928d2d3181b989b2b832c02b253f240ccbdffe02f79bbb55c25efe7"
+      "sha256": "95b5928743e5ab40979ea74f81203ac611d471dc11ec277c4ae9925e6a67d192"
     },
     {
       "ruta": "FrontEnd/public/apple-touch-icon.png",
@@ -4010,34 +4346,16 @@
       "contenidoSinCabeceraSha256": "c488baa3b4f462d4bbd34e6dd39d81aba011c1e46076bc2b286ec071ec177669"
     },
     {
-      "ruta": "FrontEnd/src/App.js",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Compone la aplicación web y resuelve las rutas según la sesión y los permisos del usuario."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "24539da90a9ae75ca7c676cb958b3b1de7f755d6ef0df8be3cb26d8c1f105be3"
-    },
-    {
-      "ruta": "FrontEnd/src/App.test.js",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Comprueba el comportamiento de el módulo App mediante pruebas de regresión."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "ff4d8b6d91db788c7738bc25448f1027c1f277aba4ee17db456ae712a038f7cd"
-    },
-    {
-      "ruta": "FrontEnd/src/api/client.jsx",
+      "ruta": "FrontEnd/src/api/client.js",
       "fecha": "2026-11-09 11:08:16",
       "notas": [
         "Proporciona las funciones de client utilizadas por la interfaz del SGP."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "45b5d6b937662f2fc397d445b15a4715c929f822e4a72da739c1caa7dc90d8cc"
+      "contenidoSinCabeceraSha256": "7a8b8379f1dba94fdd3ed3a9a3ceadd4ef861ca9438bc7370ddf3b6515d23f05"
     },
     {
-      "ruta": "FrontEnd/src/api/client.test.jsx",
+      "ruta": "FrontEnd/src/api/client.test.js",
       "fecha": "2026-11-09 11:08:16",
       "notas": [
         "Comprueba el comportamiento de el módulo client mediante pruebas de regresión."
@@ -4046,13 +4364,49 @@
       "contenidoSinCabeceraSha256": "af6556c75faa00021b0f5258a6468f29d8472ca2632f3df8469252fefb5aaa4b"
     },
     {
-      "ruta": "FrontEnd/src/api/sessionRenewal.test.jsx",
+      "ruta": "FrontEnd/src/api/sessionRenewal.test.js",
       "fecha": "2026-11-10 21:24:04",
       "notas": [
         "Comprueba el comportamiento de el módulo session Renewal mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "fda6ea9f8f22878034619147725fb663c9ad4a27f9bdae032add7b4c6c848d1c"
+      "contenidoSinCabeceraSha256": "e61d18295fad5452949aef4416b6485dc2a2f54626a783ea0536435d7e5d0df5"
+    },
+    {
+      "ruta": "FrontEnd/src/app/App.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Compone la aplicación web y resuelve las rutas según la sesión y los permisos del usuario."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "949cc6716ae5ad6ec409327d66f2d2f843974f8b207d24081e5dd0ef2541d06b"
+    },
+    {
+      "ruta": "FrontEnd/src/app/App.test.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Comprueba el comportamiento de el módulo App mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "ff4d8b6d91db788c7738bc25448f1027c1f277aba4ee17db456ae712a038f7cd"
+    },
+    {
+      "ruta": "FrontEnd/src/app/layout/AppLayout.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Implementa el componente AppLayout de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "38e400379e8dd3a77eb29d302b9c8b13909cc66a51b910389e115931266c57b6"
+    },
+    {
+      "ruta": "FrontEnd/src/app/layout/AppLayout.test.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Comprueba el comportamiento de el módulo App Layout mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "99cc6efa15a3209e875cc028abe5d7cceac9525a858968dfbac1de8f089149dd"
     },
     {
       "ruta": "FrontEnd/src/assets/branding/README.md",
@@ -4084,24 +4438,6 @@
       "sha256": "8d8c24fae5f725ebf98799dcbb87beea25a8c0e3ddcb3610b346a50494efc245"
     },
     {
-      "ruta": "FrontEnd/src/auth/AuthContext.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Gestiona el estado y la integración de AuthContext en la interfaz React."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "866716ab13a0afe3056854fd2c49ca5573a8405b43872d0c773cc9352fa0f5fd"
-    },
-    {
-      "ruta": "FrontEnd/src/auth/storage.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Gestiona el estado y la integración de storage en la interfaz React."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "66f638d58357f2569811d738e48b150f4815eb0a83d9949e70420766116f47cb"
-    },
-    {
       "ruta": "FrontEnd/src/components/Avatar.jsx",
       "fecha": "2026-11-09 11:08:16",
       "notas": [
@@ -4109,195 +4445,6 @@
       ],
       "cabeceraEnArchivo": true,
       "contenidoSinCabeceraSha256": "2032675a3dedba8d2e2ce325f29b31a21c9ea11d9457f6e456c9c9895a3ed2bf"
-    },
-    {
-      "ruta": "FrontEnd/src/components/CourseRoster.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Permite al personal autorizado gestionar la pertenencia académica de estudiantes al paralelo."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "59fc8a3ec73f02081478c028c6be56276b8688c76e3bb2513691421ba065afaf"
-    },
-    {
-      "ruta": "FrontEnd/src/components/CourseRoster.test.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Comprueba el comportamiento de los paralelos académicos mediante pruebas de regresión."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "134f833e629f238225ee71b7cb0d71d803872d1d70a150b9126c96acb7d28034"
-    },
-    {
-      "ruta": "FrontEnd/src/components/DataInspector.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Implementa el componente DataInspector de la interfaz del SGP."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "999e5ce4dcfed1829f4542a29b29eeafdf0d3f54438d10aafd945c6c826b7f9b"
-    },
-    {
-      "ruta": "FrontEnd/src/components/DataInspector.test.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Comprueba el comportamiento de el módulo Data Inspector mediante pruebas de regresión."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "7dbb7048d432d6dddd5c7351c0b0034391cd44187ecdaa58dcab7fc3d3845aa6"
-    },
-    {
-      "ruta": "FrontEnd/src/components/DidacticPlanContinuity.jsx",
-      "fecha": "2026-11-10 21:24:04",
-      "notas": [
-        "Implementa el componente DidacticPlanContinuity de la interfaz del SGP."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "7336f77f00e1c641a626acd4bb83b16cb2a17029f4f8f2d7643c6a23db9ecfa9"
-    },
-    {
-      "ruta": "FrontEnd/src/components/DidacticPlanContinuity.test.jsx",
-      "fecha": "2026-11-10 21:24:04",
-      "notas": [
-        "Comprueba el comportamiento de las planificaciones didácticas mediante pruebas de regresión."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "deb69892de5fcb59cfe53088c8735f61e4eb707fe43a548106b138e7dbace2fc"
-    },
-    {
-      "ruta": "FrontEnd/src/components/EndpointConsole.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Implementa el componente EndpointConsole de la interfaz del SGP."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "ff02cdbb3ca7d43ae4d59776918ec84bcf6446812325077b50f2db808caaaa53"
-    },
-    {
-      "ruta": "FrontEnd/src/components/EndpointConsole.test.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Comprueba el comportamiento de el módulo Endpoint Console mediante pruebas de regresión."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "daac2c663d8fd345bfac2bb7dbb92030a952a1b3cf354b624f12a10f71134c7d"
-    },
-    {
-      "ruta": "FrontEnd/src/components/GuidedForm.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Implementa el componente GuidedForm de la interfaz del SGP."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "182f52b9dbc6191158beb7cf074780bbc8d427b6913e3864de4e30b39b5c6dc3"
-    },
-    {
-      "ruta": "FrontEnd/src/components/GuidedForm.test.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Comprueba el comportamiento de el módulo Guided Form mediante pruebas de regresión."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "6e915d32a927d66eee9e9d0cef564b0dba29510530d83c29fc3c14c391a37d66"
-    },
-    {
-      "ruta": "FrontEnd/src/components/InstitutionalAuthLayout.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Implementa el componente InstitutionalAuthLayout de la interfaz del SGP."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "d0f45dfcf79155bea7f61ebae04592d7c3a66e234bf0aaf3f74dc13989496607"
-    },
-    {
-      "ruta": "FrontEnd/src/components/InstitutionalLetterhead.test.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Comprueba el comportamiento de las instituciones mediante pruebas de regresión."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "c57e1529774efe6576db12e01cce8b4f29473ca67d5425caaf5e5d3a921a2553"
-    },
-    {
-      "ruta": "FrontEnd/src/components/PracticeOfferingsPanel.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Permite crear prácticas del paralelo e inscribir a los estudiantes de su listado académico."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "8fc3a7dce686b2dc0f6c7ca9de6d8d02a4aadbce3141b07cbc8881a05a563796"
-    },
-    {
-      "ruta": "FrontEnd/src/components/PracticeOfferingsPanel.test.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Comprueba el comportamiento de las prácticas ofrecidas a un paralelo mediante pruebas de regresión."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "faf05e0de979123f7625731d48d9dcd7c2b097d6aa070f892493e1ba5d0d864b"
-    },
-    {
-      "ruta": "FrontEnd/src/components/PracticeOverview.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Implementa el componente PracticeOverview de la interfaz del SGP."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "768da51b198772f3582a496fa27f5db3a0bd941bbdf00916e2093dc1dee76372"
-    },
-    {
-      "ruta": "FrontEnd/src/components/PracticeOverview.test.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Comprueba el comportamiento de el módulo Practice Overview mediante pruebas de regresión."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "c3da83037a177f8469806a93cdc729187ad3b9de89b43b880228e7380bcd9305"
-    },
-    {
-      "ruta": "FrontEnd/src/components/ResourceCrud.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Implementa el componente ResourceCrud de la interfaz del SGP."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "668f6cf02d7c55dfc6654c8a2f8717e35edf37168d35123645c241452b9d452d"
-    },
-    {
-      "ruta": "FrontEnd/src/components/ResourceCrud.test.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Comprueba el comportamiento de el módulo Resource Crud mediante pruebas de regresión."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "ad9c760cc055a3458c506b5030ed6c6f48f69eec298a2f153a23463f6a6cebab"
-    },
-    {
-      "ruta": "FrontEnd/src/components/SessionControls.jsx",
-      "fecha": "2026-11-10 21:24:04",
-      "notas": [
-        "Implementa el componente SessionControls de la interfaz del SGP."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "b3eea1648a1a28a9a3462186ec58ded3955bf9cf33632dadd359526f00c22c1f"
-    },
-    {
-      "ruta": "FrontEnd/src/components/SessionControls.test.jsx",
-      "fecha": "2026-11-10 21:24:04",
-      "notas": [
-        "Comprueba el comportamiento de el módulo Session Controls mediante pruebas de regresión."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "64cac163b3889e7ddd30b769db9c2e4b1cea2a39fc4856768c203704f6e5f0dd"
-    },
-    {
-      "ruta": "FrontEnd/src/components/StructuredForm.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Implementa el componente StructuredForm de la interfaz del SGP."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "b7a82926bbd78bfa63871bfccc2afa87ec608516bfd22ce15237122bed78a5d5"
     },
     {
       "ruta": "FrontEnd/src/components/accessibility/AccessibilityWidget.css",
@@ -4327,49 +4474,31 @@
       "contenidoSinCabeceraSha256": "6bf7186c10129c0599a0701b41d6adbfd029cc7ace39b4e5ab8d81d3a247db2b"
     },
     {
-      "ruta": "FrontEnd/src/components/notifications/NotificationBell.jsx",
+      "ruta": "FrontEnd/src/components/forms/GuidedForm.jsx",
       "fecha": "2026-11-09 11:08:16",
       "notas": [
-        "Implementa el componente NotificationBell de la interfaz del SGP."
+        "Implementa el componente GuidedForm de la interfaz del SGP."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "c6d9921e7cd816ac477e39fda5969d6a8b6b45ad97fad46e397df1ab8fc8c928"
+      "contenidoSinCabeceraSha256": "396d4da2b43526bd9e0fa175d2e71026218951ad922fd2e4617b99cd893113ba"
     },
     {
-      "ruta": "FrontEnd/src/components/notifications/NotificationItem.jsx",
+      "ruta": "FrontEnd/src/components/forms/GuidedForm.test.jsx",
       "fecha": "2026-11-09 11:08:16",
       "notas": [
-        "Implementa el componente NotificationItem de la interfaz del SGP."
+        "Comprueba el comportamiento de el módulo Guided Form mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "67076c45d7b2882f4f027365b4e2dd54bc15a620cb9efb59397cc8ef3bb905ff"
+      "contenidoSinCabeceraSha256": "59423e68c74dc3ad374d40f7f7d7516a7b54f69739de990e71e273db4d1fe53f"
     },
     {
-      "ruta": "FrontEnd/src/components/ui/AccountMenu.css",
+      "ruta": "FrontEnd/src/components/forms/StructuredForm.jsx",
       "fecha": "2026-11-09 11:08:16",
       "notas": [
-        "Define los estilos de la interfaz del SGP para AccountMenu."
+        "Implementa el componente StructuredForm de la interfaz del SGP."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "775a3f926966111e7ad6bd8d2f8265ab5e1967076faee1ec75af7bbf4c8af868"
-    },
-    {
-      "ruta": "FrontEnd/src/components/ui/AccountMenu.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Implementa el componente AccountMenu de la interfaz del SGP."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "7a19197d44b52274ddd40fb7a9f4d3d2829348bfe4e8deeb3aa8f407e19714dc"
-    },
-    {
-      "ruta": "FrontEnd/src/components/ui/AccountMenu.test.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Comprueba el comportamiento de las cuentas de usuario mediante pruebas de regresión."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "df57b69155866782fb065cc795cf9c49f9aea4a46f352244466f678510f94e93"
+      "contenidoSinCabeceraSha256": "9c46857c5a236d3847e36f5a6a8d19899130b99a8236f392619f3b22928ed452"
     },
     {
       "ruta": "FrontEnd/src/components/ui/ActionBar.jsx",
@@ -4408,33 +4537,6 @@
       "contenidoSinCabeceraSha256": "5dfcd21d558e6aa953ebae27d49654b232d03f100cf87c613ab6bfe1f1cb7e7b"
     },
     {
-      "ruta": "FrontEnd/src/components/ui/AgendaView.interaction.test.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Comprueba el comportamiento de el módulo Agenda View.interaction mediante pruebas de regresión."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "4565b9d06ccb48d6ee9cea4b8b49bb3248fe41fd99b86debebd0fe63dec2c3e0"
-    },
-    {
-      "ruta": "FrontEnd/src/components/ui/AgendaView.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Implementa el componente AgendaView de la interfaz del SGP."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "b744759fb724d4288ea912db8af4739619183e9f6902933814075b318c64e1d0"
-    },
-    {
-      "ruta": "FrontEnd/src/components/ui/AgendaView.test.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Comprueba el comportamiento de el módulo Agenda View mediante pruebas de regresión."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "f158a376c672790792eabbc4157563d7a675b80b50deff0e1b03b146f9475569"
-    },
-    {
       "ruta": "FrontEnd/src/components/ui/Alert.jsx",
       "fecha": "2026-11-09 11:08:16",
       "notas": [
@@ -4453,15 +4555,6 @@
       "contenidoSinCabeceraSha256": "2bac0c16bd452e63506359591acf3ea87d2f12b1ad7cf75876eeab2cb9485b49"
     },
     {
-      "ruta": "FrontEnd/src/components/ui/AppearancePreferences.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Implementa el componente AppearancePreferences de la interfaz del SGP."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "244fe0aafeee7cd63b09c51a6af819eccef4561fce64a3f13a30a4560340b81f"
-    },
-    {
       "ruta": "FrontEnd/src/components/ui/ConfirmDialog.jsx",
       "fecha": "2026-11-09 11:08:16",
       "notas": [
@@ -4477,7 +4570,7 @@
         "Implementa el componente DataTable de la interfaz del SGP."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "66e8c8ab9554c04d2856b49e4fa2dee50a4d9e0cb09f71b459d9c5951a0cbffc"
+      "contenidoSinCabeceraSha256": "d9ca84b75fdfb821512521ff50688db87c24eadc39fde2fd72dd33fa010a961a"
     },
     {
       "ruta": "FrontEnd/src/components/ui/DataTable.test.jsx",
@@ -4486,7 +4579,7 @@
         "Comprueba el comportamiento de el módulo Data Table mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "a94c653517995b118d99ff04dd7a961a2ab121120a0547c212861a00ca26307f"
+      "contenidoSinCabeceraSha256": "3ee44845c7455396205de4d0a2e1409995422dec725711919a9571bc022f86e2"
     },
     {
       "ruta": "FrontEnd/src/components/ui/DraftRecovery.jsx",
@@ -4522,7 +4615,7 @@
         "Implementa el componente EntityImage de la interfaz del SGP."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "d30fa58e9e63291adba8488aafb9e965217fdf90da005ca0d2d85931860989d7"
+      "contenidoSinCabeceraSha256": "bdbb2addf29e036a6bea07c71f43c7d26bd0efa5481b0113d3f4288b06f150cc"
     },
     {
       "ruta": "FrontEnd/src/components/ui/EntityImage.test.jsx",
@@ -4531,7 +4624,7 @@
         "Comprueba el comportamiento de las imágenes de las entidades mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "7219be5ac6da454a66502ece9ac650c9a6cd9a6bcd9f6decd207638072eefd5b"
+      "contenidoSinCabeceraSha256": "76eed6de4a8982b14b6cae721bff084f7a3b4bddd4c2256115e3b660837561fa"
     },
     {
       "ruta": "FrontEnd/src/components/ui/EntitySelect.jsx",
@@ -4540,7 +4633,7 @@
         "Implementa el componente EntitySelect de la interfaz del SGP."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "6ba179efa53050768e30a38950210e66e80046423799ddf233433191fccfff50"
+      "contenidoSinCabeceraSha256": "b2d980b7f0a7cc837ac371f5a81fe286da05ccc1f228f606dd02162370601bd4"
     },
     {
       "ruta": "FrontEnd/src/components/ui/EntitySelect.test.jsx",
@@ -4549,7 +4642,7 @@
         "Comprueba el comportamiento de el módulo Entity Select mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "3ee344b65948e5c3154a4a8fcc39e3eb2a3e4ded24969b2866330e2813f96757"
+      "contenidoSinCabeceraSha256": "bd471d296ad603a9b1839b05eb13f742dc80e20094987395eeba8ac1a7bd0926"
     },
     {
       "ruta": "FrontEnd/src/components/ui/FilterPanel.jsx",
@@ -4594,7 +4687,7 @@
         "Comprueba el comportamiento de el módulo Form Feedback mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "8fea69f1b9b162acf297fba2afb8d0b53cb25c5117da01454f82a09760198ac6"
+      "contenidoSinCabeceraSha256": "a6dd3a50985dab44e35f9f594695f6cc461d3acca34554d4950830264923ca0c"
     },
     {
       "ruta": "FrontEnd/src/components/ui/ListToolbar.jsx",
@@ -4648,7 +4741,7 @@
         "Implementa el componente PageHeader de la interfaz del SGP."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "96c6b1cacff3c9811a7f03140a4df2d3b97c5e30ff87d47d87024be455c0e6d5"
+      "contenidoSinCabeceraSha256": "fa6357144a5d7e65027be44b85c224ab96fe2a856366d7a7e4d9fa7ae02650a2"
     },
     {
       "ruta": "FrontEnd/src/components/ui/PageHeader.test.jsx",
@@ -4666,7 +4759,7 @@
         "Implementa el componente PdfPreviewDialog de la interfaz del SGP."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "4950f73f263f9828b7996a9c1847c9fd2cddddbf0d8203e583466b045acb83e6"
+      "contenidoSinCabeceraSha256": "757c2c5cee101478bba67bdc7e01d7494943ad3e7a4d45ac8818192fd1469be8"
     },
     {
       "ruta": "FrontEnd/src/components/ui/PdfPreviewDialog.test.jsx",
@@ -4675,7 +4768,7 @@
         "Comprueba el comportamiento de los documentos PDF mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "d8c6cf4e871ff8016aa98f7bc7f3c0cdf1dec6fec00789f446ea4af2a87ec765"
+      "contenidoSinCabeceraSha256": "c00bd48746b825a8251bf9345e5997e369c86306d49e32738934e99c647ce50e"
     },
     {
       "ruta": "FrontEnd/src/components/ui/SavedViews.jsx",
@@ -4684,7 +4777,7 @@
         "Implementa el componente SavedViews de la interfaz del SGP."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "2cff3b0517937fd870182061c31fb01d26d052c116869f9016f71caeedaad4a9"
+      "contenidoSinCabeceraSha256": "4f659cf52bf9ef26367395ed7cdcf513da184d9017478db81ce563199fd05d12"
     },
     {
       "ruta": "FrontEnd/src/components/ui/SectionCard.jsx",
@@ -4711,7 +4804,7 @@
         "Implementa el componente StatusBadge de la interfaz del SGP."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "320126412e042c7719c53eafdfe29636c4bc86769695f544e9313567fd6ac078"
+      "contenidoSinCabeceraSha256": "9c1733060413f1cc457e46d7e40925413594bf5c01f1d7e6c9eb663317260e54"
     },
     {
       "ruta": "FrontEnd/src/components/ui/ThemeToggle.jsx",
@@ -4788,13 +4881,22 @@
       "contenidoSinCabeceraSha256": "eada7dacacd76561431e2fbf4655eccba6830412f96eccabaeacb62331c1042a"
     },
     {
+      "ruta": "FrontEnd/src/config/practiceManagement.js",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Define la configuración de practiceManagement utilizada por la interfaz."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "421dcb212336fe268209ccc586652092758c81236993f10aa7f68246cea03735"
+    },
+    {
       "ruta": "FrontEnd/src/config/practiceWorkflow.js",
       "fecha": "2026-11-09 11:08:16",
       "notas": [
         "Define la configuración de practiceWorkflow utilizada por la interfaz."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "20820bec310cb06e6694dd76a8766c7c84ef7c63f2919a2747974d8f5c788ca8"
+      "contenidoSinCabeceraSha256": "53a41f9b965a00188d78250269f0f6b36200901a63a0621efa0331c194869fb2"
     },
     {
       "ruta": "FrontEnd/src/config/resources.js",
@@ -4833,22 +4935,859 @@
       "contenidoSinCabeceraSha256": "77ba7344fb490d0f54fdc896bc55b8f1f017e896bc3eaa9bad0d6245d167f808"
     },
     {
-      "ruta": "FrontEnd/src/contexts/PracticeWorkspaceContext.jsx",
+      "ruta": "FrontEnd/src/features/accounts/components/AccountMenu.css",
       "fecha": "2026-11-09 11:08:16",
       "notas": [
-        "Gestiona el estado y la integración de PracticeWorkspaceContext en la interfaz React."
+        "Define los estilos de la interfaz del SGP para AccountMenu."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "fe43427c6e654d7ee9046f19d2521994731bfa06dc0ae73d4cf69d263adea6de"
+      "contenidoSinCabeceraSha256": "775a3f926966111e7ad6bd8d2f8265ab5e1967076faee1ec75af7bbf4c8af868"
     },
     {
-      "ruta": "FrontEnd/src/contexts/PracticeWorkspaceContext.test.jsx",
+      "ruta": "FrontEnd/src/features/accounts/components/AccountMenu.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Implementa el componente AccountMenu de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "5c6976bdafec5a70d7ef67a96e67557f1deee24b39be971da01cbc6d77668c96"
+    },
+    {
+      "ruta": "FrontEnd/src/features/accounts/components/AccountMenu.test.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Comprueba el comportamiento de las cuentas de usuario mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "df57b69155866782fb065cc795cf9c49f9aea4a46f352244466f678510f94e93"
+    },
+    {
+      "ruta": "FrontEnd/src/features/accounts/components/AppearancePreferences.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Implementa el componente AppearancePreferences de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "5a2e290a6e838018344689fd3e62fbe7ff130505e040189e9da663e7a0c9f0b1"
+    },
+    {
+      "ruta": "FrontEnd/src/features/accounts/components/SessionControls.jsx",
+      "fecha": "2026-11-10 21:24:04",
+      "notas": [
+        "Implementa el componente SessionControls de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "946036c3d8119ae501da58a7cde55ee5a2073f66b1b61004c1144e0046a73d1b"
+    },
+    {
+      "ruta": "FrontEnd/src/features/accounts/components/SessionControls.test.jsx",
+      "fecha": "2026-11-10 21:24:04",
+      "notas": [
+        "Comprueba el comportamiento de el módulo Session Controls mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "073c2dd3d7a03fa7d64df957335b840a9c2caccdf9af5997e893117e69ab7250"
+    },
+    {
+      "ruta": "FrontEnd/src/features/accounts/pages/AccountsPage.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Presenta la administración de cuentas, roles y estado de acceso al sistema."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "f9441c1520f5360694f31c59f1f6615661a8e509d8002e93ddbc2b64ce63b914"
+    },
+    {
+      "ruta": "FrontEnd/src/features/accounts/pages/AccountsPage.test.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Comprueba el comportamiento de las cuentas de usuario mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "2913a359c47ba6272b99398f82d25173e865ef7a9e99744bf3badb2b965fc74f"
+    },
+    {
+      "ruta": "FrontEnd/src/features/accounts/pages/ProfilePage.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Presenta los datos de la cuenta y las opciones de actualización del perfil."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "a6f7ee1d67693120ddf9e7344c337a8e0c7d6be82e05cae0ff6c5906a2ea8c30"
+    },
+    {
+      "ruta": "FrontEnd/src/features/auth/authStorage.js",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Gestiona el estado y la integración de authStorage en la interfaz React."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "66f638d58357f2569811d738e48b150f4815eb0a83d9949e70420766116f47cb"
+    },
+    {
+      "ruta": "FrontEnd/src/features/auth/components/InstitutionalAuthLayout.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Implementa el componente InstitutionalAuthLayout de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "79cc0f7a860b11c3d1c3bcfc2e11a9cc4ae61a2f47eeae9b186c96afa16b25f5"
+    },
+    {
+      "ruta": "FrontEnd/src/features/auth/context/AuthContext.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Implementa el componente AuthContext de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "89e916b64c6246eef630fb5df9937897eb10ebb5bf95e55fc700fc7a4a5547ef"
+    },
+    {
+      "ruta": "FrontEnd/src/features/auth/pages/ForcePasswordChangePage.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Permite actualizar la contraseña cuando la cuenta requiere un cambio inicial."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "5e72c2f5cd37060f984216256f2b3519ce42af1974f947399fd6988ae85d2daa"
+    },
+    {
+      "ruta": "FrontEnd/src/features/auth/pages/LoginPage.css",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Presenta el acceso institucional y envía las credenciales al flujo de autenticación del sistema."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "92dbe2327898261505c33e8a0f425216a0edabe1bfcce0e83d57db6d16fe97a4"
+    },
+    {
+      "ruta": "FrontEnd/src/features/auth/pages/LoginPage.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Presenta el acceso institucional y envía las credenciales al flujo de autenticación del sistema."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "bd54450491bc90c9dd35b532b545c194cad9d6f45f72716520a46086ad388713"
+    },
+    {
+      "ruta": "FrontEnd/src/features/auth/pages/LoginPage.test.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Comprueba el comportamiento de el módulo Login Page mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "0acef383ae11840e40cbce43fd28e25d0c94666ae12d8d6a567a00fb5c981d5d"
+    },
+    {
+      "ruta": "FrontEnd/src/features/auth/pages/RegisterStudentPage.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Presenta el registro público de estudiantes y sus datos de acceso."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "23093133540a183182a7dcde187e791e6f815aa1046108364e863464bf17218b"
+    },
+    {
+      "ruta": "FrontEnd/src/features/auth/pages/RegisterStudentPage.test.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Comprueba el comportamiento de el módulo Register Student Page mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "a74a65fe945ae8d3f617dc868288550b41360ae679a3d8f1bfe0d84497edb4da"
+    },
+    {
+      "ruta": "FrontEnd/src/features/catalogs/components/ResourceCrud.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Implementa el componente ResourceCrud de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "dc0e8dac443942076e6c327a598c64ef490cc3f2315bc1dfd5c15744a1f8d180"
+    },
+    {
+      "ruta": "FrontEnd/src/features/catalogs/components/ResourceCrud.test.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Comprueba el comportamiento de el módulo Resource Crud mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "2c7131a39eb209344494876a8209051f2d4aa5ab0fdbb4396df22e47a366a0e8"
+    },
+    {
+      "ruta": "FrontEnd/src/features/catalogs/pages/CatalogWorkflowPage.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Organiza la gestión de catálogos y sus relaciones en la interfaz."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "7c55d1102a8a62cabf81eb94fd785d7567885927a16060a91e50255fe2b2a720"
+    },
+    {
+      "ruta": "FrontEnd/src/features/catalogs/pages/CatalogWorkflowPage.test.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Comprueba el comportamiento de el módulo Catalog Workflow Page mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "5e18dd4c16ffc7beef417faaa7c9fcbeedcfa7569999d9e7b96b34f2a6882d68"
+    },
+    {
+      "ruta": "FrontEnd/src/features/catalogs/pages/LocationsPage.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Presenta los catálogos de ubicación geográfica utilizados por el sistema."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "af8297c61e67f2d1000ac1281c2ebea94364fb7f880f9d82c55ac3454a2bdc42"
+    },
+    {
+      "ruta": "FrontEnd/src/features/catalogs/pages/UniversitiesPage.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Presenta la estructura universitaria y su gestión según los permisos del usuario."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "ec0fe05a4e0909f0c4273997c513c7a4fe96b6c2f3096545a81591b123030690"
+    },
+    {
+      "ruta": "FrontEnd/src/features/courses/components/CourseRoster.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Permite al personal autorizado gestionar la pertenencia académica de estudiantes al paralelo."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "89d69fba511726cdc06ee8969ba1729b8a8c0a0a2175fbb62975069afee9ff8a"
+    },
+    {
+      "ruta": "FrontEnd/src/features/courses/components/CourseRoster.test.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Comprueba el comportamiento de los paralelos académicos mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "2386c0e203db50ce3078ef10f6e37d7f0588f02fc1afa90010288f87054c2afa"
+    },
+    {
+      "ruta": "FrontEnd/src/features/courses/components/PracticeOfferingsPanel.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Permite crear prácticas del paralelo e inscribir a los estudiantes de su listado académico."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "1fa1943adc9ca015b0636475d47c145de24ddfbecc6ea94c72650659f9ace02d"
+    },
+    {
+      "ruta": "FrontEnd/src/features/courses/components/PracticeOfferingsPanel.test.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Comprueba el comportamiento de las prácticas ofrecidas a un paralelo mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "5e7d870c61deca61f4dabed87e85b4469474ab84f5de1d7e3e3e52e6206cc8d0"
+    },
+    {
+      "ruta": "FrontEnd/src/features/courses/pages/CoursesPage.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Permite gestionar los paralelos, sus prácticas, estudiantes, grupos y asignaciones autorizadas."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "29c05eca83b176c2ba28d35fd31374d1a523b574003edb00c63439ef2c90f929"
+    },
+    {
+      "ruta": "FrontEnd/src/features/dashboard/pages/DashboardPage.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Presenta el panel de entrada y la información disponible según el rol del usuario."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "98dbaf10887da866f7217b70141008847e85e8777ced02a130a603ff89e1732f"
+    },
+    {
+      "ruta": "FrontEnd/src/features/dashboard/pages/DashboardPage.test.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Comprueba el comportamiento de el módulo Dashboard Page mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "93c3e72bf4787dda898789dd0a53081833967421dd41aa90ce019f76cf4c9f50"
+    },
+    {
+      "ruta": "FrontEnd/src/features/dashboard/pages/StaffHomePage.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Presenta los accesos a las tareas del personal autorizado según su rol."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "c36e343960c96972134ad4aea82edf40658ad0a6d611ecbfda54495dca8f2b6a"
+    },
+    {
+      "ruta": "FrontEnd/src/features/dashboard/pages/StaffHomePage.test.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Comprueba el comportamiento de el módulo Staff Home Page mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "98b281692db881d0c6e711e06a2acd59f56bfedda827330665710bbf9db56d0e"
+    },
+    {
+      "ruta": "FrontEnd/src/features/documents/components/DidacticPlanContinuity.jsx",
+      "fecha": "2026-11-10 21:24:04",
+      "notas": [
+        "Implementa el componente DidacticPlanContinuity de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "15b705baa7028ba0ef0de7e9e3a4ca8e0c0f53bba75a114cb8a2d3705c7b79c9"
+    },
+    {
+      "ruta": "FrontEnd/src/features/documents/components/DidacticPlanContinuity.test.jsx",
+      "fecha": "2026-11-10 21:24:04",
+      "notas": [
+        "Comprueba el comportamiento de las planificaciones didácticas mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "7f22e748db8b9822a1acee35320aafbf2959200f3ef752376b97b6311905fc47"
+    },
+    {
+      "ruta": "FrontEnd/src/features/documents/pages/DidacticPlansPage.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Gestiona las planificaciones didácticas y sus recomendaciones dentro del alcance del usuario."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "cc8a03a4e9dc6b1c1caeb1ffb0899d31a3612d3438d6c67765f726aa512f1d1a"
+    },
+    {
+      "ruta": "FrontEnd/src/features/documents/pages/DidacticPlansPage.test.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Comprueba el comportamiento de las planificaciones didácticas mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "b474d9e0aca665472483dc1deb4ab6bbf7737f514892ce0a3d5758ce38a016bf"
+    },
+    {
+      "ruta": "FrontEnd/src/features/documents/pages/DocumentsPage.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Presenta los módulos documentales de la práctica y sus operaciones autorizadas."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "a627f3b4941b43dda12f55d7be59c09b93a53e03f39efd5009c187fb2a9f9030"
+    },
+    {
+      "ruta": "FrontEnd/src/features/documents/pages/PracticeDocumentVersionsPage.jsx",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Implementa el componente PracticeDocumentVersionsPage de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "aff2ed1a32c13f985803ff69fffebc5ac05e0d4205a8258d06bbd5a07cd1226e"
+    },
+    {
+      "ruta": "FrontEnd/src/features/evidence/pages/EvidenceViewerPage.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Presenta la consulta de evidencias y archivos relacionados con una práctica."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "d7162d0626bf48b21b3883135f73fe3ebeae3ccdfd9b682bf9984dd17944c2d8"
+    },
+    {
+      "ruta": "FrontEnd/src/features/evidence/pages/PhotosPage.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Permite registrar y consultar las evidencias fotográficas de las prácticas."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "eec5906cf62e34602e8dbd4b2b45cad679291f8df35892d67f9634049735a1be"
+    },
+    {
+      "ruta": "FrontEnd/src/features/institutions/pages/InstitutionWorkPage.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Agrupa las tareas y asignaciones vinculadas al trabajo de la institución."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "5656a36371b5dddd1361eee9be9de8b367dc001820920eabe936fe65062e3624"
+    },
+    {
+      "ruta": "FrontEnd/src/features/institutions/pages/InstitutionWorkPage.test.js",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Comprueba el comportamiento de las instituciones mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "2691cf4f11f13d7a20e311ce811bcfe3574d47b3cc07975cf354fe16088bc31e"
+    },
+    {
+      "ruta": "FrontEnd/src/features/institutions/pages/InstitutionsPage.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Presenta la gestión y consulta de las instituciones del sistema."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "063433edfdff4ea5aa66d4bcfc1872b58c5dd3fe28903eb956527abb637363fe"
+    },
+    {
+      "ruta": "FrontEnd/src/features/institutions/pages/PracticeInstitutionsPage.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Presenta los centros receptores y su información para el desarrollo de prácticas."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "7f02ce322b55646bf856d1a14aac08c84ac5e376be72ee6960dc3807b2247dd0"
+    },
+    {
+      "ruta": "FrontEnd/src/features/notifications/components/NotificationBell.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Implementa el componente NotificationBell de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "f2bbaa6f40d298543a48d46654d02ee1ec01a0dfc17a077618d651b500f3464e"
+    },
+    {
+      "ruta": "FrontEnd/src/features/notifications/components/NotificationItem.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Implementa el componente NotificationItem de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "53ddaafd21e65a08f0846c77d353052f5092ac064af400a5d38aa47b1c39a028"
+    },
+    {
+      "ruta": "FrontEnd/src/features/notifications/hooks/useNotifications.js",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Gestiona el estado y la integración de useNotifications en la interfaz React."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "1c7e7fccf2d71f6d441bc3b973a814f8a0e15f6e4ba1134c65ba6b94d166f8b8"
+    },
+    {
+      "ruta": "FrontEnd/src/features/notifications/hooks/useNotifications.test.js",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Comprueba el comportamiento de las notificaciones mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "ba8568fe0f265d98bfd9352aeaa658ff18a919f4e11befcedc0d38b5a19a7715"
+    },
+    {
+      "ruta": "FrontEnd/src/features/notifications/pages/NotificationsPage.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Presenta las notificaciones de la cuenta y permite consultar sus eventos relacionados."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "3a669d96b370bb42f20aae720c56f8f6bbc273693b16cc05a0307f4b54b90b00"
+    },
+    {
+      "ruta": "FrontEnd/src/features/notifications/pages/NotificationsPage.test.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Comprueba el comportamiento de las notificaciones mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "b5fdf366cdc8c5bfed652f8603b487c048aab2ba03604d58d7ada023ac6ba057"
+    },
+    {
+      "ruta": "FrontEnd/src/features/practice-forms/components/FormInfo.jsx",
+      "fecha": "2026-11-11 10:29:41",
+      "notas": [
+        "Implementa el componente FormInfo de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "4f50c2de6ecd3175ac22cf65fc3945132fe45d669f89f9023bb78d2520efb48b"
+    },
+    {
+      "ruta": "FrontEnd/src/features/practice-forms/components/PracticeFormBuilder.jsx",
+      "fecha": "2026-11-11 10:29:41",
+      "notas": [
+        "Implementa el componente PracticeFormBuilder de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "dbdfa8808b6629d6c3d35dd87c630fb66a0119da59886f07fd5b5c5bfd03ac6f"
+    },
+    {
+      "ruta": "FrontEnd/src/features/practice-forms/components/PracticeFormDetail.jsx",
+      "fecha": "2026-11-11 10:29:41",
+      "notas": [
+        "Implementa el componente PracticeFormDetail de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "695400eb13402cdf70f361a9a4b042d849ee853f7701c7a6edad54e11e176a67"
+    },
+    {
+      "ruta": "FrontEnd/src/features/practice-forms/components/Tabulation.jsx",
+      "fecha": "2026-11-11 10:29:41",
+      "notas": [
+        "Implementa el componente Tabulation de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "e327b281c0fa1bca27f7c8ca07ed1d833d3222e5ec846ecab79731b78eb26ae7"
+    },
+    {
+      "ruta": "FrontEnd/src/features/practice-forms/model/formConfig.js",
+      "fecha": "2026-11-11 10:29:41",
+      "notas": [
+        "Implementa el componente formConfig de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "ce0432d7c78950cd62c8f644eee5a462eb3ee077b1608db52e27762d7c8ec63f"
+    },
+    {
+      "ruta": "FrontEnd/src/features/practice-forms/model/formPayloads.js",
+      "fecha": "2026-11-11 10:29:41",
+      "notas": [
+        "Implementa el componente formPayloads de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "2d7b1534b168ce3efaac646de2a5b05272d346555f9c412455816860b673e920"
+    },
+    {
+      "ruta": "FrontEnd/src/features/practice-forms/pages/PracticeFormsInterpretation.test.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Comprueba el comportamiento de los instrumentos de entrevista y observación mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "1be53db5e1752f8ed5aff9aa7dd76ade3b52e9d72e20dcaf6494dcbaec163e2f"
+    },
+    {
+      "ruta": "FrontEnd/src/features/practice-forms/pages/PracticeFormsPage.jsx",
+      "fecha": "2026-11-11 10:29:41",
+      "notas": [
+        "Gestiona los formularios de entrevistas y observación asociados a las prácticas."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "028815f1c9a3986159845c2a3af333cbce8477cb4bc3bddb3240d8f90a325d6c"
+    },
+    {
+      "ruta": "FrontEnd/src/features/practice-forms/pages/PracticeFormsPage.test.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Comprueba el comportamiento de los instrumentos de entrevista y observación mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "b1eb6ba541e5f5f1f7953b5ecb2c82d73910b2375ac67d635cea61560bcb70f2"
+    },
+    {
+      "ruta": "FrontEnd/src/features/practices/components/PracticeOverview.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Implementa el componente PracticeOverview de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "f9db1fe2a9d5842e6c06122d538eb56cb5ee8e275a5d3dd66ce7d2765055b627"
+    },
+    {
+      "ruta": "FrontEnd/src/features/practices/components/PracticeOverview.test.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Comprueba el comportamiento de el módulo Practice Overview mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "a342f0cdbc4e0ddd706526303c1d66dd69ffb5def8e90f5292cb82a6fa9443d2"
+    },
+    {
+      "ruta": "FrontEnd/src/features/practices/context/PracticeWorkspaceContext.js",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Implementa el componente PracticeWorkspaceContext de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "a2999ccd384f0831f710d127447326793d3ff0caf54fd1bf4b567cb166158732"
+    },
+    {
+      "ruta": "FrontEnd/src/features/practices/context/PracticeWorkspaceContext.test.jsx",
       "fecha": "2026-11-09 11:08:16",
       "notas": [
         "Comprueba el comportamiento de el módulo Practice Workspace Context mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "75f0ee510d4ba5f04ebdc523fa25193d211f007b8d3dd4c8042fc0dce3b88aec"
+      "contenidoSinCabeceraSha256": "9a05139870dc746e59e19a7a9c401dcc66f34118e8f6ca0c47022a9bf073a26c"
+    },
+    {
+      "ruta": "FrontEnd/src/features/practices/pages/PracticeArchivePage.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Presenta el historial y las acciones autorizadas de conclusión, reapertura y archivo de prácticas."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "178a9e1fe833abf48883eed5d99272b146dc45297dcb0ee3014f9be6b252da33"
+    },
+    {
+      "ruta": "FrontEnd/src/features/practices/pages/PracticeArchivePage.test.js",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Comprueba el comportamiento de el módulo Practice Archive Page mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "5eaf729de255c1df816703dfb850cb22129f798f1fca99ad45af7f187129b037"
+    },
+    {
+      "ruta": "FrontEnd/src/features/practices/pages/PracticeDeadlinesPage.jsx",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Implementa el componente PracticeDeadlinesPage de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "70b0f2ad97ad8757c50d997c8bc81b0c62a03757b67bdf9b8c1404b1b1567b3c"
+    },
+    {
+      "ruta": "FrontEnd/src/features/practices/pages/PracticeGovernance.test.jsx",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Comprueba el comportamiento de el módulo Practice Governance mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "d9cf3625e5038ffeeb98352484705dad76f53ec92f69d3b1e065213f7e9ede59"
+    },
+    {
+      "ruta": "FrontEnd/src/features/practices/pages/PracticeIncidentsPage.jsx",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Implementa el componente PracticeIncidentsPage de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "4332c9c2b460bc01bcec7f4cdc37c2af6b8098197f90c93bf10587d798b24ec1"
+    },
+    {
+      "ruta": "FrontEnd/src/features/practices/pages/PracticeWorkspacePage.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Presenta las prácticas asignadas y permite abrir las actividades de cada práctica."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "4a0884efd21af4ce91acc9ba7b6b809bbf6861e3bf7ccf585cb5456ef56be4b6"
+    },
+    {
+      "ruta": "FrontEnd/src/features/practices/pages/PracticeWorkspacePage.test.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Comprueba el comportamiento de el módulo Practice Workspace Page mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "a4871b6d4485da2d887f42115d4eded95ef57e478b9fca3a650371e0d46092a5"
+    },
+    {
+      "ruta": "FrontEnd/src/features/records/components/DataInspector.jsx",
+      "fecha": "2026-11-11 10:29:41",
+      "notas": [
+        "Implementa el componente DataInspector de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "c45d64639bafe4102c9bfed1b47934b42d5e8d05e76a01b93bc2703a094bd77a"
+    },
+    {
+      "ruta": "FrontEnd/src/features/records/components/DataInspector.test.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Comprueba el comportamiento de el módulo Data Inspector mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "5f1e5ec073b956f8f3cb128d102d5cf2237bf7e21b16e28f4e27b238a2d96127"
+    },
+    {
+      "ruta": "FrontEnd/src/features/records/components/EndpointConsole.jsx",
+      "fecha": "2026-11-11 10:29:41",
+      "notas": [
+        "Implementa el componente EndpointConsole de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "9f121319103ba4ba914d9d90431f4c96822d3a0a9f81257580d24d72c0d7992a"
+    },
+    {
+      "ruta": "FrontEnd/src/features/records/components/EndpointConsole.test.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Comprueba el comportamiento de el módulo Endpoint Console mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "0e3c34efeb9a1f2108dc02c0f8c87bdd4d8b271450adf0cde41f8913dc10c9ab"
+    },
+    {
+      "ruta": "FrontEnd/src/features/records/components/InstitutionalLetterhead.test.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Comprueba el comportamiento de las instituciones mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "2be9204ec25082535f0f201ecb148eef9b03e1ceb240b12e8b6ed5f282c651ff"
+    },
+    {
+      "ruta": "FrontEnd/src/features/records/components/console/DocumentReadiness.jsx",
+      "fecha": "2026-11-11 10:29:41",
+      "notas": [
+        "Implementa el componente DocumentReadiness de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "b06cd9f323515797540b69b8e417709f3c0380b550c9e98f9cc7093d3edaf06a"
+    },
+    {
+      "ruta": "FrontEnd/src/features/records/components/console/DocumentReview.jsx",
+      "fecha": "2026-11-11 10:29:41",
+      "notas": [
+        "Implementa el componente DocumentReview de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "70ee5efa4122afd01fc33916a5d6ffb4d67a7893e4e2cceee0f32a58f0987bb6"
+    },
+    {
+      "ruta": "FrontEnd/src/features/records/components/console/EndpointModule.jsx",
+      "fecha": "2026-11-11 10:29:41",
+      "notas": [
+        "Implementa el componente EndpointModule de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "be35b8fc2eb2dde2e2e0c4b44473b36c3bb536f7522859fbe00665e43fb37225"
+    },
+    {
+      "ruta": "FrontEnd/src/features/records/components/console/EvidencePicker.jsx",
+      "fecha": "2026-11-11 10:29:41",
+      "notas": [
+        "Implementa el componente EvidencePicker de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "938218d17c456508434f73bb0985b8f49ab07e75dcea3c18c9d9949489d4a583"
+    },
+    {
+      "ruta": "FrontEnd/src/features/records/components/console/ListFilters.jsx",
+      "fecha": "2026-11-11 10:29:41",
+      "notas": [
+        "Implementa el componente ListFilters de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "44809e70ff021b842c8e03649f4dbc5886466176eb58e8f231acc6b283653fa3"
+    },
+    {
+      "ruta": "FrontEnd/src/features/records/components/console/documentPolicies.js",
+      "fecha": "2026-11-11 10:29:41",
+      "notas": [
+        "Implementa el componente documentPolicies de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "841bab8339a83f08c3d3fe75f9153de89255017c1903a74ed833f746252f6067"
+    },
+    {
+      "ruta": "FrontEnd/src/features/records/components/console/listFiltering.js",
+      "fecha": "2026-11-11 10:29:41",
+      "notas": [
+        "Implementa el componente listFiltering de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "40be1e7ddf517cbffe25093a3f5bfe0d80d377e1f7e64da75b04c5927fa9e46b"
+    },
+    {
+      "ruta": "FrontEnd/src/features/records/components/console/reviewModel.js",
+      "fecha": "2026-11-11 10:29:41",
+      "notas": [
+        "Implementa el componente reviewModel de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "e837f43ae6b88ed3138255a5a438588038aee4f834e72a197adb69c491dd35b2"
+    },
+    {
+      "ruta": "FrontEnd/src/features/records/components/console/useEndpointWorkspace.jsx",
+      "fecha": "2026-11-11 10:29:41",
+      "notas": [
+        "Implementa el componente useEndpointWorkspace de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "a293659f19a466f384472de8f17d48761dc4f2aaadc4ffe618dc51423f67ddae"
+    },
+    {
+      "ruta": "FrontEnd/src/features/records/components/console/workspaceHelpers.js",
+      "fecha": "2026-11-11 10:29:41",
+      "notas": [
+        "Implementa el componente workspaceHelpers de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "9edf77ad1f6ec482f37c4344ce2a99c044985b691f81993cf2018c5d12112635"
+    },
+    {
+      "ruta": "FrontEnd/src/features/records/components/details/AcademicTables.jsx",
+      "fecha": "2026-11-11 10:29:41",
+      "notas": [
+        "Implementa el componente AcademicTables de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "ae5fb5650e1e6b9c9038c4bef2d7c5415f047295cf6557498a716bbcd228ca2f"
+    },
+    {
+      "ruta": "FrontEnd/src/features/records/components/details/DocumentApprovalStatus.jsx",
+      "fecha": "2026-11-11 10:29:41",
+      "notas": [
+        "Implementa el componente DocumentApprovalStatus de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "099fafc0129ca4794d270d7df8166e5d9768121ad94d7e388122954338fb0a3b"
+    },
+    {
+      "ruta": "FrontEnd/src/features/records/components/details/DocumentTimeline.jsx",
+      "fecha": "2026-11-11 10:29:41",
+      "notas": [
+        "Implementa el componente DocumentTimeline de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "17504867f6c7c4eca2bb7af27376c4d29f160e793d9b9ca8bdd27630c8231541"
+    },
+    {
+      "ruta": "FrontEnd/src/features/records/components/details/detailPresentation.jsx",
+      "fecha": "2026-11-11 10:29:41",
+      "notas": [
+        "Implementa el componente detailPresentation de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "e6901adb0aa49d38d1a2367f1e0e1af6470f5ccfe0488d111531b78c194be5ec"
+    },
+    {
+      "ruta": "FrontEnd/src/features/reports/pages/ReportsPage.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Presenta los reportes y filtros de consulta autorizados."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "d2638b3d0dad5e77873c3db69b7a82091ebd85c6e745aba5dcf1887276c7afd9"
+    },
+    {
+      "ruta": "FrontEnd/src/features/schedules/components/AgendaView.interaction.test.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Comprueba el comportamiento de el módulo Agenda View.interaction mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "4565b9d06ccb48d6ee9cea4b8b49bb3248fe41fd99b86debebd0fe63dec2c3e0"
+    },
+    {
+      "ruta": "FrontEnd/src/features/schedules/components/AgendaView.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Implementa el componente AgendaView de la interfaz del SGP."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "d922fb9f31428259248796fd6d54c1666fc74c995d3bad0f98132e97d888999f"
+    },
+    {
+      "ruta": "FrontEnd/src/features/schedules/components/AgendaView.test.js",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Comprueba el comportamiento de el módulo Agenda View mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "f158a376c672790792eabbc4157563d7a675b80b50deff0e1b03b146f9475569"
+    },
+    {
+      "ruta": "FrontEnd/src/features/schedules/pages/SchedulesPage.jsx",
+      "fecha": "2026-11-09 11:08:16",
+      "notas": [
+        "Presenta las jornadas de prácticas y los registros de asistencia según los permisos de cada usuario."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "285e30214aca94f7c32c7bbc675117fe98d052113d109e08d8fe6578756479a9"
     },
     {
       "ruta": "FrontEnd/src/hooks/useButtonTooltips.js",
@@ -4896,31 +5835,13 @@
       "contenidoSinCabeceraSha256": "ce9289ce564096f5d5c04842185a65f0b15dd7a9cc861063ed1fa121acb2aaca"
     },
     {
-      "ruta": "FrontEnd/src/hooks/useNotifications.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Gestiona el estado y la integración de useNotifications en la interfaz React."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "21a1a88bdc27dad492823a66b589494ac26de97ca52f11970d4854664ff81ba7"
-    },
-    {
-      "ruta": "FrontEnd/src/hooks/useNotifications.test.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Comprueba el comportamiento de las notificaciones mediante pruebas de regresión."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "f0ae273866ed0485c063fda47cabc18affd4cc4a93a5aa3393897342bc3383dd"
-    },
-    {
       "ruta": "FrontEnd/src/hooks/useRecoverableDraft.js",
       "fecha": "2026-11-09 11:08:16",
       "notas": [
         "Gestiona el estado y la integración de useRecoverableDraft en la interfaz React."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "6bb661ef0d27bf5a531c08dea304eb8f0b602093cb84a459e55a9cd7cf1b52f5"
+      "contenidoSinCabeceraSha256": "2212c3764136aa494ddd7f40f18c67ef3a2fa89d2916df5a6327750349ac0883"
     },
     {
       "ruta": "FrontEnd/src/hooks/useRecoverableDraft.test.jsx",
@@ -4929,7 +5850,7 @@
         "Comprueba el comportamiento de el módulo use Recoverable Draft mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "87b84eaf13adf7575053e702c509510165e1c2959d9685d301d7d24bd605b9cd"
+      "contenidoSinCabeceraSha256": "ddade3305a03c1cb4118928ca53ba083daee0435bf487932027754016bd68e73"
     },
     {
       "ruta": "FrontEnd/src/hooks/useServerDraft.js",
@@ -4983,367 +5904,7 @@
         "Inicia la interfaz React y monta los proveedores y componentes principales del sistema."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "feae0f2098df4a32ab591ba9e9982365ae49e07b3bda19587e7438d16f7fc643"
-    },
-    {
-      "ruta": "FrontEnd/src/layout/AppLayout.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Implementa el componente AppLayout de la interfaz del SGP."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "528ddffa01f9083250cb27a866af2ef33acb40cc615d922af116d9f5332b7c51"
-    },
-    {
-      "ruta": "FrontEnd/src/layout/AppLayout.test.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Comprueba el comportamiento de el módulo App Layout mediante pruebas de regresión."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "d3ce5846539592eaef60ab806e1a5695fa65f168ce624d9c767ff4ad041e5bf1"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/AccountsPage.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Presenta la administración de cuentas, roles y estado de acceso al sistema."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "d958ce173a8d6e820a297716af7d62444d74e43c2a98a6ab6cf06ea2b07198e0"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/AccountsPage.test.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Comprueba el comportamiento de las cuentas de usuario mediante pruebas de regresión."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "d8b966c590270067e55bc38075ef1f52b81563a037eee80f758ed668def79d73"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/CatalogWorkflowPage.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Organiza la gestión de catálogos y sus relaciones en la interfaz."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "6bfa4e8cf99b83dd58f847f9017758b9221a7e91aa08a164c8821b3a30c7f168"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/CatalogWorkflowPage.test.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Comprueba el comportamiento de el módulo Catalog Workflow Page mediante pruebas de regresión."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "66e3a3f76a8aafcea28183ce027bd8c201230b0064fd2f75b12a6dfa83a55941"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/CoursesPage.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Permite gestionar los paralelos, sus prácticas, estudiantes, grupos y asignaciones autorizadas."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "11cedb93b610029c444b2528f203f4eeb94bd5819f485f6c9cb5eed57858bbb0"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/DashboardPage.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Presenta el panel de entrada y la información disponible según el rol del usuario."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "f007213b63bebd001c6e605a79dbe9e824aa89d29fd1d7b03d7406448fcc9d76"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/DashboardPage.test.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Comprueba el comportamiento de el módulo Dashboard Page mediante pruebas de regresión."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "5b0d1398ffefd97884955c8fc1038e2eb141b1be61edaaf125425b761c6fd772"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/DidacticPlansPage.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Gestiona las planificaciones didácticas y sus recomendaciones dentro del alcance del usuario."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "fb5fee061d9438b1f9cd9ef39bae8c5b2e473d2ff82cf98f8dd04988bfd2b686"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/DidacticPlansPage.test.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Comprueba el comportamiento de las planificaciones didácticas mediante pruebas de regresión."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "93b12db0db39724ada0f79f04ebc6cc43d6b7e0e93150ac3ac3b241aacde07aa"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/DocumentsPage.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Presenta los módulos documentales de la práctica y sus operaciones autorizadas."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "838e0e56a59a8d2655f5646da915d5c15f487d417cc59721fb47678fcb679ee8"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/EvidenceViewerPage.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Presenta la consulta de evidencias y archivos relacionados con una práctica."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "a15f591343ce3f8598061cd7297c4fa1a4602a93e6f94cd69d23b8fa73b4538e"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/ForcePasswordChangePage.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Permite actualizar la contraseña cuando la cuenta requiere un cambio inicial."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "d0aaf29d9b796f5be8b19dd6040ee9a334b39bf07477e1086154847a5862055d"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/InstitutionWorkPage.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Agrupa las tareas y asignaciones vinculadas al trabajo de la institución."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "1d61727bceb3782a1d4dd921625e07e687ab9ef9b657115f4c37eedb4f04bb11"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/InstitutionWorkPage.test.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Comprueba el comportamiento de las instituciones mediante pruebas de regresión."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "2691cf4f11f13d7a20e311ce811bcfe3574d47b3cc07975cf354fe16088bc31e"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/InstitutionsPage.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Presenta la gestión y consulta de las instituciones del sistema."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "4820c819276bcc0137a919b66e1f3ca37a279f4d06ebf6704c84824aa148710b"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/LocationsPage.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Presenta los catálogos de ubicación geográfica utilizados por el sistema."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "1071e6ae998c0b49e563be055f9acb2c01a6e7dd9a3be75c4b2ad6e4bfe0f9cc"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/LoginPage.css",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Presenta el acceso institucional y envía las credenciales al flujo de autenticación del sistema."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "92dbe2327898261505c33e8a0f425216a0edabe1bfcce0e83d57db6d16fe97a4"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/LoginPage.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Presenta el acceso institucional y envía las credenciales al flujo de autenticación del sistema."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "d84be6bf68ab7374b4a80209fb8287f2e6f04592e488f22052d54df8e378640c"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/LoginPage.test.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Comprueba el comportamiento de el módulo Login Page mediante pruebas de regresión."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "5d8665663962685a34b7154222d00655ae3d919ed2ca1485eba4af7ad5695d6f"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/NotificationsPage.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Presenta las notificaciones de la cuenta y permite consultar sus eventos relacionados."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "fc2af1d85090bcf4d4c142d412ef966e2b1069d349145648708e19376179df60"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/NotificationsPage.test.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Comprueba el comportamiento de las notificaciones mediante pruebas de regresión."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "f61c8d36e53651fa6e7903648c0824395f680a0747891b80601d73b97a4aabf2"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/PhotosPage.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Permite registrar y consultar las evidencias fotográficas de las prácticas."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "c92b33615c82548f994d4e1e529ead2c5fc57f563979f1b80e8a1e4c1ff5c1bf"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/PracticeArchivePage.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Presenta el historial y las acciones autorizadas de conclusión, reapertura y archivo de prácticas."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "c22af1fc9d9ed2aaf05556feb5e90f6e40cecc61697ba189b44e7be0692d2a03"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/PracticeArchivePage.test.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Comprueba el comportamiento de el módulo Practice Archive Page mediante pruebas de regresión."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "5eaf729de255c1df816703dfb850cb22129f798f1fca99ad45af7f187129b037"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/PracticeFormsInterpretation.test.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Comprueba el comportamiento de los instrumentos de entrevista y observación mediante pruebas de regresión."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "d5e1c1d59800685184d9281acfa3b1964f49318143da7a53ff8d20561f55a490"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/PracticeFormsPage.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Gestiona los formularios de entrevistas y observación asociados a las prácticas."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "3f338c94445dd101924d5f7350dff2f344f78522d35de790744daf9d4dd38e1d"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/PracticeFormsPage.test.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Comprueba el comportamiento de los instrumentos de entrevista y observación mediante pruebas de regresión."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "b1eb6ba541e5f5f1f7953b5ecb2c82d73910b2375ac67d635cea61560bcb70f2"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/PracticeInstitutionsPage.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Presenta los centros receptores y su información para el desarrollo de prácticas."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "9f0cd966f722f7d0012769342ff870551c64ce04eb76ca86f76e112b53636177"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/PracticeWorkspacePage.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Presenta las prácticas asignadas y permite abrir las actividades de cada práctica."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "685c33044a88d2a87c3a8c306af8bcbfebc7b44e734b247f7aa6abe791a49033"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/PracticeWorkspacePage.test.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Comprueba el comportamiento de el módulo Practice Workspace Page mediante pruebas de regresión."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "c9670a6c603406b8e376ad536a5bdaafb89d24fb1df39c37d3b985cc60c9dd8b"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/ProfilePage.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Presenta los datos de la cuenta y las opciones de actualización del perfil."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "0b270224bd8d0a62cc0878e78d37966beb3d53bf523274983b65756a3ba39844"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/RegisterPublic.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Presenta el registro público de estudiantes y sus datos de acceso."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "0b58e4f571674a0a3a138177308fbf6d093477ba13bc887dfe6a98f29de7826e"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/RegisterPublic.test.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Comprueba el comportamiento de el módulo Register Public mediante pruebas de regresión."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "f1b9acf8e869a31139a8bb1cccbccd3bb6963751d5c3c5776c77c561d1c4a3d9"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/ReportsPage.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Presenta los reportes y filtros de consulta autorizados."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "d1ebd23b10786797e6ae1d32a16e33981ae897ff51086a86f4b3f6a50b7cb1a9"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/SchedulesPage.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Presenta las jornadas de prácticas y los registros de asistencia según los permisos de cada usuario."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "b9c28634dfe7790fdd9c61544504aeaea5404df6dcf688719b1066dc2bd67ed4"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/StaffHomePage.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Presenta los accesos a las tareas del personal autorizado según su rol."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "03ec39b2f715f53bbdd22e8976a0f7c479a826aad59786bfec29bf247c82f298"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/StaffHomePage.test.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Comprueba el comportamiento de el módulo Staff Home Page mediante pruebas de regresión."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "664b96478a0ab51b873e5ec79668a9a4b1979f00bd1a75eaaf99b3844a24321d"
-    },
-    {
-      "ruta": "FrontEnd/src/pages/UniversitiesPage.jsx",
-      "fecha": "2026-11-09 11:08:16",
-      "notas": [
-        "Presenta la estructura universitaria y su gestión según los permisos del usuario."
-      ],
-      "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "c3dcbfe8c14bb496ad358afe667b219e5d36372b6c2616b10fd639363068fd5c"
+      "contenidoSinCabeceraSha256": "c9a69ec3e3330357b84e12de9ca88b50193fcbc526ff7ff314573ef6e7d141c9"
     },
     {
       "ruta": "FrontEnd/src/setupTests.js",
@@ -5406,7 +5967,7 @@
         "Proporciona las funciones de format utilizadas por la interfaz del SGP."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "8f38f006d75dd3bbafd64045d7f60187ea73e4774befec18291a3fea6756a5e6"
+      "contenidoSinCabeceraSha256": "855fbcc2ed3c5eccb9ed7295f867d0f56621e7e8911bf5cafa19a070fde8845b"
     },
     {
       "ruta": "FrontEnd/src/utils/notificationArchive.js",
@@ -5496,7 +6057,7 @@
         "Proporciona las funciones de practiceExperience utilizadas por la interfaz del SGP."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "d9c0c3ad81911022360ac8781a3ac7f8336868e1f29e8e5a34b861fe4e4a56d0"
+      "contenidoSinCabeceraSha256": "733bfc60315d6f87953cfa08fc2d71602e7e5832f0a30a8524344226a503be1b"
     },
     {
       "ruta": "FrontEnd/src/utils/practiceExperience.test.js",
@@ -5577,7 +6138,7 @@
         "Documenta SGPv1."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "373853164e047ca110b4a0ef4eb37b094b6f767d464ee0d4b1118fccd253fca9"
+      "contenidoSinCabeceraSha256": "15bf6f1d90fd8d1c8fe589b0e2451690d2f7705618b10e39fc4dd02447d6f06b"
     },
     {
       "ruta": "docs/README.md",
@@ -5586,7 +6147,7 @@
         "Documenta Documentación de SGPv1."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "9c40cb786dad0e0faca3e49b8754b9b98cf17604c7cc0e70b4fbd7393bb7e5b4"
+      "contenidoSinCabeceraSha256": "58107fee9d205116f6ead12cdc8369a329cc9839bdaa5ad424fe5d2aaaec6877"
     },
     {
       "ruta": "docs/api/README.md",
@@ -5757,7 +6318,7 @@
         "Documenta Paralelos e inscripciones."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "a76703bb32f7d1b90f89e402be0aef8f7cdcdeeb0a2b12dd9237bf224d9c6a3f"
+      "contenidoSinCabeceraSha256": "e7f7cbb33f7fbe212a813d87b012d7ab439a058efa359a32c4e4533e97914f3f"
     },
     {
       "ruta": "docs/api/postman/pruebas-flujo.md",
@@ -5769,23 +6330,13 @@
       "contenidoSinCabeceraSha256": "4d5543602c2a3518eb7907761577b49be2c6ca1dfcf4604b3fdab8e22a55bc16"
     },
     {
-      "ruta": "docs/bitacora.zip",
-      "fecha": "2026-11-10 21:24:04",
-      "notas": [
-        "Conserva el recurso bitacora.zip del proyecto SGP."
-      ],
-      "cabeceraEnArchivo": false,
-      "motivo": "Recurso binario: conservar sus bytes y registrar metadatos en el índice.",
-      "sha256": "6f77059c655b185c3310c17b15b8052f3b7c14cf9bbc4377032177e66a72969b"
-    },
-    {
       "ruta": "docs/bitacora/README.md",
       "fecha": "2026-11-10 21:24:04",
       "notas": [
         "Documenta Bitácora del proyecto SGP."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "5b116ae33933421ef9e00d89d1d196c5cfa048cf95a28f881e89cb8a798b3a8c"
+      "contenidoSinCabeceraSha256": "aea46e0cb97e6241101af707c00074bbe2f02725c68a44c5f38bd6e78e68aa49"
     },
     {
       "ruta": "docs/bitacora/bitacora-proyecto.pdf",
@@ -5860,7 +6411,7 @@
         "Implementa el componente capturar-interfaces de la interfaz del SGP."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "a43d992a18d09d29aa8abd0080e99110d89b4b24dbdfaa010d3931366ec17804"
+      "contenidoSinCabeceraSha256": "a6cfa7ccacba3532cba46508559fcbbe7dd9d373c73ec845e570007519f5fc26"
     },
     {
       "ruta": "docs/bitacora/imagenes/administrador.png",
@@ -5979,7 +6530,7 @@
         "Documenta Desarrollo y operación."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "44b0fd4389e5c1ccee9a3f78293aff35be11c8999b8e68bcb0d6d03941455bd0"
+      "contenidoSinCabeceraSha256": "62e9212a84711f41f994341e185d587989cc8ed94f8707d12da479c2e221e8e8"
     },
     {
       "ruta": "docs/desarrollo/configuracion-entornos.md",
@@ -5988,7 +6539,16 @@
         "Documenta Configuracion de entornos."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "d8e352d979e160c067cb0998a0901a5274f71c890003bae3054322fcd1719d10"
+      "contenidoSinCabeceraSha256": "4c085e30894c44e229cb3b094166c7155956c177029b5eb4363dbfbc3975ad56"
+    },
+    {
+      "ruta": "docs/desarrollo/estructura-proyecto.md",
+      "fecha": "2026-11-11 10:32:47",
+      "notas": [
+        "Documenta Estructura y convenciones del proyecto."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "d48843a5029914e2dbbe4b1ef81398dfb1e21adfa025729e09aa943f9ae1b3e6"
     },
     {
       "ruta": "docs/desarrollo/frontend/componentes-experiencia.md",
@@ -5997,7 +6557,7 @@
         "Documenta Componentes de experiencia de usuario."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "421d09c30439e563dd853833a6b43876d9a54bdf9f4d2ce1b7d21d83dfedb7ae"
+      "contenidoSinCabeceraSha256": "f097c7e729ae547d5329df4f6c8310632cb2c17cf284f28e3c73f66c43f3b015"
     },
     {
       "ruta": "docs/desarrollo/frontend/guia-desarrollo.md",
@@ -6006,7 +6566,7 @@
         "Documenta Guía de desarrollo del frontend."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "74038b4b4b84017bd19a00f857936024f38539e779338ac0a77f5f3290e7a160"
+      "contenidoSinCabeceraSha256": "4e32751266c859cbf24b35afe4f8b13a2d9e3bfe064e8d4570a2b369bf128dd7"
     },
     {
       "ruta": "docs/desarrollo/frontend/referencia-funciones.md",
@@ -6015,7 +6575,36 @@
         "Documenta Referencia de funciones y hooks."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "9e053de902e91a96ee085beabb7ea5f031e5eb4aeb9317ce4b3063f25d0bba4d"
+      "contenidoSinCabeceraSha256": "90936f2ef60f76e6fee1ba14a9e3b1297617d82d55f2705f3e0002cff7beac85"
+    },
+    {
+      "ruta": "docs/desarrollo/reorganizacion-rutas.json",
+      "fecha": "2026-11-11 10:32:47",
+      "notas": [
+        "Conserva los datos estructurados de reorganizacion-rutas.json."
+      ],
+      "cabeceraEnArchivo": false,
+      "motivo": "JSON no admite comentarios; los metadatos se registran en este índice.",
+      "sha256": "338443f25ceeb783e3bf137dd124f99c1d9f6c965d15f68cd6e2e8fc1372f56c"
+    },
+    {
+      "ruta": "docs/entregas/README.md",
+      "fecha": "2026-11-11 10:32:47",
+      "notas": [
+        "Documenta Entregas documentales."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "79e045d0bca0b2a40e357e624ba22d1debd424c4fed07caba50fa1e9b69b1502"
+    },
+    {
+      "ruta": "docs/entregas/bitacora-proyecto-2026-11-10.zip",
+      "fecha": "2026-11-11 10:32:47",
+      "notas": [
+        "Conserva el recurso bitacora-proyecto-2026-11-10.zip del proyecto SGP."
+      ],
+      "cabeceraEnArchivo": false,
+      "motivo": "Recurso binario: conservar sus bytes y registrar metadatos en el índice.",
+      "sha256": "6f77059c655b185c3310c17b15b8052f3b7c14cf9bbc4377032177e66a72969b"
     },
     {
       "ruta": "docs/herramientas/actualizar_cabeceras.py",
@@ -6024,7 +6613,7 @@
         "Mantiene y comprueba las cabeceras institucionales y su índice de cobertura."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "55e509d2d123e0bec8b3bfb5790abef91522d67ad59160b1880c7065db4b66d4"
+      "contenidoSinCabeceraSha256": "26bde35f6f8b2786c41544b1dd5b356aa7536a72760fc7c7b41034c35dc32e68"
     },
     {
       "ruta": "docs/herramientas/verificar_documentacion.py",
@@ -6033,7 +6622,7 @@
         "Comprueba los enlaces y las referencias de la documentación local."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "85e6463eea0b2af5ce7f8123703e9b95d8f4ddfe12686d1774ec1b0574789fa3"
+      "contenidoSinCabeceraSha256": "0313497f775f2d28016720a488848bf16bca620e592f81432025983112c90183"
     },
     {
       "ruta": "docs/mantenimiento-documentacion.md",
@@ -6042,7 +6631,7 @@
         "Documenta Mantenimiento de la documentación."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "1569446435d33e12c94df956a57bb1861478c4fd9773ee4879da46b077d5eccf"
+      "contenidoSinCabeceraSha256": "84f48dd14b1e6f90c17be3cb6474612d005fe24c221de9c9f3de33916ff47d30"
     },
     {
       "ruta": "docs/metadatos/README.md",
@@ -6308,7 +6897,7 @@
         "Documenta Diagrama de secuencia: iniciar sesión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "8fecd144330c5e00afc1a7ca9717ed84bbf30921c96f30e1dcc0aee0fd9d0c45"
+      "contenidoSinCabeceraSha256": "67d9e874de3beb3be307d9a9c9d823cdfa3bbad1b05bd082b1c0da572d2ff65f"
     },
     {
       "ruta": "docs/testing/README.md",
@@ -6317,7 +6906,7 @@
         "Documenta Pruebas, evidencias y demostración."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "c71da1cc0a2149a97474974e637db2bf8c6e31c646c9e68fe24e0ab9a24e26a9"
+      "contenidoSinCabeceraSha256": "13a7a4bc37f19aa1859fde7f854a07b42dcf42d5b4da4c5973d7298f853066c0"
     },
     {
       "ruta": "docs/testing/datos/cargar_demostracion.py",
@@ -6364,7 +6953,7 @@
         "Documenta Evidencias reproducibles."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "35b3fec08cac1b7308d5289082e74205fdcb601a3af13eb60efebb6f6599b83a"
+      "contenidoSinCabeceraSha256": "72519a4efdbfe2a4419f0432c95aedf83b350f51a6ce2629aaed2673b5415bf4"
     },
     {
       "ruta": "docs/testing/evidencias/accesibilidad-movil/dark-1440-boton.png",
@@ -9696,6 +10285,116 @@
       "sha256": "7d062b929084b3ce2359b334f3e078e3163ec8133f3f340ee21723760f3e1267"
     },
     {
+      "ruta": "docs/testing/evidencias/estructura-organizacion-2026-11-11/backend.log",
+      "fecha": "2026-11-11 10:36:39",
+      "notas": [
+        "Conserva el recurso backend.log del proyecto SGP."
+      ],
+      "cabeceraEnArchivo": false,
+      "motivo": "Evidencia, datos tabulares o recurso binario: no alterar su contenido.",
+      "sha256": "13f215508abd1db6a9ca5425c2c47160643827d331006a20efb0b3bd9a7cb365"
+    },
+    {
+      "ruta": "docs/testing/evidencias/estructura-organizacion-2026-11-11/browser-documents.json",
+      "fecha": "2026-11-11 10:36:39",
+      "notas": [
+        "Conserva los datos estructurados de browser-documents.json."
+      ],
+      "cabeceraEnArchivo": false,
+      "motivo": "JSON no admite comentarios; los metadatos se registran en este índice.",
+      "sha256": "c3df3a7aa71ad509a959ff3bc9e9c47be1ec3c7311e7f19af7f87258d15d6646"
+    },
+    {
+      "ruta": "docs/testing/evidencias/estructura-organizacion-2026-11-11/browser-forms.json",
+      "fecha": "2026-11-11 10:36:39",
+      "notas": [
+        "Conserva los datos estructurados de browser-forms.json."
+      ],
+      "cabeceraEnArchivo": false,
+      "motivo": "JSON no admite comentarios; los metadatos se registran en este índice.",
+      "sha256": "b8364b60f736d5619f390a05abef6ab9432a41e87252c420d7d23492fb3be6d9"
+    },
+    {
+      "ruta": "docs/testing/evidencias/estructura-organizacion-2026-11-11/browser-governance.json",
+      "fecha": "2026-11-11 10:36:39",
+      "notas": [
+        "Conserva los datos estructurados de browser-governance.json."
+      ],
+      "cabeceraEnArchivo": false,
+      "motivo": "JSON no admite comentarios; los metadatos se registran en este índice.",
+      "sha256": "beec08a2e41554d6a94d897804c5e7127800d83fb4c06200c7c50a7ae5b5fc6b"
+    },
+    {
+      "ruta": "docs/testing/evidencias/estructura-organizacion-2026-11-11/build.log",
+      "fecha": "2026-11-11 10:36:39",
+      "notas": [
+        "Conserva el recurso build.log del proyecto SGP."
+      ],
+      "cabeceraEnArchivo": false,
+      "motivo": "Evidencia, datos tabulares o recurso binario: no alterar su contenido.",
+      "sha256": "4eb0e6b7d12cab9f599c5bae78c35490c972381f1eb87a290799d27e20fa59f3"
+    },
+    {
+      "ruta": "docs/testing/evidencias/estructura-organizacion-2026-11-11/frontend.log",
+      "fecha": "2026-11-11 10:36:39",
+      "notas": [
+        "Conserva el recurso frontend.log del proyecto SGP."
+      ],
+      "cabeceraEnArchivo": false,
+      "motivo": "Evidencia, datos tabulares o recurso binario: no alterar su contenido.",
+      "sha256": "bff609671fa55a83657ddb55c2614385e617f077e3b84fe5b36c56170ee96c40"
+    },
+    {
+      "ruta": "docs/testing/evidencias/estructura-organizacion-2026-11-11/mariadb.log",
+      "fecha": "2026-11-11 10:36:39",
+      "notas": [
+        "Conserva el recurso mariadb.log del proyecto SGP."
+      ],
+      "cabeceraEnArchivo": false,
+      "motivo": "Evidencia, datos tabulares o recurso binario: no alterar su contenido.",
+      "sha256": "e64ab753ba3e24b2ee9f9619d14cab0f57d8842fd44325e74e08df02cdfa6c42"
+    },
+    {
+      "ruta": "docs/testing/evidencias/estructura-organizacion-2026-11-11/qa-ci.log",
+      "fecha": "2026-11-11 10:36:39",
+      "notas": [
+        "Conserva el recurso qa-ci.log del proyecto SGP."
+      ],
+      "cabeceraEnArchivo": false,
+      "motivo": "Evidencia, datos tabulares o recurso binario: no alterar su contenido.",
+      "sha256": "e35a3127719ab82674f49a1b84aae7fa3ea38547fc58847f76aec12d82ae72b7"
+    },
+    {
+      "ruta": "docs/testing/evidencias/estructura-organizacion-2026-11-11/resultados.json",
+      "fecha": "2026-11-11 10:36:39",
+      "notas": [
+        "Conserva los datos estructurados de resultados.json."
+      ],
+      "cabeceraEnArchivo": false,
+      "motivo": "JSON no admite comentarios; los metadatos se registran en este índice.",
+      "sha256": "7a6c1b1488a336dbcf9bda5aef6f5cc1f934f8af210756172b8296d9d857c0be"
+    },
+    {
+      "ruta": "docs/testing/evidencias/estructura-organizacion-2026-11-11/vista-previa-escritorio.png",
+      "fecha": "2026-11-11 10:36:39",
+      "notas": [
+        "Contiene un recurso gráfico del proyecto: vista-previa-escritorio.png."
+      ],
+      "cabeceraEnArchivo": false,
+      "motivo": "Recurso binario: conservar sus bytes y registrar metadatos en el índice.",
+      "sha256": "75ee186ac110aedfcebbf51b1a7f0c67f77802fac2e15b34eb4f8f6468a1d3ee"
+    },
+    {
+      "ruta": "docs/testing/evidencias/estructura-organizacion-2026-11-11/vista-previa-movil.png",
+      "fecha": "2026-11-11 10:36:39",
+      "notas": [
+        "Contiene un recurso gráfico del proyecto: vista-previa-movil.png."
+      ],
+      "cabeceraEnArchivo": false,
+      "motivo": "Recurso binario: conservar sus bytes y registrar metadatos en el índice.",
+      "sha256": "de9dd2fe7d74bcdeb3dc8765a9ef0ad04264b50af554de118b2b407da1b7779d"
+    },
+    {
       "ruta": "docs/testing/evidencias/evidencia-bandeja-agenda.json",
       "fecha": "2026-11-09 11:08:16",
       "notas": [
@@ -9774,6 +10473,66 @@
       "cabeceraEnArchivo": false,
       "motivo": "JSON no admite comentarios; los metadatos se registran en este índice.",
       "sha256": "7cc180e47b10384626d825b6e5f63066f476af9d80cbf5be60c825026a0012b5"
+    },
+    {
+      "ruta": "docs/testing/evidencias/incidencias-versiones-plazos-2026-11-10/backend.log",
+      "fecha": "2026-11-10 22:16:26",
+      "notas": [
+        "Conserva el recurso backend.log del proyecto SGP."
+      ],
+      "cabeceraEnArchivo": false,
+      "motivo": "Evidencia, datos tabulares o recurso binario: no alterar su contenido.",
+      "sha256": "955bcd24cbfbc08f26f91f8c21588632abe28b8f18f067fe0f22e8b04e562d0d"
+    },
+    {
+      "ruta": "docs/testing/evidencias/incidencias-versiones-plazos-2026-11-10/build.log",
+      "fecha": "2026-11-10 22:16:26",
+      "notas": [
+        "Conserva el recurso build.log del proyecto SGP."
+      ],
+      "cabeceraEnArchivo": false,
+      "motivo": "Evidencia, datos tabulares o recurso binario: no alterar su contenido.",
+      "sha256": "efbabceff67635171a12a5bb80ad10e5e1623a3ca4ddc8f4f0f0735c9beedbc2"
+    },
+    {
+      "ruta": "docs/testing/evidencias/incidencias-versiones-plazos-2026-11-10/frontend.log",
+      "fecha": "2026-11-10 22:16:26",
+      "notas": [
+        "Conserva el recurso frontend.log del proyecto SGP."
+      ],
+      "cabeceraEnArchivo": false,
+      "motivo": "Evidencia, datos tabulares o recurso binario: no alterar su contenido.",
+      "sha256": "47ed36cffc838ff40dadbc0729893e4122d304eda90d784a3f23096bb1f809ce"
+    },
+    {
+      "ruta": "docs/testing/evidencias/incidencias-versiones-plazos-2026-11-10/migraciones-mariadb.log",
+      "fecha": "2026-11-10 22:16:26",
+      "notas": [
+        "Conserva el recurso migraciones-mariadb.log del proyecto SGP."
+      ],
+      "cabeceraEnArchivo": false,
+      "motivo": "Evidencia, datos tabulares o recurso binario: no alterar su contenido.",
+      "sha256": "1e6fffe73775e7c7b0841f35fe8a72fd5bda700c4da6a9ee0bfce16106d66b18"
+    },
+    {
+      "ruta": "docs/testing/evidencias/incidencias-versiones-plazos-2026-11-10/navegador.json",
+      "fecha": "2026-11-10 22:16:26",
+      "notas": [
+        "Conserva los datos estructurados de navegador.json."
+      ],
+      "cabeceraEnArchivo": false,
+      "motivo": "JSON no admite comentarios; los metadatos se registran en este índice.",
+      "sha256": "beec08a2e41554d6a94d897804c5e7127800d83fb4c06200c7c50a7ae5b5fc6b"
+    },
+    {
+      "ruta": "docs/testing/evidencias/incidencias-versiones-plazos-2026-11-10/resultados.json",
+      "fecha": "2026-11-10 22:16:26",
+      "notas": [
+        "Conserva los datos estructurados de resultados.json."
+      ],
+      "cabeceraEnArchivo": false,
+      "motivo": "JSON no admite comentarios; los metadatos se registran en este índice.",
+      "sha256": "9975305a77a0e7cc34d5b3e47751f3fda89732a31604c4b3427a3e400d4f7372"
     },
     {
       "ruta": "docs/testing/evidencias/logica-roles-2026-11-08/resultados.json",
@@ -10611,7 +11370,7 @@
         "Documenta Revisión de interacciones y animaciones de la interfaz."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "c69af12cd2e7762043dbad243a9196c5afb6011ef848fd0619030b8c64b6b798"
+      "contenidoSinCabeceraSha256": "2e1e5ea77d3e2d3d45c49a5b32446ef9f1e67ea4ff705e8d21f4fc7cf8932949"
     },
     {
       "ruta": "docs/testing/informes/2026-10-26/informe-validacion-funcional-ui.md",
@@ -10791,7 +11550,7 @@
         "Documenta Auditoría integral de SGP — 7 de noviembre de 2026."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "772e659fb17689f03470cb337c6593b9994499ef2bfb0a74963c422c34cdec6a"
+      "contenidoSinCabeceraSha256": "ce8e730c3e5775dafd628e61be272d9c4f39f3d3e1aad5e70f1f7cdfb1f5bd99"
     },
     {
       "ruta": "docs/testing/informes/2026-11-07/auditoria-pantallas.md",
@@ -10854,7 +11613,7 @@
         "Documenta Revisión de lógica de tareas, acciones y responsabilidades por usuario."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "4a7138988e79c8fcac1097cabdd34fc5ca0a23690d21e74e7ee228948c43a11c"
+      "contenidoSinCabeceraSha256": "84279cce8d8b6dc653c2c295030db8fdc39642310d2c03023f92eeec3fd1318d"
     },
     {
       "ruta": "docs/testing/informes/2026-11-08/pertenencia-y-practicas-simultaneas.md",
@@ -10893,13 +11652,49 @@
       "contenidoSinCabeceraSha256": "d977343056fd8fd3f8ad01b3fcd3b6d6e656d73c428e5eba857c5c88cc321f87"
     },
     {
+      "ruta": "docs/testing/informes/2026-11-10/incidencias-versiones-plazos-etapa2.md",
+      "fecha": "2026-11-10 22:16:26",
+      "notas": [
+        "Documenta Incidencias, versiones documentales y plazos."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "f5538bd18bc22b5275e639ab449318dd0d057a9814934ac5abdfa8b0091faa6e"
+    },
+    {
+      "ruta": "docs/testing/informes/2026-11-11/estructura-directorios.md",
+      "fecha": "2026-11-11 10:20:24",
+      "notas": [
+        "Documenta Revisión de estructura, nombres y organización."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "692691d323ac7ca2abf8f0bc11f2c81f490b4997a93c5857fb2f75be6c095bc4"
+    },
+    {
+      "ruta": "docs/testing/informes/2026-11-11/reorganizacion-aplicada.md",
+      "fecha": "2026-11-11 10:36:39",
+      "notas": [
+        "Documenta Reorganización aplicada al proyecto."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "bdc765913fec65285710faf3c18f114b15a76664b1450ccf3ebbe15bb7dedbfc"
+    },
+    {
       "ruta": "docs/testing/informes/README.md",
       "fecha": "2026-11-09 11:08:16",
       "notas": [
         "Documenta Informes de QA."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "73de7f4d504c4054c3f3cec62fe94b1a65b9c2d37cfd52a7c65b9b566ca94f13"
+      "contenidoSinCabeceraSha256": "14ca0e744c99c484ea16351e783f42d687d738af22ac9d687879760dcaa62d7b"
+    },
+    {
+      "ruta": "docs/testing/qa/README.md",
+      "fecha": "2026-11-11 10:32:47",
+      "notas": [
+        "Comprueba el comportamiento de el módulo README mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "e492e07a6f6d817534cf905f27f8ef746d6790fc7c15b910dae926ea4f168eff"
     },
     {
       "ruta": "docs/testing/qa/audit-backend-probes.cjs",
@@ -10926,7 +11721,7 @@
         "Comprueba el comportamiento de el módulo browser-academic-design mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "c87e6100693aaf6d6310769140d022527c175b3dc9857ff14e17febebf617e7a"
+      "contenidoSinCabeceraSha256": "ac383263c8fd5655ea306643c3d644cdee31bea35628b4b7ad121f32f8183687"
     },
     {
       "ruta": "docs/testing/qa/browser-accessibility-widget.cjs",
@@ -10935,7 +11730,7 @@
         "Comprueba el comportamiento de el módulo browser-accessibility-widget mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "56f1d2b288932edebbdb205a056fa8c23f00634106bdbe16b8909608a05a4f0f"
+      "contenidoSinCabeceraSha256": "1156f76a6c7e648948366300d819a0425be0ffc5f97049824a9dff64c902918e"
     },
     {
       "ruta": "docs/testing/qa/browser-account-appearance.cjs",
@@ -10944,7 +11739,7 @@
         "Comprueba el comportamiento de las cuentas de usuario mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "f7ac56311edf3ecee84dc4a8f24ead21f3a0cc379be41b37d0a097c2ec33021e"
+      "contenidoSinCabeceraSha256": "e0bdeff44b971bd2ac8efe82935a6176c9b657ca2369922f8a46b80293725946"
     },
     {
       "ruta": "docs/testing/qa/browser-action-colors.cjs",
@@ -10953,7 +11748,7 @@
         "Comprueba el comportamiento de el módulo browser-action-colors mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "3c3ced2bb743dc74f80eecd005922f11a4e84d98bc6ce6955018f6639405a805"
+      "contenidoSinCabeceraSha256": "d3b62024f891816039313de6435b070341983c950446e338e79ca427b27d626c"
     },
     {
       "ruta": "docs/testing/qa/browser-audit-data-cases.cjs",
@@ -10962,7 +11757,7 @@
         "Comprueba el comportamiento de el módulo browser-audit-data-cases mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "cf9816160da7bd7aa8f2311d99fe896ed1c5f12ab5715f43b572c891c424e378"
+      "contenidoSinCabeceraSha256": "f3183d624601fe0f6718c0359d67e5be87623fb78cfb8c8b021c75e606fad319"
     },
     {
       "ruta": "docs/testing/qa/browser-clipping-regressions.cjs",
@@ -10971,7 +11766,7 @@
         "Comprueba el comportamiento de el módulo browser-clipping-regressions mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "50f1f6e84a572c8bc8a7086362f2e524f52fc8a6a89076eb07fb3bda479ffd2d"
+      "contenidoSinCabeceraSha256": "fce9abbc2f4586ad1005c0c9ea205b8470222ba0d6aa1a7ac642d503901ebd5a"
     },
     {
       "ruta": "docs/testing/qa/browser-contextual-records.cjs",
@@ -10980,7 +11775,7 @@
         "Comprueba el comportamiento de el módulo browser-contextual-records mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "a9ee214c205eb72af6671ab70e7bb90178a2582fd9574b28683f635aec278aed"
+      "contenidoSinCabeceraSha256": "bbfb385dfa9b4d3fe31e4d1973c537ed7405678cc383faf365ddd9fa13dff603"
     },
     {
       "ruta": "docs/testing/qa/browser-continuity-sessions.cjs",
@@ -10989,7 +11784,7 @@
         "Comprueba el comportamiento de el módulo browser-continuity-sessions mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "c758eea53dae995b8128e27ac2b025fa5c3b40424a6ef076258fe25609ed87d3"
+      "contenidoSinCabeceraSha256": "513df23128e02a2b52addd23da717fe440751d54e77fc892d136b5cb2d9cbd67"
     },
     {
       "ruta": "docs/testing/qa/browser-course-memberships.cjs",
@@ -10998,7 +11793,7 @@
         "Comprueba el comportamiento de los paralelos académicos mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "ecb5640ea3098725cc495b8c0dfe7f56d3ed71ab5c8fb4bc62d0570c92a94f86"
+      "contenidoSinCabeceraSha256": "6cc0872230b6089bfdc55531fba529f55aba9d96863ce510b81821aa8fa2408d"
     },
     {
       "ruta": "docs/testing/qa/browser-drafts-preview-archive.cjs",
@@ -11007,7 +11802,7 @@
         "Comprueba el comportamiento de el módulo browser-drafts-preview-archive mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "ae86ba13dc89a228e75e6da725d9b1259e467f9646a969f73669119cbb57e539"
+      "contenidoSinCabeceraSha256": "fb6d022af3457290fbdb0c8b4274ab23488e8721dbda8135853a28d6e3aa6250"
     },
     {
       "ruta": "docs/testing/qa/browser-full-themes.cjs",
@@ -11016,7 +11811,7 @@
         "Comprueba el comportamiento de el módulo browser-full-themes mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "6c75ea3b46697a69f5d49294f43c652395a37e1abd179f6ab3728f82ec9ec7a5"
+      "contenidoSinCabeceraSha256": "cbc687ea869aeb2a0c2673c1b2ea96280da235e4f40c5ab9978e3d1a0ca0ce8b"
     },
     {
       "ruta": "docs/testing/qa/browser-inbox-agenda.cjs",
@@ -11025,7 +11820,7 @@
         "Comprueba el comportamiento de el módulo browser-inbox-agenda mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "94ebb402ff1eea4281fb6effcdc2323f4754e05a28f3b61063f0a7bf81651674"
+      "contenidoSinCabeceraSha256": "30fb14adb8f16b41941db832c01352ea0b03fdbf36ba22cf809a4cf7e2a37b98"
     },
     {
       "ruta": "docs/testing/qa/browser-login-institucional.cjs",
@@ -11034,7 +11829,7 @@
         "Comprueba el comportamiento de el módulo browser-login-institucional mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "77c175238a46fcb736be52ae2e7c5d645e417d38c5506257e6b4fa2528c7a6d6"
+      "contenidoSinCabeceraSha256": "148601f36e802dd6912209be9bc38f00f711057b872c214b83c9ca33deb61706"
     },
     {
       "ruta": "docs/testing/qa/browser-mobile-records.cjs",
@@ -11043,7 +11838,7 @@
         "Comprueba el comportamiento de el módulo browser-mobile-records mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "8d4a836e0267d9b075f28e35a0b3a46e60751fe231b0b6eb432a94cf1160080a"
+      "contenidoSinCabeceraSha256": "cfe21ee7696c1ab575c3bca0df4fe9df1043ba02a17c9d8129a70c7fe3b1a16e"
     },
     {
       "ruta": "docs/testing/qa/browser-modal-audit.cjs",
@@ -11052,7 +11847,7 @@
         "Comprueba el comportamiento de el módulo browser-modal-audit mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "be783123fecfb51d83e1abe088f931f79cbaa4af7c0a2cf35c88f3d7741bcd74"
+      "contenidoSinCabeceraSha256": "a669be7e188e2fab8945422e59550689f3224446677e94a349150b910f428033"
     },
     {
       "ruta": "docs/testing/qa/browser-motion-regressions.cjs",
@@ -11061,7 +11856,7 @@
         "Comprueba el comportamiento de el módulo browser-motion-regressions mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "c36f10a188bb26448db7581b713dd56657c0610c137b0b9e27d0f83fc7b28fb5"
+      "contenidoSinCabeceraSha256": "a20cbc0ad0f6d391951d80ea3160ee2393b358a1d743bc350c4af32059ed159b"
     },
     {
       "ruta": "docs/testing/qa/browser-movable-accessibility.cjs",
@@ -11070,7 +11865,7 @@
         "Comprueba el comportamiento de el módulo browser-movable-accessibility mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "dcda7b0b1fd2f2f199edd2e33e494852885c9ed7908634e8644e9634876be8eb"
+      "contenidoSinCabeceraSha256": "f1d35d5f53f13e2facbb9e8d09f0e747bda27bb21b5b3ff8bfcb7456a18c844e"
     },
     {
       "ruta": "docs/testing/qa/browser-practice-experience.cjs",
@@ -11079,7 +11874,16 @@
         "Comprueba el comportamiento de el módulo browser-practice-experience mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "52541f41be3287e9e3676c4e6cce270e3ad42a708ff67c44b339cd2bb8c58ebd"
+      "contenidoSinCabeceraSha256": "e292a6f74b91cf768aa08032124f3f8d09f3683ca15b9bc40c0f3c4c04cb6f72"
+    },
+    {
+      "ruta": "docs/testing/qa/browser-practice-governance.cjs",
+      "fecha": "2026-11-10 22:13:37",
+      "notas": [
+        "Comprueba el comportamiento de el módulo browser-practice-governance mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "9abb0e0a059357cd47b546a2ce6ab0ef2bca240aba3efccc40ef70739b2d020b"
     },
     {
       "ruta": "docs/testing/qa/browser-practice-reopening.cjs",
@@ -11088,7 +11892,7 @@
         "Comprueba el comportamiento de el módulo browser-practice-reopening mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "18cfd19d8a24669a0c2889b3aa696723b316f6606dd8486a76374931177e42fd"
+      "contenidoSinCabeceraSha256": "d0771f2c76f811687a87fb0284bff94ea5a04cf43058dd8135b987b6c398cf77"
     },
     {
       "ruta": "docs/testing/qa/browser-routes.cjs",
@@ -11097,7 +11901,7 @@
         "Comprueba el comportamiento de el módulo browser-routes mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "d49a744867e03c410eb8a3979543e30c890a333d2ceb4660436f666b46410636"
+      "contenidoSinCabeceraSha256": "8476b31d4e77f432d12c1d81af578d736405132d8297de0edda61c2b63297b54"
     },
     {
       "ruta": "docs/testing/qa/browser-screen-audit.cjs",
@@ -11106,7 +11910,7 @@
         "Comprueba el comportamiento de el módulo browser-screen-audit mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "0cbeed0fd9c643514f94607a3788540f5d93249a5f9321991fe3ec11595a1ee1"
+      "contenidoSinCabeceraSha256": "61b14720fa4588132a57e2b2cdab2e5e0b27d361f92b202ca5f2ce7b11831be0"
     },
     {
       "ruta": "docs/testing/qa/browser-staff-practice-assignment.cjs",
@@ -11115,7 +11919,7 @@
         "Comprueba el comportamiento de el módulo browser-staff-practice-assignment mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "9bda41de1bc780716f0986100c7979a854bd061eed75494ae3f9bae2d991aa26"
+      "contenidoSinCabeceraSha256": "3e8e7cc9288a1dad0819718aea3e403203a93d60582a9adef9917b8a5327894d"
     },
     {
       "ruta": "docs/testing/qa/browser-ux-improvements.cjs",
@@ -11124,7 +11928,7 @@
         "Comprueba el comportamiento de el módulo browser-ux-improvements mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "10490786acf3b257baec3146ab1f5dcda3ea13311e224ce840b1009286c8b1e7"
+      "contenidoSinCabeceraSha256": "7feccc1395a609b916117001429698d5c3720e0a58748ff510df28b7ad556b4f"
     },
     {
       "ruta": "docs/testing/qa/browser-workflow-cards.cjs",
@@ -11133,7 +11937,7 @@
         "Comprueba el comportamiento de el módulo browser-workflow-cards mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "3a9ea1c0823db707652cc2d27717d0d824ccacec7817780a29d2e4b26bbc14bd"
+      "contenidoSinCabeceraSha256": "5634d671b3620e0d78d657b5c2ff5ef828da8d73f620bc6be80b03b8e5c89bbf"
     },
     {
       "ruta": "docs/testing/qa/browser-workspaces.cjs",
@@ -11142,7 +11946,7 @@
         "Comprueba el comportamiento de el módulo browser-workspaces mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "a52df16ab7c57f3c8a9dcfd171cc13db7488c36196cce202fb1e7a9bf1ce4d40"
+      "contenidoSinCabeceraSha256": "57b44717f425375c740ece9d0f555779c7a7a3921637d903b213b1a66caf79f6"
     },
     {
       "ruta": "docs/testing/qa/check-contracts.cjs",
@@ -11151,7 +11955,7 @@
         "Comprueba el comportamiento de el módulo check-contracts mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "6b756d7d8dc4857d2b40f9e2a8c912cac2999a29756a9d9b619b5325f4d7d15b"
+      "contenidoSinCabeceraSha256": "e3296bafe1a1c99dc0dbaf6840cef50ae5bcefc094a97daa2a65c60fc40691f3"
     },
     {
       "ruta": "docs/testing/qa/check-migrations-isolated.py",
@@ -11163,13 +11967,33 @@
       "contenidoSinCabeceraSha256": "34f75de3de5b21507d4f9c5a05b20270005152c73f0ac9dbf98cd963b22da6a5"
     },
     {
+      "ruta": "docs/testing/qa/package-lock.json",
+      "fecha": "2026-11-11 10:29:41",
+      "notas": [
+        "Comprueba el comportamiento de el módulo package-lock mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": false,
+      "motivo": "JSON no admite comentarios; los metadatos se registran en este índice.",
+      "sha256": "6351e992d37499f00e75e87875c3314f01bb1cac5614022ff95a822fa056509a"
+    },
+    {
+      "ruta": "docs/testing/qa/package.json",
+      "fecha": "2026-11-11 10:29:41",
+      "notas": [
+        "Comprueba el comportamiento de el módulo package mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": false,
+      "motivo": "JSON no admite comentarios; los metadatos se registran en este índice.",
+      "sha256": "368a178dec20c357c2773301456707698b1d712ff2718d26e60c3f7ba65c3048"
+    },
+    {
       "ruta": "docs/testing/qa/probes/AuditBehaviorProbeTest.java",
       "fecha": "2026-11-09 11:08:16",
       "notas": [
         "Comprueba el comportamiento de el módulo Audit Behavior Probe Test mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "78b8c91222fc5e4633e69ca288ebd7f0f149ecb69b06ca1156f340ff25f13945"
+      "contenidoSinCabeceraSha256": "bd3b130daa62dffda82e135827eac60aa6cea3227c80cfd4dc5f0a670f5965dc"
     },
     {
       "ruta": "docs/testing/qa/probes/RoleWorkflowAuditProbeTest.java",
@@ -11178,7 +12002,16 @@
         "Comprueba el comportamiento de el módulo Role Workflow Audit Probe Test mediante pruebas de regresión."
       ],
       "cabeceraEnArchivo": true,
-      "contenidoSinCabeceraSha256": "61df16f57941d5475758600be5fb2282a90fe4ceabe95d6de526b9730876b282"
+      "contenidoSinCabeceraSha256": "cbee2f9f68fb3f1287c1a67b841aee921c6f35d14b49a7d8db68e57a1cbac9ff"
+    },
+    {
+      "ruta": "docs/testing/qa/runtime.cjs",
+      "fecha": "2026-11-11 10:29:41",
+      "notas": [
+        "Comprueba el comportamiento de el módulo runtime mediante pruebas de regresión."
+      ],
+      "cabeceraEnArchivo": true,
+      "contenidoSinCabeceraSha256": "6633958668c555e8f3769942d4e9ddea4de9e531ffcde38346145771cecd8183"
     },
     {
       "ruta": "prototipos-interfaces/README.md",

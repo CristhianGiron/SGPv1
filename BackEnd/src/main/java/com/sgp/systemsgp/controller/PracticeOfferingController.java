@@ -11,6 +11,12 @@
  */
 
 package com.sgp.systemsgp.controller;
+import com.sgp.systemsgp.dto.enrollment.AssignStudentRequest;
+import com.sgp.systemsgp.dto.enrollment.CreatePracticeOfferingRequest;
+import com.sgp.systemsgp.dto.enrollment.EnrollmentResponse;
+import com.sgp.systemsgp.dto.enrollment.PracticeOfferingResponse;
+import com.sgp.systemsgp.service.EnrollmentService;
+import com.sgp.systemsgp.service.PracticeOfferingService;
 
 import com.sgp.systemsgp.dto.enrollment.*;
 import com.sgp.systemsgp.dto.course.CourseStudentResponse;

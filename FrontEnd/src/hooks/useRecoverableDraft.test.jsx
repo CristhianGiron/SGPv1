@@ -15,7 +15,7 @@ import { act, fireEvent, render, screen } from '@testing-library/react';
 import { useRecoverableDraft } from './useRecoverableDraft';
 import { DraftRecovery } from '../components/ui/DraftRecovery';
 let mockOwner=1;
-jest.mock('../auth/AuthContext',()=>({useAuth:()=>({profile:{id:mockOwner}})}));
+jest.mock('../features/auth/context/AuthContext',()=>({useAuth:()=>({profile:{id:mockOwner}})}));
 function Example({scope='plans:7:new'}) { const [value,setValue]=useState({title:''});const draft=useRecoverableDraft(scope,setValue);return <><input aria-label="Título" value={value.title} onChange={event=>{const next={title:event.target.value};setValue(next);draft.change(next);}}/><DraftRecovery draft={draft}/><button onClick={draft.markClean}>Guardar en sistema</button></>; }
 beforeEach(()=>{localStorage.clear();mockOwner=1;jest.useFakeTimers();});
 afterEach(()=>{jest.runOnlyPendingTimers();jest.useRealTimers();jest.restoreAllMocks();});

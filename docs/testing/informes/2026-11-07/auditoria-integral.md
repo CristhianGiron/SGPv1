@@ -115,7 +115,7 @@ Fuente: [PracticePhotoService](../../../../BackEnd/src/main/java/com/sgp/systems
 
 **Cambio propuesto:** definir la diferencia entre campo omitido y nulo explícito en la operación de actualización. Permitir limpiar los campos opcionales acordados y conservar los ceros con `??`. Añadir pruebas de guardado y recarga con vacío, cero y valor positivo.
 
-Fuentes: [payload y carga del formulario](../../../../FrontEnd/src/pages/DidacticPlansPage.jsx), [actualización del servicio](../../../../BackEnd/src/main/java/com/sgp/systemsgp/service/DidacticPlanService.java), [sonda numérica](../../evidencias/auditoria-integral-2026-11-07/backend-probes.json).
+Fuentes: [payload y carga del formulario](../../../../FrontEnd/src/features/documents/pages/DidacticPlansPage.jsx), [actualización del servicio](../../../../BackEnd/src/main/java/com/sgp/systemsgp/service/DidacticPlanService.java), [sonda numérica](../../evidencias/auditoria-integral-2026-11-07/backend-probes.json).
 
 ### F07. Un registro existente desaparece de búsqueda y gestión
 
@@ -125,7 +125,7 @@ Fuentes: [payload y carga del formulario](../../../../FrontEnd/src/pages/Didacti
 
 **Cambio propuesto:** utilizar paginación y búsqueda del servidor, conservar `totalElements` y separar los estados «sin registros», «sin coincidencias» y «error de carga». Revisar los selectores para que tampoco oculten opciones posteriores a esa primera página.
 
-Fuentes: [AccountsPage](../../../../FrontEnd/src/pages/AccountsPage.jsx), [contraprueba de 205 cuentas](../../evidencias/auditoria-integral-2026-11-07/limite-listados.json), [captura móvil](../../evidencias/auditoria-integral-2026-11-07/cuentas-limite-390.png).
+Fuentes: [AccountsPage](../../../../FrontEnd/src/features/accounts/pages/AccountsPage.jsx), [contraprueba de 205 cuentas](../../evidencias/auditoria-integral-2026-11-07/limite-listados.json), [captura móvil](../../evidencias/auditoria-integral-2026-11-07/cuentas-limite-390.png).
 
 ### F08. Colisión de acceso flotante con un aviso
 
@@ -143,7 +143,7 @@ Evidencia: [resultado geométrico](../../evidencias/auditoria-integral-2026-11-0
 
 **Cambio propuesto:** integrar el visor con `Modal/useDialogFocus`, asignar nombre y foco inicial, cerrar solo el diálogo superior y usar el mismo contador de bloqueo de desplazamiento. Al cerrar, devolver el foco a la fotografía que lo abrió.
 
-Fuentes: [PhotoFullscreen](../../../../FrontEnd/src/pages/PhotosPage.jsx), [resultado del visor](../../evidencias/auditoria-integral-2026-11-07/visor-modales.json), [captura posterior a Escape](../../evidencias/auditoria-integral-2026-11-07/visor-escape-390.png).
+Fuentes: [PhotoFullscreen](../../../../FrontEnd/src/features/evidence/pages/PhotosPage.jsx), [resultado del visor](../../evidencias/auditoria-integral-2026-11-07/visor-modales.json), [captura posterior a Escape](../../evidencias/auditoria-integral-2026-11-07/visor-escape-390.png).
 
 ### F10. Casilla «Activo» sin asociación accesible
 
@@ -153,7 +153,7 @@ Fuentes: [PhotoFullscreen](../../../../FrontEnd/src/pages/PhotosPage.jsx), [resu
 
 **Cambio propuesto:** asociar la etiqueta al control real y hacer que pulsar el texto cambie su estado. Verificar todas las casillas que reutilicen `ResourceInput`, además de su área de interacción.
 
-Fuentes: [ResourceInput](../../../../FrontEnd/src/components/ResourceCrud.jsx), [Field](../../../../FrontEnd/src/components/ui/FormControls.jsx), [contextos y campos observados](../../evidencias/auditoria-integral-2026-11-07/contextos-modales.json).
+Fuentes: [ResourceInput](../../../../FrontEnd/src/features/catalogs/components/ResourceCrud.jsx), [Field](../../../../FrontEnd/src/components/ui/FormControls.jsx), [contextos y campos observados](../../evidencias/auditoria-integral-2026-11-07/contextos-modales.json).
 
 ## 3. Revisión de flujos por usuario
 

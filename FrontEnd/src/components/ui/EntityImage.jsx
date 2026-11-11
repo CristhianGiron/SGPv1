@@ -13,7 +13,7 @@
 import { useEffect, useId, useState } from 'react';
 import { ImagePlus, ImageOff, GraduationCap } from 'lucide-react';
 import { apiBlob } from '../../api/client';
-import { useAuth } from '../../auth/AuthContext';
+import { useAuth } from '../../features/auth/context/AuthContext';
 import { SecondaryButton } from './ActionBar';
 
 export function entityImagePayload(data, image) {

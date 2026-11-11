@@ -11,6 +11,18 @@
  */
 
 package com.sgp.systemsgp.service;
+import com.sgp.systemsgp.model.AcademicCycle;
+import com.sgp.systemsgp.model.Account;
+import com.sgp.systemsgp.model.ActivityPlan;
+import com.sgp.systemsgp.model.Career;
+import com.sgp.systemsgp.model.Course;
+import com.sgp.systemsgp.model.Role;
+import com.sgp.systemsgp.model.Subject;
+import com.sgp.systemsgp.repository.AccountRepository;
+import com.sgp.systemsgp.repository.ActivityPlanRepository;
+import com.sgp.systemsgp.repository.CompletedActivityRecordRepository;
+import com.sgp.systemsgp.repository.FinalReportRepository;
+import com.sgp.systemsgp.repository.PracticeReportRepository;
 
 import com.sgp.systemsgp.dto.report.CoordinationReportResponse;
 import com.sgp.systemsgp.enums.ActivityPlanStatus;

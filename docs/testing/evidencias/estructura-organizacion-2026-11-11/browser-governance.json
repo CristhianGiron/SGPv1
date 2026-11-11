@@ -1,0 +1,77 @@
+{
+  "checks": [
+    {
+      "width": 390,
+      "studentRegistersIncident": true
+    },
+    {
+      "width": 390,
+      "studentCannotResolve": true
+    },
+    {
+      "width": 390,
+      "directorCompletesAuditedFlow": true
+    },
+    {
+      "width": 390,
+      "incidentsNoHorizontalOverflow": true
+    },
+    {
+      "width": 390,
+      "staffConfiguresDeadline": true
+    },
+    {
+      "width": 390,
+      "deadlinesNoHorizontalOverflow": true
+    },
+    {
+      "width": 390,
+      "studentConsultsResponsibleOnly": true
+    },
+    {
+      "width": 390,
+      "historicalDocumentReadOnly": true
+    },
+    {
+      "width": 390,
+      "versionsNoHorizontalOverflow": true
+    },
+    {
+      "width": 1440,
+      "studentRegistersIncident": true
+    },
+    {
+      "width": 1440,
+      "studentCannotResolve": true
+    },
+    {
+      "width": 1440,
+      "directorCompletesAuditedFlow": true
+    },
+    {
+      "width": 1440,
+      "incidentsNoHorizontalOverflow": true
+    },
+    {
+      "width": 1440,
+      "staffConfiguresDeadline": true
+    },
+    {
+      "width": 1440,
+      "deadlinesNoHorizontalOverflow": true
+    },
+    {
+      "width": 1440,
+      "studentConsultsResponsibleOnly": true
+    },
+    {
+      "width": 1440,
+      "historicalDocumentReadOnly": true
+    },
+    {
+      "width": 1440,
+      "versionsNoHorizontalOverflow": true
+    }
+  ],
+  "errors": []
+}

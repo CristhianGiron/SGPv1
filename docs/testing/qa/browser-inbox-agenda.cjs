@@ -13,12 +13,12 @@
 // This harness mocks all API requests and the WebSocket; no real accounts or data are used.
 const fs=require('fs'),path=require('path'),http=require('http');
 const project=path.resolve(__dirname,'../../..');
-const puppeteer=require(path.join(project,'FrontEnd/node_modules/puppeteer-core'));
+const puppeteer=require('./runtime.cjs').puppeteer;
 (async()=>{
- const root=path.join(project,'FrontEnd/build');
+ const root=require('./runtime.cjs').buildPath;
  const server=http.createServer((req,res)=>{const file=path.resolve(root,'.'+(req.url.split('?')[0]==='/'?'/index.html':req.url.split('?')[0]));if(!file.startsWith(root+'/')||!fs.existsSync(file)){res.writeHead(404);return res.end();}res.setHeader('Content-Type',file.endsWith('.js')?'application/javascript':file.endsWith('.css')?'text/css':'text/html');fs.createReadStream(file).pipe(res);});
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const origin='http://127.0.0.1:'+server.address().port;
- const browser=await puppeteer.launch({executablePath:'/usr/bin/google-chrome',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
+ const browser=await puppeteer.launch({executablePath: require('./runtime.cjs').chromePath,headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
  const errors=[],checks=[];let role='ROLE_ESTUDIANTE',sequence=0;
  const today=new Date();const iso=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
  const days=['SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY'];

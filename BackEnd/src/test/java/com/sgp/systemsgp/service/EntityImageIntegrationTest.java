@@ -11,6 +11,22 @@
  */
 
 package com.sgp.systemsgp.service;
+import com.sgp.systemsgp.model.AcademicCycle;
+import com.sgp.systemsgp.model.Account;
+import com.sgp.systemsgp.model.Canton;
+import com.sgp.systemsgp.model.Career;
+import com.sgp.systemsgp.model.Course;
+import com.sgp.systemsgp.model.Enrollment;
+import com.sgp.systemsgp.model.EntityImage;
+import com.sgp.systemsgp.model.Faculty;
+import com.sgp.systemsgp.model.FinalReport;
+import com.sgp.systemsgp.model.Institution;
+import com.sgp.systemsgp.model.Parish;
+import com.sgp.systemsgp.model.Person;
+import com.sgp.systemsgp.model.Province;
+import com.sgp.systemsgp.model.Role;
+import com.sgp.systemsgp.repository.CourseRepository;
+import com.sgp.systemsgp.repository.EntityImageRepository;
 
 import com.sgp.systemsgp.model.*;
 import com.sgp.systemsgp.enums.InstitutionType;

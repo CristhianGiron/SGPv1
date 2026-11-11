@@ -13,14 +13,14 @@
 // Isolated UI checks: local production assets and synthetic API, no real backend.
 const fs=require('fs'),path=require('path'),assert=require('node:assert/strict');
 const project=path.resolve(__dirname,'../../..');
-const puppeteer=require(path.join(project,'FrontEnd/node_modules/puppeteer-core'));
-const root=path.resolve(process.env.SGP_QA_BUILD_PATH||path.join(project,'FrontEnd/build'));
+const puppeteer=require('./runtime.cjs').puppeteer;
+const root=require('./runtime.cjs').buildPath;
 const output=process.env.SGP_QA_OUTPUT||'/tmp/sgp-staff-assignment-browser.json';
 const origin='http://sgp-memberships.test';
 const courses=[{id:10,name:'Materia en paralelo A',active:true,locked:false,capacity:30,practiceTutor:'qa.tutor'},{id:20,name:'Materia en paralelo B',active:true,locked:false,capacity:30,practiceTutor:'qa.tutor'}];
 const person={id:7,username:'qa.student',names:'Ana',lastNames:'Prueba',active:true};
 (async()=>{
- const browser=await puppeteer.launch({executablePath:'/usr/bin/google-chrome',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
+ const browser=await puppeteer.launch({executablePath: require('./runtime.cjs').chromePath,headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
  const errors=[],checks=[],writes=[];
  try{
   for(const width of [390,1440]){

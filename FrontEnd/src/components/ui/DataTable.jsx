@@ -17,7 +17,7 @@ import { ListToolbar } from './ListToolbar';
 import { EmptyState } from './EmptyState';
 import { formatValue } from '../../utils/format';
 import { Modal } from './Modal';
-import { usePracticeWorkspace } from '../../contexts/PracticeWorkspaceContext';
+import { usePracticeWorkspace } from '../../features/practices/context/PracticeWorkspaceContext';
 import { relevantTableColumns, isSecondaryColumn } from '../../utils/tablePresentation';
 import { useCompactViewport } from '../../hooks/useCompactViewport';
 

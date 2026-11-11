@@ -11,6 +11,26 @@
  */
 
 package com.sgp.systemsgp.service;
+import com.sgp.systemsgp.enums.CompletedActivityRecordStatus;
+import com.sgp.systemsgp.enums.FinalReportStatus;
+import com.sgp.systemsgp.enums.PracticeAttendanceStatus;
+import com.sgp.systemsgp.enums.practiceincident.PracticeIncidentStatus;
+import com.sgp.systemsgp.model.ActivityPlan;
+import com.sgp.systemsgp.model.CompletedActivityRecord;
+import com.sgp.systemsgp.model.Enrollment;
+import com.sgp.systemsgp.model.FinalReport;
+import com.sgp.systemsgp.model.PracticeAttendance;
+import com.sgp.systemsgp.model.PracticeReport;
+import com.sgp.systemsgp.repository.AccountRepository;
+import com.sgp.systemsgp.repository.ActivityEvaluationRepository;
+import com.sgp.systemsgp.repository.ActivityPlanRepository;
+import com.sgp.systemsgp.repository.CompletedActivityRecordRepository;
+import com.sgp.systemsgp.repository.EnrollmentRepository;
+import com.sgp.systemsgp.repository.FinalReportRepository;
+import com.sgp.systemsgp.repository.PracticeFollowUpReportRepository;
+import com.sgp.systemsgp.repository.PracticeReportRepository;
+import com.sgp.systemsgp.repository.PracticeScheduleRepository;
+import com.sgp.systemsgp.repository.practiceincident.PracticeIncidentRepository;
 
 import com.sgp.systemsgp.dto.enrollment.PracticeCompletionSummary;
 import com.sgp.systemsgp.enums.*;
@@ -37,6 +57,7 @@ public class PracticeCompletionService {
     private final PracticeFollowUpReportRepository followUps;
     private final CompletedActivityRecordRepository records;
     private final PracticeScheduleRepository schedules;
+    private final PracticeIncidentRepository incidents;
 
     public PracticeCompletionSummary summary(String username, Long id) {
         var enrollment = enrollments.findById(id).orElseThrow(() -> new NotFoundException("Práctica no encontrada"));
@@ -72,6 +93,8 @@ public class PracticeCompletionService {
         if (finalMinutes == null || finalMinutes <= 0) warnings.add("L.3 no acredita un total positivo de horas aprobado.");
         if (recordMinutes != null && finalMinutes != null && !recordMinutes.equals(finalMinutes)) warnings.add("Las horas aprobadas de L.3 y L.6 no coinciden.");
         if (recordMinutes != null && attendanceMinutes != recordMinutes.longValue()) warnings.add("El tiempo de asistencia y el total aprobado de L.6 no coinciden.");
+        long openIncidents=incidents.countByEnrollment_IdAndStatusIn(id,List.of(PracticeIncidentStatus.OPEN,PracticeIncidentStatus.ASSIGNED,PracticeIncidentStatus.UNDER_REVIEW));
+        if(openIncidents>0)warnings.add("Hay "+openIncidents+" incidencia(s) sin resolver. Al concluir, su seguimiento quedará de consulta.");
         var periodEnd = PracticePeriod.end(enrollment);
         boolean ended = periodEnd != null && !periodEnd.isAfter(LocalDateTime.now());
         if (periodEnd == null) warnings.add("La práctica no tiene fecha final definida.");

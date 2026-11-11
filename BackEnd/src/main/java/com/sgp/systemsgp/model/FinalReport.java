@@ -51,6 +51,8 @@ import java.util.List;
 @Builder
 @EntityListeners(AuditEntityListener.class)
 public class FinalReport {
+    @jakarta.persistence.Version
+    private long rowVersion;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

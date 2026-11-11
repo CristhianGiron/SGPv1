@@ -11,6 +11,8 @@
  */
 
 package com.sgp.systemsgp.service;
+import com.sgp.systemsgp.service.documentversion.PracticeDocumentVersionService;
+import com.sgp.systemsgp.service.pdf.PdfExportService;
 
 import com.sgp.systemsgp.dto.activityplan.ActivityPlanActivityWeekRequest;
 import com.sgp.systemsgp.dto.activityplan.ActivityPlanActivityWeekResponse;
@@ -63,6 +65,7 @@ public class ActivityPlanService {
     private static final List<ActivityPlanStatus> REVIEWER_VISIBLE_STATUSES =
             List.of(ActivityPlanStatus.SUBMITTED, ActivityPlanStatus.APPROVED);
 
+    private final PracticeDocumentVersionService documentVersions;
     private final ActivityPlanRepository activityPlanRepository;
     private final EnrollmentRepository enrollmentRepository;
     private final AccountRepository accountRepository;
@@ -222,7 +225,10 @@ public class ActivityPlanService {
     }
 
     public byte[] exportApprovedPdf(Long id, String username) {
-        return renderPdf(id, username, true);
+        var document=getById(id,username);
+        validateApprovedForExport(document.getStatus());
+        byte[] retained=documentVersions.retainedPdf(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L2,id);
+        return retained==null?renderPdf(id,username,true):retained;
     }
 
     @Transactional
@@ -291,6 +297,7 @@ public class ActivityPlanService {
 
         validateStudentOwnsPlan(student, plan);
         validateEditable(plan);
+        documentVersions.baseline(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L2,plan.getId(),plan.getEnrollment(),username,mapToResponse(plan),null);
 
         if (request.getEducationalInstitutionId() != null) {
             Institution institution = resolveEducationalInstitution(
@@ -322,6 +329,7 @@ public class ActivityPlanService {
 
         validateStudentOwnsPlan(student, plan);
         validateEditable(plan);
+        documentVersions.baseline(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L2,plan.getId(),plan.getEnrollment(),username,mapToResponse(plan),null);
 
         if (plan.getStatus() != ActivityPlanStatus.SUBMITTED) {
             startNewReviewCycle(plan);
@@ -333,6 +341,7 @@ public class ActivityPlanService {
         plan.setSubmittedAt(LocalDateTime.now());
 
         activityPlanRepository.save(plan);
+        documentVersions.record(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L2,plan.getId(),plan.getEnrollment(),username,"SUBMITTED",mapToResponse(plan),"APPROVED".equals(plan.getStatus().name()) ? () -> renderPdf(plan.getId(),username,true) : null);
         notificationService.notifyActivityPlanSubmitted(plan);
 
         return mapToResponse(plan);
@@ -349,6 +358,7 @@ public class ActivityPlanService {
 
         validateCanReview(plan, tutor);
         PracticeAccessService.requireOperationalEnrollment(plan.getEnrollment());
+        documentVersions.baseline(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L2,plan.getId(),plan.getEnrollment(),username,mapToResponse(plan),"APPROVED".equals(plan.getStatus().name()) ? () -> renderPdf(plan.getId(),username,true) : null);
 
         ReviewWorkflowStateMachine.ensureReviewable(
                 plan.getStatus(),
@@ -364,6 +374,7 @@ public class ActivityPlanService {
         }
 
         activityPlanRepository.save(plan);
+        documentVersions.record(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L2,plan.getId(),plan.getEnrollment(),username,"REVIEWED",mapToResponse(plan),"APPROVED".equals(plan.getStatus().name()) ? () -> renderPdf(plan.getId(),username,true) : null);
 
         if (request.getApproved() != null) {
             notificationService.notifyActivityPlanReviewed(plan);

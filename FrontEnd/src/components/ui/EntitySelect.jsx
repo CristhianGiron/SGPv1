@@ -13,7 +13,7 @@
 import { fetchAllPages } from '../../utils/pagination';
 import { useEffect, useId, useMemo, useState } from 'react';
 import { apiRequest, isAccessDeniedError, unwrapPage } from '../../api/client';
-import { useAuth } from '../../auth/AuthContext';
+import { useAuth } from '../../features/auth/context/AuthContext';
 import { joinText } from '../../utils/format';
 import { filterInactiveForNonAdmin } from '../../utils/visibility';
 

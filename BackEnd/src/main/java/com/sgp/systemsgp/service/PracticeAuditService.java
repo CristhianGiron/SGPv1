@@ -45,7 +45,7 @@ public class PracticeAuditService {
                 .newStatus(newStatus)
                 .previousArchived(previousArchived)
                 .newArchived(newArchived)
-                .details(details)
+                .details(details==null?null:details.substring(0,details.offsetByCodePoints(0,Math.min(details.codePointCount(0,details.length()),1000))))
                 .createdAt(LocalDateTime.now())
                 .build());
     }

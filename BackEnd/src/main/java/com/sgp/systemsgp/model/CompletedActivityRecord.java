@@ -53,6 +53,8 @@ import java.util.List;
 @Builder
 @EntityListeners(AuditEntityListener.class)
 public class CompletedActivityRecord {
+    @jakarta.persistence.Version
+    private long rowVersion;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

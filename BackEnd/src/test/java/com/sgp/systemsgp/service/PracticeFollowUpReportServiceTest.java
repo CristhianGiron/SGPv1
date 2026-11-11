@@ -11,6 +11,8 @@
  */
 
 package com.sgp.systemsgp.service;
+import com.sgp.systemsgp.service.documentversion.PracticeDocumentVersionService;
+import com.sgp.systemsgp.service.pdf.PdfExportService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -77,6 +79,7 @@ class PracticeFollowUpReportServiceTest {
         MockitoAnnotations.openMocks(this);
 
         practiceFollowUpReportService = new PracticeFollowUpReportService(
+                org.mockito.Mockito.mock(PracticeDocumentVersionService.class),
                 practiceFollowUpReportRepository,
                 enrollmentRepository,
                 accountRepository,

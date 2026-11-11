@@ -12,7 +12,7 @@
 
 import { useEffect, useState } from 'react';
 import { apiBlob } from '../../api/client';
-import { useAuth } from '../../auth/AuthContext';
+import { useAuth } from '../../features/auth/context/AuthContext';
 import { Modal } from './Modal';
 import { SecondaryButton } from './ActionBar';
 

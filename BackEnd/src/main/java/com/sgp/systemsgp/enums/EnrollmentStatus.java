@@ -17,5 +17,7 @@ public enum EnrollmentStatus {
     PENDING,
     APPROVED,
     REJECTED,
+    SUSPENDED,
+    WITHDRAWN,
     COMPLETED
 }

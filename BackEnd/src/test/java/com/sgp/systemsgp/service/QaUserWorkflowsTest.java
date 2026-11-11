@@ -11,6 +11,41 @@
  */
 
 package com.sgp.systemsgp.service;
+import com.sgp.systemsgp.dto.didacticplan.DidacticPlanRecommendationRequest;
+import com.sgp.systemsgp.dto.didacticplan.DidacticPlanRequest;
+import com.sgp.systemsgp.dto.practiceform.CreatePracticeFormQuestionRequest;
+import com.sgp.systemsgp.dto.practiceform.CreatePracticeFormRequest;
+import com.sgp.systemsgp.dto.practiceform.PracticeFormAnswerRequest;
+import com.sgp.systemsgp.dto.practiceform.SubmitPracticeFormResponseRequest;
+import com.sgp.systemsgp.dto.practiceform.UpdatePracticeFormInterpretationRequest;
+import com.sgp.systemsgp.enums.ActivityPlanStatus;
+import com.sgp.systemsgp.enums.CompletedActivityRecordStatus;
+import com.sgp.systemsgp.enums.DidacticPlanStatus;
+import com.sgp.systemsgp.enums.EnrollmentStatus;
+import com.sgp.systemsgp.enums.FinalReportStatus;
+import com.sgp.systemsgp.enums.InstitutionType;
+import com.sgp.systemsgp.enums.PracticeFormQuestionType;
+import com.sgp.systemsgp.enums.PracticeFormStatus;
+import com.sgp.systemsgp.enums.PracticeFormTargetRole;
+import com.sgp.systemsgp.enums.PracticeReportStatus;
+import com.sgp.systemsgp.enums.RoleName;
+import com.sgp.systemsgp.model.AcademicCycle;
+import com.sgp.systemsgp.model.Account;
+import com.sgp.systemsgp.model.ActivityEvaluation;
+import com.sgp.systemsgp.model.ActivityPlan;
+import com.sgp.systemsgp.model.Career;
+import com.sgp.systemsgp.model.CompletedActivityRecord;
+import com.sgp.systemsgp.model.Course;
+import com.sgp.systemsgp.model.CourseGroup;
+import com.sgp.systemsgp.model.CourseStudentMembership;
+import com.sgp.systemsgp.model.Enrollment;
+import com.sgp.systemsgp.model.FinalReport;
+import com.sgp.systemsgp.model.Institution;
+import com.sgp.systemsgp.model.Person;
+import com.sgp.systemsgp.model.PracticeFollowUpReport;
+import com.sgp.systemsgp.model.PracticePhoto;
+import com.sgp.systemsgp.model.PracticeReport;
+import com.sgp.systemsgp.model.Role;
 
 import com.sgp.systemsgp.dto.didacticplan.*;
 import com.sgp.systemsgp.dto.practiceform.*;

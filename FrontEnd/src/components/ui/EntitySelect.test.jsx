@@ -13,7 +13,7 @@
 import {useState} from 'react';
 import {fireEvent,render,screen,waitFor} from '@testing-library/react';
 import {EntitySelect} from './EntitySelect';
-jest.mock('../../auth/AuthContext',()=>({useAuth:()=>({roles:['ROLE_ADMIN'],token:'test'})}));
+jest.mock('../../features/auth/context/AuthContext',()=>({useAuth:()=>({roles:['ROLE_ADMIN'],token:'test'})}));
 function Choice({rows,required=false,initial=''}){const [value,setValue]=useState(initial);return <><EntitySelect rows={rows} required={required} value={value} onChange={setValue} placeholder="Práctica"/><output aria-label="Valor enviado">{value}</output></>;}
 const choices=[{id:7,name:'Práctica A'},{id:8,name:'Práctica B'}];
 test('the sole required option is assigned while optional choices remain optional',async()=>{

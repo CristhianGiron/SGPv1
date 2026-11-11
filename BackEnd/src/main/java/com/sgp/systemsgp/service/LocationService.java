@@ -11,6 +11,15 @@
  */
 
 package com.sgp.systemsgp.service;
+import com.sgp.systemsgp.dto.location.CantonResponse;
+import com.sgp.systemsgp.dto.location.CreateCantonRequest;
+import com.sgp.systemsgp.dto.location.CreateParishRequest;
+import com.sgp.systemsgp.dto.location.CreateProvinceRequest;
+import com.sgp.systemsgp.dto.location.ParishResponse;
+import com.sgp.systemsgp.dto.location.ProvinceResponse;
+import com.sgp.systemsgp.repository.CantonRepository;
+import com.sgp.systemsgp.repository.ParishRepository;
+import com.sgp.systemsgp.repository.ProvinceRepository;
 
 import com.sgp.systemsgp.dto.location.*;
 import com.sgp.systemsgp.exception.BadRequestException;

@@ -11,6 +11,16 @@
  */
 
 package com.sgp.systemsgp.service;
+import com.sgp.systemsgp.repository.AccountRepository;
+import com.sgp.systemsgp.repository.ActivityEvaluationRepository;
+import com.sgp.systemsgp.repository.ActivityPlanRepository;
+import com.sgp.systemsgp.repository.CompletedActivityRecordRepository;
+import com.sgp.systemsgp.repository.EnrollmentRepository;
+import com.sgp.systemsgp.repository.FinalReportRepository;
+import com.sgp.systemsgp.repository.PracticeFollowUpReportRepository;
+import com.sgp.systemsgp.repository.PracticePhotoRepository;
+import com.sgp.systemsgp.repository.PracticeReportRepository;
+import com.sgp.systemsgp.service.documentversion.PracticeDocumentVersionService;
 
 import com.sgp.systemsgp.repository.*;
 import com.sgp.systemsgp.exception.NotFoundException;
@@ -42,6 +52,7 @@ public class PracticeArchiveExportService {
     private final PracticeFollowUpReportService followUpService;
     private final CompletedActivityRecordService recordService;
     private final PracticePhotoService photoService;
+    private final PracticeDocumentVersionService documentVersions;
 
     public byte[] export(Long enrollmentId, String username) {
         var enrollment = enrollments.findById(enrollmentId).orElseThrow(() -> new NotFoundException("Práctica no encontrada"));
@@ -88,6 +99,12 @@ public class PracticeArchiveExportService {
                     index.append(path).append(" | ").append(photo.getPracticeDate()).append(" | ")
                             .append(photo.getDescription() == null ? "Sin descripción" : photo.getDescription()).append('\n');
                 } catch (AccessDeniedException exception) { index.append("Evidencia no disponible para este usuario\n"); }
+            }
+            for(var version:documentVersions.list(enrollmentId,username)) {
+                if(!version.hasPdf())continue;
+                String versionPath="versiones/"+version.kind()+"-documento-"+version.documentId()+"-version-"+version.revisionNumber()+".pdf";
+                try {writer.put(versionPath,documentVersions.pdf(enrollmentId,version.id(),username));index.append(versionPath).append(" | ").append(version.documentStatus()).append(" | ").append(version.createdAt()).append('\n');}
+                catch(AccessDeniedException ex){index.append("Versión histórica no disponible para este usuario\n");}
             }
             writer.put("00-INDICE.txt", index.toString().getBytes(StandardCharsets.UTF_8));
             zip.finish(); return bytes.toByteArray();

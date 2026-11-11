@@ -18,12 +18,12 @@ import sys
 from urllib.parse import unquote
 
 ROOT = Path(__file__).resolve().parents[2]
-FILES = sorted(set([ROOT / 'README.md', ROOT / 'BackEnd/README.md', ROOT / 'prototipos-interfaces/README.md', *ROOT.joinpath('docs').rglob('*.md')]))
+FILES = sorted(path for path in set([ROOT / 'README.md', ROOT / 'BackEnd/README.md', ROOT / 'prototipos-interfaces/README.md', *ROOT.joinpath('docs').rglob('*.md')]) if not {'node_modules', 'target', 'build', '.git'}.intersection(path.relative_to(ROOT).parts))
 errors = []
 links = 0
 routes = 0
 mappings = []
-for controller in ROOT.joinpath('BackEnd/src/main/java/com/sgp/systemsgp/controller').glob('*.java'):
+for controller in ROOT.joinpath('BackEnd/src/main/java/com/sgp/systemsgp/controller').rglob('*.java'):
     source = controller.read_text()
     header = source.split('public class')[0]
     base = re.search(r'@RequestMapping\("([^"]+)"\)', header)

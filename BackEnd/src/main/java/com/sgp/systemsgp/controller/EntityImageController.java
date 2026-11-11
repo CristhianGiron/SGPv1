@@ -11,6 +11,11 @@
  */
 
 package com.sgp.systemsgp.controller;
+import com.sgp.systemsgp.dto.course.CourseResponse;
+import com.sgp.systemsgp.dto.course.CreateCourseRequest;
+import com.sgp.systemsgp.dto.institution.CreateInstitutionRequest;
+import com.sgp.systemsgp.dto.institution.InstitutionResponse;
+import com.sgp.systemsgp.dto.institution.UpdateInstitutionRequest;
 
 import com.sgp.systemsgp.dto.course.*;
 import com.sgp.systemsgp.dto.institution.*;

@@ -11,6 +11,31 @@
  */
 
 package com.sgp.systemsgp.service;
+import com.sgp.systemsgp.enums.ActivityPlanStatus;
+import com.sgp.systemsgp.enums.CompletedActivityRecordStatus;
+import com.sgp.systemsgp.enums.EnrollmentStatus;
+import com.sgp.systemsgp.enums.FinalReportStatus;
+import com.sgp.systemsgp.enums.InstitutionType;
+import com.sgp.systemsgp.enums.PracticeReportStatus;
+import com.sgp.systemsgp.enums.RoleName;
+import com.sgp.systemsgp.model.AcademicCycle;
+import com.sgp.systemsgp.model.Account;
+import com.sgp.systemsgp.model.ActivityEvaluation;
+import com.sgp.systemsgp.model.ActivityPlan;
+import com.sgp.systemsgp.model.Career;
+import com.sgp.systemsgp.model.CompletedActivityRecord;
+import com.sgp.systemsgp.model.Course;
+import com.sgp.systemsgp.model.CourseGroup;
+import com.sgp.systemsgp.model.Enrollment;
+import com.sgp.systemsgp.model.Faculty;
+import com.sgp.systemsgp.model.FinalReport;
+import com.sgp.systemsgp.model.Institution;
+import com.sgp.systemsgp.model.Person;
+import com.sgp.systemsgp.model.PracticeFollowUpReport;
+import com.sgp.systemsgp.model.PracticePhoto;
+import com.sgp.systemsgp.model.PracticeReport;
+import com.sgp.systemsgp.model.PracticeSchedule;
+import com.sgp.systemsgp.model.Role;
 
 import com.sgp.systemsgp.dto.didacticplan.DidacticPlanRequest;
 import com.sgp.systemsgp.dto.practiceschedule.*;

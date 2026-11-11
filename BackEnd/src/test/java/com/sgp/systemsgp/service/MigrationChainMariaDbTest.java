@@ -30,7 +30,7 @@ class MigrationChainMariaDbTest {
             sql.executeUpdate("insert into enrollments (account_id,course_id,status) values (901,901,'APPROVED')");
         }
         var upgraded=Flyway.configure().dataSource(url,"root","").locations("classpath:db/migration").load();
-        assertEquals(4,upgraded.migrate().migrationsExecuted);
+        assertEquals(7,upgraded.migrate().migrationsExecuted);
         try(var db=java.sql.DriverManager.getConnection(url,"root","");var sql=db.createStatement();var rows=sql.executeQuery("select course_id,student_id,active from course_student_memberships")){
             assertTrue(rows.next());assertEquals(901,rows.getLong("course_id"));assertEquals(901,rows.getLong("student_id"));assertTrue(rows.getBoolean("active"));assertFalse(rows.next());
         }
@@ -53,7 +53,7 @@ class MigrationChainMariaDbTest {
     @Test void migratesAnEmptyDatabaseAndValidatesItsHistory() {
         Flyway flyway = Flyway.configure().dataSource(System.getenv("SGP_MIGRATION_TEST_URL"), "root", "")
                 .locations("classpath:db/migration").load();
-        assertEquals(24, flyway.migrate().migrationsExecuted);
+        assertEquals(27, flyway.migrate().migrationsExecuted);
         assertDoesNotThrow(flyway::validate);
         assertEquals(0, flyway.migrate().migrationsExecuted);
         // Match production's validate-only startup. Keep test profile to disable seeders;
@@ -67,7 +67,11 @@ class MigrationChainMariaDbTest {
                         "--spring.flyway.enabled=true", "--spring.flyway.baseline-on-migrate=false",
                         "--spring.jpa.hibernate.ddl-auto=validate", "--spring.sql.init.mode=never")) {
             assertTrue(context.isActive());
-            assertEquals("24", context.getBean(Flyway.class).info().current().getVersion().toString());
+            assertEquals("27", context.getBean(Flyway.class).info().current().getVersion().toString());
+            assertTrue(context.getBean(com.sgp.systemsgp.repository.documentversion.PracticeDocumentVersionRepository.class).summaries(0L).isEmpty());
+            assertTrue(context.getBean(com.sgp.systemsgp.repository.practicedeadline.PracticeDeadlineRepository.class).activeIds().isEmpty());
+            assertTrue(context.getBean(com.sgp.systemsgp.repository.documentversion.PracticeDocumentVersionRepository.class)
+                .findFirstByKindAndDocumentIdAndPdfHashIsNotNullOrderByIdDesc(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L2,0L).isEmpty());
         }
     }
 }

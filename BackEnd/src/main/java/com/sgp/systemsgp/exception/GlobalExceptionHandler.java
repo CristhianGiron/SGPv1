@@ -281,4 +281,11 @@ public class GlobalExceptionHandler {
 
                                 .build();
         }
+
+    @ExceptionHandler(org.springframework.orm.ObjectOptimisticLockingFailureException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse concurrentUpdate(org.springframework.orm.ObjectOptimisticLockingFailureException ex) {
+        return build(409,"Conflicto de actualización","El registro cambió mientras lo editabas. Actualiza la vista antes de volver a intentar.");
+    }
+
 }

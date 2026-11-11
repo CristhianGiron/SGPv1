@@ -11,6 +11,9 @@
  */
 
 package com.sgp.systemsgp.controller;
+import com.sgp.systemsgp.dto.institution.CreateInstitutionRequest;
+import com.sgp.systemsgp.dto.institution.InstitutionResponse;
+import com.sgp.systemsgp.dto.institution.UpdateInstitutionRequest;
 
 import com.sgp.systemsgp.dto.institution.*;
 

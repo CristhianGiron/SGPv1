@@ -11,6 +11,8 @@
  */
 
 package com.sgp.systemsgp.service;
+import com.sgp.systemsgp.service.documentversion.PracticeDocumentVersionService;
+import com.sgp.systemsgp.service.pdf.PdfExportService;
 
 import com.sgp.systemsgp.dto.practicefollowup.CreatePracticeFollowUpReportRequest;
 import com.sgp.systemsgp.dto.practicefollowup.PracticeFollowUpReportResponse;
@@ -50,6 +52,7 @@ import java.util.function.Consumer;
 @Transactional(readOnly = true)
 public class PracticeFollowUpReportService {
 
+    private final PracticeDocumentVersionService documentVersions;
     private final PracticeFollowUpReportRepository practiceFollowUpReportRepository;
     private final EnrollmentRepository enrollmentRepository;
     private final AccountRepository accountRepository;
@@ -90,6 +93,7 @@ public class PracticeFollowUpReportService {
         validateComplete(report);
 
         practiceFollowUpReportRepository.save(report);
+        documentVersions.record(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L5,report.getId(),report.getEnrollment(),username,"SAVED",mapToResponse(report),() -> renderCurrentPdf(report.getId(),username));
 
         return mapToResponse(report);
     }
@@ -161,6 +165,12 @@ public class PracticeFollowUpReportService {
     public byte[] exportPdf(
             Long id,
             String username) {
+        getById(id,username);
+        byte[] retained=documentVersions.retainedPdf(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L5,id);
+        return retained==null?renderCurrentPdf(id,username):retained;
+    }
+
+    private byte[] renderCurrentPdf(Long id,String username) {
 
         PracticeFollowUpReport report = getReport(id);
         Account account = getAccount(username);
@@ -196,6 +206,7 @@ public class PracticeFollowUpReportService {
 
         validatePracticeTutorCanManage(report.getCourse(), tutor);
         PracticeAccessService.requireOperationalEnrollment(report.getEnrollment());
+        documentVersions.baseline(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L5,report.getId(),report.getEnrollment(),username,mapToResponse(report),() -> renderCurrentPdf(report.getId(),username));
 
         if (request.getEducationalInstitutionId() != null) {
             Institution institution = resolveEducationalInstitution(
@@ -213,6 +224,7 @@ public class PracticeFollowUpReportService {
         validateComplete(report);
 
         practiceFollowUpReportRepository.save(report);
+        documentVersions.record(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L5,report.getId(),report.getEnrollment(),username,"SAVED",mapToResponse(report),() -> renderCurrentPdf(report.getId(),username));
 
         return mapToResponse(report);
     }

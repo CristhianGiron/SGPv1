@@ -11,6 +11,8 @@
  */
 
 package com.sgp.systemsgp.service;
+import com.sgp.systemsgp.service.documentversion.PracticeDocumentVersionService;
+import com.sgp.systemsgp.service.pdf.PdfExportService;
 
 import com.sgp.systemsgp.dto.activityevaluation.ActivityEvaluationAspectRequest;
 import com.sgp.systemsgp.dto.activityevaluation.ActivityEvaluationAspectResponse;
@@ -53,6 +55,7 @@ public class ActivityEvaluationService {
 
     private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
 
+    private final PracticeDocumentVersionService documentVersions;
     private final ActivityEvaluationRepository activityEvaluationRepository;
     private final EnrollmentRepository enrollmentRepository;
     private final AccountRepository accountRepository;
@@ -93,6 +96,7 @@ public class ActivityEvaluationService {
         validateComplete(evaluation);
 
         activityEvaluationRepository.save(evaluation);
+        documentVersions.record(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L4,evaluation.getId(),evaluation.getEnrollment(),username,"SAVED",mapToResponse(evaluation),() -> renderCurrentPdf(evaluation.getId(),username));
 
         return mapToResponse(evaluation);
     }
@@ -164,6 +168,12 @@ public class ActivityEvaluationService {
     public byte[] exportPdf(
             Long id,
             String username) {
+        getById(id,username);
+        byte[] retained=documentVersions.retainedPdf(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L4,id);
+        return retained==null?renderCurrentPdf(id,username):retained;
+    }
+
+    private byte[] renderCurrentPdf(Long id,String username) {
 
         ActivityEvaluation evaluation = getEvaluation(id);
         Account account = getAccount(username);
@@ -200,6 +210,7 @@ public class ActivityEvaluationService {
 
         validatePracticeTutorCanManage(evaluation.getCourse(), tutor);
         PracticeAccessService.requireOperationalEnrollment(evaluation.getEnrollment());
+        documentVersions.baseline(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L4,evaluation.getId(),evaluation.getEnrollment(),username,mapToResponse(evaluation),() -> renderCurrentPdf(evaluation.getId(),username));
 
         if (request.getEducationalInstitutionId() != null) {
             Institution institution = resolveEducationalInstitution(
@@ -217,6 +228,7 @@ public class ActivityEvaluationService {
         validateComplete(evaluation);
 
         activityEvaluationRepository.save(evaluation);
+        documentVersions.record(com.sgp.systemsgp.enums.documentversion.PracticeDocumentKind.L4,evaluation.getId(),evaluation.getEnrollment(),username,"SAVED",mapToResponse(evaluation),() -> renderCurrentPdf(evaluation.getId(),username));
 
         return mapToResponse(evaluation);
     }

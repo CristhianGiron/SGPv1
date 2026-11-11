@@ -11,8 +11,8 @@
  */
 
 import { useEffect, useState } from 'react';
-import { useAuth } from '../../auth/AuthContext';
-import { usePracticeWorkspace } from '../../contexts/PracticeWorkspaceContext';
+import { useAuth } from '../../features/auth/context/AuthContext';
+import { usePracticeWorkspace } from '../../features/practices/context/PracticeWorkspaceContext';
 import { Input, Select, Field } from './FormControls';
 import { SecondaryButton } from './ActionBar';
 

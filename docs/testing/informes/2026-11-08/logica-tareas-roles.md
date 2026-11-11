@@ -223,7 +223,7 @@ Fuentes: [CourseService: validateUnlTutorInstitution](../../../../BackEnd/src/ma
 
 **Agregar:** separar pendientes y respondidas, y construir el directorio institucional autorizado de forma estable. Mostrar estado real: actualmente el contexto sintetizado usa `APPROVED`, sin obtener el estado efectivo de inscripción. No ampliar con ello la consulta a prácticas ajenas.
 
-Fuentes: [assignedForms](../../../../BackEnd/src/main/java/com/sgp/systemsgp/service/PracticeFormService.java#L146), [InstitutionWorkPage](../../../../FrontEnd/src/pages/InstitutionWorkPage.jsx#L14). Sonda: `H11_answeredInterviewDisappearsFromAssignedHistory`.
+Fuentes: [assignedForms](../../../../BackEnd/src/main/java/com/sgp/systemsgp/service/PracticeFormService.java#L146), [InstitutionWorkPage](../../../../FrontEnd/src/features/institutions/pages/InstitutionWorkPage.jsx#L14). Sonda: `H11_answeredInterviewDisappearsFromAssignedHistory`.
 
 ### H12. Grupo/tutor mostrado pero no asignado realmente
 

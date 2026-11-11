@@ -13,6 +13,8 @@
 import { formatEnum } from '../../utils/format';
 
 const PALETTE = {
+  SUSPENDED: 'border-warning bg-warning-soft text-warning-strong',
+  WITHDRAWN: 'border-line bg-panel-soft text-body',
   APPROVED: 'border-success bg-success-soft text-success-strong dark:border-success/40 dark:bg-success-soft dark:text-success-strong',
   ACTIVE: 'border-success bg-success-soft text-success-strong dark:border-success/40 dark:bg-success-soft dark:text-success-strong',
   INACTIVE: 'border-line bg-panel-soft text-body dark:border-line dark:bg-surface-soft dark:text-ink',

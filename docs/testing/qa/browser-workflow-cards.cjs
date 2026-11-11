@@ -12,9 +12,9 @@
 
 const fs = require('fs'), path = require('path'), http = require('http');
 const project = path.resolve(__dirname, '../../..');
-const puppeteer = require(path.join(project, 'FrontEnd/node_modules/puppeteer-core'));
+const puppeteer = require('./runtime.cjs').puppeteer;
 (async () => {
- const root = path.join(project, 'FrontEnd/build');
+ const root = require('./runtime.cjs').buildPath;
  const server = http.createServer((req, res) => {
   const file = path.resolve(root, '.' + (req.url === '/' ? '/index.html' : req.url.split('?')[0]));
   if (!file.startsWith(root + '/') || !fs.existsSync(file)) { res.writeHead(404);return res.end(); }
@@ -22,7 +22,7 @@ const puppeteer = require(path.join(project, 'FrontEnd/node_modules/puppeteer-co
  });
  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
  const origin = 'http://127.0.0.1:' + server.address().port;
- const browser = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: true, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
+ const browser = await puppeteer.launch({ executablePath: require('./runtime.cjs').chromePath, headless: true, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
  const results = [], errors = [];
  try {
   const page = await browser.newPage();

@@ -109,3 +109,5 @@ el solapamiento de asistencias y el control de revisiones de borradores.
 Los extractos están incluidos en el LaTeX, con numeración de líneas de origen
 y explicaciones breves. Se usa el paquete `listings`, sin `shell-escape`.
 Al modificarlos, contrastar con los archivos Java y actualizar sus referencias.
+
+La [entrega ZIP del 10 de noviembre](../entregas/bitacora-proyecto-2026-11-10.zip) se conserva como paquete histórico; las fuentes de esta carpeta pueden contener cambios posteriores.

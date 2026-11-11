@@ -16,8 +16,8 @@ const path = require('path');
 const http = require('http');
 const assert = require('node:assert/strict');
 const project = path.resolve(__dirname, '../../..');
-const puppeteer = require(path.join(project, 'FrontEnd/node_modules/puppeteer-core'));
-const root = path.resolve(process.env.SGP_QA_BUILD_PATH || path.join(project, 'FrontEnd/build'));
+const puppeteer = require('./runtime.cjs').puppeteer;
+const root = require('./runtime.cjs').buildPath;
 const output = path.resolve(process.env.SGP_QA_OUTPUT || '/tmp/sgp-reopening-browser.json');
 const practices = [
   {id:71,courseId:171,courseName:'Reapertura archivada',studentFullName:'Estudiante archivo',status:'COMPLETED',archived:true,courseActive:true},
@@ -38,7 +38,7 @@ const practices = [
   try {
     await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(0,'127.0.0.1',resolve);});
     const origin='http://127.0.0.1:'+server.address().port;
-    browser=await puppeteer.launch({executablePath:'/usr/bin/google-chrome',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
+    browser=await puppeteer.launch({executablePath: require('./runtime.cjs').chromePath,headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
     for(const width of [390,1440]){
       const page=await browser.newPage();await page.setViewport({width,height:1000});
       page.on('pageerror',e=>errors.push(e.message));

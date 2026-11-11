@@ -22,3 +22,10 @@ __pycache__/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Auxiliares regenerables de la bitácora LaTeX
+docs/bitacora/*.aux
+docs/bitacora/*.log
+docs/bitacora/*.out
+docs/bitacora/*.toc
+docs/bitacora/*.synctex.gz

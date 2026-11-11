@@ -11,6 +11,10 @@
  */
 
 package com.sgp.systemsgp.service;
+import com.sgp.systemsgp.model.Account;
+import com.sgp.systemsgp.model.Career;
+import com.sgp.systemsgp.model.Faculty;
+import com.sgp.systemsgp.model.Institution;
 
 import com.sgp.systemsgp.enums.RoleName;
 import com.sgp.systemsgp.exception.NotFoundException;

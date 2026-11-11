@@ -1,0 +1,176 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          App.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Compone la aplicación web y resuelve las rutas según la sesión y los permisos del usuario.
+ */
+
+import { StaffHomePage } from '../features/dashboard/pages/StaffHomePage';
+import { InstitutionWorkPage } from '../features/institutions/pages/InstitutionWorkPage';
+import { PracticeWorkspacePage } from '../features/practices/pages/PracticeWorkspacePage';
+/**
+ * APP.JS - Componente Raíz de la Aplicación
+ * 
+ * Este es el componente principal de ReactJS que:
+ * 1. Proporciona autenticación global mediante AuthProvider
+ * 2. Controla la navegación entre páginas según roles
+ * 3. Maneja el enrutamiento por hash (#)
+ * 4. Verifica permisos de acceso para cada sección
+ * 
+ * Flujo:
+ * - Verifica si usuario está autenticado (token)
+ * - Si no: muestra LoginPage o RegisterPage
+ * - Si sí: muestra AppLayout con la página correspondiente
+ */
+import { InstitutionalProvider } from "../contexts/InstitutionalContext";
+import { AuthProvider, useAuth } from "../features/auth/context/AuthContext";
+import { canAccess, NAV_ITEMS } from "../config/navigation";
+import { AppLayout } from "./layout/AppLayout";
+import { AccountsPage } from "../features/accounts/pages/AccountsPage";
+import { CoursesPage } from "../features/courses/pages/CoursesPage";
+import { DashboardPage } from "../features/dashboard/pages/DashboardPage";
+import { DidacticPlansPage } from "../features/documents/pages/DidacticPlansPage";
+import { DocumentsPage } from "../features/documents/pages/DocumentsPage";
+import { ForcePasswordChangePage } from "../features/auth/pages/ForcePasswordChangePage";
+import { EvidenceViewerPage } from "../features/evidence/pages/EvidenceViewerPage";
+import { LocationsPage } from "../features/catalogs/pages/LocationsPage";
+import { LoginPage } from "../features/auth/pages/LoginPage";
+import { NotificationsPage } from "../features/notifications/pages/NotificationsPage";
+import { RegisterStudentPage } from "../features/auth/pages/RegisterStudentPage";
+import { PhotosPage } from "../features/evidence/pages/PhotosPage";
+import { ObservationFormsPage, PracticeFormsPage } from "../features/practice-forms/pages/PracticeFormsPage";
+import { PracticeInstitutionsPage } from "../features/institutions/pages/PracticeInstitutionsPage";
+import { PracticeArchivePage } from "../features/practices/pages/PracticeArchivePage";
+import { ProfilePage } from "../features/accounts/pages/ProfilePage";
+import { ReportsPage } from "../features/reports/pages/ReportsPage";
+import { SchedulesPage } from "../features/schedules/pages/SchedulesPage";
+import { UniversitiesPage } from "../features/catalogs/pages/UniversitiesPage";
+import { Alert } from "../components/ui/Alert";
+import { ConfirmProvider } from "../components/ui/ConfirmDialog";
+import { SectionCard } from "../components/ui/SectionCard";
+import { Skeleton } from "../components/ui/Skeleton";
+import { getBaseRoute, getNestedRoute, useHashRoute } from "../utils/routes";
+import AccessibilityWidget from "../components/accessibility/AccessibilityWidget";
+import { useButtonTooltips } from "../hooks/useButtonTooltips";
+
+/**
+ * Mapeo de rutas a componentes
+ * Las claves son los IDs de ruta (lo que va después de #/)
+ * Los valores son los componentes a renderizar
+ * Ejemplo: #/dashboard → renderiza DashboardPage
+ */
+const PAGES = {
+  dashboard: StaffHomePage,
+  "institution-work": InstitutionWorkPage,
+  practices: PracticeWorkspacePage,
+  overview: DashboardPage,
+  notifications: NotificationsPage,
+  profile: ProfilePage,
+  photos: PhotosPage,
+  forms: PracticeFormsPage,
+  "observation-forms": ObservationFormsPage,
+  courses: CoursesPage,
+  "practice-archive": PracticeArchivePage,
+  "didactic-plans": DidacticPlansPage,
+  documents: DocumentsPage,
+  schedules: SchedulesPage,
+  institutions: PracticeInstitutionsPage,
+  universities: UniversitiesPage,
+  accounts: AccountsPage,
+  locations: LocationsPage,
+  reports: ReportsPage,
+  //register: RegisterStudentPage,
+};
+
+/**
+ * AppShell - Componente que gestiona la lógica de autenticación y navegación
+ * - Obtiene la ruta actual del hash (#)
+ * - Obtiene el token y roles del contexto de autenticación
+ * - Decide qué mostrar basado en si está autenticado
+ */
+function AppShell() {
+  const route = useHashRoute();
+  const baseRoute = getBaseRoute(route);
+  const nestedRoute = getNestedRoute(route);
+  const { token, roles, loadingProfile, profileError, profile } = useAuth();
+
+  // Si no hay token, mostrar páginas públicas (login, registro)
+  if (!token) {
+    if (route === "register") {
+      return <RegisterStudentPage />;
+    }
+    // Por defecto, mostrar login
+    return <LoginPage />;
+  }
+
+  if (!loadingProfile && profile?.passwordChangeRequired) {
+    return <ForcePasswordChangePage />;
+  }
+
+  if (baseRoute === "evidence-viewer") {
+    return (
+      <AppLayout route="photos">
+        {profileError && <Alert tone="error">{profileError}</Alert>}
+        {loadingProfile ? (
+          <SectionCard>
+            <Skeleton lines={5} />
+          </SectionCard>
+        ) : (
+          <EvidenceViewerPage />
+        )}
+      </AppLayout>
+    );
+  }
+  // Verificar que el usuario tenga acceso a la ruta actual según sus roles
+  // Si no tiene acceso, redirigir a dashboard
+  const navItem = NAV_ITEMS.find((item) => item.id === baseRoute);
+  const nestedNavItem = navItem?.children?.find(
+    (item) => item.id === `${baseRoute}/${nestedRoute}` || item.moduleId === nestedRoute
+  );
+  const safeRoute = navItem && canAccess(navItem, roles) ? baseRoute : "dashboard";
+  const safeRouteChild =
+    safeRoute === baseRoute && nestedNavItem && canAccess(nestedNavItem, roles)
+      ? nestedNavItem.moduleId || nestedRoute
+      : undefined;
+  // Obtener el componente de página a renderizar
+  const Page = PAGES[safeRoute] || DashboardPage;
+
+  return (
+    <AppLayout route={safeRoute} routeChild={safeRouteChild}>
+      {profileError && <Alert tone="error">{profileError}</Alert>}
+      {loadingProfile ? (
+        <SectionCard>
+          <Skeleton lines={5} />
+        </SectionCard>
+      ) : (
+        <Page key={safeRoute} route={route} activeModuleId={safeRouteChild} />
+      )}
+    </AppLayout>
+  );
+}
+
+/**
+ * Componente App principal
+ * Envuelve todo con AuthProvider para proporcionar autenticación global
+ */
+function App() {
+  useButtonTooltips();
+
+  return (
+    <InstitutionalProvider>
+    <AuthProvider>
+      <ConfirmProvider>
+        <AppShell />
+        <AccessibilityWidget />
+      </ConfirmProvider>
+    </AuthProvider>
+    </InstitutionalProvider>
+  );
+}
+
+export default App;

@@ -15,8 +15,8 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { FormFeedback } from './FormFeedback';
 import { Field } from './FormControls';
 import { EntitySelect } from './EntitySelect';
-import { GuidedForm } from '../GuidedForm';
-jest.mock('../../auth/AuthContext',()=>({useAuth:()=>({token:'test',roles:['ROLE_ESTUDIANTE']})}));
+import { GuidedForm } from '../forms/GuidedForm';
+jest.mock('../../features/auth/context/AuthContext',()=>({useAuth:()=>({token:'test',roles:['ROLE_ESTUDIANTE']})}));
 jest.mock('./ConfirmDialog',()=>({useConfirm:()=>jest.fn()}));
 
 test('entity chooser and search have distinct accessible names and expose the validation message',()=>{

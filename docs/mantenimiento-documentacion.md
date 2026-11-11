@@ -47,3 +47,5 @@ node docs/testing/qa/check-contracts.cjs
 El primer comando comprueba archivos enlazados, títulos, bloques de código y correspondencia de las rutas documentadas en tablas con controladores. No ejecuta peticiones API ni demuestra permisos o validez de los cuerpos. El segundo comprueba contratos configurados en los módulos de interfaz y actualiza su evidencia.
 
 [Volver al índice documental](README.md).
+
+Las convenciones de nombres y las rutas actuales del código se describen en [estructura del proyecto](desarrollo/estructura-proyecto.md). Los paquetes de entrega se conservan con fecha en `docs/entregas/`.

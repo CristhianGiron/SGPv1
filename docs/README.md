@@ -53,3 +53,5 @@ docs/
 - **Prototipos:** [prototipos HTML/CSS](../prototipos-interfaces/README.md) son material de diseño separado del frontend React real.
 
 No se deben interpretar ejemplos de cuentas, capturas o resultados de una instalación local como configuración de producción.
+
+- [Entregas documentales congeladas](entregas/README.md).
