@@ -1,0 +1,37 @@
+@startuml
+/'
+  @institucion   Universidad Nacional de Loja
+  @carrera       Pedagogía de las Ciencias Experimentales - Informática
+  @asignatura    Programación Web
+  @docente       Johnny H. Sánchez L.
+  @proyecto      Sistema de Gestión de Prácticas (SGP)
+  @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+  @file          secuencia-login-resumen.puml
+  @fecha         2026-11-10 21:24:04
+  @nota          Describe el diagrama de casos de uso del SGP mediante PlantUML.
+'/
+
+title SGP — Inicio de sesión (síntesis)
+hide footbox
+autonumber
+skinparam shadowing false
+skinparam maxMessageSize 55
+actor "Usuario" as A
+boundary "Pantalla" as UI
+control "Autenticación" as S
+database "Base de datos" as DB
+A -> UI : Introducir usuario/correo y contraseña
+UI -> S : POST /api/auth/login
+S -> DB : Buscar cuenta no eliminada
+DB --> S : Cuenta, hash y roles
+S -> S : Verificar estado y BCrypt
+S --> UI : Emitir JWT y estado de contraseña
+UI -> UI : Guardar autenticación
+UI -> S : GET /api/account/me con Bearer
+S -> S : Validar JWT, cuenta y roles
+S --> UI : Perfil autorizado
+UI --> A : Cambio de contraseña o panel autorizado
+note over A, DB
+La columna Autenticación agrupa la API, Spring Security y el servicio JWT. Si las credenciales o la cuenta se rechazan, se muestra el error; si falla la consulta del perfil, se elimina la autenticación local. BCrypt verifica un hash y los JWT se firman, sin cifrar su contenido.
+end note
+@enduml

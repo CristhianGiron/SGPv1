@@ -1,0 +1,22 @@
+<!--
+  @institucion   Universidad Nacional de Loja
+  @carrera       Pedagogía de las Ciencias Experimentales - Informática
+  @asignatura    Programación Web
+  @docente       Johnny H. Sánchez L.
+  @proyecto      Sistema de Gestión de Prácticas (SGP)
+  @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+  @file          sgp-icon.svg
+  @fecha         2026-11-09 11:08:16
+  @nota          Define el icono vectorial de la aplicación SGP.
+-->
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">SGP · Sistema de Gestión de Prácticas</title>
+  <desc id="desc">Libro abierto y marca de cumplimiento en azul académico y dorado, en referencia a la Universidad Nacional de Loja y al seguimiento de prácticas.</desc>
+  <rect width="128" height="128" rx="28" fill="#12385B"/>
+  <path d="M27 43c14-2 26 1 37 9v48c-11-8-23-11-37-9V43Z" fill="#FFF"/>
+  <path d="M101 51c-14-2-26 1-37 9v40c11-8 23-11 37-9V51Z" fill="#FFF"/>
+  <path d="M64 52v48" stroke="#12385B" stroke-width="5"/>
+  <path d="M37 59c6 0 11 2 17 5m-17 9c6 0 11 2 17 5m37-11c-6 0-11 2-17 5" stroke="#12385B" stroke-width="4" stroke-linecap="round"/>
+  <path d="m72 32 10 10 20-22" stroke="#D8B55B" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

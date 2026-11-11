@@ -1,0 +1,365 @@
+<!doctype html>
+<!--
+  @institucion   Universidad Nacional de Loja
+  @carrera       Pedagogía de las Ciencias Experimentales - Informática
+  @asignatura    Programación Web
+  @docente       Johnny H. Sánchez L.
+  @proyecto      Sistema de Gestión de Prácticas (SGP)
+  @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+  @file          cobertura.html
+  @fecha         2026-11-09 11:08:16
+  @nota          Presenta el prototipo de interfaz para la cobertura de las pantallas y flujos del prototipo.
+  @nota          La maqueta utiliza datos de demostración; las validaciones operativas corresponden a la aplicación.
+-->
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Propuesta visual estática de SGP. Datos ficticios de demostración."
+    />
+    <title>Mapa de cobertura · SGP Estudio</title>
+    <link rel="stylesheet" href="assets/estilos.css" />
+  </head>
+  <body class="gallery-page">
+    <a class="skip" href="#contenido">Saltar al contenido</a>
+    <header class="gallery-top">
+      <a class="brand-mark" href="index.html">sgp</a
+      ><a href="index.html">← Volver a la galería</a>
+    </header>
+    <main id="contenido" class="gallery">
+      <div class="page-heading">
+        <div>
+          <p class="eyebrow">TRAZABILIDAD / 26 CASOS</p>
+          <h1>Cada caso tiene su espacio.</h1>
+          <p class="subtitle">
+            Referencia: docs/requisitos/especificacion.md · Propuestas visuales,
+            sin lógica de negocio.
+          </p>
+        </div>
+      </div>
+      <div class="note">
+        <strong>Criterio de cobertura</strong>
+        <p>
+          La especificación contiene 26 casos de uso. El diagrama PlantUML
+          enumera 21 con otra agrupación; aquí se conserva la numeración de la
+          especificación. Cada caso dispone de al menos una pantalla; los flujos
+          con varias vistas comparten código.
+        </p>
+      </div>
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Mapa de interfaces</h2>
+          <span class="muted small"></span>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Caso</th>
+                <th scope="col">Nombre documentado</th>
+                <th scope="col">Pantallas propuestas</th>
+                <th scope="col">Referencia del sistema</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>CU-001</td>
+                <td>Iniciar sesión</td>
+                <td>
+                  <a href="pantallas/01-iniciar-sesion.html"
+                    >Un nuevo día para aprender.</a
+                  >
+                </td>
+                <td>LoginPage.jsx</td>
+              </tr>
+              <tr>
+                <td>CU-002</td>
+                <td>Registrar estudiante</td>
+                <td>
+                  <a href="pantallas/02-registrar-estudiante.html"
+                    >Comienza tu experiencia</a
+                  >
+                </td>
+                <td>RegisterPublic.jsx</td>
+              </tr>
+              <tr>
+                <td>CU-003</td>
+                <td>Consultar información pública de registro</td>
+                <td>
+                  <a href="pantallas/03-oferta-publica.html"
+                    >Encuentra tu espacio de práctica</a
+                  >
+                </td>
+                <td>RegisterPublic.jsx</td>
+              </tr>
+              <tr>
+                <td>CU-004</td>
+                <td>Gestionar perfil</td>
+                <td>
+                  <a href="pantallas/04-perfil.html">Tu perfil académico</a>
+                </td>
+                <td>ProfilePage.jsx</td>
+              </tr>
+              <tr>
+                <td>CU-005</td>
+                <td>Administrar cuentas</td>
+                <td>
+                  <a href="pantallas/05-cuentas.html"
+                    >Personas que hacen posible la práctica</a
+                  >
+                </td>
+                <td>AccountsPage.jsx</td>
+              </tr>
+              <tr>
+                <td>CU-006</td>
+                <td>Mantener ubicaciones y catálogos</td>
+                <td>
+                  <a href="pantallas/06-catalogos.html"
+                    >Una base académica bien organizada</a
+                  >
+                </td>
+                <td>
+                  CatalogWorkflowPage.jsx · UniversitiesPage.jsx · LocationsPage.jsx
+                </td>
+              </tr>
+              <tr>
+                <td>CU-007</td>
+                <td>Gestionar instituciones</td>
+                <td>
+                  <a href="pantallas/07-instituciones.html"
+                    >Instituciones que abren sus puertas</a
+                  >
+                </td>
+                <td>InstitutionsPage.jsx</td>
+              </tr>
+              <tr>
+                <td>CU-008</td>
+                <td>Gestionar cursos y grupos</td>
+                <td>
+                  <a href="pantallas/08-cursos-grupos.html"
+                    >Cada grupo, bien acompañado</a
+                  >
+                </td>
+                <td>CoursesPage.jsx</td>
+              </tr>
+              <tr>
+                <td>CU-009</td>
+                <td>Solicitar y resolver inscripción</td>
+                <td>
+                  <a href="pantallas/09-inscripcion.html"
+                    >Tu próximo paso empieza aquí</a
+                  ><br /><a href="pantallas/09b-resolver-inscripciones.html"
+                    >Solicitudes que esperan una respuesta</a
+                  >
+                </td>
+                <td>CoursesPage.jsx</td>
+              </tr>
+              <tr>
+                <td>CU-010</td>
+                <td>Asignar estudiante a grupo</td>
+                <td>
+                  <a href="pantallas/10-asignar-grupo.html"
+                    >Un lugar para cada estudiante</a
+                  >
+                </td>
+                <td>CoursesPage.jsx</td>
+              </tr>
+              <tr>
+                <td>CU-011</td>
+                <td>Concluir o reabrir práctica</td>
+                <td>
+                  <a href="pantallas/11-estado-practica.html"
+                    >El cierre también es parte del proceso</a
+                  >
+                </td>
+                <td>CoursesPage.jsx</td>
+              </tr>
+              <tr>
+                <td>CU-012</td>
+                <td>Archivar o recuperar práctica</td>
+                <td>
+                  <a href="pantallas/12-archivo.html"
+                    >La memoria de cada experiencia</a
+                  >
+                </td>
+                <td>PracticeArchivePage.jsx</td>
+              </tr>
+              <tr>
+                <td>CU-013</td>
+                <td>Gestionar documentos de práctica</td>
+                <td>
+                  <a href="pantallas/13-documentos.html"
+                    >Tu experiencia, bien documentada</a
+                  ><br /><a href="pantallas/13b-plan-actividades.html"
+                    >L.2. Plan de Actividades</a
+                  ><br /><a href="pantallas/13c-informe-actividades.html"
+                    >L.1. Informe de Actividades Cumplidas</a
+                  ><br /><a href="pantallas/13d-informe-final.html"
+                    >L.3. Informe Tutor Institucional</a
+                  >
+                </td>
+                <td>
+                  DocumentsPage.jsx · EndpointConsole.jsx<br />EndpointConsole.jsx<br />EndpointConsole.jsx
+                  · endpointModules.js
+                </td>
+              </tr>
+              <tr>
+                <td>CU-014</td>
+                <td>Revisar documento</td>
+                <td>
+                  <a href="pantallas/14-revision.html"
+                    >Una revisión que orienta el aprendizaje</a
+                  >
+                </td>
+                <td>EndpointConsole.jsx</td>
+              </tr>
+              <tr>
+                <td>CU-015</td>
+                <td>Consultar evaluación o seguimiento</td>
+                <td>
+                  <a href="pantallas/15-evaluacion.html"
+                    >El progreso tiene muchas dimensiones</a
+                  ><br /><a href="pantallas/15b-seguimiento.html"
+                    >Acompañar para seguir creciendo</a
+                  >
+                </td>
+                <td>EndpointConsole.jsx · endpointModules.js</td>
+              </tr>
+              <tr>
+                <td>CU-016</td>
+                <td>Gestionar registro de actividades</td>
+                <td>
+                  <a href="pantallas/16-registro-actividades.html"
+                    >Lo que haces también cuenta</a
+                  >
+                </td>
+                <td>EndpointConsole.jsx · endpointModules.js</td>
+              </tr>
+              <tr>
+                <td>CU-017</td>
+                <td>Gestionar evidencias fotográficas</td>
+                <td>
+                  <a href="pantallas/17-evidencias.html"
+                    >Pequeños momentos. Grandes aprendizajes.</a
+                  >
+                </td>
+                <td>PhotosPage.jsx · EvidenceViewerPage.jsx</td>
+              </tr>
+              <tr>
+                <td>CU-018</td>
+                <td>Gestionar entrevistas y fichas</td>
+                <td>
+                  <a href="pantallas/18-entrevistas.html"
+                    >Escuchar también es aprender</a
+                  ><br /><a href="pantallas/18b-respuestas-entrevista.html"
+                    >Voces del contexto institucional</a
+                  ><br /><a href="pantallas/18c-ficha-observacion.html"
+                    >Mirar con intención pedagógica</a
+                  >
+                </td>
+                <td>PracticeFormsPage.jsx</td>
+              </tr>
+              <tr>
+                <td>CU-019</td>
+                <td>Gestionar jornadas y asistencias</td>
+                <td>
+                  <a href="pantallas/19-jornadas.html"
+                    >Tiempo compartido, aprendizaje registrado</a
+                  >
+                </td>
+                <td>SchedulesPage.jsx</td>
+              </tr>
+              <tr>
+                <td>CU-020</td>
+                <td>Gestionar planificación didáctica</td>
+                <td>
+                  <a href="pantallas/20-planificacion.html"
+                    >Diseñar oportunidades para aprender</a
+                  >
+                </td>
+                <td>DidacticPlansPage.jsx</td>
+              </tr>
+              <tr>
+                <td>CU-021</td>
+                <td>Consultar panel y notificaciones</td>
+                <td>
+                  <a href="pantallas/21-panel.html"
+                    >Hola, Valentina. Sigamos avanzando.</a
+                  ><br /><a href="pantallas/21b-notificaciones.html"
+                    >Lo que necesitas saber</a
+                  >
+                </td>
+                <td>DashboardPage.jsx<br />NotificationsPage.jsx</td>
+              </tr>
+              <tr>
+                <td>CU-022</td>
+                <td>Enviar anuncio</td>
+                <td>
+                  <a href="pantallas/22-anuncios.html"
+                    >Un mensaje claro llega más lejos</a
+                  >
+                </td>
+                <td>NotificationsPage.jsx</td>
+              </tr>
+              <tr>
+                <td>CU-023</td>
+                <td>Consultar reporte de coordinación</td>
+                <td>
+                  <a href="pantallas/23-reportes.html"
+                    >La coordinación, con perspectiva</a
+                  >
+                </td>
+                <td>ReportsPage.jsx</td>
+              </tr>
+              <tr>
+                <td>CU-024</td>
+                <td>Administrar imágenes de interfaz</td>
+                <td>
+                  <a href="pantallas/24-imagenes.html"
+                    >Una identidad visual coherente</a
+                  >
+                </td>
+                <td>DashboardPage.jsx · recursos de imágenes de interfaz</td>
+              </tr>
+              <tr>
+                <td>CU-025</td>
+                <td>Descargar documento PDF</td>
+                <td>
+                  <a href="pantallas/25-documento-pdf.html"
+                    >Un expediente listo para compartir</a
+                  >
+                </td>
+                <td>
+                  EndpointConsole.jsx · PracticeFormsPage.jsx ·
+                  DidacticPlansPage.jsx
+                </td>
+              </tr>
+              <tr>
+                <td>CU-026</td>
+                <td>Recuperar contraseña administrativa</td>
+                <td>
+                  <a href="pantallas/26-recuperar-acceso.html"
+                    >Recuperación administrativa</a
+                  >
+                </td>
+                <td>AdminRecoveryController.java · LoginPage.jsx</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <div class="note">
+        <strong>Alcance visual</strong>
+        <p>
+          Las pantallas representan roles de ejemplo. La navegación de la
+          maqueta permite explorar propuestas de distintos roles y no representa
+          permisos del sistema. Formularios, botones, archivos y descargas no
+          ejecutan operaciones.
+        </p>
+      </div>
+    </main>
+  </body>
+</html>

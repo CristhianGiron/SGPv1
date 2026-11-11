@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          CourseServiceTest.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Comprueba el comportamiento de los paralelos académicos mediante pruebas de regresión.
+ */
+
 package com.sgp.systemsgp.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -49,6 +61,9 @@ class CourseServiceTest {
     @Mock
     private AcademicCycleRepository academicCycleRepository;
 
+    @Mock
+    private com.sgp.systemsgp.repository.CourseStudentMembershipRepository courseStudentMembershipRepository;
+
     private CourseService courseService;
 
     @BeforeEach
@@ -61,7 +76,8 @@ class CourseServiceTest {
                 courseGroupRepository,
                 accountRepository,
                 subjectRepository,
-                academicCycleRepository);
+                academicCycleRepository,
+                courseStudentMembershipRepository);
     }
 
     @Test

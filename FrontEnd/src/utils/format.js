@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          format.js
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Proporciona las funciones de format utilizadas por la interfaz del SGP.
+ */
+
 export function joinText(...values) {
   return values.filter(Boolean).join(' ').trim();
 }
@@ -43,6 +55,13 @@ export function formatEnum(value) {
 
   const normalized = String(value).trim();
   const labels = {
+    MONDAY: 'Lunes',
+    TUESDAY: 'Martes',
+    WEDNESDAY: 'Miércoles',
+    THURSDAY: 'Jueves',
+    FRIDAY: 'Viernes',
+    SATURDAY: 'Sábado',
+    SUNDAY: 'Domingo',
     ABSENT: 'Ausente',
     ACTIVE: 'Activo',
     ADMIN: 'Administrador',
@@ -66,9 +85,14 @@ export function formatEnum(value) {
     NEEDS_CORRECTION: 'Necesita corrección',
     NUMBER: 'Número',
     OBSERVATION: 'Ficha de observación',
+    OBSERVACION: 'Observación',
+    ELABORACION: 'Elaboración',
+    PUBLICO: 'Público',
     OPEN_TEXT: 'Respuesta abierta',
     PENDING: 'Pendiente',
     PRESENT: 'Presente',
+    LATE: 'Atraso',
+    JUSTIFIED: 'Falta justificada',
     REJECTED: 'Rechazado',
     ROLE_ADMIN: 'Administrador',
     ROLE_DIRECTOR_PRACTICAS: 'Director de prácticas',
@@ -140,26 +164,86 @@ export function labelFromKey(key) {
   // cuando un campo nuevo del documento/reporte se vea con una etiqueta fea.
   // Esto no muestra ni oculta campos; solo cambia cómo se leen en pantalla.
   const labels = {
+    degreeTitle: 'Titulación',
+    completedHours: 'Horas de práctica realizadas',
+    completedMinutes: 'Minutos adicionales (0 a 59)',
+    reportDate: 'Fecha del informe institucional',
+    letterheadImageUrl: 'Membrete institucional',
+    studentFullName: 'Nombre del estudiante',
+    studentEmail: 'Correo del estudiante',
+    studentPhone: 'Teléfono del estudiante',
+    educationalInstitutionName: 'Institución educativa',
+    educationalInstitutionCode: 'Código de la institución',
+    educationalInstitutionAddress: 'Dirección de la institución',
+    educationalInstitutionPhone: 'Teléfono de la institución',
+    educationalInstitutionEmail: 'Correo de la institución',
+    title: 'Título',
+    description: 'Descripción',
+    presentation: 'Presentación',
+    objectives: 'Objetivos',
+    methodology: 'Metodología',
+    conclusions: 'Conclusiones',
+    recommendations: 'Recomendaciones',
+    resources: 'Recursos',
+    legalResources: 'Recursos legales',
+    humanResources: 'Recursos humanos',
+    technologicalResources: 'Recursos tecnológicos',
+    physicalResources: 'Recursos físicos',
+    antecedents: 'Antecedentes',
+    observations: 'Observaciones',
+    notes: 'Notas',
+    feedback: 'Retroalimentación',
+    approval: 'Aprobación',
+    developmentMode: 'Modalidad',
+    learningObjectives: 'Objetivos de aprendizaje',
+    teacherName: 'Docente',
+    startTime: 'Hora de inicio',
+    endTime: 'Hora de finalización',
+    dayOfWeek: 'Día de la semana',
+    periods: 'Períodos programados',
+    attendances: 'Asistencias',
+    totalTime: 'Tiempo total',
+    scheduledDayOfWeek: 'Día programado',
+    scheduledStartTime: 'Hora de inicio programada',
+    scheduledEndTime: 'Hora de finalización programada',
+    attendanceDate: 'Fecha de asistencia',
+    place: 'Lugar',
+    scheduledBy: 'Programado por',
+    registeredBy: 'Registrado por',
+    registeredAt: 'Fecha de registro',
+    totalMinutes: 'Tiempo en minutos',
+    status: 'Estado',
+    enrollmentId: 'Inscripción',
+    authorId: 'Autor',
+    reviewedAt: 'Fecha de revisión',
+    approvedAt: 'Fecha de aprobación',
+    activityWeeks: 'Actividades por semana',
+    weekNumber: 'Número de semana',
+    startDate: 'Fecha de inicio',
+    endDate: 'Fecha de finalización',
+    activities: 'Actividades de la semana',
+    scheduleWeeks: 'Cronograma semanal',
+    scheduledActivities: 'Actividades planificadas',
     teacherCount: 'Docentes',
     studentCount: 'Estudiantes',
     studentUsername: 'Usuario del estudiante',
     studentIdentification: 'Identificacion del estudiante',
     courseName: 'Paralelo',
-    academicPeriod: 'Periodo academico',
+    academicPeriod: 'Período académico',
     subjectDenomination: 'Denominacion de la asignatura',
     mission: 'Mision',
     vision: 'Vision',
     institutionalValues: 'Valores institucionales',
     groupId: 'Grupo',
     groupName: 'Grupo',
-    curricularOrganizationUnit: 'Unidad de organizacion curricular',
+    curricularOrganizationUnit: 'Unidad de organización curricular',
     integrativeKnowledgeProject: 'Proyecto integrador de saberes',
-    practiceType: 'Tipo de practica',
+    practiceType: 'Tipo de práctica',
     generalObjective: 'Objetivo general',
-    specificObjective1: 'Objetivo especifico 1',
-    specificObjective2: 'Objetivo especifico 2',
-    specificObjective3: 'Objetivo especifico 3',
-    feedbackHistory: 'Historial de retroalimentacion',
+    specificObjective1: 'Objetivo específico 1',
+    specificObjective2: 'Objetivo específico 2',
+    specificObjective3: 'Objetivo específico 3',
+    feedbackHistory: 'Historial de retroalimentación',
     accreditationFeedback: 'Retroalimentación de acreditación',
     activitiesFeedback: 'Retroalimentación de actividades',
     approvalFeedback: 'Retroalimentación de aprobación',
@@ -193,7 +277,7 @@ export function labelFromKey(key) {
     resourcesFeedback: 'Retroalimentación de recursos',
     scheduleFeedback: 'Retroalimentación de cronograma',
     sectionKey: 'Seccion',
-    reviewCycle: 'Ciclo de revision',
+    reviewCycle: 'Ciclo de revisión',
     authorName: 'Autor',
     authorRole: 'Rol',
     documentType: 'Documento',
@@ -228,7 +312,7 @@ export function formatValue(value, key = '') {
   }
 
   if (typeof value === 'boolean') {
-    return value ? 'Si' : 'No';
+    return value ? 'Sí' : 'No';
   }
 
   if (typeof value === 'number') {
@@ -255,7 +339,8 @@ export function formatValue(value, key = '') {
     return String(value).includes('T') ? formatDateTime(value) : formatDate(value);
   }
 
-  if (/status|role|type|modality|regime|support|level|mode/i.test(key)) {
+  if (/^(dayOfWeek|scheduledDayOfWeek)$/i.test(key)
+      || /status|role|type|modality|regime|support|level|mode/i.test(key)) {
     return formatEnum(value);
   }
 
@@ -292,7 +377,7 @@ export function summarizeEntity(entity) {
       ],
     },
     {
-      title: 'Institucion',
+      title: 'Institución',
       keys: [
         'educationalInstitutionName',
         'educationalInstitutionCode',
@@ -334,7 +419,7 @@ export function summarizeEntity(entity) {
       ],
     },
     {
-      title: 'Retroalimentacion',
+      title: 'Retroalimentación',
       keys: Object.keys(entity).filter((key) => /feedback|suggestions/i.test(key)),
     },
   ];

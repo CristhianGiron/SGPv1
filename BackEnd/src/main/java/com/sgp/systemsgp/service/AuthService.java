@@ -1,6 +1,17 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          AuthService.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa la lógica de aplicación de la autenticación de usuarios.
+ */
+
 package com.sgp.systemsgp.service;
 
-import com.sgp.systemsgp.config.JwtService;
 
 import com.sgp.systemsgp.dto.auth.AuthResponse;
 import com.sgp.systemsgp.dto.auth.LoginRequest;
@@ -54,9 +65,7 @@ public class AuthService {
                         "image/webp");
 
         private static final Set<String> PUBLIC_REGISTRATION_ROLES = Set.of(
-                        RoleName.ROLE_ESTUDIANTE.name(),
-                        RoleName.ROLE_TUTOR_INSTITUCIONAL.name(),
-                        RoleName.ROLE_TUTOR_PRACTICAS.name());
+                        RoleName.ROLE_ESTUDIANTE.name());
 
         private final AccountRepository accountRepository;
 
@@ -72,9 +81,9 @@ public class AuthService {
 
         private final PasswordEncoder passwordEncoder;
 
-        private final JwtService jwtService;
-
         private final CustomUserDetailsService userDetailsService;
+        private final AuthSessionService authSessionService;
+        private final jakarta.persistence.EntityManager entityManager;
 
         /*
          * REGISTRO PUBLICO
@@ -160,48 +169,24 @@ public class AuthService {
                         courseRepository.save(practiceTutorCourse);
                 }
 
-                UserDetails user = userDetailsService
-                                .loadUserByUsername(account.getUsername());
-
-                String token = jwtService.generateToken(user);
-
-                return AuthResponse.builder()
-                                .accessToken(token)
-                                .refreshToken(jwtService.generateRefreshToken(user))
-                                .username(account.getUsername())
-                                .passwordChangeRequired(account.isPasswordChangeRequired())
-                                .build();
+                return authSessionService.create(account.getUsername());
         }
 
         /*
          * LOGIN
          */
+        @Transactional
         public AuthResponse login(LoginRequest request) {
-
-                // 1. Autenticación (Spring Security valida password)
-                authenticationManager.authenticate(
-                                new UsernamePasswordAuthenticationToken(
-                                                request.getUsername(),
-                                                request.getPassword()));
-
-                // 2. Cargar usuario
-                UserDetails user = userDetailsService
-                                .loadUserByUsername(request.getUsername());
-
-                Account account = accountRepository
-                                .findByUsernameAndDeletedFalse(user.getUsername())
-                                .orElseThrow(() -> new NotFoundException("Cuenta no encontrada"));
-
-                // 3. Generar tokens
-                String accessToken = jwtService.generateToken(user);
-                String refreshToken = jwtService.generateRefreshToken(user);
-
-                return AuthResponse.builder()
-                                .accessToken(accessToken)
-                                .refreshToken(refreshToken)
-                                .username(account.getUsername())
-                                .passwordChangeRequired(account.isPasswordChangeRequired())
-                                .build();
+                UserDetails user;
+                try {user=userDetailsService.loadUserByUsername(request.getUsername());}
+                catch(org.springframework.security.core.userdetails.UsernameNotFoundException ex) {
+                    throw new org.springframework.security.authentication.BadCredentialsException("Credenciales incorrectas");
+                }
+                var lockedAccount=accountRepository.lockForSecurityUpdate(user.getUsername())
+                    .orElseThrow(()->new org.springframework.security.authentication.BadCredentialsException("Credenciales incorrectas"));
+                entityManager.refresh(lockedAccount);
+                authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(),request.getPassword()));
+                return authSessionService.create(user.getUsername());
         }
 
         private void validateProfileImage(MultipartFile file) {
@@ -271,9 +256,8 @@ public class AuthService {
                                 .orElseThrow(() -> new NotFoundException(
                                                 "Ciclo académico no encontrado"));
 
-                if (!academicCycle.isActive()) {
-                        throw new BadRequestException(
-                                        "El ciclo académico no está activo");
+                if (!AcademicCycleService.availableForRegistration(academicCycle)) {
+                        throw new BadRequestException("La universidad, facultad, carrera y ciclo seleccionados deben estar activos");
                 }
 
                 return academicCycle;

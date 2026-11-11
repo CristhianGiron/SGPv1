@@ -1,0 +1,37 @@
+@startuml
+/'
+  @institucion   Universidad Nacional de Loja
+  @carrera       Pedagogía de las Ciencias Experimentales - Informática
+  @asignatura    Programación Web
+  @docente       Johnny H. Sánchez L.
+  @proyecto      Sistema de Gestión de Prácticas (SGP)
+  @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+  @file          secuencia-cierre-archivo.puml
+  @fecha         2026-11-10 21:24:04
+  @nota          Describe el diagrama de casos de uso del SGP mediante PlantUML.
+'/
+
+title SGP — Conclusión y archivo de una práctica (síntesis)
+hide footbox
+autonumber
+skinparam shadowing false
+skinparam maxMessageSize 55
+actor "Dirección / admin." as A
+boundary "Pantalla" as UI
+control "Servicio SGP" as S
+database "Base de datos" as DB
+A -> UI : Dirección: consultar resumen de cierre
+UI -> S : Solicitar resumen y advertencias
+S --> UI : Documentos, horas y pendientes
+A -> UI : Dirección: confirmar conclusión manual
+UI -> S : Solicitar conclusión
+S -> DB : Guardar COMPLETED y auditoría
+A -> UI : Administración: archivar práctica
+UI -> S : Solicitar archivo
+S -> S : Validar administrador y estado COMPLETED
+S -> DB : Guardar archivo, fecha y auditoría
+S --> UI : Confirmar consulta histórica
+note over A, DB
+La dirección concluye y la administración archiva, en operaciones distintas (CU-011 y CU-012). Los pendientes se muestran como advertencias: ni el vencimiento del período ni el cierre de inscripciones concluyen automáticamente una práctica.
+end note
+@enduml

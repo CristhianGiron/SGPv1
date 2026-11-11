@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          RegisterRequest.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Define los datos de entrada para el módulo Register Request.
+ */
+
 package com.sgp.systemsgp.dto.auth;
 
 import jakarta.validation.constraints.Email;
@@ -70,7 +82,7 @@ public class RegisterRequest {
         /*
          * ROL PUBLICO
          */
-        @Pattern(regexp = "^(ROLE_ESTUDIANTE|ROLE_TUTOR_INSTITUCIONAL|ROLE_TUTOR_PRACTICAS)?$", message = "El rol de registro no es válido")
+        @Pattern(regexp = "^(ROLE_ESTUDIANTE)?$", message = "El registro público solo permite cuentas de estudiante")
         private String role;
 
         /*

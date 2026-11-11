@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          PracticeReportController.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Expone las operaciones HTTP relacionadas con el informe de actividades cumplidas (L.1).
+ */
+
 package com.sgp.systemsgp.controller;
 
 import com.sgp.systemsgp.dto.practicereport.CreatePracticeReportRequest;
@@ -113,6 +125,12 @@ public class PracticeReportController {
         return practiceReportService.getById(
                 id,
                 authentication.getName());
+    }
+
+    @GetMapping("/{id}/pdf/preview")
+    @PreAuthorize("hasAnyRole('ESTUDIANTE','TUTOR_PRACTICAS','DIRECTOR_PRACTICAS','ADMIN')")
+    public ResponseEntity<byte[]> previewPdf(Authentication authentication, @PathVariable Long id) {
+        return PdfResponseFactory.inline(practiceReportService.previewPdf(id, authentication.getName()));
     }
 
     @GetMapping("/{id}/pdf")

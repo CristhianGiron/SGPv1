@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          CompletedActivityRecordRepository.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Define las consultas de persistencia para el registro de actividades cumplidas (L.6).
+ */
+
 package com.sgp.systemsgp.repository;
 
 import com.sgp.systemsgp.enums.CompletedActivityRecordStatus;
@@ -10,6 +22,10 @@ import java.util.Optional;
 
 public interface CompletedActivityRecordRepository
         extends JpaRepository<CompletedActivityRecord, Long> {
+
+    java.util.List<CompletedActivityRecord> findByEnrollment_IdAndDeletedFalseOrderByIdAsc(Long enrollmentId);
+
+    Optional<CompletedActivityRecord> findByEnrollment_IdAndDeletedFalse(Long enrollmentId);
 
     boolean existsByEnrollment_IdAndDeletedFalse(Long enrollmentId);
 

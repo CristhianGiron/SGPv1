@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          AuthController.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Expone las operaciones HTTP relacionadas con la autenticación de usuarios.
+ */
+
 package com.sgp.systemsgp.controller;
 
 import lombok.RequiredArgsConstructor;
@@ -19,6 +31,19 @@ import jakarta.validation.Valid;
 public class AuthController {
 
     private final AuthService authService;
+    private final com.sgp.systemsgp.service.AuthSessionService sessions;
+
+    @PostMapping("/refresh")
+    public AuthResponse refresh(@Valid @RequestBody com.sgp.systemsgp.dto.auth.RefreshSessionRequest request) {
+        return sessions.refresh(request.refreshToken());
+    }
+    @PostMapping({"/logout","/logout-all"})
+    @org.springframework.security.access.prepost.PreAuthorize("isAuthenticated()")
+    public void logout(org.springframework.security.core.Authentication a,jakarta.servlet.http.HttpServletRequest request,
+                       @RequestHeader("Authorization") String header) {
+        sessions.logout(a.getName(),header.substring(7),request.getRequestURI().endsWith("/logout-all"));
+    }
+
 
     /*
      * REGISTRO

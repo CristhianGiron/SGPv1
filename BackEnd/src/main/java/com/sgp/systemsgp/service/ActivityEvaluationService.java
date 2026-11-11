@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          ActivityEvaluationService.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa la lógica de aplicación de la evaluación de actividades (L.4).
+ */
+
 package com.sgp.systemsgp.service;
 
 import com.sgp.systemsgp.dto.activityevaluation.ActivityEvaluationAspectRequest;
@@ -46,6 +58,7 @@ public class ActivityEvaluationService {
     private final AccountRepository accountRepository;
     private final InstitutionRepository institutionRepository;
     private final PdfExportService pdfExportService;
+    private final PracticeAccessService practiceAccessService;
 
     @Transactional
     public ActivityEvaluationResponse create(
@@ -165,14 +178,14 @@ public class ActivityEvaluationService {
                         response.getPracticeType(),
                         response.getStudentFullName(),
                         response.getStudentIdentification(),
-                        response.getCourseName(),
-                        response.getAcademicPeriod(),
+                        DocumentPdfData.cycle(evaluation.getCourse(), evaluation.getStudent()),
+                        DocumentPdfData.period(evaluation.getCourse()) != null ? DocumentPdfData.period(evaluation.getCourse()) : response.getAcademicPeriod(),
                         response.getDevelopmentMode(),
                         response.getHoursCompleted(),
                         response.getActivitiesCompletionPercentage(),
                         response.getEvaluationDate(),
                         accountFullName(evaluation.getEvaluatedBy()),
-                        "DOCENTE TUTOR DE PRACTICAS",
+                        DocumentPdfData.tutorRole(evaluation.getCourse()),
                         evaluationAspects(response.getAspects())));
     }
 
@@ -186,6 +199,7 @@ public class ActivityEvaluationService {
         Account tutor = getAccount(username);
 
         validatePracticeTutorCanManage(evaluation.getCourse(), tutor);
+        PracticeAccessService.requireOperationalEnrollment(evaluation.getEnrollment());
 
         if (request.getEducationalInstitutionId() != null) {
             Institution institution = resolveEducationalInstitution(
@@ -245,6 +259,8 @@ public class ActivityEvaluationService {
             throw new BadRequestException(
                     "Solo se puede evaluar una inscripcion aprobada");
         }
+        PracticeAccessService.requireOperationalEnrollment(enrollment);
+
 
         if (!isActiveCourseEnrollment(enrollment)) {
             throw new BadRequestException(
@@ -280,7 +296,7 @@ public class ActivityEvaluationService {
         if (evaluation.getStudent().getId().equals(account.getId())
                 || isAssignedPracticeTutor(evaluation, account)
                 || hasRole(account, RoleName.ROLE_ADMIN)
-                || hasRole(account, RoleName.ROLE_DIRECTOR_PRACTICAS)) {
+                || practiceAccessService.isDirectorForCourse(evaluation.getCourse(), account)) {
             return;
         }
 
@@ -401,6 +417,7 @@ public class ActivityEvaluationService {
         copyStudentSnapshot(evaluation, evaluation.getStudent());
         copyCoursePracticeType(evaluation);
 
+        if (evaluation.getAcademicPeriod() == null) evaluation.setAcademicPeriod(request.getAcademicPeriod());
         evaluation.setDevelopmentMode(request.getDevelopmentMode());
         evaluation.setHoursCompleted(request.getHoursCompleted());
         evaluation.setActivitiesCompletionPercentage(
@@ -452,9 +469,8 @@ public class ActivityEvaluationService {
             evaluation.setStudentPhone(person.getPhone());
         }
 
-        if (student.getAcademicCycle() != null) {
-            evaluation.setAcademicPeriod(student.getAcademicCycle().getName());
-        }
+        String period = DocumentPdfData.period(evaluation.getCourse());
+        if (period != null) evaluation.setAcademicPeriod(period);
     }
 
     private void replaceAspects(

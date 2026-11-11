@@ -1,4 +1,17 @@
-import { useEffect } from 'react';
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          Modal.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa el componente Modal de la interfaz del SGP.
+ */
+
+import { useDialogFocus } from '../../hooks/useDialogFocus';
+import { useId, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import { getPortalRoot } from '../../utils/portal';
@@ -12,28 +25,18 @@ export function Modal({
   className = '',
   description,
   footer,
-  labelledBy = 'app-modal-title',
+  labelledBy,
   maxWidth = 'max-w-4xl',
   onClose,
   open,
   title,
 }) {
   const portalRoot = getPortalRoot();
+  const dialogRef = useRef(null);
 
-  useEffect(() => {
-    if (!open) {
-      return undefined;
-    }
-
-    function handleKeyDown(event) {
-      if (event.key === 'Escape') {
-        onClose?.();
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [onClose, open]);
+  const generatedId = useId();
+  const titleId = labelledBy || `sgp-dialog-${generatedId}`;
+  useDialogFocus(open, dialogRef, onClose);
 
   if (!open || !portalRoot) {
     return null;
@@ -47,10 +50,18 @@ export function Modal({
         style={{ zIndex: 100000 }}
       />
       <div
-        aria-labelledby={labelledBy}
+        aria-labelledby={title ? titleId : undefined}
+        aria-label={!title ? "Diálogo" : undefined}
         aria-modal="true"
-        className="fixed inset-0 flex items-center justify-center px-3 py-4 sm:px-4 sm:py-6"
+        className="sgp-modal-dialog fixed inset-0 flex items-center justify-center px-3 py-4 sm:px-4 sm:py-6"
+        onMouseDown={(event) => {
+          if (event.target === event.currentTarget) {
+            onClose?.();
+          }
+        }}
         role="dialog"
+        tabIndex={-1}
+        ref={dialogRef}
         style={{ zIndex: 100001 }}
       >
         <div
@@ -66,7 +77,7 @@ export function Modal({
                 {title && (
                   <h2
                     className="text-base font-medium leading-tight text-unl-graphite dark:text-heading"
-                    id={labelledBy}
+                    id={titleId}
                   >
                     {title}
                   </h2>

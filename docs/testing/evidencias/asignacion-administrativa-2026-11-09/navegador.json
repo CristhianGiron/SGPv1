@@ -1,0 +1,107 @@
+{
+  "checks": [
+    {
+      "width": 390,
+      "practiceCreated": true
+    },
+    {
+      "width": 390,
+      "staffAssignmentApproved": true
+    },
+    {
+      "width": 390,
+      "enrollmentClosed": true
+    },
+    {
+      "width": 390,
+      "staffNoHorizontalOverflow": true
+    },
+    {
+      "width": 390,
+      "studentReceivesReadyPractice": true
+    },
+    {
+      "width": 390,
+      "workContinuesAfterEnrollmentClosure": true
+    },
+    {
+      "width": 390,
+      "studentNoHorizontalOverflow": true
+    },
+    {
+      "width": 390,
+      "studentCannotOpenCourseManagement": true
+    },
+    {
+      "width": 1440,
+      "practiceCreated": true
+    },
+    {
+      "width": 1440,
+      "staffAssignmentApproved": true
+    },
+    {
+      "width": 1440,
+      "enrollmentClosed": true
+    },
+    {
+      "width": 1440,
+      "staffNoHorizontalOverflow": true
+    },
+    {
+      "width": 1440,
+      "studentReceivesReadyPractice": true
+    },
+    {
+      "width": 1440,
+      "workContinuesAfterEnrollmentClosure": true
+    },
+    {
+      "width": 1440,
+      "studentNoHorizontalOverflow": true
+    },
+    {
+      "width": 1440,
+      "studentCannotOpenCourseManagement": true
+    }
+  ],
+  "writes": [
+    {
+      "width": 390,
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "method": "POST",
+      "path": "/api/courses/10/practice-offerings"
+    },
+    {
+      "width": 390,
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "method": "POST",
+      "path": "/api/practice-offerings/30/students"
+    },
+    {
+      "width": 390,
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "method": "PATCH",
+      "path": "/api/practice-offerings/30/enrollment"
+    },
+    {
+      "width": 1440,
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "method": "POST",
+      "path": "/api/courses/10/practice-offerings"
+    },
+    {
+      "width": 1440,
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "method": "POST",
+      "path": "/api/practice-offerings/30/students"
+    },
+    {
+      "width": 1440,
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "method": "PATCH",
+      "path": "/api/practice-offerings/30/enrollment"
+    }
+  ],
+  "errors": []
+}

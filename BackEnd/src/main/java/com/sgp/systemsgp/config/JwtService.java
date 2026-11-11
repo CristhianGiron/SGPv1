@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          JwtService.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Gestiona los tokens JWT utilizados en la autenticación de la API.
+ */
+
 package com.sgp.systemsgp.config;
 
 import io.jsonwebtoken.Claims;
@@ -76,6 +88,7 @@ public class JwtService {
 
                 Map<String, Object> claims = new HashMap<>();
 
+                claims.put("tokenUse", "access");
                 claims.put(
                                 "roles",
                                 user.getAuthorities()
@@ -86,7 +99,16 @@ public class JwtService {
                 return buildToken(
                                 claims,
                                 user,
-                                ACCESS_TOKEN_EXPIRATION);
+                                jwtProperties.getExpiration() > 0 ? jwtProperties.getExpiration() : ACCESS_TOKEN_EXPIRATION);
+        }
+
+        public String generateSessionToken(UserDetails user,String sessionId,long authVersion,boolean refresh) {
+                Map<String,Object> claims=new HashMap<>();
+                claims.put("tokenUse",refresh?"refresh":"access");
+                claims.put("sid",sessionId);claims.put("ver",authVersion);claims.put("jti",java.util.UUID.randomUUID().toString());
+                if(!refresh)claims.put("roles",user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList());
+                return buildToken(claims,user,refresh?REFRESH_TOKEN_EXPIRATION:
+                    (jwtProperties.getExpiration()>0?jwtProperties.getExpiration():ACCESS_TOKEN_EXPIRATION));
         }
 
         /*
@@ -96,7 +118,7 @@ public class JwtService {
                         UserDetails user) {
 
                 return buildToken(
-                                new HashMap<>(),
+                                Map.of("tokenUse", "refresh"),
                                 user,
                                 REFRESH_TOKEN_EXPIRATION);
         }
@@ -168,10 +190,14 @@ public class JwtService {
                         String token,
                         UserDetails user) {
 
-                final String username = extractUsername(token);
-
-                return username.equals(user.getUsername())
-                                && !isTokenExpired(token);
+                Claims claims = extractClaims(token);
+                String tokenUse = claims.get("tokenUse", String.class);
+                // Legacy access tokens carry roles; legacy refresh tokens do not.
+                boolean accessToken = "access".equals(tokenUse)
+                                || (tokenUse == null && claims.get("roles") instanceof List<?>);
+                return accessToken && user.getUsername().equals(claims.getSubject())
+                                && claims.getExpiration() != null
+                                && claims.getExpiration().after(new Date());
         }
 
         /*

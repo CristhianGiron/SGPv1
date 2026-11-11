@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          CustomUserDetailsService.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa la lógica de aplicación de el módulo Custom User Details Service.
+ */
+
 package com.sgp.systemsgp.service;
 
 import lombok.RequiredArgsConstructor;

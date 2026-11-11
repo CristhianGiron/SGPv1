@@ -1,0 +1,24 @@
+# @institucion   Universidad Nacional de Loja
+# @carrera       Pedagogía de las Ciencias Experimentales - Informática
+# @asignatura    Programación Web
+# @docente       Johnny H. Sánchez L.
+# @proyecto      Sistema de Gestión de Prácticas (SGP)
+# @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+# @file          .gitignore
+# @fecha         2026-11-09 11:08:16
+# @nota          Define las reglas de .gitignore para las herramientas del proyecto.
+
+# Artefactos regenerables de compilación, dependencias y pruebas
+node_modules/
+build/
+target/
+coverage/
+__pycache__/
+*.py[cod]
+*.tsbuildinfo
+
+# Archivos temporales del entorno
+.DS_Store
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

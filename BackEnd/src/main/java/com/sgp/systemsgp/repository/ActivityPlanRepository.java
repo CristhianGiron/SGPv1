@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          ActivityPlanRepository.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Define las consultas de persistencia para el plan de actividades (L.2).
+ */
+
 package com.sgp.systemsgp.repository;
 
 import com.sgp.systemsgp.enums.ActivityPlanStatus;
@@ -10,6 +22,8 @@ import java.util.Optional;
 
 public interface ActivityPlanRepository
         extends JpaRepository<ActivityPlan, Long> {
+
+    java.util.List<ActivityPlan> findByEnrollment_IdAndDeletedFalseOrderByIdAsc(Long enrollmentId);
 
     boolean existsByEnrollment_IdAndDeletedFalse(Long enrollmentId);
 

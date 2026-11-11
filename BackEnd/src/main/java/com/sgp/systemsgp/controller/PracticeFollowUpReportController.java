@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          PracticeFollowUpReportController.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Expone las operaciones HTTP relacionadas con el seguimiento de prácticas (L.5).
+ */
+
 package com.sgp.systemsgp.controller;
 
 import com.sgp.systemsgp.dto.practicefollowup.CreatePracticeFollowUpReportRequest;
@@ -76,6 +88,12 @@ public class PracticeFollowUpReportController {
         return practiceFollowUpReportService.getById(
                 id,
                 authentication.getName());
+    }
+
+    @GetMapping("/{id}/pdf/preview")
+    @PreAuthorize("hasAnyRole('ESTUDIANTE','TUTOR_PRACTICAS','DIRECTOR_PRACTICAS','ADMIN')")
+    public org.springframework.http.ResponseEntity<byte[]> previewPdf(Authentication authentication, @PathVariable Long id) {
+        return PdfResponseFactory.inline(com.sgp.systemsgp.service.PdfPreview.mark(practiceFollowUpReportService.exportPdf(id, authentication.getName())));
     }
 
     @GetMapping("/{id}/pdf")

@@ -1,0 +1,42 @@
+
+> front@0.1.0 test
+> react-scripts test --watchAll=false --runInBand --runTestsByPath src/components/DidacticPlanContinuity.test.jsx src/api/sessionRenewal.test.jsx
+
+PASS src/components/DidacticPlanContinuity.test.jsx
+  ● Console
+
+    console.error
+      An update to DidacticPlanContinuity inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+      22 |  const [reason,setReason]=useState(''),[history,setHistory]=useState([]),[snapshot,setSnapshot]=useState(null),[error,setError]=useState(''),[busy,setBusy]=useState(false);
+      23 |  const base=`/api/didactic-plans/${plan.id}`;
+    > 24 |  useEffect(()=>{let active=true;setHistory([]);setSnapshot(null);setReason('');setError('');apiRequest(`${base}/revisions`,{token}).then(rows=>{if(active)setHistory(Array.isArray(rows)?rows:[]);}).catch(e=>{if(active)setError(e.message);});return()=>{active=false;};},[base,token,plan.status]);
+         |                                                                                                                                                           ^
+      25 |  const canReturn=operational&&plan.authorType==='INSTITUTIONAL_TUTOR'&&plan.status==='SUBMITTED'&&String(profile?.id)!==String(plan.authorId)&&roles.some(r=>['ROLE_TUTOR_PRACTICAS','ROLE_DIRECTOR_PRACTICAS'].includes(r));
+      26 |  async function returnPlan(){
+      27 |   if(!reason.trim()||!await confirm({title:'Devolver planificación institucional',description:'Se conservará una copia de la versión enviada y el tutor institucional podrá corregirla.',confirmLabel:'Devolver para corrección',tone:'warning'}))return;
+
+      at node_modules/react-dom/cjs/react-dom-client.development.js:18758:19
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom-client.development.js:18757:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:16409:11)
+      at dispatchSetStateInternal (node_modules/react-dom/cjs/react-dom-client.development.js:9170:13)
+      at setHistory (node_modules/react-dom/cjs/react-dom-client.development.js:9127:7)
+      at src/components/DidacticPlanContinuity.jsx:24:155
+
+PASS src/api/sessionRenewal.test.jsx
+
+Test Suites: 2 passed, 2 total
+Tests:       8 passed, 8 total
+Snapshots:   0 total
+Time:        3.502 s
+Ran all test suites within paths "src/components/DidacticPlanContinuity.test.jsx", "src/api/sessionRenewal.test.jsx".

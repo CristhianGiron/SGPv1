@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          ActivityPlanService.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa la lógica de aplicación de el plan de actividades (L.2).
+ */
+
 package com.sgp.systemsgp.service;
 
 import com.sgp.systemsgp.dto.activityplan.ActivityPlanActivityWeekRequest;
@@ -38,6 +50,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -189,15 +202,11 @@ public class ActivityPlanService {
     }
 
     private Enrollment getDefaultEnrollment(Account student) {
-
-        return enrollmentRepository
-                .findByAccount_UsernameAndStatusAndCourse_ActiveTrueAndCourse_DeletedFalse(
-                        student.getUsername(),
-                        EnrollmentStatus.APPROVED)
-                .stream()
-                .findFirst()
-                .orElseThrow(() -> new BadRequestException(
-                        "No tienes ninguna inscripción aprobada para crear el plan de actividades"));
+        var choices = enrollmentRepository.findByAccount_UsernameAndStatusAndCourse_ActiveTrueAndCourse_DeletedFalse(
+                student.getUsername(), EnrollmentStatus.APPROVED);
+        if (choices.isEmpty()) throw new BadRequestException("No tienes ninguna inscripción aprobada para crear el plan de actividades");
+        if (choices.size() > 1) throw new BadRequestException("Tienes varias prácticas activas. Selecciona la práctica correspondiente antes de continuar.");
+        return choices.get(0);
     }
 
     public ActivityPlanResponse getById(
@@ -212,77 +221,63 @@ public class ActivityPlanService {
         return mapToResponse(plan);
     }
 
-    public byte[] exportApprovedPdf(
-            Long id,
-            String username) {
+    public byte[] exportApprovedPdf(Long id, String username) {
+        return renderPdf(id, username, true);
+    }
+
+    @Transactional
+    public byte[] previewPdf(Long id, String username) {
+        return PdfPreview.mark(renderPdf(id, username, false));
+    }
+
+    private byte[] renderPdf(Long id, String username, boolean requireApproved) {
 
         ActivityPlanResponse plan = getById(id, username);
-        validateApprovedForExport(plan.getStatus());
+        if (requireApproved) validateApprovedForExport(plan.getStatus());
 
-        return pdfExportService.createPdf(
-                "Plan de actividades",
-                List.of(
-                        pdfExportService.section(
-                                "Datos generales",
-                                List.of(
-                                        pdfExportService.field("Estudiante", plan.getStudentFullName()),
-                                        pdfExportService.field("Cedula", plan.getStudentIdentification()),
-                                        pdfExportService.field("Ciclo", plan.getCourseName()),
-                                        pdfExportService.field("Tutor Academico", firstPresent(
-                                                plan.getReviewedByName(),
-                                                plan.getReviewedBy())),
-                                        pdfExportService.field("Correo Electronico", plan.getStudentEmail()),
-                                        pdfExportService.field("Nro. de telefono", plan.getStudentPhone()),
-                                        pdfExportService.field("Institucion", plan.getEducationalInstitutionName()),
-                                        pdfExportService.field("Codigo AMIE", plan.getEducationalInstitutionCode()),
-                                        pdfExportService.field("Direccion", plan.getEducationalInstitutionAddress()),
-                                        pdfExportService.field("Tipo de practica", plan.getPracticeType()),
-                                        pdfExportService.field("Unidad curricular", plan.getCurricularOrganizationUnit()),
-                                        pdfExportService.field("Proyecto integrador", plan.getIntegrativeKnowledgeProject())
-                                )),
-                        pdfExportService.section(
-                                "Institucion",
-                                List.of(
-                                        pdfExportService.field("Mision", plan.getMission()),
-                                        pdfExportService.field("Vision", plan.getVision()),
-                                        pdfExportService.field("Valores institucionales", plan.getInstitutionalValues())
-                                )),
-                        pdfExportService.section(
-                                "Presentacion y objetivos",
-                                List.of(
-                                        pdfExportService.field("Presentacion", plan.getPresentation()),
-                                        pdfExportService.field("Objetivo general", plan.getGeneralObjective()),
-                                        pdfExportService.field("Objetivo especifico 1", plan.getSpecificObjective1()),
-                                        pdfExportService.field("Objetivo especifico 2", plan.getSpecificObjective2()),
-                                        pdfExportService.field("Objetivo especifico 3", plan.getSpecificObjective3())
-                                )),
-                        pdfExportService.sectionWithTables(
-                                "Actividades por semana",
-                                List.of(),
-                                List.of(activityWeeksTable(plan.getActivityWeeks()))),
-                        pdfExportService.sectionWithScheduleMatrices(
-                                "Cronograma de actividades",
-                                List.of(),
-                                List.of(scheduleMatrix(plan.getScheduleWeeks()))),
-                        pdfExportService.section(
-                                "Recursos",
-                                List.of(
-                                        pdfExportService.field("Legales", plan.getLegalResources()),
-                                        pdfExportService.field("Humanos", plan.getHumanResources()),
-                                        pdfExportService.field("Tecnologicos", plan.getTechnologicalResources()),
-                                        pdfExportService.field("Fisicos", plan.getPhysicalResources())
-                                )),
-                        pdfExportService.section(
-                                "Legalizacion",
-                                List.of(
-                                        pdfExportService.field("Tutor Academico", firstPresent(
-                                                plan.getReviewedByName(),
-                                                plan.getReviewedBy())),
-                                        pdfExportService.field(
-                                                "Rol",
-                                                "DOCENTE DE LA ASIGNATURA DE DISEÑO CURRICULAR EN INFORMÁTICA\nTUTOR ACADÉMICO")
-                                ))
-                ));
+        ActivityPlan entity = getPlan(id);
+        Course course = entity.getCourse();
+        List<PdfExportService.PdfField> general = new ArrayList<>();
+        general.add(pdfExportService.field("@subheading", "Datos del Estudiante"));
+        general.add(pdfExportService.field("Estudiante", plan.getStudentFullName()));
+        general.add(pdfExportService.field("Cédula de Identidad", plan.getStudentIdentification()));
+        general.add(pdfExportService.field("Correo Electrónico", plan.getStudentEmail()));
+        general.add(pdfExportService.field("Nro. de teléfono", plan.getStudentPhone()));
+        general.add(pdfExportService.field("Carrera", DocumentPdfData.career(course, entity.getStudent())));
+        general.add(pdfExportService.field("Titulación", DocumentPdfData.degree(course, entity.getStudent())));
+        general.add(pdfExportService.field("Ciclo", DocumentPdfData.cycle(course, entity.getStudent())));
+        general.add(pdfExportService.field("Periodo Academico", DocumentPdfData.period(course)));
+        general.add(pdfExportService.field("Tutor Academico", DocumentPdfData.name(course.getPracticeTutor())));
+        general.add(pdfExportService.field("Unidad de organización curricular", plan.getCurricularOrganizationUnit()));
+        general.add(pdfExportService.field("Denominación de la asignatura", plan.getSubjectDenomination()));
+        general.add(pdfExportService.field("Proyecto integrador de saberes", plan.getIntegrativeKnowledgeProject()));
+        general.add(pdfExportService.field("Tipo de Práctica", plan.getPracticeType()));
+        general.addAll(DocumentPdfData.institution(pdfExportService, entity.getEducationalInstitution(),
+                plan.getEducationalInstitutionName(), plan.getEducationalInstitutionCode(),
+                plan.getEducationalInstitutionAddress(), DocumentPdfData.institutionalTutor(entity.getEnrollment()), true));
+        general.add(pdfExportService.field("Misión", plan.getMission()));
+        general.add(pdfExportService.field("Visión", plan.getVision()));
+        general.add(pdfExportService.field("Valores institucionales", plan.getInstitutionalValues()));
+        return pdfExportService.createPdf("Plan de actividades", List.of(
+                pdfExportService.section("Información general", general),
+                pdfExportService.section("Presentación", List.of(pdfExportService.field("@paragraph", plan.getPresentation()))),
+                pdfExportService.section("Objetivos", List.of(
+                        pdfExportService.field("Objetivo General", plan.getGeneralObjective()),
+                        pdfExportService.field("@heading", "Objetivos Específicos"),
+                        pdfExportService.field("@bullet", plan.getSpecificObjective1()),
+                        pdfExportService.field("@bullet", plan.getSpecificObjective2()),
+                        pdfExportService.field("@bullet", plan.getSpecificObjective3()))),
+                pdfExportService.sectionWithTables("Actividades a cumplir", List.of(),
+                        List.of(activityWeeksTable(plan.getActivityWeeks()))),
+                pdfExportService.sectionWithScheduleMatrices("Cronograma", List.of(), List.of(scheduleMatrix(plan.getScheduleWeeks()))),
+                pdfExportService.section("Recursos", List.of(
+                        pdfExportService.field("Legal", plan.getLegalResources()),
+                        pdfExportService.field("Humano", plan.getHumanResources()),
+                        pdfExportService.field("Tecnológicos", plan.getTechnologicalResources()),
+                        pdfExportService.field("Físicos", plan.getPhysicalResources()))),
+                pdfExportService.section("Legalizacion", List.of(
+                        pdfExportService.field("Tutor Academico", DocumentPdfData.name(course.getPracticeTutor())),
+                        pdfExportService.field("Rol", DocumentPdfData.tutorRole(course) + "\nTUTOR ACADÉMICO")))));
     }
 
     @Transactional
@@ -353,6 +348,7 @@ public class ActivityPlanService {
         Account tutor = getAccount(username);
 
         validateCanReview(plan, tutor);
+        PracticeAccessService.requireOperationalEnrollment(plan.getEnrollment());
 
         ReviewWorkflowStateMachine.ensureReviewable(
                 plan.getStatus(),
@@ -436,6 +432,8 @@ public class ActivityPlanService {
             throw new BadRequestException(
                     "Solo se puede crear el plan de una inscripción aprobada");
         }
+        PracticeAccessService.requireOperationalEnrollment(enrollment);
+
 
         if (!isActiveCourseEnrollment(enrollment)) {
             throw new BadRequestException(
@@ -553,6 +551,7 @@ public class ActivityPlanService {
     }
 
     private void validateEditable(ActivityPlan plan) {
+        PracticeAccessService.requireOperationalEnrollment(plan.getEnrollment());
 
         ReviewWorkflowStateMachine.ensureEditable(
                 plan.getStatus(),
@@ -903,8 +902,8 @@ public class ActivityPlanService {
             ActivityPlanActivityWeek week = ActivityPlanActivityWeek.builder()
                     .plan(plan)
                     .weekNumber(weekRequest.getWeekNumber())
-                    .startDate(activityWeekStartDate(plan.getCourse(), weekRequest.getWeekNumber(), weekRequest.getStartDate()))
-                    .endDate(activityWeekEndDate(plan.getCourse(), weekRequest.getWeekNumber(), weekRequest.getEndDate()))
+                    .startDate(activityWeekStartDate(plan.getEnrollment(), weekRequest.getWeekNumber(), weekRequest.getStartDate()))
+                    .endDate(activityWeekEndDate(plan.getEnrollment(), weekRequest.getWeekNumber(), weekRequest.getEndDate()))
                     .activities(weekRequest.getActivities())
                     .build();
 
@@ -926,8 +925,8 @@ public class ActivityPlanService {
             ActivityPlanScheduleWeek week = ActivityPlanScheduleWeek.builder()
                     .plan(plan)
                     .weekNumber(weekRequest.getWeekNumber())
-                    .startDate(activityWeekStartDate(plan.getCourse(), weekRequest.getWeekNumber(), weekRequest.getStartDate()))
-                    .endDate(activityWeekEndDate(plan.getCourse(), weekRequest.getWeekNumber(), weekRequest.getEndDate()))
+                    .startDate(activityWeekStartDate(plan.getEnrollment(), weekRequest.getWeekNumber(), weekRequest.getStartDate()))
+                    .endDate(activityWeekEndDate(plan.getEnrollment(), weekRequest.getWeekNumber(), weekRequest.getEndDate()))
                     .scheduledActivities(weekRequest.getScheduledActivities())
                     .build();
 
@@ -1012,7 +1011,7 @@ public class ActivityPlanService {
     }
 
     private java.time.LocalDate activityWeekStartDate(
-            Course course,
+            Enrollment enrollment,
             Integer weekNumber,
             java.time.LocalDate providedDate) {
 
@@ -1020,11 +1019,11 @@ public class ActivityPlanService {
             return providedDate;
         }
 
-        return defaultActivityWeekStartDate(course, weekNumber);
+        return defaultActivityWeekStartDate(enrollment, weekNumber);
     }
 
     private java.time.LocalDate activityWeekEndDate(
-            Course course,
+            Enrollment enrollment,
             Integer weekNumber,
             java.time.LocalDate providedDate) {
 
@@ -1032,27 +1031,27 @@ public class ActivityPlanService {
             return providedDate;
         }
 
-        return defaultActivityWeekEndDate(course, weekNumber);
+        return defaultActivityWeekEndDate(enrollment, weekNumber);
     }
 
     private java.time.LocalDate defaultActivityWeekStartDate(
-            Course course,
+            Enrollment enrollment,
             Integer weekNumber) {
 
-        if (course == null || course.getStartDate() == null) {
+        if (enrollment == null || PracticePeriod.start(enrollment) == null) {
             return null;
         }
 
-        return course.getStartDate()
+        return PracticePeriod.start(enrollment)
                 .toLocalDate()
                 .plusDays((long) (weekNumber == null ? 0 : Math.max(weekNumber - 1, 0)) * 7L);
     }
 
     private java.time.LocalDate defaultActivityWeekEndDate(
-            Course course,
+            Enrollment enrollment,
             Integer weekNumber) {
 
-        java.time.LocalDate startDate = defaultActivityWeekStartDate(course, weekNumber);
+        java.time.LocalDate startDate = defaultActivityWeekStartDate(enrollment, weekNumber);
 
         if (startDate == null) {
             return null;
@@ -1060,9 +1059,9 @@ public class ActivityPlanService {
 
         java.time.LocalDate endDate = startDate.plusDays(4);
 
-        return course.getEndDate() != null
-                && endDate.isAfter(course.getEndDate().toLocalDate())
-                        ? course.getEndDate().toLocalDate()
+        return PracticePeriod.end(enrollment) != null
+                && endDate.isAfter(PracticePeriod.end(enrollment).toLocalDate())
+                        ? PracticePeriod.end(enrollment).toLocalDate()
                         : endDate;
     }
 

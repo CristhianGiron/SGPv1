@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          CompletedActivityRecordService.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa la lógica de aplicación de el registro de actividades cumplidas (L.6).
+ */
+
 package com.sgp.systemsgp.service;
 
 import com.sgp.systemsgp.dto.completedactivity.CompletedActivityRecordEntryFeedbackRequest;
@@ -214,9 +226,16 @@ public class CompletedActivityRecordService {
     }
 
     @Transactional
-    public byte[] exportApprovedPdf(
-            Long id,
-            String username) {
+    public byte[] exportApprovedPdf(Long id, String username) {
+        return renderPdf(id, username, true);
+    }
+
+    @Transactional
+    public byte[] previewPdf(Long id, String username) {
+        return PdfPreview.mark(renderPdf(id, username, false));
+    }
+
+    private byte[] renderPdf(Long id, String username, boolean requireApproved) {
 
         CompletedActivityRecord entity = getRecord(id);
         Account account = getAccount(username);
@@ -224,7 +243,7 @@ public class CompletedActivityRecordService {
         validateCanView(entity, account);
 
         CompletedActivityRecordResponse record = mapToResponse(entity);
-        validateApprovedForExport(record.getStatus());
+        if (requireApproved) validateApprovedForExport(record.getStatus());
 
         Account institutionalTutor = institutionalTutorFor(
                 entity.getEnrollment(),
@@ -236,14 +255,14 @@ public class CompletedActivityRecordService {
                         record.getPracticeType(),
                         record.getStudentFullName(),
                         record.getStudentIdentification(),
-                        record.getCourseName(),
-                        record.getAcademicPeriod(),
+                        DocumentPdfData.cycle(entity.getCourse(), entity.getStudent()),
+                        DocumentPdfData.period(entity.getCourse()) != null ? DocumentPdfData.period(entity.getCourse()) : record.getAcademicPeriod(),
                         record.getDevelopmentMode(),
                         record.getTotalMinutes(),
                         record.getDeliveryDate(),
                         record.getStudentFullName(),
                         accountFullName(institutionalTutor),
-                        completedActivityEntries(record.getEntries())));
+                        completedActivityEntries(record.getEntries(), entity.getEnrollment().getId())));
     }
 
     @Transactional
@@ -313,6 +332,7 @@ public class CompletedActivityRecordService {
         Account tutor = getAccount(username);
 
         validateCanReview(record, tutor);
+        PracticeAccessService.requireOperationalEnrollment(record.getEnrollment());
 
         ReviewWorkflowStateMachine.ensureReviewable(
                 record.getStatus(),
@@ -356,15 +376,11 @@ public class CompletedActivityRecordService {
     }
 
     private Enrollment getDefaultEnrollment(Account student) {
-
-        return enrollmentRepository
-                .findByAccount_UsernameAndStatusAndCourse_ActiveTrueAndCourse_DeletedFalse(
-                        student.getUsername(),
-                        EnrollmentStatus.APPROVED)
-                .stream()
-                .findFirst()
-                .orElseThrow(() -> new BadRequestException(
-                        "No tienes ninguna inscripcion aprobada para crear el registro de actividades cumplidas"));
+        var choices = enrollmentRepository.findByAccount_UsernameAndStatusAndCourse_ActiveTrueAndCourse_DeletedFalse(
+                student.getUsername(), EnrollmentStatus.APPROVED);
+        if (choices.isEmpty()) throw new BadRequestException("No tienes ninguna inscripcion aprobada para crear el registro de actividades cumplidas");
+        if (choices.size() > 1) throw new BadRequestException("Tienes varias prácticas activas. Selecciona la práctica correspondiente antes de continuar.");
+        return choices.get(0);
     }
 
     private CompletedActivityRecord getRecord(Long id) {
@@ -409,6 +425,8 @@ public class CompletedActivityRecordService {
             throw new BadRequestException(
                     "Solo se puede crear el registro de una inscripcion aprobada");
         }
+        PracticeAccessService.requireOperationalEnrollment(enrollment);
+
 
         if (!isActiveCourseEnrollment(enrollment)) {
             throw new BadRequestException(
@@ -515,6 +533,7 @@ public class CompletedActivityRecordService {
     }
 
     private void validateEditable(CompletedActivityRecord record) {
+        PracticeAccessService.requireOperationalEnrollment(record.getEnrollment());
 
         ReviewWorkflowStateMachine.ensureEditable(
                 record.getStatus(),
@@ -764,6 +783,7 @@ public class CompletedActivityRecordService {
         copyStudentSnapshot(record, student);
         copyCoursePracticeType(record);
 
+        if (record.getAcademicPeriod() == null) record.setAcademicPeriod(request.getAcademicPeriod());
         record.setDevelopmentMode(request.getDevelopmentMode());
         record.setDeliveryDate(request.getDeliveryDate());
 
@@ -815,9 +835,8 @@ public class CompletedActivityRecordService {
             record.setStudentPhone(person.getPhone());
         }
 
-        if (student.getAcademicCycle() != null) {
-            record.setAcademicPeriod(student.getAcademicCycle().getName());
-        }
+        String period = DocumentPdfData.period(record.getCourse());
+        if (period != null) record.setAcademicPeriod(period);
     }
 
     private void replaceEntries(
@@ -1081,7 +1100,7 @@ public class CompletedActivityRecordService {
     }
 
     private List<PdfExportService.PdfCompletedActivityEntry> completedActivityEntries(
-            List<CompletedActivityRecordEntryResponse> entries) {
+            List<CompletedActivityRecordEntryResponse> entries, Long enrollmentId) {
 
         if (entries == null) {
             return List.of();
@@ -1094,8 +1113,28 @@ public class CompletedActivityRecordService {
                         entry.getEndTime(),
                         entry.getTotalMinutes(),
                         entry.getDevelopedActivities(),
-                        publicEvidenceLink(entry.getEvidenceLink())))
+                        publicEvidenceLink(entry.getEvidenceLink()),
+                        evidenceImage(entry.getEvidenceLink(), enrollmentId)))
                 .toList();
+    }
+
+    private byte[] evidenceImage(String link, Long enrollmentId) {
+        if (link == null) return null;
+        String decoded = URLDecoder.decode(link, StandardCharsets.UTF_8);
+        java.util.Optional<com.sgp.systemsgp.model.PracticePhoto> photo = java.util.Optional.empty();
+        Matcher privateLink = PRIVATE_PHOTO_CONTENT_PATTERN.matcher(decoded);
+        Matcher publicLink = Pattern.compile("/api/public/practice-photos/([a-fA-F0-9-]{36})/content").matcher(decoded);
+        if (privateLink.find()) photo = practicePhotoRepository.findByIdAndDeletedFalse(Long.valueOf(privateLink.group(1)));
+        else if (publicLink.find()) photo = practicePhotoRepository.findByPublicTokenAndDeletedFalse(publicLink.group(1));
+        return photo.filter(value -> value.getEnrollment() != null && java.util.Objects.equals(value.getEnrollment().getId(), enrollmentId))
+                .filter(value -> "image/png".equals(value.getContentType()) || "image/jpeg".equals(value.getContentType()) || "image/jpg".equals(value.getContentType()))
+                .map(com.sgp.systemsgp.model.PracticePhoto::getData).filter(this::decodableEvidence).orElse(null);
+    }
+
+    private boolean decodableEvidence(byte[] bytes) {
+        try (var input = new java.io.ByteArrayInputStream(bytes)) {
+            return javax.imageio.ImageIO.read(input) != null;
+        } catch (java.io.IOException | IllegalArgumentException exception) { return false; }
     }
 
     private String publicEvidenceLink(String evidenceLink) {

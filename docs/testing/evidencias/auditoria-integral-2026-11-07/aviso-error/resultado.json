@@ -1,0 +1,331 @@
+{
+  "mode": "Chrome; API simulada",
+  "checks": [
+    {
+      "theme": "light",
+      "width": 360,
+      "scenario": "pending",
+      "problems": [],
+      "alerts": [
+        {
+          "x": 16,
+          "y": 403.984375,
+          "width": 328,
+          "height": 122
+        }
+      ],
+      "topbar": 71.390625
+    },
+    {
+      "theme": "light",
+      "width": 360,
+      "scenario": "form",
+      "problems": [],
+      "alerts": [],
+      "topbar": 71.390625
+    },
+    {
+      "theme": "light",
+      "width": 360,
+      "scenario": "error",
+      "problems": [
+        "Notice border covered by sgp-a11y-launcher"
+      ],
+      "alerts": [
+        {
+          "x": 33,
+          "y": 266.78125,
+          "width": 294,
+          "height": 554
+        }
+      ],
+      "topbar": 71.390625
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "scenario": "pending",
+      "problems": [],
+      "alerts": [
+        {
+          "x": 16,
+          "y": 403.984375,
+          "width": 358,
+          "height": 122
+        }
+      ],
+      "topbar": 71.390625
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "scenario": "form",
+      "problems": [],
+      "alerts": [],
+      "topbar": 71.390625
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "scenario": "error",
+      "problems": [],
+      "alerts": [
+        {
+          "x": 33,
+          "y": 338.78125,
+          "width": 324,
+          "height": 410
+        }
+      ],
+      "topbar": 71.390625
+    },
+    {
+      "theme": "light",
+      "width": 768,
+      "scenario": "pending",
+      "problems": [],
+      "alerts": [
+        {
+          "x": 16,
+          "y": 362.390625,
+          "width": 736,
+          "height": 74
+        }
+      ],
+      "topbar": 71.390625
+    },
+    {
+      "theme": "light",
+      "width": 768,
+      "scenario": "form",
+      "problems": [],
+      "alerts": [],
+      "topbar": 71.390625
+    },
+    {
+      "theme": "light",
+      "width": 768,
+      "scenario": "error",
+      "problems": [],
+      "alerts": [
+        {
+          "x": 41,
+          "y": 435.390625,
+          "width": 686,
+          "height": 170
+        }
+      ],
+      "topbar": 71.390625
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "scenario": "pending",
+      "problems": [],
+      "alerts": [
+        {
+          "x": 303.1875,
+          "y": 370.390625,
+          "width": 1093.625,
+          "height": 58
+        }
+      ],
+      "topbar": 71.390625
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "scenario": "form",
+      "problems": [],
+      "alerts": [],
+      "topbar": 71.390625
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "scenario": "error",
+      "problems": [],
+      "alerts": [
+        {
+          "x": 328.1875,
+          "y": 443.390625,
+          "width": 1043.625,
+          "height": 122
+        }
+      ],
+      "topbar": 71.390625
+    },
+    {
+      "theme": "dark",
+      "width": 360,
+      "scenario": "pending",
+      "problems": [],
+      "alerts": [
+        {
+          "x": 16,
+          "y": 403.984375,
+          "width": 328,
+          "height": 122
+        }
+      ],
+      "topbar": 71.390625
+    },
+    {
+      "theme": "dark",
+      "width": 360,
+      "scenario": "form",
+      "problems": [],
+      "alerts": [],
+      "topbar": 71.390625
+    },
+    {
+      "theme": "dark",
+      "width": 360,
+      "scenario": "error",
+      "problems": [
+        "Notice border covered by sgp-a11y-launcher"
+      ],
+      "alerts": [
+        {
+          "x": 33,
+          "y": 266.78125,
+          "width": 294,
+          "height": 554
+        }
+      ],
+      "topbar": 71.390625
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "scenario": "pending",
+      "problems": [],
+      "alerts": [
+        {
+          "x": 16,
+          "y": 403.984375,
+          "width": 358,
+          "height": 122
+        }
+      ],
+      "topbar": 71.390625
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "scenario": "form",
+      "problems": [],
+      "alerts": [],
+      "topbar": 71.390625
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "scenario": "error",
+      "problems": [],
+      "alerts": [
+        {
+          "x": 33,
+          "y": 338.78125,
+          "width": 324,
+          "height": 410
+        }
+      ],
+      "topbar": 71.390625
+    },
+    {
+      "theme": "dark",
+      "width": 768,
+      "scenario": "pending",
+      "problems": [],
+      "alerts": [
+        {
+          "x": 16,
+          "y": 362.390625,
+          "width": 736,
+          "height": 74
+        }
+      ],
+      "topbar": 71.390625
+    },
+    {
+      "theme": "dark",
+      "width": 768,
+      "scenario": "form",
+      "problems": [],
+      "alerts": [],
+      "topbar": 71.390625
+    },
+    {
+      "theme": "dark",
+      "width": 768,
+      "scenario": "error",
+      "problems": [],
+      "alerts": [
+        {
+          "x": 41,
+          "y": 435.390625,
+          "width": 686,
+          "height": 170
+        }
+      ],
+      "topbar": 71.390625
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "scenario": "pending",
+      "problems": [],
+      "alerts": [
+        {
+          "x": 303.1875,
+          "y": 370.390625,
+          "width": 1093.625,
+          "height": 58
+        }
+      ],
+      "topbar": 71.390625
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "scenario": "form",
+      "problems": [],
+      "alerts": [],
+      "topbar": 71.390625
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "scenario": "error",
+      "problems": [],
+      "alerts": [
+        {
+          "x": 328.1875,
+          "y": 443.390625,
+          "width": 1043.625,
+          "height": 122
+        }
+      ],
+      "topbar": 71.390625
+    }
+  ],
+  "errors": [
+    {
+      "theme": "light",
+      "width": 360,
+      "scenario": "error",
+      "problems": [
+        "Notice border covered by sgp-a11y-launcher"
+      ]
+    },
+    {
+      "theme": "dark",
+      "width": 360,
+      "scenario": "error",
+      "problems": [
+        "Notice border covered by sgp-a11y-launcher"
+      ]
+    }
+  ]
+}

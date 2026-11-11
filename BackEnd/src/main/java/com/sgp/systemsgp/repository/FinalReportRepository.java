@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          FinalReportRepository.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Define las consultas de persistencia para el informe del tutor institucional (L.3).
+ */
+
 package com.sgp.systemsgp.repository;
 
 import com.sgp.systemsgp.enums.FinalReportStatus;
@@ -10,6 +22,8 @@ import java.util.Optional;
 
 public interface FinalReportRepository
         extends JpaRepository<FinalReport, Long> {
+
+    java.util.List<FinalReport> findByEnrollment_IdAndDeletedFalseOrderByIdAsc(Long enrollmentId);
 
     boolean existsByEnrollment_IdAndDeletedFalse(Long enrollmentId);
 

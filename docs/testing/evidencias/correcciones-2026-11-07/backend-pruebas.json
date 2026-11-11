@@ -1,0 +1,176 @@
+{
+  "com.sgp.systemsgp.service.PdfExportServiceTest": {
+    "tests": 7,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "com.sgp.systemsgp.service.GradeServiceTest": {
+    "tests": 2,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "com.sgp.systemsgp.service.PracticePhotoServiceTest": {
+    "tests": 7,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "com.sgp.systemsgp.service.EnrollmentServiceTest": {
+    "tests": 5,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "com.sgp.systemsgp.service.MigrationChainMariaDbTest": {
+    "tests": 1,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 1
+  },
+  "com.sgp.systemsgp.service.QaUserWorkflowsTest": {
+    "tests": 17,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "com.sgp.systemsgp.service.RoleSeparationIntegrationTest": {
+    "tests": 7,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "com.sgp.systemsgp.service.CoordinationReportServiceTest": {
+    "tests": 6,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "com.sgp.systemsgp.service.CourseServiceTest": {
+    "tests": 4,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "com.sgp.systemsgp.service.InstitutionalDefaultsServiceTest": {
+    "tests": 8,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "com.sgp.systemsgp.service.ActivityEvaluationServiceTest": {
+    "tests": 4,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "com.sgp.systemsgp.service.PracticeImageValidatorTest": {
+    "tests": 8,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "com.sgp.systemsgp.service.PracticeAccessServiceTest": {
+    "tests": 3,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "com.sgp.systemsgp.service.FacultyServiceTest": {
+    "tests": 1,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "com.sgp.systemsgp.service.NotificationServiceTest": {
+    "tests": 1,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "com.sgp.systemsgp.service.PracticeWorkflowRegressionTest": {
+    "tests": 8,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "com.sgp.systemsgp.SystemsgpApplicationTests": {
+    "tests": 1,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "com.sgp.systemsgp.service.PracticeScheduleServiceTest": {
+    "tests": 8,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "com.sgp.systemsgp.service.EntityImageIntegrationTest": {
+    "tests": 10,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "com.sgp.systemsgp.service.CompletedActivityRecordServiceTest": {
+    "tests": 5,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "com.sgp.systemsgp.service.FinalReportServiceTest": {
+    "tests": 11,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "com.sgp.systemsgp.service.PracticeReportServiceTest": {
+    "tests": 5,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "com.sgp.systemsgp.service.PdfReferenceLayoutTest": {
+    "tests": 4,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "com.sgp.systemsgp.service.AccountServiceRecoveryTest": {
+    "tests": 2,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "com.sgp.systemsgp.service.PracticeFollowUpReportServiceTest": {
+    "tests": 4,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "com.sgp.systemsgp.config.SecurityConfigTest": {
+    "tests": 7,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "com.sgp.systemsgp.service.ActivityPlanServiceTest": {
+    "tests": 7,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "com.sgp.systemsgp.controller.DocumentControllerFlowTest": {
+    "tests": 5,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "com.sgp.systemsgp.config.JwtServiceTest": {
+    "tests": 1,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+}

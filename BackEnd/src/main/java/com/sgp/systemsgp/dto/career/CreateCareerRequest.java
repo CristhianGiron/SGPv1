@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          CreateCareerRequest.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Define los datos de entrada para las carreras universitarias.
+ */
+
 package com.sgp.systemsgp.dto.career;
 
 import jakarta.validation.constraints.*;
@@ -17,6 +29,9 @@ public class CreateCareerRequest {
     @Size(max = 30, message = "El código de la carrera no puede superar 30 caracteres")
     @Pattern(regexp = "^[A-Za-z0-9_-]+$", message = "El código de la carrera solo puede contener letras, números, guion y guion bajo")
     private String code;
+
+    @jakarta.validation.constraints.Size(max = 180)
+    private String degreeTitle;
 
     @Size(max = 500, message = "La descripción de la carrera no puede superar 500 caracteres")
     private String description;

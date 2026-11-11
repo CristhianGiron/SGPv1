@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          storage.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Gestiona el estado y la integración de storage en la interfaz React.
+ */
+
 /**
  * STORAGE - Gestión de almacenamiento local (localStorage)
  * 
@@ -29,6 +41,7 @@ export function getStoredAuth() {
  */
 export function storeAuth(auth) {
   localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(auth));
+  window.dispatchEvent(new Event("sgp-auth-changed"));
 }
 
 /**
@@ -37,4 +50,5 @@ export function storeAuth(auth) {
  */
 export function clearStoredAuth() {
   localStorage.removeItem(AUTH_STORAGE_KEY);
+  window.dispatchEvent(new Event("sgp-auth-changed"));
 }

@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          resources.js
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Define la configuración de resources utilizada por la interfaz.
+ */
+
 export const ROLES = [
   'ROLE_ESTUDIANTE',
   'ROLE_TUTOR_PRACTICAS',
@@ -14,14 +26,14 @@ export const EDUCATION_MODALITIES = ['PRESENCIAL', 'SEMIPRESENCIAL', 'DISTANCIA'
 
 export const ENTITY_RELATIONS = {
   institutionId: {
-    label: 'Institucion',
+    label: 'Institución',
     path: '/api/institutions',
-    placeholder: 'Seleccionar institucion',
+    placeholder: 'Seleccionar institución',
   },
   educationalInstitutionId: {
-    label: 'Institucion educativa',
+    label: 'Institución educativa',
     path: '/api/institutions',
-    placeholder: 'Seleccionar institucion educativa',
+    placeholder: 'Seleccionar institución educativa',
   },
   facultyId: {
     label: 'Facultad',
@@ -34,9 +46,9 @@ export const ENTITY_RELATIONS = {
     placeholder: 'Seleccionar carrera',
   },
   academicCycleId: {
-    label: 'Ciclo academico',
+    label: 'Ciclo académico',
     path: '/api/academic-cycles',
-    placeholder: 'Seleccionar ciclo academico',
+    placeholder: 'Seleccionar ciclo académico',
   },
   gradeId: {
     label: 'Grado',
@@ -59,9 +71,9 @@ export const ENTITY_RELATIONS = {
     placeholder: 'Seleccionar paralelo',
   },
   enrollmentId: {
-    label: 'Inscripcion',
+    label: 'Inscripción',
     path: '/api/enrollments/me',
-    placeholder: 'Seleccionar inscripcion',
+    placeholder: 'Seleccionar inscripción',
   },
   provinceId: {
     label: 'Provincia',
@@ -101,7 +113,7 @@ export const CATALOG_RESOURCES = [
     deletePath: (id) => `/api/faculties/${id}`,
     fields: [
       { name: 'name', label: 'Nombre', required: true },
-      { name: 'code', label: 'Codigo', required: true },
+      { name: 'code', label: 'Código', required: true },
       {
         name: 'institutionId',
         label: 'Universidad',
@@ -109,11 +121,11 @@ export const CATALOG_RESOURCES = [
         rowFilter: universityInstitutionFilter,
         required: true,
       },
-      { name: 'description', label: 'Descripcion', type: 'textarea' },
+      { name: 'description', label: 'Descripción', type: 'textarea' },
     ],
     columns: [
       { key: 'name', header: 'Nombre' },
-      { key: 'code', header: 'Codigo' },
+      { key: 'code', header: 'Código' },
       { key: 'institutionName', header: 'Universidad' },
       { key: 'active', header: 'Estado', type: 'status' },
     ],
@@ -128,7 +140,7 @@ export const CATALOG_RESOURCES = [
     actions: baseActions('/api/careers'),
     fields: [
       { name: 'name', label: 'Nombre', required: true },
-      { name: 'code', label: 'Codigo', required: true },
+      { name: 'code', label: 'Código', required: true },
       {
         name: 'institutionId',
         label: 'Universidad',
@@ -147,19 +159,20 @@ export const CATALOG_RESOURCES = [
         filterBy: { field: 'institutionId', rowKey: 'institutionId' },
         required: true,
       },
+      { name: 'degreeTitle', label: 'Titulación (para documentos PDF)' },
       { name: 'durationCycles', label: 'Ciclos', type: 'number' },
-      { name: 'description', label: 'Descripcion', type: 'textarea' },
+      { name: 'description', label: 'Descripción', type: 'textarea' },
     ],
     columns: [
       { key: 'name', header: 'Nombre' },
-      { key: 'code', header: 'Codigo' },
+      { key: 'code', header: 'Código' },
       { key: 'faculty', header: 'Facultad' },
       { key: 'active', header: 'Estado', type: 'status' },
     ],
   },
   {
     id: 'academic-cycles',
-    title: 'Ciclos academicos',
+    title: 'Ciclos académicos',
     listPath: '/api/academic-cycles',
     createPath: '/api/academic-cycles',
     updatePath: (id) => `/api/academic-cycles/${id}`,
@@ -214,11 +227,11 @@ export const CATALOG_RESOURCES = [
     deletePath: (id) => `/api/grades/${id}`,
     fields: [
       { name: 'name', label: 'Nombre', required: true },
-      { name: 'code', label: 'Codigo', required: true },
+      { name: 'code', label: 'Código', required: true },
       { name: 'level', label: 'Nivel', type: 'number', required: true },
       {
         name: 'institutionId',
-        label: 'Institucion educativa',
+        label: 'Institución educativa',
         relation: ENTITY_RELATIONS.institutionId,
         rowFilter: schoolInstitutionFilter,
         required: true,
@@ -227,8 +240,8 @@ export const CATALOG_RESOURCES = [
     ],
     columns: [
       { key: 'name', header: 'Nombre' },
-      { key: 'code', header: 'Codigo' },
-      { key: 'institution', header: 'Institucion' },
+      { key: 'code', header: 'Código' },
+      { key: 'institution', header: 'Institución' },
       { key: 'active', header: 'Estado', type: 'status' },
     ],
   },
@@ -242,7 +255,7 @@ export const CATALOG_RESOURCES = [
     fields: [
       {
         name: 'institutionId',
-        label: 'Institucion educativa',
+        label: 'Institución educativa',
         relation: ENTITY_RELATIONS.institutionId,
         rowFilter: schoolInstitutionFilter,
         submit: false,
@@ -254,7 +267,7 @@ export const CATALOG_RESOURCES = [
         label: 'Grado',
         relation: ENTITY_RELATIONS.gradeId,
         dependsOn: 'institutionId',
-        disabledPlaceholder: 'Selecciona primero una institucion educativa',
+        disabledPlaceholder: 'Selecciona primero una institución educativa',
         filterBy: { field: 'institutionId', rowKey: 'institutionId' },
         required: true,
       },
@@ -271,7 +284,7 @@ export const CATALOG_RESOURCES = [
       { key: 'name', header: 'Paralelo' },
       { key: 'letter', header: 'Letra' },
       { key: 'grade', header: 'Grado' },
-      { key: 'institution', header: 'Institucion' },
+      { key: 'institution', header: 'Institución' },
       { key: 'active', header: 'Estado', type: 'status' },
     ],
   },
@@ -295,7 +308,7 @@ export const CATALOG_RESOURCES = [
     ],
     fields: [
       { name: 'name', label: 'Nombre', required: true },
-      { name: 'code', label: 'Codigo', required: true },
+      { name: 'code', label: 'Código', required: true },
       {
         name: 'facultyId',
         label: 'Facultad',
@@ -315,7 +328,7 @@ export const CATALOG_RESOURCES = [
       },
       {
         name: 'academicCycleId',
-        label: 'Ciclo academico',
+        label: 'Ciclo académico',
         relation: ENTITY_RELATIONS.academicCycleId,
         dependsOn: 'careerId',
         disabledPlaceholder: 'Selecciona primero una carrera',
@@ -329,13 +342,13 @@ export const CATALOG_RESOURCES = [
         label: 'Paralelo',
         relation: ENTITY_RELATIONS.courseId,
         dependsOn: 'academicCycleId',
-        disabledPlaceholder: 'Selecciona primero un ciclo academico',
+        disabledPlaceholder: 'Selecciona primero un ciclo académico',
         filterBy: { field: 'academicCycleId', rowKey: 'academicCycleId' },
         requiredWhen: (form) => Boolean(form.academicCycleId),
       },
       {
         name: 'institutionId',
-        label: 'Institucion educativa',
+        label: 'Institución educativa',
         relation: ENTITY_RELATIONS.institutionId,
         submit: false,
         rowFilter: schoolInstitutionFilter,
@@ -346,7 +359,7 @@ export const CATALOG_RESOURCES = [
         label: 'Grado',
         relation: ENTITY_RELATIONS.gradeId,
         dependsOn: 'institutionId',
-        disabledPlaceholder: 'Selecciona primero una institucion educativa',
+        disabledPlaceholder: 'Selecciona primero una institución educativa',
         filterBy: { field: 'institutionId', rowKey: 'institutionId' },
         submit: false,
         clearOnChange: ['gradeParallelId'],
@@ -364,11 +377,11 @@ export const CATALOG_RESOURCES = [
       { name: 'credits', label: 'Creditos', type: 'number' },
       { name: 'hours', label: 'Horas', type: 'number' },
       { name: 'active', label: 'Activo', type: 'checkbox', defaultValue: true },
-      { name: 'description', label: 'Descripcion', type: 'textarea' },
+      { name: 'description', label: 'Descripción', type: 'textarea' },
     ],
     columns: [
       { key: 'name', header: 'Nombre' },
-      { key: 'code', header: 'Codigo' },
+      { key: 'code', header: 'Código' },
       { key: 'academicCycle', header: 'Ciclo' },
       { key: 'course', header: 'Paralelo' },
       { key: 'grade', header: 'Grado' },
@@ -394,7 +407,7 @@ const UNIVERSITY_SUBJECT_RESOURCE = {
 const PRACTICE_SUBJECT_RESOURCE = {
   ...SUBJECT_RESOURCE,
   id: 'practice-subjects',
-  title: 'Asignaturas de practica',
+  title: 'Asignaturas de práctica',
   rowFilter: (row) => Boolean(row.gradeId),
   fields: SUBJECT_RESOURCE.fields.filter(
     (field) => !['facultyId', 'careerId', 'academicCycleId', 'courseId'].includes(field.name)
@@ -407,7 +420,7 @@ export const UNIVERSITY_CATALOG_RESOURCES = [
     ['faculties', 'careers', 'academic-cycles'].includes(resource.id)
   ),
   UNIVERSITY_SUBJECT_RESOURCE,
-];
+].map((resource) => ({ ...resource, manageRoles: ['ROLE_ADMIN'] }));
 
 export const PRACTICE_CATALOG_RESOURCES = [
   ...CATALOG_RESOURCES.filter((resource) => ['grades', 'grade-parallels'].includes(resource.id)),

@@ -1,3 +1,16 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          NotificationItem.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa el componente NotificationItem de la interfaz del SGP.
+ */
+
+import { useState } from 'react';
 import { ArrowRight, CheckCircle2, CircleDot } from "lucide-react";
 import { hasNotificationLink } from "../../utils/notificationLinks";
 
@@ -5,21 +18,23 @@ const itemBaseClass =
   "sgp-color-card min-w-0 w-full overflow-hidden rounded-lg border border-line bg-panel p-3 text-left text-heading transition-colors hover:border-accent focus-visible:border-accent focus-visible:outline-none dark:border-line dark:bg-surface dark:text-ink dark:hover:border-accent dark:focus-visible:border-accent";
 
 const itemUnreadClass =
-  "border-warning/50 bg-warning-soft dark:border-warning/40 dark:bg-warning-soft";
+  "border-info/40 bg-info-soft dark:border-info/40 dark:bg-info-soft";
 
 const readIndicatorClass = "text-success-strong dark:text-success-strong";
-const unreadIndicatorClass = "text-warning-strong dark:text-warning-strong";
+const unreadIndicatorClass = "text-info-strong dark:text-info-strong";
 
 const readBadgeClass =
   "border-success/35 bg-success-soft text-success-strong dark:border-success/35 dark:bg-success-soft dark:text-success-strong";
 const unreadBadgeClass =
-  "border-warning/35 bg-warning-soft text-warning-strong dark:border-warning/35 dark:bg-warning-soft dark:text-warning-strong";
+  "border-info/35 bg-info-soft text-info-strong";
 const linkBadgeClass =
   "border-info/35 bg-info-soft text-info-strong dark:border-info/35 dark:bg-info-soft dark:text-info-strong";
 
 export function NotificationItem({ notification, onClick }) {
-  const timestamp = notification.createdAt
-    ? new Date(notification.createdAt).toLocaleString("es-ES", {
+  const [busy, setBusy] = useState(false), [failed, setFailed] = useState(false);
+  const validDate = notification.createdAt && Number.isFinite(Date.parse(notification.createdAt));
+  const timestamp = validDate
+    ? new Date(notification.createdAt).toLocaleString("es-EC", {
         dateStyle: "medium",
         timeStyle: "short",
       })
@@ -41,7 +56,14 @@ export function NotificationItem({ notification, onClick }) {
   return (
     <button
       type="button"
-      onClick={() => onClick(notification)}
+      disabled={busy}
+      aria-busy={busy || undefined}
+      onClick={async () => {
+        setBusy(true);setFailed(false);
+        try { if (await onClick(notification) === false) setFailed(true); }
+        catch { setFailed(true); }
+        finally { setBusy(false); }
+      }}
       className={`${itemBaseClass} ${isRead ? "" : itemUnreadClass}`}
     >
       <span className="flex min-w-0 items-start gap-3">
@@ -53,12 +75,12 @@ export function NotificationItem({ notification, onClick }) {
           )}
         </span>
         <span className="min-w-0 flex-1">
-          <span className="flex min-w-0 items-center justify-between gap-3">
-            <span className="min-w-0 truncate text-sm font-medium leading-tight text-heading dark:text-heading">
+          <span className="flex min-w-0 flex-wrap items-center justify-between gap-2">
+            <span className="min-w-0 break-words text-sm font-semibold leading-snug text-heading dark:text-heading">
               {notification.title}
             </span>
             <span className={`inline-flex max-w-[7.5rem] flex-none items-center gap-1 rounded-md border px-2 py-1 text-[0.68rem] font-semibold uppercase leading-none ${badgeClass}`}>
-              {actionLabel}
+              {busy ? "Abriendo…" : actionLabel}
               {hasLink && (
                 <ArrowRight
                   aria-hidden="true"
@@ -70,6 +92,7 @@ export function NotificationItem({ notification, onClick }) {
           <span className="mt-1.5 block whitespace-normal break-words text-sm leading-6 text-body dark:text-ink">
             {notification.message}
           </span>
+          {failed && <span role="alert" className="mt-2 block text-sm text-danger-strong">No se pudo completar la acción. Inténtalo de nuevo.</span>}
           <span className="mt-2.5 block truncate text-[0.72rem] font-medium uppercase leading-tight tracking-normal text-body dark:text-ink">
             {timestamp}
           </span>

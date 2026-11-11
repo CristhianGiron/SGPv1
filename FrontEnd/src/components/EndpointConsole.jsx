@@ -1,10 +1,31 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          EndpointConsole.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa el componente EndpointConsole de la interfaz del SGP.
+ */
+
+import { EntityImagePicker, entityImagePayload } from './ui/EntityImage';
+import { EditorActions } from './ui/EditorActions';
+import { FormFeedback } from './ui/FormFeedback';
+import { GuidedForm } from './GuidedForm';
+import { DraftRecovery } from './ui/DraftRecovery';
+import { PdfPreviewDialog } from './ui/PdfPreviewDialog';
+import { useRecoverableDraft } from '../hooks/useRecoverableDraft';
+import { FilterPanel } from './ui/FilterPanel';
+import { ListToolbar } from './ui/ListToolbar';
+import { usePracticeRequest, usePracticeWorkspace } from '../contexts/PracticeWorkspaceContext';
 import { useEffect, useMemo, useState } from "react";
 import {
   CheckCircle2,
   Download,
   Eye,
   Image,
-  SlidersHorizontal,
   List,
   MessageCircle,
   Pencil,
@@ -12,9 +33,8 @@ import {
   RefreshCw,
   Save,
   Send,
-  XCircle,
 } from "lucide-react";
-import { apiBlob, apiRequest, getApiBaseUrl, unwrapPage } from "../api/client";
+import { apiBlob, getApiBaseUrl, unwrapPage } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
 import { Alert } from "./ui/Alert";
 import { ActionBar, PrimaryButton, SecondaryButton } from "./ui/ActionBar";
@@ -158,6 +178,8 @@ const feedbackIconNewClass =
   "after:absolute after:left-[1.4rem] after:top-[0.4rem] after:h-2 after:w-2 after:rounded-full after:bg-danger after:ring-2 after:ring-panel dark:after:ring-surface";
 
 function EndpointModule({ module, roles, token, enableListFilters }) {
+  const apiRequest = usePracticeRequest();
+  const workspace = usePracticeWorkspace();
   const confirm = useConfirm();
   const [confirmingSubmitId, setConfirmingSubmitId] = useState(null);
   const isStudent = roles.includes("ROLE_ESTUDIANTE");
@@ -172,11 +194,12 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
       ),
     [module.extraActions, roles],
   );
+  const operational = !workspace || (workspace.status === 'APPROVED' && !workspace.archived && workspace.courseActive !== false);
   const canCreate = Boolean(
-    module.createPath && canUse(roles, module.createRoles),
+    operational && module.createPath && canUse(roles, module.createRoles),
   );
   const canUpdate = Boolean(
-    module.updatePath && canUse(roles, module.updateRoles),
+    operational && module.updatePath && canUse(roles, module.updateRoles),
   );
   const canExportPdf = Boolean(module.pdfPath);
   const canSubmit = Boolean(
@@ -210,12 +233,26 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
     [module.reviewSample, visibleExtraActions],
   );
   const [rows, setRows] = useState([]);
+  const [loadedListPath, setLoadedListPath] = useState(defaultListPath);
   const [enrollmentRows, setEnrollmentRows] = useState([]);
   const [evidencePhotos, setEvidencePhotos] = useState([]);
   const [evidencePhotosLoading, setEvidencePhotosLoading] = useState(false);
   const [selected, setSelected] = useState(null);
   const [id, setId] = useState("");
   const [secondaryId, setSecondaryId] = useState("");
+  const [letterheadFile, setLetterheadFile] = useState(null);
+  const [previewPath, setPreviewPath] = useState('');
+  useEffect(() => { setLetterheadFile(null); }, [id, module.id]);
+  const letterheadPicker = (
+    <EntityImagePicker
+      contain
+      label="Membrete institucional del L.3"
+      helpText="Adjunta el encabezado completo de la institución como imagen JPG o PNG, máximo 4 MB y 4096 px por lado. Aparecerá en el PDF del L.3. Puedes guardar el borrador y adjuntarlo antes de la aprobación."
+      file={letterheadFile}
+      onChange={setLetterheadFile}
+      currentPath={selected?.letterheadImageUrl}
+    />
+  );
   const [body, setBody] = useState(cloneStructuredValue(module.sample || {}));
   const [reviewBody, setReviewBody] = useState(
     cloneStructuredValue(module.reviewSample || { approved: null }),
@@ -226,6 +263,9 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
   const [enrollmentLoading, setEnrollmentLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [validationAttempt, setValidationAttempt] = useState(0);
+
   const [studentAutoOpenedKey, setStudentAutoOpenedKey] = useState("");
   const [hashValue, setHashValue] = useState(() => window.location.hash);
   const operationTabs = useMemo(
@@ -237,8 +277,8 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
           id: "form",
           label: selected ? "Editar" : "Crear",
         },
-        canReview && { id: "review", label: "Revisar" },
-        visibleExtraActions.length && { id: "actions", label: "Acciones" },
+        canReview && selected && { id: "review", label: "Revisar" },
+        visibleExtraActions.length && selected && { id: "actions", label: "Acciones" },
       ].filter(Boolean),
     [
       canReview,
@@ -249,6 +289,8 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
     ],
   );
   const [activeOperation, setActiveOperation] = useState("list");
+  useEffect(() => { setFieldErrors({}); }, [id, module.id, activeOperation]);
+  const draft = useRecoverableDraft(`${module.id}:${workspace?.id || "global"}:${id || "new"}`, setBody, activeOperation === "form");
   const [listFilters, setListFilters] = useState({
     search: "",
     status: "",
@@ -258,21 +300,26 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
     cycle: "",
   });
   const secondaryRows = getSecondaryRows(selected);
+  useEffect(() => {
+    if (workspace && activeOperation === 'form' && body && 'enrollmentId' in body && String(body.enrollmentId) !== String(workspace.id)) {
+      setBody(current => ({ ...current, enrollmentId: workspace.id }));
+    }
+  }, [workspace, activeOperation, body]);
   const selectedEnrollmentId = body?.enrollmentId;
   const studentCreateNeedsEnrollment =
     autoStudentEnrollment && activeOperation === "form" && !id;
   const studentEnrollmentResolved =
-    !studentCreateNeedsEnrollment || enrollmentRows.length === 1;
+    !studentCreateNeedsEnrollment || enrollmentRows.some(row => String(row.id) === String(body?.enrollmentId));
   const formHiddenFields = useMemo(
     () => [
       ...(module.hiddenFields || []),
       // Cambio solicitado: los datos precargados se conservan en el body,
       // pero no se muestran para que el formulario solo pida campos editables.
       ...(module.prefillFromEnrollment ? module.readOnlyFields || [] : []),
-      ...(autoStudentEnrollment ? ["enrollmentId"] : []),
+      ...((autoStudentEnrollment || workspace || (enrollmentRows.length === 1 && String(body?.enrollmentId) === String(enrollmentRows[0].id))) ? ["enrollmentId"] : []),
     ],
     [
-      autoStudentEnrollment,
+      autoStudentEnrollment, workspace, enrollmentRows, body?.enrollmentId,
       module.hiddenFields,
       module.prefillFromEnrollment,
       module.readOnlyFields,
@@ -281,9 +328,9 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
   const formRelations = useMemo(() => {
     const relations = {
       schedulePeriodId: {
-        label: "Periodo de horario",
+        label: "Período de horario",
         placeholder: selected
-          ? "Seleccionar periodo"
+          ? "Seleccionar período"
           : "Selecciona primero un horario",
         rows: selected?.periods || [],
         disabled: !selected?.periods?.length,
@@ -300,9 +347,9 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
       },
     };
 
-    if (module.prefillFromEnrollment && !isStudent) {
+    if (module.prefillFromEnrollment) {
       relations.enrollmentId = {
-        label: "Inscripcion",
+        label: "Inscripción",
         placeholder:
           enrollmentRows.length === 0
             ? "No hay inscripciones aprobadas"
@@ -369,6 +416,7 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
     }),
     [rows],
   );
+  const isOwnList = isStudent && loadedListPath === module.listPath;
 
   function updateListFilter(key, value) {
     setListFilters((current) => ({
@@ -405,6 +453,10 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
         : filterInactiveForNonAdmin(loaded, roles);
 
       setRows(visibleRows);
+      setLoadedListPath(path);
+      if (isStudent && path === module.listPath) {
+        setListFilters((current) => ({ ...current, student: "" }));
+      }
       setMessage("Datos cargados");
     } catch (requestError) {
       setError(requestError.message);
@@ -417,7 +469,7 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
   useEffect(() => {
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [module.id, token, defaultListPath]);
+  }, [module.id, token, apiRequest, defaultListPath]);
 
   useEffect(() => {
     function handleHashChange() {
@@ -470,7 +522,7 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
     return () => {
       active = false;
     };
-  }, [module, roles, token]);
+  }, [module, roles, token, apiRequest]);
 
   useEffect(() => {
     if (
@@ -556,6 +608,7 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
     module,
     selectedEnrollmentId,
     token,
+    apiRequest,
     enrollmentRows,
     isStudent,
   ]);
@@ -595,7 +648,7 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
     return () => {
       active = false;
     };
-  }, [activeOperation, module.id, token]);
+  }, [activeOperation, module.id, token, apiRequest]);
 
   useEffect(() => {
     if (!operationTabs.some((tab) => tab.id === activeOperation)) {
@@ -688,6 +741,7 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
 
         setSelected(payload);
         setBody(mergeEditableValues(module.sample || {}, payload));
+        setActionBodies(buildActionBodiesForRecord(visibleExtraActions, module, payload, roles));
 
         if (requestedOperation === "review") {
           setReviewBody(buildReviewValue(module, payload, roles));
@@ -711,7 +765,7 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
     return () => {
       active = false;
     };
-  }, [hashValue, module, roles, token]);
+  }, [hashValue, module, roles, token, apiRequest, visibleExtraActions]);
 
   async function submitStructured(
     path,
@@ -721,14 +775,19 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
   ) {
     setLoading(true);
     setError("");
+    setFieldErrors({});
     setMessage("");
 
     try {
       const payload = await apiRequest(path, {
         method,
         token,
-        body: cleanStructuredPayload(structuredBody),
+        body: module.id === 'final-reports' && (activeOperation === 'form' || path.endsWith('/institutional-section') || path.endsWith('/letterhead'))
+          ? entityImagePayload(cleanStructuredPayload(structuredBody), letterheadFile)
+          : cleanStructuredPayload(structuredBody),
       });
+      if (module.id === 'final-reports') setLetterheadFile(null);
+      if (activeOperation === "form") draft.markClean();
       setSelected(payload || null);
       if (payload?.id) {
         setId(payload.id);
@@ -741,6 +800,8 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
       return payload || true;
     } catch (requestError) {
       setError(requestError.message);
+      setFieldErrors(requestError.payload?.fieldErrors || {});
+      setValidationAttempt(value => value + 1);
       return false;
     } finally {
       setLoading(false);
@@ -759,7 +820,7 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
 
   async function submitReviewPatch(
     patch,
-    successMessage = "Retroalimentacion enviada",
+    successMessage = "Retroalimentación enviada",
   ) {
     const path = resolveReviewPath();
 
@@ -792,14 +853,14 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
       const accepted = await confirm({
         title: "Enviar documento",
         description: readiness.complete
-          ? "El documento se enviara a revision. Despues de enviarlo, los revisores autorizados podran revisarlo."
-          : "El documento se enviara a revision con informacion pendiente. Podras completarlo despues si el revisor solicita ajustes o si el flujo lo devuelve a borrador.",
+          ? "El documento se enviará a revisión. Después de enviarlo, los revisores autorizados podrán revisarlo."
+          : "El documento se enviará a revisión con información pendiente. Podrás completarlo después si el revisor solicita ajustes o si el flujo lo devuelve a borrador.",
         details: readiness.complete
-          ? module.title || "Documento de practica"
-          : `${module.title || "Documento de practica"} | Pendiente: ${readiness.missing
+          ? module.title || "Documento de práctica"
+          : `${module.title || "Documento de práctica"} | Pendiente: ${readiness.missing
             .slice(0, 4)
             .join(", ")}${readiness.missing.length > 4 ? "..." : ""}`,
-        confirmLabel: "Enviar a revision",
+        confirmLabel: "Enviar a revisión",
         tone: "warning",
       });
 
@@ -974,13 +1035,14 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
   }
 
   const columns = [
-    { key: "id", header: "ID" },
+    { key: "record", header: module.id === 'practice-schedules' ? 'Jornada' : 'Documento', render: row => row.title || row.planningUnitTitle || [module.title, row.startDate ? formatValue(row.startDate, 'startDate') : row.createdAt ? formatValue(row.createdAt, 'createdAt') : null].filter(Boolean).join(' · ') },
+    { key: 'createdAt', header: 'Creado', render: row => formatValue(row.createdAt, 'createdAt') },
     {
       key: "courseName",
       header: "Paralelo",
       render: (row) => row.courseName || row.name || "-",
     },
-    {
+    !isOwnList && {
       key: "student",
       header: "Estudiante",
       render: (row) =>
@@ -1017,7 +1079,7 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
               ? [
                   {
                     key: "submit",
-                    label: "Enviar a revision",
+                    label: "Enviar a revisión",
                     icon: Send,
                     onClick: () => {
                       window.setTimeout(() => {
@@ -1063,28 +1125,9 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
         />
       ),
     },
-  ];
+  ].filter(Boolean);
 
-  return (
-    <div className="space-y-5">
-      <SectionCard>
-        <ModuleTabs>
-          {operationTabs.map((tab) => (
-            <ModuleTab
-              active={activeOperation === tab.id}
-              key={tab.id}
-              onClick={() => setActiveOperation(tab.id)}
-            >
-              {tab.label}
-            </ModuleTab>
-          ))}
-        </ModuleTabs>
-      </SectionCard>
-
-      {activeOperation === "list" && (
-        <SectionCard
-          title={module.title}
-          action={
+  const listActions = (
             <ActionBar>
               {canCreate && (
                 <PrimaryButton icon={Plus} onClick={startCreate} type="button">
@@ -1113,27 +1156,104 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
                 </SecondaryButton>
               ))}
             </ActionBar>
-          }
+  );
+
+  const formActions = (
+                <ActionBar>
+                  {module.pdfPath && (id ? canUpdate : canCreate) && <SecondaryButton disabled={loading || !studentEnrollmentResolved} icon={Eye} onClick={async () => {
+                    const saved = await submitStructured(id ? module.updatePath(id) : module.createPath,
+                      id ? (module.updateMethod || 'PUT') : 'POST', body, 'Borrador guardado para la vista previa.');
+                    if (saved?.id) { setActiveOperation('detail'); setPreviewPath(`${module.pdfPath(saved.id)}/preview`); }
+                  }}>Guardar y ver PDF</SecondaryButton>}
+                  {(id ? canUpdate : canCreate) && (
+                    <PrimaryButton
+                      disabled={
+                        loading ||
+                        !studentEnrollmentResolved ||
+                        (!id && !canCreate) ||
+                        (id && !canUpdate)
+                      }
+                      icon={Save}
+                      loading={loading}
+                      onClick={async () => {
+                        let result = false;
+
+                        if (id && canUpdate) {
+                          result = await submitStructured(
+                            module.updatePath(id),
+                            module.updateMethod || "PUT",
+                            body,
+                            "Borrador guardado. Puedes seguir completandolo cuando tengas más información.",
+                          );
+                        } else if (!id && canCreate) {
+                          result = await submitStructured(
+                            module.createPath,
+                            "POST",
+                            body,
+                            "Borrador creado. Puedes seguir completandolo cuando tengas más información.",
+                          );
+                        }
+
+                        if (result) {
+                          setActiveOperation("detail");
+                        }
+                      }}
+                      type="button"
+                    >
+                      {id ? "Guardar borrador" : "Crear borrador"}
+                    </PrimaryButton>
+                  )}
+                </ActionBar>
+  );
+
+  return (
+    <div className="sgp-document-workspace space-y-4">
+      <PdfPreviewDialog path={previewPath} onClose={() => setPreviewPath('')} />
+      <div className="flex min-w-0 items-center justify-between gap-3 border-b border-line">
+        <ModuleTabs className="min-w-0 flex-1">
+          {operationTabs.map((tab) => (
+            <ModuleTab
+              active={activeOperation === tab.id}
+              key={tab.id}
+              onClick={() => setActiveOperation(tab.id)}
+            >
+              {tab.label}
+            </ModuleTab>
+          ))}
+        </ModuleTabs>
+        {selected?.status && <StatusBadge status={selected.status} />}
+      </div>
+
+      {activeOperation === "list" && (
+        <SectionCard
+          title={module.title}
         >
           <div className="min-w-0 max-w-full space-y-3">
             {error && <Alert tone="error">{error}</Alert>}
-            {message && <Alert tone="success">{message}</Alert>}
+            {message && !["Datos cargados", "Registro cargado"].includes(message) && <Alert tone="success">{message}</Alert>}
             {enableListFilters && (
               <ListFilters
+                viewKey={module.id}
+                onRestore={setListFilters}
+                action={listActions}
                 filters={listFilters}
                 options={listFilterOptions}
+                showStudentFilter={!isOwnList && !workspace}
+                showCourseFilter={!workspace}
                 totalCount={rows.length}
                 visibleCount={filteredRows.length}
                 onChange={updateListFilter}
                 onClear={clearListFilters}
               />
             )}
+            {!enableListFilters && <ListToolbar actions={listActions} />}
             <DataTable
               columns={columns}
+              ownRecords={isOwnList}
               emptyText={
                 hasActiveFilters(listFilters)
                   ? "No se encontraron resultados con los filtros aplicados."
-                  : "Aun no hay documentos para mostrar."
+                  : "Aún no hay documentos para mostrar."
               }
               loading={loading}
               rows={enableListFilters ? filteredRows : rows}
@@ -1144,9 +1264,9 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
 
       {activeOperation !== "list" && (
         <SectionCard
-          title={getOperationTitle(activeOperation, selected)}
+          title={activeOperation === "form" ? undefined : getOperationTitle(activeOperation, selected)}
           action={
-            !studentDirectDocumentMode && (
+            !studentDirectDocumentMode && activeOperation !== "form" && (
               <SecondaryButton
                 icon={List}
                 onClick={() => setActiveOperation("list")}
@@ -1159,7 +1279,7 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
         >
           <div className="min-w-0 max-w-full space-y-4">
             {error && <Alert tone="error">{error}</Alert>}
-            {message && <Alert tone="success">{message}</Alert>}
+            {message && !["Datos cargados", "Registro cargado"].includes(message) && <Alert tone="success">{message}</Alert>}
 
             {activeOperation !== "detail" && (
               <div className="grid gap-3 sm:grid-cols-2">
@@ -1202,8 +1322,9 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
                 )}
                 {((canUpdate && canEditRecord(selected)) ||
                   (canSubmit && canSubmitRecord(selected)) ||
-                  (canExportPdf && canExportPdfRecord(selected))) && (
+                  canExportPdf) && (
                   <ActionBar>
+                    {canExportPdf && selected?.id && <SecondaryButton disabled={loading} icon={Eye} onClick={() => setPreviewPath(`${module.pdfPath(selected.id)}/preview`)}>Vista previa del PDF</SecondaryButton>}
                     {canUpdate && canEditRecord(selected) && (
                       <SecondaryButton
                         disabled={
@@ -1224,7 +1345,7 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
                         onClick={() => submitRecord(selected)}
                         type="button"
                       >
-                        Enviar a revision
+                        Enviar a revisión
                       </SecondaryButton>
                     )}
                     {canExportPdf && canExportPdfRecord(selected) && (
@@ -1245,7 +1366,7 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
 
             {activeOperation === "form" && (
               <div className="space-y-4">
-                {selected && <DocumentApprovalStatus data={selected} />}
+                {selected && selected.status !== "DRAFT" && <DocumentApprovalStatus data={selected} />}
                 {studentCreateNeedsEnrollment && enrollmentLoading && (
                   <Alert tone="info">
                     Preparando los datos del paralelo activo...
@@ -1255,87 +1376,58 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
                   !enrollmentLoading &&
                   enrollmentRows.length === 0 && (
                     <Alert tone="info">
-                      No tienes una inscripcion aprobada en un paralelo activo para
+                      No tienes una inscripción aprobada en un paralelo activo para
                       completar este documento.
                     </Alert>
                   )}
                 {studentCreateNeedsEnrollment &&
                   !enrollmentLoading &&
                   enrollmentRows.length > 1 && (
-                    <Alert tone="warning">
-                      Hay mas de una inscripcion aprobada en paralelos activos.
-                      Revisa las inscripciones para completar este documento.
-                    </Alert>
+                    <Field label="Práctica">
+                      <EntitySelect rows={enrollmentRows} value={body?.enrollmentId} placeholder="Selecciona la práctica" getOptionLabel={enrollmentLabel} onChange={enrollmentId => {
+                        const next = { ...body, enrollmentId };
+                        fillEnrollmentInstitutionFields(next, enrollmentRows.find(row => String(row.id) === String(enrollmentId)) || {});
+                        setBody(next); draft.change(next);
+                      }} />
+                    </Field>
                   )}
                 {studentEnrollmentResolved && (
                   <>
                     {module.submitPath && (
                       <>
-                        <Alert tone="info">
-                          Guarda como borrador las veces que necesites. Cuando quieras una revision, usa "Enviar a revision" desde el detalle del documento.
-                        </Alert>
+
                         <DocumentDraftStatus
                           editable
                           readiness={getDocumentReadiness(module.id, body)}
                         />
                       </>
                     )}
-                    <StructuredForm
+                    {module.id === 'final-reports' && letterheadPicker}
+                    <DraftRecovery draft={draft} disabled={loading} showStatus={false} />
+                    <FormFeedback errors={fieldErrors} attempt={validationAttempt}><fieldset disabled={loading}><GuidedForm
                       customFields={customFormFields}
                       hiddenFields={formHiddenFields}
                       readOnlyFields={module.readOnlyFields || []}
                       relations={formRelations}
                       value={body}
-                      onChange={setBody}
-                    />
+                      onChange={value => {
+                        setFieldErrors(errors => Object.fromEntries(Object.entries(errors).filter(([path]) => {
+                          const keys = path.replace(/\[(\d+)\]/g, '.$1').split('.');
+                          const read = object => keys.reduce((current,key) => current?.[key], object);
+                          return JSON.stringify(read(body)) === JSON.stringify(read(value));
+                        })));
+                        setBody(value); draft.change(value);
+                      }}
+                    /></fieldset></FormFeedback>
                   </>
                 )}
 
-                <ActionBar>
-                  {(id ? canUpdate : canCreate) && (
-                    <PrimaryButton
-                      disabled={
-                        loading ||
-                        !studentEnrollmentResolved ||
-                        (!id && !canCreate) ||
-                        (id && !canUpdate)
-                      }
-                      icon={Save}
-                      loading={loading}
-                      onClick={async () => {
-                        let result = false;
 
-                        if (id && canUpdate) {
-                          result = await submitStructured(
-                            module.updatePath(id),
-                            module.updateMethod || "PUT",
-                            body,
-                            "Borrador guardado. Puedes seguir completandolo cuando tengas mas informacion.",
-                          );
-                        } else if (!id && canCreate) {
-                          result = await submitStructured(
-                            module.createPath,
-                            "POST",
-                            body,
-                            "Borrador creado. Puedes seguir completandolo cuando tengas mas informacion.",
-                          );
-                        }
-
-                        if (result) {
-                          setActiveOperation("detail");
-                        }
-                      }}
-                      type="button"
-                    >
-                      {id ? "Guardar borrador" : "Crear borrador"}
-                    </PrimaryButton>
-                  )}
-                </ActionBar>
               </div>
             )}
 
             {activeOperation === "review" && canReview && (
-              <div className="space-y-4">
+              <ReviewWorkspace record={selected}>
                 <ReviewFeedbackForm
                   module={module}
                   record={selected}
@@ -1359,7 +1451,7 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
                     );
                   }}
                 />
-              </div>
+              </ReviewWorkspace>
             )}
 
             {activeOperation === "actions" && (
@@ -1375,6 +1467,7 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
                           {action.label}
                         </h3>
                         {isFeedbackReviewBody(actionBodies[action.label]) ? (
+                         <ReviewWorkspace record={selected}>
                           <ReviewFeedbackForm
                             module={module}
                             record={selected}
@@ -1387,7 +1480,7 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
                             }
                             onSendFeedback={(
                               patch,
-                              successMessage = "Retroalimentacion enviada",
+                              successMessage = "Retroalimentación enviada",
                             ) =>
                               submitStructured(
                                 action.path(id, secondaryId, roles),
@@ -1415,6 +1508,7 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
                               );
                             }}
                           />
+                         </ReviewWorkspace>
                         ) : (
                           <StructuredForm
                             relations={formRelations}
@@ -1427,11 +1521,13 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
                             }
                           />
                         )}
+                        {module.id === 'final-reports' && action.letterhead && letterheadPicker}
                         {!isFeedbackReviewBody(actionBodies[action.label]) && (
                           <SecondaryButton
                             disabled={
                               loading ||
                               (action.needsId && !id) ||
+                              (action.letterhead && Object.keys(action.sample || {}).length === 0 && !letterheadFile) ||
                               (action.needsSecondaryId && !secondaryId)
                             }
                             icon={CheckCircle2}
@@ -1502,6 +1598,10 @@ function EndpointModule({ module, roles, token, enableListFilters }) {
           </div>
         </SectionCard>
       )}
+      {activeOperation === 'form' && studentEnrollmentResolved && <EditorActions>
+        <div className="min-w-0 flex-1"><p role="status" aria-live="polite" className="break-words text-sm text-body">{draft.status ? `${draft.status}${draft.status === 'Guardado en el servidor' ? ' · Copia privada' : ''}` : 'Guarda el borrador para actualizar el documento.'}</p><details className="mt-1 text-sm text-muted"><summary className="w-fit cursor-pointer rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">Ayuda con el guardado</summary><p className="mt-2 max-w-prose">El autoguardado conserva una copia privada. Guardar borrador actualiza el documento. Guardar y ver PDF permite revisar su formato; el envío a revisión se realiza desde el detalle.</p></details>{draft.retry && /No se pudo/.test(draft.status) && <SecondaryButton onClick={draft.retry} disabled={loading}>Reintentar autoguardado</SecondaryButton>}</div>
+        {formActions}
+      </EditorActions>}
     </div>
   );
 }
@@ -1512,15 +1612,15 @@ function reviewDecisionConfirmation(approved, module) {
   return {
     title: approving ? "Aprobar documento" : "Solicitar correcciones",
     description: approving
-      ? "Esta decision marcara tu aprobacion sobre el documento seleccionado."
+      ? "Esta decision marcara tu aprobación sobre el documento seleccionado."
       : "Esta decision devolvera el documento para que el estudiante realice correcciones.",
-    details: module?.title || "Documento de practica",
-    confirmLabel: approving ? "Confirmar aprobacion" : "Confirmar correcciones",
+    details: module?.title || "Documento de práctica",
+    confirmLabel: approving ? "Confirmar aprobación" : "Confirmar correcciones",
     tone: approving ? "success" : "danger",
   };
 }
 
-function importantActionConfirmation(label = "Confirmar accion", detail = "") {
+function importantActionConfirmation(label = "Confirmar acción", detail = "") {
   const destructive = /eliminar|rechazar|correccion|desactivar|bloquear/i.test(
     label,
   );
@@ -1528,7 +1628,7 @@ function importantActionConfirmation(label = "Confirmar accion", detail = "") {
   return {
     title: label,
     description:
-      "Esta accion cambiara informacion importante del registro seleccionado.",
+      "Esta acción cambiara información importante del registro seleccionado.",
     details: detail,
     confirmLabel: label,
     tone: destructive ? "danger" : "warning",
@@ -1536,67 +1636,43 @@ function importantActionConfirmation(label = "Confirmar accion", detail = "") {
 }
 
 function DocumentDraftStatus({ editable = false, readiness }) {
-  if (!readiness) {
-    return null;
-  }
+  if (!readiness) return null;
+  if (editable) return <details className="rounded-lg border border-line bg-panel-soft px-3 py-2 text-sm text-body"><summary className="min-h-8 cursor-pointer font-medium text-heading">{readiness.complete ? 'Apartados completos' : `Borrador: ${readiness.completed} de ${readiness.total} apartados completos`}</summary><p className="mt-2">Puedes guardar el avance y completar lo pendiente después.</p>{readiness.missing.length > 0 && <ul className="mt-2 list-disc space-y-1 pl-5">{readiness.missing.map(item => <li key={item}>{item}</li>)}</ul>}<p className="mt-2">Los datos precargados provienen de la inscripción y la institución. Si falta alguno, solicita su actualización a tutoría o administración.</p></details>;
 
-  const visibleMissing = readiness.missing.slice(0, 6);
-
-  if (readiness.complete) {
-    return (
-      <Alert tone="success">
-        Documento completo segun las reglas actuales. Puedes enviarlo a revision o guardar cambios.
-      </Alert>
-    );
-  }
-
-  return (
-    <Alert tone={editable ? "info" : "warning"}>
-      <div className="space-y-2">
-        <p className="font-semibold">
-          Borrador parcial: {readiness.completed} de {readiness.total} apartados completos.
-        </p>
-        <p>
-          Puedes guardar este avance ahora, enviarlo a revision si necesitas una revision preliminar, y completar lo pendiente despues:
-        </p>
-        <ul className="list-disc space-y-1 pl-5">
-          {visibleMissing.map((item) => (
-            <li key={item}>{item}</li>
-          ))}
-        </ul>
-        {readiness.missing.length > visibleMissing.length && (
-          <p className="text-xs font-medium">
-            Y {readiness.missing.length - visibleMissing.length} pendiente(s) mas.
-          </p>
-        )}
-      </div>
-    </Alert>
-  );
+  if (readiness.complete) return <div className="rounded-xl border border-success/30 bg-success-soft p-4 text-sm text-success-strong">Documento completo según las reglas actuales. Puedes enviarlo a revisión o guardar cambios.</div>;
+  return <div className={`rounded-xl border p-4 text-sm ${editable ? 'border-info/30 bg-info-soft text-info-strong' : 'border-warning/30 bg-warning-soft text-warning-strong'}`}>
+    <p className="font-semibold">Borrador parcial: {readiness.completed} de {readiness.total} apartados completos.</p>
+    <p className="mt-1">Puedes guardar el avance y completar lo pendiente después.</p>
+    <details className="mt-2"><summary className="cursor-pointer font-medium">Consultar apartados pendientes ({readiness.missing.length})</summary>
+      <ul className="mt-3 list-disc space-y-1 pl-5">{readiness.missing.map(item => <li key={item}>{item}</li>)}</ul>
+      <p className="mt-3 text-xs">Los datos precargados provienen de la inscripción y de la institución. Si falta alguno, solicita su actualización a tutoría o administración.</p>
+    </details>
+  </div>;
 }
 
 const DOCUMENT_READINESS_RULES = {
   "activity-plans": {
     fields: [
       ["studentFullName", "datos del estudiante"],
-      ["curricularOrganizationUnit", "unidad de organizacion curricular"],
+      ["curricularOrganizationUnit", "unidad de organización curricular"],
       ["subjectDenomination", "denominacion de la asignatura"],
       ["integrativeKnowledgeProject", "proyecto integrador de saberes"],
-      ["practiceType", "tipo de practica"],
-      ["educationalInstitutionName", "institucion educativa"],
-      ["teacherCount", "numero de docentes"],
-      ["studentCount", "numero de estudiantes"],
+      ["practiceType", "tipo de práctica"],
+      ["educationalInstitutionName", "institución educativa"],
+      ["teacherCount", "número de docentes"],
+      ["studentCount", "número de estudiantes"],
       ["mission", "mision institucional"],
       ["vision", "vision institucional"],
       ["institutionalValues", "valores institucionales"],
       ["presentation", "presentacion"],
       ["generalObjective", "objetivo general"],
-      ["specificObjective1", "objetivo especifico 1"],
-      ["specificObjective2", "objetivo especifico 2"],
-      ["specificObjective3", "objetivo especifico 3"],
+      ["specificObjective1", "objetivo específico 1"],
+      ["specificObjective2", "objetivo específico 2"],
+      ["specificObjective3", "objetivo específico 3"],
       ["legalResources", "recursos legales"],
       ["humanResources", "recursos humanos"],
-      ["technologicalResources", "recursos tecnologicos"],
-      ["physicalResources", "recursos fisicos"],
+      ["technologicalResources", "recursos tecnológicos"],
+      ["physicalResources", "recursos físicos"],
     ],
     arrays: [
       {
@@ -1614,16 +1690,16 @@ const DOCUMENT_READINESS_RULES = {
   "practice-reports": {
     fields: [
       ["studentFullName", "datos del estudiante"],
-      ["educationalInstitutionName", "institucion educativa"],
+      ["educationalInstitutionName", "institución educativa"],
       ["presentation", "presentacion"],
       ["generalObjective", "objetivo general"],
-      ["specificObjective1", "objetivo especifico 1"],
-      ["specificObjective2", "objetivo especifico 2"],
-      ["specificObjective3", "objetivo especifico 3"],
+      ["specificObjective1", "objetivo específico 1"],
+      ["specificObjective2", "objetivo específico 2"],
+      ["specificObjective3", "objetivo específico 3"],
       ["methodology", "metodologia"],
-      ["conclusion1", "conclusion 1"],
-      ["conclusion2", "conclusion 2"],
-      ["conclusion3", "conclusion 3"],
+      ["conclusion1", "conclusión 1"],
+      ["conclusion2", "conclusión 2"],
+      ["conclusion3", "conclusión 3"],
       ["recommendation1", "recomendacion 1"],
       ["recommendation2", "recomendacion 2"],
       ["recommendation3", "recomendacion 3"],
@@ -1638,7 +1714,7 @@ const DOCUMENT_READINESS_RULES = {
   },
   "final-reports": {
     fields: [
-      ["educationalInstitutionName", "institucion educativa"],
+      ["educationalInstitutionName", "institución educativa"],
       ["studentFullName", "datos del estudiante"],
       ["antecedents", "antecedentes"],
       ["objective", "objetivo"],
@@ -1653,11 +1729,11 @@ const DOCUMENT_READINESS_RULES = {
   },
   "completed-records": {
     fields: [
-      ["educationalInstitutionName", "institucion educativa receptora"],
+      ["educationalInstitutionName", "institución educativa receptora"],
       ["studentFullName", "nombre del estudiante"],
-      ["studentIdentification", "cedula del estudiante"],
-      ["academicPeriod", "periodo academico"],
-      ["practiceType", "tipo de practica"],
+      ["studentIdentification", "cédula del estudiante"],
+      ["academicPeriod", "período académico"],
+      ["practiceType", "tipo de práctica"],
       ["developmentMode", "desarrollo de actividades"],
       ["deliveryDate", "fecha de entrega"],
     ],
@@ -1796,7 +1872,7 @@ function EvidenceLinkPicker({
       </div>
 
       <Modal
-        description="Selecciona una imagen cargada en Evidencias. En el registro se guardara solo el enlace de la imagen."
+        description="Selecciona una imagen cargada en Evidencias. En el registro se guardará solo el enlace de la imagen."
         maxWidth="max-w-5xl"
         onClose={() => setOpen(false)}
         open={open}
@@ -1806,14 +1882,14 @@ function EvidenceLinkPicker({
           <p className="text-sm text-body">Cargando evidencias...</p>
         ) : photos.length === 0 ? (
           <p className="text-sm text-body">
-            No hay evidencias fotograficas disponibles para esta inscripcion.
+            No hay evidencias fotograficas disponibles para esta inscripción.
           </p>
         ) : (
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {photos.map((photo) => (
               <button
                 className={cx(
-                  "overflow-hidden rounded-lg border bg-panel text-left shadow-card transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:bg-surface",
+                  "overflow-hidden rounded-lg border bg-panel text-left shadow-card transition-colors hover:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:bg-surface",
                   publicEvidenceUrl(photo.publicContentUrl) === value || photo.contentUrl === value
                     ? "border-accent ring-2 ring-accent/25"
                     : "border-line dark:border-line",
@@ -1939,11 +2015,18 @@ function EvidencePhotoPreview({ photo, token }) {
 
   return (
     <img
-      alt={photo.description || photo.originalFilename || "Evidencia de practica"}
+      alt={photo.description || photo.originalFilename || "Evidencia de práctica"}
       className="aspect-[4/3] w-full object-cover"
       src={source}
     />
   );
+}
+
+function ReviewWorkspace({ record, children }) {
+ return <div className="grid items-start gap-5 xl:grid-cols-2">
+  <SectionCard title="Documento a revisar" description="Consulta el contenido mientras escribes tus observaciones."><DataInspector data={record} /></SectionCard>
+  <div className="space-y-4 xl:sticky xl:top-20 xl:max-h-[calc(100dvh-7rem)] xl:overflow-y-auto xl:pr-1">{children}</div>
+ </div>;
 }
 
 function ReviewFeedbackForm({
@@ -1988,10 +2071,11 @@ function ReviewFeedbackForm({
   return (
     <div className="grid gap-4">
       <div className="grid gap-2">
-        <div className="flex flex-wrap gap-2" aria-label="Decision de revision">
+        <div className="flex flex-wrap gap-2" aria-label="Decision de revisión">
           <button
             aria-pressed={reviewValue.approved === true}
-            className={`${reviewChoiceBaseClass} ${reviewValue.approved === true ? reviewChoiceActiveClass : ""}`}
+            data-intent="success"
+            className={`sgp-action sgp-action-soft ${reviewChoiceBaseClass} ${reviewValue.approved === true ? reviewChoiceActiveClass : ""}`}
             onClick={() => submitDecision(true)}
             title="Aprobar documento"
             type="button"
@@ -2054,8 +2138,8 @@ function reviewDecisionState(approved) {
   if (approved === true) {
     return {
       tone: "success",
-      title: "Aprobacion lista para confirmar",
-      description: "La accion Aprobar abre la confirmacion y guarda la decision.",
+      title: "Aprobación lista para confirmar",
+      description: "La acción Aprobar abre la confirmacion y guarda la decision.",
     };
   }
 
@@ -2085,12 +2169,10 @@ function ReviewSection({
   onSendFeedback,
 }) {
   return (
-    <article className={reviewSectionClass}>
-      <div className={reviewSectionHeaderClass}>
-        <h3 className="text-sm font-semibold leading-tight text-heading dark:text-heading">
-          {section.title}
-        </h3>
-      </div>
+    <details className={reviewSectionClass}>
+      <summary className={`${reviewSectionHeaderClass} cursor-pointer text-sm font-semibold text-heading`}>
+        {section.title}<span className="ml-2 text-xs font-normal text-body">Abrir apartado</span>
+      </summary>
       <div className="space-y-4 p-4">
         {section.fields?.length > 0 && (
           <div className={reviewFieldGridClass}>
@@ -2124,7 +2206,7 @@ function ReviewSection({
 
         {section.feedbackKey && (
           <FeedbackComposer
-            label="Retroalimentacion"
+            label="Retroalimentación"
             value={value?.[section.feedbackKey] || ""}
             onChange={(nextValue) =>
               onFieldChange(section.feedbackKey, nextValue)
@@ -2132,7 +2214,7 @@ function ReviewSection({
             onSubmit={(nextValue) =>
               onSendFeedback?.(
                 { [section.feedbackKey]: nextValue },
-                `Retroalimentacion enviada en ${section.title}`,
+                `Retroalimentación enviada en ${section.title}`,
               )
             }
             sentAt={
@@ -2141,7 +2223,7 @@ function ReviewSection({
           />
         )}
       </div>
-    </article>
+    </details>
   );
 }
 
@@ -2190,111 +2272,20 @@ function canExportPdfRecord(record) {
   );
 }
 
-function ListFilters({
-  filters,
-  options,
-  totalCount,
-  visibleCount,
-  onChange,
-  onClear,
-}) {
-  const active = hasActiveFilters(filters);
-  const [filtersOpen, setFiltersOpen] = useState(false);
-  const selectFilterCount = countActiveSelectFilters(filters);
-
-  return (
-    <div className="rounded-lg border border-line bg-panel-soft p-3 dark:border-line dark:bg-surface">
-      <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
-        <Field label="Buscar">
-          <Input
-            placeholder="Texto, estudiante, paralelo o tutor"
-            type="search"
-            value={filters.search}
-            onChange={(event) => onChange("search", event.target.value)}
-          />
-        </Field>
-        <div className="flex items-end gap-2">
-          <SecondaryButton
-            icon={SlidersHorizontal}
-            onClick={() => setFiltersOpen(true)}
-            type="button"
-          >
-            {selectFilterCount ? `Filtros (${selectFilterCount})` : "Filtros"}
-          </SecondaryButton>
-          <SecondaryButton
-            disabled={!active}
-            icon={XCircle}
-            onClick={onClear}
-            type="button"
-          >
-            Limpiar
-          </SecondaryButton>
-        </div>
-      </div>
-      <p className="mt-3 text-xs font-medium text-body">
-        {visibleCount} de {totalCount} registros
-      </p>
-      <Modal
-        maxWidth="max-w-3xl"
-        onClose={() => setFiltersOpen(false)}
-        open={filtersOpen}
-        title="Filtros"
-      >
-            <div className="grid gap-3 sm:grid-cols-2">
-              <DocumentSelectFilter
-                label="Estado"
-                options={options.statuses}
-                value={filters.status}
-                onChange={(value) => onChange("status", value)}
-              />
-              <DocumentSelectFilter
-                label="Estudiante"
-                options={options.students}
-                value={filters.student}
-                onChange={(value) => onChange("student", value)}
-              />
-              <DocumentSelectFilter
-                label="Paralelo"
-                options={options.courses}
-                value={filters.course}
-                onChange={(value) => onChange("course", value)}
-              />
-              <DocumentSelectFilter
-                label="Tutor"
-                options={options.tutors}
-                value={filters.tutor}
-                onChange={(value) => onChange("tutor", value)}
-              />
-              <DocumentSelectFilter
-                label="Ciclo"
-                options={options.cycles}
-                value={filters.cycle}
-                onChange={(value) => onChange("cycle", value)}
-              />
-            </div>
-            <div className="mt-4 flex justify-end gap-2">
-              <SecondaryButton
-                disabled={!active}
-                icon={XCircle}
-                onClick={onClear}
-                type="button"
-              >
-                Limpiar
-              </SecondaryButton>
-              <PrimaryButton
-                icon={CheckCircle2}
-                onClick={() => setFiltersOpen(false)}
-                type="button"
-              >
-                Aplicar
-              </PrimaryButton>
-            </div>
-      </Modal>
-    </div>
-  );
+function ListFilters({ viewKey, onRestore, action, filters, options, showStudentFilter = true, showCourseFilter = true, totalCount, visibleCount, onChange, onClear }) {
+  const hasChoices = [options.statuses, showStudentFilter ? options.students : [], showCourseFilter ? options.courses : [], options.tutors, options.cycles].some(choices => choices.length > 1);
+  return <FilterPanel showFilters={hasChoices || countActiveSelectFilters(filters) > 0} viewKey={viewKey} savedValue={filters} onRestore={onRestore} activeCount={countActiveSelectFilters(filters)} action={action} hasActiveFilters={hasActiveFilters(filters)} onClear={onClear} summary={`${visibleCount} de ${totalCount} registros`}
+    search={<Field label="Buscar"><Input placeholder="Buscar en estos registros" type="search" value={filters.search} onChange={event => onChange('search', event.target.value)} /></Field>}>
+    <DocumentSelectFilter label="Estado" options={options.statuses} value={filters.status} onChange={value => onChange('status', value)} />
+    {showStudentFilter && <DocumentSelectFilter label="Estudiante" options={options.students} value={filters.student} onChange={value => onChange('student', value)} />}
+    {showCourseFilter && <DocumentSelectFilter label="Paralelo" options={options.courses} value={filters.course} onChange={value => onChange('course', value)} />}
+    <DocumentSelectFilter label="Tutor" options={options.tutors} value={filters.tutor} onChange={value => onChange('tutor', value)} />
+    <DocumentSelectFilter label="Ciclo" options={options.cycles} value={filters.cycle} onChange={value => onChange('cycle', value)} />
+  </FilterPanel>;
 }
 
 function DocumentSelectFilter({ label, options, value, onChange }) {
+  if (options.length < 2 && !value) return null;
   return (
     <Field label={label}>
       <Select
@@ -2564,7 +2555,7 @@ function ReviewArray({ config, items }) {
   if (!items.length) {
     return (
       <p className={reviewEmptyClass}>
-        Aun no hay informacion en {config.label.toLowerCase()}.
+        Aún no hay información en {config.label.toLowerCase()}.
       </p>
     );
   }
@@ -2653,11 +2644,11 @@ function FeedbackComposer({ label, value, onChange, onSubmit, sentAt }) {
         <button
           aria-expanded={open}
           aria-label={
-            open ? "Cerrar retroalimentacion" : "Abrir retroalimentacion"
+            open ? "Cerrar retroalimentación" : "Abrir retroalimentación"
           }
           className={`${feedbackIconBaseClass} ${open ? feedbackIconActiveClass : ""} ${highlightClass}`}
           onClick={() => setOpen((current) => !current)}
-          title={open ? "Cerrar retroalimentacion" : "Abrir retroalimentacion"}
+          title={open ? "Cerrar retroalimentación" : "Abrir retroalimentación"}
           type="button"
         >
           <MessageCircle size={16} />
@@ -2676,7 +2667,7 @@ function FeedbackComposer({ label, value, onChange, onSubmit, sentAt }) {
           {hasValue ? (
             <p className={reviewValueClass}>{value}</p>
           ) : (
-            <p className={reviewEmptyClass}>Sin retroalimentacion</p>
+            <p className={reviewEmptyClass}>Sin retroalimentación</p>
           )}
         </div>
       </div>
@@ -2694,7 +2685,7 @@ function FeedbackComposer({ label, value, onChange, onSubmit, sentAt }) {
               onClick={sendFeedback}
               type="button"
             >
-              Enviar retroalimentacion
+              Enviar retroalimentación
             </SecondaryButton>
           </div>
         </div>
@@ -2740,7 +2731,7 @@ function EntryFeedbackList({ entries, value, onChange, onSendFeedback }) {
             {entry.id && (
               <div className="space-y-3">
                 <FeedbackComposer
-                  label="Retroalimentacion"
+                  label="Retroalimentación"
                   value={entryFeedbackValue(value, entry.id, "feedback")}
                   onChange={(nextValue) =>
                     setEntryFeedbackValue(
@@ -2758,7 +2749,7 @@ function EntryFeedbackList({ entries, value, onChange, onSendFeedback }) {
                           { entryId: entry.id, feedback: nextValue },
                         ],
                       },
-                      `Retroalimentacion enviada en ${entryLabel(entry)}`,
+                      `Retroalimentación enviada en ${entryLabel(entry)}`,
                     )
                   }
                   sentAt={entry.updatedAt || entry.createdAt}
@@ -2862,7 +2853,7 @@ function getReviewSections(moduleId, record, reviewValue) {
         "vision",
         "institutionalValues",
       ]),
-      section("Presentacion", "presentationFeedback", ["presentation"]),
+      section("Presentación", "presentationFeedback", ["presentation"]),
       section("Objetivos", "objectivesFeedback", [
         "generalObjective",
         "specificObjective1",
@@ -2906,21 +2897,21 @@ function getReviewSections(moduleId, record, reviewValue) {
         "technologicalResources",
         "physicalResources",
       ]),
-      section("Aprobacion", "approvalFeedback", []),
+      section("Aprobación", "approvalFeedback", []),
     ];
   }
 
   if (moduleId === "practice-reports") {
     return [
       section("Datos generales", "generalInfoFeedback", generalFields),
-      section("Presentacion", "presentationFeedback", ["presentation"]),
+      section("Presentación", "presentationFeedback", ["presentation"]),
       section("Objetivos", "objectivesFeedback", [
         "generalObjective",
         "specificObjective1",
         "specificObjective2",
         "specificObjective3",
       ]),
-      section("Metodologia", "methodologyFeedback", ["methodology"]),
+      section("Metodología", "methodologyFeedback", ["methodology"]),
       section(
         "Actividades",
         "activitiesFeedback",
@@ -2944,7 +2935,7 @@ function getReviewSections(moduleId, record, reviewValue) {
         "recommendation2",
         "recommendation3",
       ]),
-      section("Aprobacion", "approvalFeedback", []),
+      section("Aprobación", "approvalFeedback", []),
     ];
   }
 
@@ -2976,7 +2967,7 @@ function getReviewSections(moduleId, record, reviewValue) {
         "recommendation2",
         "recommendation3",
       ]),
-      section("Aprobacion", "approvalFeedback", []),
+      section("Aprobación", "approvalFeedback", []),
     ];
   }
 
@@ -3077,6 +3068,9 @@ function buildActionBodiesForRecord(actions, module, record, roles = []) {
           ];
         }
 
+        if (module.id === 'final-reports' && action.letterhead) {
+          Object.keys(value).forEach(key => { value[key] = record?.[key] ?? ''; });
+        }
         return [action.label, value];
       }),
   );
@@ -3153,7 +3147,7 @@ function getOperationTitle(operation, selected) {
   }
 
   if (operation === "review") {
-    return "Revision del documento";
+    return "Revisión del documento";
   }
 
   if (operation === "actions") {
@@ -3227,7 +3221,7 @@ function periodLabel(period) {
       [period.startTime, period.endTime].filter(Boolean).join(" - "),
     ]
       .filter(Boolean)
-      .join(" - ") || "Periodo"
+      .join(" - ") || "Período"
   );
 }
 
@@ -3245,12 +3239,13 @@ function entryLabel(entry) {
 function enrollmentLabel(enrollment) {
   return (
     [
-      enrollment.courseName,
+      enrollment.practiceName,
+    enrollment.courseName,
       enrollment.studentFullName || enrollment.student,
       enrollment.educationalInstitutionName,
     ]
       .filter(Boolean)
-      .join(" - ") || "Inscripcion"
+      .join(" - ") || "Inscripción"
   );
 }
 

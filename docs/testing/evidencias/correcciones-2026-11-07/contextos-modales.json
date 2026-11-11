@@ -1,0 +1,4067 @@
+{
+  "date": "2026-11-07",
+  "mode": "Chrome with isolated fixtures; route and visible-tab discovery",
+  "records": [
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Guardar portada",
+        "Desactivar",
+        "Bloquear",
+        "Tutor prácticas",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Guardar portada",
+        "Desactivar",
+        "Bloquear",
+        "Tutor prácticas",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "tab",
+      "label": "Paralelos",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Cerrar alerta",
+        "Paralelos",
+        "Crear paralelo",
+        "Filtros",
+        "Limpiar",
+        "Actualizar",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Guardar portada",
+        "Desactivar",
+        "Bloquear",
+        "Tutor prácticas",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "tab",
+      "label": "Crear paralelo",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo"
+      ],
+      "dialogs": [
+        {
+          "name": "Crear paralelo",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Cerrar alerta",
+        "Paralelos",
+        "Crear paralelo",
+        "Filtros",
+        "Limpiar",
+        "Actualizar",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Guardar portada",
+        "Desactivar",
+        "Bloquear",
+        "Tutor prácticas",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "tab",
+      "label": "Gestión del paralelo",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Guardar portada",
+        "Desactivar",
+        "Bloquear",
+        "Tutor prácticas",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Guardar portada",
+        "Desactivar",
+        "Bloquear",
+        "Tutor prácticas",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "tab",
+      "label": "Inscripciones",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Guardar portada",
+        "Desactivar",
+        "Bloquear",
+        "Tutor prácticas",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "dialog",
+      "label": "Filtros",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [
+        {
+          "name": "Filtros",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Guardar portada",
+        "Desactivar",
+        "Bloquear",
+        "Tutor prácticas",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "dialog",
+      "label": "Crear grupo",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [
+        {
+          "name": "Crear grupo",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Guardar portada",
+        "Desactivar",
+        "Bloquear",
+        "Tutor prácticas",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "dialog",
+      "label": "Desactivar",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [
+        {
+          "name": "Desactivar paralelo",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Guardar portada",
+        "Desactivar",
+        "Bloquear",
+        "Tutor prácticas",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "dialog",
+      "label": "Bloquear",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [
+        {
+          "name": "Bloquear paralelo",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Guardar portada",
+        "Desactivar",
+        "Bloquear",
+        "Tutor prácticas",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "tab",
+      "label": "Paralelos",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Cerrar alerta",
+        "Paralelos",
+        "Crear paralelo",
+        "Filtros",
+        "Limpiar",
+        "Actualizar",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "tab",
+      "label": "Crear paralelo",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo"
+      ],
+      "dialogs": [
+        {
+          "name": "Crear paralelo",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Cerrar alerta",
+        "Paralelos",
+        "Crear paralelo",
+        "Filtros",
+        "Limpiar",
+        "Actualizar",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "tab",
+      "label": "Gestión del paralelo",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Guardar portada",
+        "Desactivar",
+        "Bloquear",
+        "Tutor prácticas",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "tab",
+      "label": "Inscripciones",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "dialog",
+      "label": "Filtros",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [
+        {
+          "name": "Filtros",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "accounts",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Estudiante",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Estudiante",
+        "Volver a tipos de usuario",
+        "Filtros (1)",
+        "Limpiar",
+        "Actualizar",
+        "Crear usuario",
+        "Abrir student.fixture"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "accounts",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Estudiante",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Estudiante",
+        "Volver a tipos de usuario",
+        "Filtros (1)",
+        "Limpiar",
+        "Actualizar",
+        "Crear usuario",
+        "Abrir student.fixture"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "accounts",
+      "kind": "dialog",
+      "label": "Crear usuario",
+      "heading": "Estudiante",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [
+        {
+          "name": "Crear usuario",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Estudiante",
+        "Volver a tipos de usuario",
+        "Filtros (1)",
+        "Limpiar",
+        "Actualizar",
+        "Crear usuario",
+        "Abrir student.fixture"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "universities?institutionId=1",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Universidad de prueba",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Estructura académica",
+        "Universidad de prueba",
+        "Información sobre Universidad de prueba",
+        "Filtros",
+        "Limpiar",
+        "Agregar",
+        "Actualizar",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "universities?institutionId=1",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Universidad de prueba",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Estructura académica",
+        "Universidad de prueba",
+        "Información sobre Universidad de prueba",
+        "Filtros",
+        "Limpiar",
+        "Agregar",
+        "Actualizar",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "universities?institutionId=1",
+      "kind": "dialog",
+      "label": "Filtros",
+      "heading": "Universidad de prueba",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [
+        {
+          "name": "Filtros",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Estructura académica",
+        "Universidad de prueba",
+        "Información sobre Universidad de prueba",
+        "Filtros",
+        "Limpiar",
+        "Agregar",
+        "Actualizar",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "universities?institutionId=1",
+      "kind": "dialog",
+      "label": "Agregar",
+      "heading": "Universidad de prueba",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [
+        {
+          "name": "Agregar facultades",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Estructura académica",
+        "Universidad de prueba",
+        "Información sobre Universidad de prueba",
+        "Filtros",
+        "Limpiar",
+        "Agregar",
+        "Actualizar",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "universities?institutionId=1&facultyId=11",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Facultad de Educación",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Estructura académica",
+        "Universidad de prueba",
+        "Facultad de Educación",
+        "Información sobre Facultad de Educación",
+        "Filtros",
+        "Limpiar",
+        "Agregar",
+        "Actualizar",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "universities?institutionId=1&facultyId=11",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Facultad de Educación",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Estructura académica",
+        "Universidad de prueba",
+        "Facultad de Educación",
+        "Información sobre Facultad de Educación",
+        "Filtros",
+        "Limpiar",
+        "Agregar",
+        "Actualizar",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "universities?institutionId=1&facultyId=11",
+      "kind": "dialog",
+      "label": "Filtros",
+      "heading": "Facultad de Educación",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [
+        {
+          "name": "Filtros",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Estructura académica",
+        "Universidad de prueba",
+        "Facultad de Educación",
+        "Información sobre Facultad de Educación",
+        "Filtros",
+        "Limpiar",
+        "Agregar",
+        "Actualizar",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "universities?institutionId=1&facultyId=11",
+      "kind": "dialog",
+      "label": "Agregar",
+      "heading": "Facultad de Educación",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [
+        {
+          "name": "Agregar carreras",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Estructura académica",
+        "Universidad de prueba",
+        "Facultad de Educación",
+        "Información sobre Facultad de Educación",
+        "Filtros",
+        "Limpiar",
+        "Agregar",
+        "Actualizar",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "universities?institutionId=1&facultyId=11&careerId=12",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Informática",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Estructura académica",
+        "Universidad de prueba",
+        "Facultad de Educación",
+        "Informática",
+        "Información sobre Informática",
+        "Ciclos y asignaturas\nAbre un ciclo para consultar o mantener sus asignaturas."
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "universities?institutionId=1&facultyId=11&careerId=12",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Informática",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Estructura académica",
+        "Universidad de prueba",
+        "Facultad de Educación",
+        "Informática",
+        "Información sobre Informática",
+        "Ciclos y asignaturas\nAbre un ciclo para consultar o mantener sus asignaturas."
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "institutions?institutionId=2",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Colegio de prácticas",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Centros de prácticas",
+        "Colegio de prácticas",
+        "Información sobre Colegio de prácticas",
+        "Filtros",
+        "Limpiar",
+        "Agregar",
+        "Actualizar",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "institutions?institutionId=2",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Colegio de prácticas",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Centros de prácticas",
+        "Colegio de prácticas",
+        "Información sobre Colegio de prácticas",
+        "Filtros",
+        "Limpiar",
+        "Agregar",
+        "Actualizar",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "institutions?institutionId=2",
+      "kind": "dialog",
+      "label": "Filtros",
+      "heading": "Colegio de prácticas",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [
+        {
+          "name": "Filtros",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Centros de prácticas",
+        "Colegio de prácticas",
+        "Información sobre Colegio de prácticas",
+        "Filtros",
+        "Limpiar",
+        "Agregar",
+        "Actualizar",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "institutions?institutionId=2",
+      "kind": "dialog",
+      "label": "Agregar",
+      "heading": "Colegio de prácticas",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [
+        {
+          "name": "Agregar grados",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Centros de prácticas",
+        "Colegio de prácticas",
+        "Información sobre Colegio de prácticas",
+        "Filtros",
+        "Limpiar",
+        "Agregar",
+        "Actualizar",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "institutions?institutionId=2&gradeId=14&view=parallels",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Octavo",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Centros de prácticas",
+        "Colegio de prácticas",
+        "Octavo",
+        "Información sobre Octavo",
+        "Filtros",
+        "Limpiar",
+        "Agregar",
+        "Actualizar",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "institutions?institutionId=2&gradeId=14&view=parallels",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Octavo",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Centros de prácticas",
+        "Colegio de prácticas",
+        "Octavo",
+        "Información sobre Octavo",
+        "Filtros",
+        "Limpiar",
+        "Agregar",
+        "Actualizar",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "institutions?institutionId=2&gradeId=14&view=parallels",
+      "kind": "dialog",
+      "label": "Filtros",
+      "heading": "Octavo",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [
+        {
+          "name": "Filtros",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Centros de prácticas",
+        "Colegio de prácticas",
+        "Octavo",
+        "Información sobre Octavo",
+        "Filtros",
+        "Limpiar",
+        "Agregar",
+        "Actualizar",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "route": "institutions?institutionId=2&gradeId=14&view=parallels",
+      "kind": "dialog",
+      "label": "Agregar",
+      "heading": "Octavo",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [
+        {
+          "name": "Agregar paralelos",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Centros de prácticas",
+        "Colegio de prácticas",
+        "Octavo",
+        "Información sobre Octavo",
+        "Filtros",
+        "Limpiar",
+        "Agregar",
+        "Actualizar",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Guardar portada",
+        "Desactivar",
+        "Bloquear",
+        "Tutor prácticas",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Guardar portada",
+        "Desactivar",
+        "Bloquear",
+        "Tutor prácticas",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "tab",
+      "label": "Paralelos",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Cerrar alerta",
+        "Paralelos",
+        "Crear paralelo",
+        "Filtros",
+        "Limpiar",
+        "Actualizar",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Guardar portada",
+        "Desactivar",
+        "Bloquear",
+        "Tutor prácticas",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "tab",
+      "label": "Crear paralelo",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo"
+      ],
+      "dialogs": [
+        {
+          "name": "Crear paralelo",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Cerrar alerta",
+        "Paralelos",
+        "Crear paralelo",
+        "Filtros",
+        "Limpiar",
+        "Actualizar",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Guardar portada",
+        "Desactivar",
+        "Bloquear",
+        "Tutor prácticas",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "tab",
+      "label": "Gestión del paralelo",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Guardar portada",
+        "Desactivar",
+        "Bloquear",
+        "Tutor prácticas",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Guardar portada",
+        "Desactivar",
+        "Bloquear",
+        "Tutor prácticas",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "tab",
+      "label": "Inscripciones",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Guardar portada",
+        "Desactivar",
+        "Bloquear",
+        "Tutor prácticas",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "dialog",
+      "label": "Filtros",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [
+        {
+          "name": "Filtros",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Guardar portada",
+        "Desactivar",
+        "Bloquear",
+        "Tutor prácticas",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "dialog",
+      "label": "Crear grupo",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [
+        {
+          "name": "Crear grupo",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Guardar portada",
+        "Desactivar",
+        "Bloquear",
+        "Tutor prácticas",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "dialog",
+      "label": "Desactivar",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [
+        {
+          "name": "Desactivar paralelo",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Guardar portada",
+        "Desactivar",
+        "Bloquear",
+        "Tutor prácticas",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "dialog",
+      "label": "Bloquear",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [
+        {
+          "name": "Bloquear paralelo",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Guardar portada",
+        "Desactivar",
+        "Bloquear",
+        "Tutor prácticas",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "tab",
+      "label": "Paralelos",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Cerrar alerta",
+        "Paralelos",
+        "Crear paralelo",
+        "Filtros",
+        "Limpiar",
+        "Actualizar",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "tab",
+      "label": "Crear paralelo",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo"
+      ],
+      "dialogs": [
+        {
+          "name": "Crear paralelo",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Cerrar alerta",
+        "Paralelos",
+        "Crear paralelo",
+        "Filtros",
+        "Limpiar",
+        "Actualizar",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "tab",
+      "label": "Gestión del paralelo",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Guardar portada",
+        "Desactivar",
+        "Bloquear",
+        "Tutor prácticas",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "tab",
+      "label": "Inscripciones",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "dialog",
+      "label": "Filtros",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [
+        {
+          "name": "Filtros",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Crear paralelo",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "accounts",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Estudiante",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Estudiante",
+        "Volver a tipos de usuario",
+        "Filtros (1)",
+        "Limpiar",
+        "Actualizar",
+        "Crear usuario",
+        "Abrir student.fixture"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "accounts",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Estudiante",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Estudiante",
+        "Volver a tipos de usuario",
+        "Filtros (1)",
+        "Limpiar",
+        "Actualizar",
+        "Crear usuario",
+        "Abrir student.fixture"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "accounts",
+      "kind": "dialog",
+      "label": "Crear usuario",
+      "heading": "Estudiante",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [
+        {
+          "name": "Crear usuario",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Estudiante",
+        "Volver a tipos de usuario",
+        "Filtros (1)",
+        "Limpiar",
+        "Actualizar",
+        "Crear usuario",
+        "Abrir student.fixture"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "universities?institutionId=1",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Universidad de prueba",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Estructura académica",
+        "Universidad de prueba",
+        "Información sobre Universidad de prueba",
+        "Filtros",
+        "Limpiar",
+        "Agregar",
+        "Actualizar",
+        "Abrir Facultad de Educación",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "universities?institutionId=1",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Universidad de prueba",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Estructura académica",
+        "Universidad de prueba",
+        "Información sobre Universidad de prueba",
+        "Filtros",
+        "Limpiar",
+        "Agregar",
+        "Actualizar",
+        "Abrir Facultad de Educación",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "universities?institutionId=1",
+      "kind": "dialog",
+      "label": "Filtros",
+      "heading": "Universidad de prueba",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [
+        {
+          "name": "Filtros",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Estructura académica",
+        "Universidad de prueba",
+        "Información sobre Universidad de prueba",
+        "Filtros",
+        "Limpiar",
+        "Agregar",
+        "Actualizar",
+        "Abrir Facultad de Educación",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "universities?institutionId=1",
+      "kind": "dialog",
+      "label": "Agregar",
+      "heading": "Universidad de prueba",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [
+        {
+          "name": "Agregar facultades",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Estructura académica",
+        "Universidad de prueba",
+        "Información sobre Universidad de prueba",
+        "Filtros",
+        "Limpiar",
+        "Agregar",
+        "Actualizar",
+        "Abrir Facultad de Educación",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "universities?institutionId=1&facultyId=11",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Facultad de Educación",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Estructura académica",
+        "Universidad de prueba",
+        "Facultad de Educación",
+        "Información sobre Facultad de Educación",
+        "Filtros",
+        "Limpiar",
+        "Agregar",
+        "Actualizar",
+        "Abrir Informática",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "universities?institutionId=1&facultyId=11",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Facultad de Educación",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Estructura académica",
+        "Universidad de prueba",
+        "Facultad de Educación",
+        "Información sobre Facultad de Educación",
+        "Filtros",
+        "Limpiar",
+        "Agregar",
+        "Actualizar",
+        "Abrir Informática",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "universities?institutionId=1&facultyId=11",
+      "kind": "dialog",
+      "label": "Filtros",
+      "heading": "Facultad de Educación",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [
+        {
+          "name": "Filtros",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Estructura académica",
+        "Universidad de prueba",
+        "Facultad de Educación",
+        "Información sobre Facultad de Educación",
+        "Filtros",
+        "Limpiar",
+        "Agregar",
+        "Actualizar",
+        "Abrir Informática",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "universities?institutionId=1&facultyId=11",
+      "kind": "dialog",
+      "label": "Agregar",
+      "heading": "Facultad de Educación",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [
+        {
+          "name": "Agregar carreras",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Estructura académica",
+        "Universidad de prueba",
+        "Facultad de Educación",
+        "Información sobre Facultad de Educación",
+        "Filtros",
+        "Limpiar",
+        "Agregar",
+        "Actualizar",
+        "Abrir Informática",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "universities?institutionId=1&facultyId=11&careerId=12",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Informática",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Estructura académica",
+        "Universidad de prueba",
+        "Facultad de Educación",
+        "Informática",
+        "Información sobre Informática",
+        "Ciclos y asignaturas\nAbre un ciclo para consultar o mantener sus asignaturas."
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "universities?institutionId=1&facultyId=11&careerId=12",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Informática",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Estructura académica",
+        "Universidad de prueba",
+        "Facultad de Educación",
+        "Informática",
+        "Información sobre Informática",
+        "Ciclos y asignaturas\nAbre un ciclo para consultar o mantener sus asignaturas."
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "institutions?institutionId=2",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Colegio de prácticas",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Centros de prácticas",
+        "Colegio de prácticas",
+        "Información sobre Colegio de prácticas",
+        "Filtros",
+        "Limpiar",
+        "Agregar",
+        "Actualizar",
+        "Abrir Octavo",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "institutions?institutionId=2",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Colegio de prácticas",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Centros de prácticas",
+        "Colegio de prácticas",
+        "Información sobre Colegio de prácticas",
+        "Filtros",
+        "Limpiar",
+        "Agregar",
+        "Actualizar",
+        "Abrir Octavo",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "institutions?institutionId=2",
+      "kind": "dialog",
+      "label": "Filtros",
+      "heading": "Colegio de prácticas",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [
+        {
+          "name": "Filtros",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Centros de prácticas",
+        "Colegio de prácticas",
+        "Información sobre Colegio de prácticas",
+        "Filtros",
+        "Limpiar",
+        "Agregar",
+        "Actualizar",
+        "Abrir Octavo",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "institutions?institutionId=2",
+      "kind": "dialog",
+      "label": "Agregar",
+      "heading": "Colegio de prácticas",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [
+        {
+          "name": "Agregar grados",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Centros de prácticas",
+        "Colegio de prácticas",
+        "Información sobre Colegio de prácticas",
+        "Filtros",
+        "Limpiar",
+        "Agregar",
+        "Actualizar",
+        "Abrir Octavo",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "institutions?institutionId=2&gradeId=14&view=parallels",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Octavo",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Centros de prácticas",
+        "Colegio de prácticas",
+        "Octavo",
+        "Información sobre Octavo",
+        "Filtros",
+        "Limpiar",
+        "Agregar",
+        "Actualizar",
+        "Abrir A",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "institutions?institutionId=2&gradeId=14&view=parallels",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Octavo",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Centros de prácticas",
+        "Colegio de prácticas",
+        "Octavo",
+        "Información sobre Octavo",
+        "Filtros",
+        "Limpiar",
+        "Agregar",
+        "Actualizar",
+        "Abrir A",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "institutions?institutionId=2&gradeId=14&view=parallels",
+      "kind": "dialog",
+      "label": "Filtros",
+      "heading": "Octavo",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [
+        {
+          "name": "Filtros",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Centros de prácticas",
+        "Colegio de prácticas",
+        "Octavo",
+        "Información sobre Octavo",
+        "Filtros",
+        "Limpiar",
+        "Agregar",
+        "Actualizar",
+        "Abrir A",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "route": "institutions?institutionId=2&gradeId=14&view=parallels",
+      "kind": "dialog",
+      "label": "Agregar",
+      "heading": "Octavo",
+      "overflow": false,
+      "tabs": [],
+      "dialogs": [
+        {
+          "name": "Agregar paralelos",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Centros de prácticas",
+        "Colegio de prácticas",
+        "Octavo",
+        "Información sobre Octavo",
+        "Filtros",
+        "Limpiar",
+        "Agregar",
+        "Actualizar",
+        "Abrir A",
+        "Acciones"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 390,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Datos comunes",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 390,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Datos comunes",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 390,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "tab",
+      "label": "Paralelos",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Cerrar alerta",
+        "Paralelos",
+        "Filtros",
+        "Limpiar",
+        "Actualizar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 390,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Datos comunes",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 390,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "tab",
+      "label": "Gestión del paralelo",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Datos comunes",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 390,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Datos comunes",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 390,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "tab",
+      "label": "Inscripciones",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 390,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Datos comunes",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 390,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "dialog",
+      "label": "Filtros",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [
+        {
+          "name": "Filtros",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Datos comunes",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 390,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "dialog",
+      "label": "Crear grupo",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [
+        {
+          "name": "Crear grupo",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Datos comunes",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 390,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "dialog",
+      "label": "Datos comunes",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [
+        {
+          "name": "Datos comunes del paralelo",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Datos comunes",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 390,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 390,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 390,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "tab",
+      "label": "Paralelos",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Cerrar alerta",
+        "Paralelos",
+        "Filtros",
+        "Limpiar",
+        "Actualizar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 390,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 390,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "tab",
+      "label": "Gestión del paralelo",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Datos comunes",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 390,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 390,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "tab",
+      "label": "Inscripciones",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 390,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 390,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "dialog",
+      "label": "Filtros",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [
+        {
+          "name": "Filtros",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 1440,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Datos comunes",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 1440,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Datos comunes",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 1440,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "tab",
+      "label": "Paralelos",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Cerrar alerta",
+        "Paralelos",
+        "Filtros",
+        "Limpiar",
+        "Actualizar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 1440,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Datos comunes",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 1440,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "tab",
+      "label": "Gestión del paralelo",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Datos comunes",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 1440,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Datos comunes",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 1440,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "tab",
+      "label": "Inscripciones",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 1440,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Datos comunes",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 1440,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "dialog",
+      "label": "Filtros",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [
+        {
+          "name": "Filtros",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Datos comunes",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 1440,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "dialog",
+      "label": "Crear grupo",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [
+        {
+          "name": "Crear grupo",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Datos comunes",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 1440,
+      "route": "courses?courseId=10&view=manage",
+      "kind": "dialog",
+      "label": "Datos comunes",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [
+        {
+          "name": "Datos comunes del paralelo",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Datos comunes",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 1440,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 1440,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 1440,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "tab",
+      "label": "Paralelos",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Cerrar alerta",
+        "Paralelos",
+        "Filtros",
+        "Limpiar",
+        "Actualizar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 1440,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 1440,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "tab",
+      "label": "Gestión del paralelo",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Tutor institucional del grupo",
+        "Desactivar grupo",
+        "Datos comunes",
+        "Ver inscritos",
+        "Crear grupo",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 1440,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 1440,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "tab",
+      "label": "Inscripciones",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 1440,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "screen",
+      "label": "initial",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Filtros",
+        "Limpiar"
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 1440,
+      "route": "courses?courseId=10&view=enrollments",
+      "kind": "dialog",
+      "label": "Filtros",
+      "heading": "Paralelos y prácticas",
+      "overflow": false,
+      "tabs": [
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones"
+      ],
+      "dialogs": [
+        {
+          "name": "Filtros",
+          "bounded": true,
+          "focused": true
+        }
+      ],
+      "menus": [],
+      "unnamedInputs": [],
+      "badText": [],
+      "actions": [
+        "Información sobre Paralelos y prácticas",
+        "Paralelos",
+        "Gestión del paralelo",
+        "Inscripciones",
+        "Actualizar",
+        "Filtros",
+        "Limpiar"
+      ]
+    }
+  ],
+  "errors": []
+}

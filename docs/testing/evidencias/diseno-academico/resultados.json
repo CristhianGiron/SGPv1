@@ -1,0 +1,459 @@
+{
+  "checks": [
+    {
+      "mode": "light",
+      "width": 320,
+      "route": "dashboard",
+      "heading": "Administración",
+      "overflow": false
+    },
+    {
+      "mode": "light",
+      "width": 320,
+      "route": "accounts",
+      "heading": "Gestionar usuarios",
+      "overflow": false
+    },
+    {
+      "mode": "light",
+      "width": 320,
+      "accountList": true,
+      "overflow": false
+    },
+    {
+      "mode": "light",
+      "width": 320,
+      "accountDialog": true,
+      "focusedBefore": "DIV",
+      "overflow": false
+    },
+    {
+      "mode": "light",
+      "width": 320,
+      "route": "universities",
+      "heading": "Estructura académica",
+      "overflow": false
+    },
+    {
+      "mode": "light",
+      "width": 320,
+      "route": "forms",
+      "heading": "Entrevistas",
+      "overflow": false
+    },
+    {
+      "mode": "light",
+      "width": 320,
+      "route": "practices/7/documents/activity-plans",
+      "heading": "Ana Torres",
+      "overflow": false
+    },
+    {
+      "mode": "light",
+      "width": 320,
+      "keyboardSearch": true
+    },
+    {
+      "mode": "light",
+      "width": 320,
+      "mobileMenu": true
+    },
+    {
+      "mode": "light",
+      "width": 390,
+      "route": "dashboard",
+      "heading": "Administración",
+      "overflow": false
+    },
+    {
+      "mode": "light",
+      "width": 390,
+      "route": "accounts",
+      "heading": "Gestionar usuarios",
+      "overflow": false
+    },
+    {
+      "mode": "light",
+      "width": 390,
+      "accountList": true,
+      "overflow": false
+    },
+    {
+      "mode": "light",
+      "width": 390,
+      "accountDialog": true,
+      "focusedBefore": "DIV",
+      "overflow": false
+    },
+    {
+      "mode": "light",
+      "width": 390,
+      "route": "universities",
+      "heading": "Estructura académica",
+      "overflow": false
+    },
+    {
+      "mode": "light",
+      "width": 390,
+      "route": "forms",
+      "heading": "Entrevistas",
+      "overflow": false
+    },
+    {
+      "mode": "light",
+      "width": 390,
+      "route": "practices/7/documents/activity-plans",
+      "heading": "Ana Torres",
+      "overflow": false
+    },
+    {
+      "mode": "light",
+      "width": 390,
+      "keyboardSearch": true
+    },
+    {
+      "mode": "light",
+      "width": 390,
+      "mobileMenu": true
+    },
+    {
+      "mode": "light",
+      "width": 768,
+      "route": "dashboard",
+      "heading": "Administración",
+      "overflow": false
+    },
+    {
+      "mode": "light",
+      "width": 768,
+      "route": "accounts",
+      "heading": "Gestionar usuarios",
+      "overflow": false
+    },
+    {
+      "mode": "light",
+      "width": 768,
+      "accountList": true,
+      "overflow": false
+    },
+    {
+      "mode": "light",
+      "width": 768,
+      "accountDialog": true,
+      "focusedBefore": "DIV",
+      "overflow": false
+    },
+    {
+      "mode": "light",
+      "width": 768,
+      "route": "universities",
+      "heading": "Estructura académica",
+      "overflow": false
+    },
+    {
+      "mode": "light",
+      "width": 768,
+      "route": "forms",
+      "heading": "Entrevistas",
+      "overflow": false
+    },
+    {
+      "mode": "light",
+      "width": 768,
+      "route": "practices/7/documents/activity-plans",
+      "heading": "Ana Torres",
+      "overflow": false
+    },
+    {
+      "mode": "light",
+      "width": 768,
+      "keyboardSearch": true
+    },
+    {
+      "mode": "light",
+      "width": 768,
+      "mobileMenu": true
+    },
+    {
+      "mode": "light",
+      "width": 1440,
+      "route": "dashboard",
+      "heading": "Administración",
+      "overflow": false
+    },
+    {
+      "mode": "light",
+      "width": 1440,
+      "route": "accounts",
+      "heading": "Gestionar usuarios",
+      "overflow": false
+    },
+    {
+      "mode": "light",
+      "width": 1440,
+      "accountList": true,
+      "overflow": false
+    },
+    {
+      "mode": "light",
+      "width": 1440,
+      "accountDialog": true,
+      "focusedBefore": "DIV",
+      "overflow": false
+    },
+    {
+      "mode": "light",
+      "width": 1440,
+      "route": "universities",
+      "heading": "Estructura académica",
+      "overflow": false
+    },
+    {
+      "mode": "light",
+      "width": 1440,
+      "route": "forms",
+      "heading": "Entrevistas",
+      "overflow": false
+    },
+    {
+      "mode": "light",
+      "width": 1440,
+      "route": "practices/7/documents/activity-plans",
+      "heading": "Ana Torres",
+      "overflow": false
+    },
+    {
+      "mode": "light",
+      "width": 1440,
+      "keyboardSearch": true
+    },
+    {
+      "mode": "dark",
+      "width": 320,
+      "route": "dashboard",
+      "heading": "Administración",
+      "overflow": false
+    },
+    {
+      "mode": "dark",
+      "width": 320,
+      "route": "accounts",
+      "heading": "Gestionar usuarios",
+      "overflow": false
+    },
+    {
+      "mode": "dark",
+      "width": 320,
+      "accountList": true,
+      "overflow": false
+    },
+    {
+      "mode": "dark",
+      "width": 320,
+      "accountDialog": true,
+      "focusedBefore": "DIV",
+      "overflow": false
+    },
+    {
+      "mode": "dark",
+      "width": 320,
+      "route": "universities",
+      "heading": "Estructura académica",
+      "overflow": false
+    },
+    {
+      "mode": "dark",
+      "width": 320,
+      "route": "forms",
+      "heading": "Entrevistas",
+      "overflow": false
+    },
+    {
+      "mode": "dark",
+      "width": 320,
+      "route": "practices/7/documents/activity-plans",
+      "heading": "Ana Torres",
+      "overflow": false
+    },
+    {
+      "mode": "dark",
+      "width": 320,
+      "keyboardSearch": true
+    },
+    {
+      "mode": "dark",
+      "width": 320,
+      "mobileMenu": true
+    },
+    {
+      "mode": "dark",
+      "width": 390,
+      "route": "dashboard",
+      "heading": "Administración",
+      "overflow": false
+    },
+    {
+      "mode": "dark",
+      "width": 390,
+      "route": "accounts",
+      "heading": "Gestionar usuarios",
+      "overflow": false
+    },
+    {
+      "mode": "dark",
+      "width": 390,
+      "accountList": true,
+      "overflow": false
+    },
+    {
+      "mode": "dark",
+      "width": 390,
+      "accountDialog": true,
+      "focusedBefore": "DIV",
+      "overflow": false
+    },
+    {
+      "mode": "dark",
+      "width": 390,
+      "route": "universities",
+      "heading": "Estructura académica",
+      "overflow": false
+    },
+    {
+      "mode": "dark",
+      "width": 390,
+      "route": "forms",
+      "heading": "Entrevistas",
+      "overflow": false
+    },
+    {
+      "mode": "dark",
+      "width": 390,
+      "route": "practices/7/documents/activity-plans",
+      "heading": "Ana Torres",
+      "overflow": false
+    },
+    {
+      "mode": "dark",
+      "width": 390,
+      "keyboardSearch": true
+    },
+    {
+      "mode": "dark",
+      "width": 390,
+      "mobileMenu": true
+    },
+    {
+      "mode": "dark",
+      "width": 768,
+      "route": "dashboard",
+      "heading": "Administración",
+      "overflow": false
+    },
+    {
+      "mode": "dark",
+      "width": 768,
+      "route": "accounts",
+      "heading": "Gestionar usuarios",
+      "overflow": false
+    },
+    {
+      "mode": "dark",
+      "width": 768,
+      "accountList": true,
+      "overflow": false
+    },
+    {
+      "mode": "dark",
+      "width": 768,
+      "accountDialog": true,
+      "focusedBefore": "DIV",
+      "overflow": false
+    },
+    {
+      "mode": "dark",
+      "width": 768,
+      "route": "universities",
+      "heading": "Estructura académica",
+      "overflow": false
+    },
+    {
+      "mode": "dark",
+      "width": 768,
+      "route": "forms",
+      "heading": "Entrevistas",
+      "overflow": false
+    },
+    {
+      "mode": "dark",
+      "width": 768,
+      "route": "practices/7/documents/activity-plans",
+      "heading": "Ana Torres",
+      "overflow": false
+    },
+    {
+      "mode": "dark",
+      "width": 768,
+      "keyboardSearch": true
+    },
+    {
+      "mode": "dark",
+      "width": 768,
+      "mobileMenu": true
+    },
+    {
+      "mode": "dark",
+      "width": 1440,
+      "route": "dashboard",
+      "heading": "Administración",
+      "overflow": false
+    },
+    {
+      "mode": "dark",
+      "width": 1440,
+      "route": "accounts",
+      "heading": "Gestionar usuarios",
+      "overflow": false
+    },
+    {
+      "mode": "dark",
+      "width": 1440,
+      "accountList": true,
+      "overflow": false
+    },
+    {
+      "mode": "dark",
+      "width": 1440,
+      "accountDialog": true,
+      "focusedBefore": "DIV",
+      "overflow": false
+    },
+    {
+      "mode": "dark",
+      "width": 1440,
+      "route": "universities",
+      "heading": "Estructura académica",
+      "overflow": false
+    },
+    {
+      "mode": "dark",
+      "width": 1440,
+      "route": "forms",
+      "heading": "Entrevistas",
+      "overflow": false
+    },
+    {
+      "mode": "dark",
+      "width": 1440,
+      "route": "practices/7/documents/activity-plans",
+      "heading": "Ana Torres",
+      "overflow": false
+    },
+    {
+      "mode": "dark",
+      "width": 1440,
+      "keyboardSearch": true
+    }
+  ],
+  "errors": []
+}

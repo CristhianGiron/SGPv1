@@ -1,0 +1,65 @@
+{
+  "results": [
+    {
+      "mode": "light",
+      "width": 1440,
+      "cards": 7,
+      "overflow": false,
+      "topBorders": [
+        "1px",
+        "1px",
+        "1px",
+        "1px",
+        "1px",
+        "1px",
+        "1px"
+      ]
+    },
+    {
+      "mode": "light",
+      "width": 390,
+      "cards": 7,
+      "overflow": false,
+      "topBorders": [
+        "1px",
+        "1px",
+        "1px",
+        "1px",
+        "1px",
+        "1px",
+        "1px"
+      ]
+    },
+    {
+      "mode": "dark",
+      "width": 1440,
+      "cards": 7,
+      "overflow": false,
+      "topBorders": [
+        "1px",
+        "1px",
+        "1px",
+        "1px",
+        "1px",
+        "1px",
+        "1px"
+      ]
+    },
+    {
+      "mode": "dark",
+      "width": 390,
+      "cards": 7,
+      "overflow": false,
+      "topBorders": [
+        "1px",
+        "1px",
+        "1px",
+        "1px",
+        "1px",
+        "1px",
+        "1px"
+      ]
+    }
+  ],
+  "errors": []
+}

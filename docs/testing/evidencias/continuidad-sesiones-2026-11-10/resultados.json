@@ -1,0 +1,78 @@
+{
+  "date": "2026-11-10",
+  "backend": {
+    "cases": 225,
+    "passed": 223,
+    "skipped": 2,
+    "failures": 0,
+    "finalFocusedTests": 11
+  },
+  "frontend": {
+    "suites": 58,
+    "tests": 206,
+    "failures": 0,
+    "finalFocusedTests": 8
+  },
+  "mariadb": {
+    "isolated": true,
+    "migrations": 24,
+    "tests": 2,
+    "failures": 0
+  },
+  "browser": {
+    "syntheticApi": true,
+    "widths": [
+      390,
+      1440
+    ],
+    "checks": 12,
+    "errors": 0
+  },
+  "operationalDatabaseModified": false,
+  "build": "Compiled successfully",
+  "sourceSha256": {
+    "BackEnd/src/main/java/com/sgp/systemsgp/service/AuthService.java": "c37144d9fb0bd3374e27fde0d315f62ed96369dbb14ab806f43c660b56f1b9e8",
+    "BackEnd/src/main/java/com/sgp/systemsgp/service/AuthSessionService.java": "ae81deff0bb9285958ff71587c11320f76dec7db8f248917a221d12725988416",
+    "BackEnd/src/main/java/com/sgp/systemsgp/service/AccountService.java": "746006d414ce1a029245830c7a2af8905dea04e8263393dc3a73561fe9603935",
+    "BackEnd/src/main/java/com/sgp/systemsgp/service/AdminAccountService.java": "f3fb50cf690a350d93155606b78455d4c9d61b52c6e7b8d4dbad669de660c4a5",
+    "BackEnd/src/main/java/com/sgp/systemsgp/service/DidacticPlanService.java": "b8a4b62f8a3ecbbba47087fb7ecc1aa5794a24a0913a62ed4600a1bb8431838c",
+    "BackEnd/src/main/java/com/sgp/systemsgp/service/PracticeFormService.java": "6f4178fd39c7538e8c615e26b6a0eebad6498b009ad6287ca3ec9e18ae6f53b9",
+    "BackEnd/src/main/java/com/sgp/systemsgp/model/AuthSession.java": "3ec3e68ad2f3dc2630adc74ec9d0fb932c7a9f4242d5c81dbd1b626bf8d26371",
+    "BackEnd/src/main/java/com/sgp/systemsgp/model/Account.java": "c81c835f9385b9ae22ee6d0e1526b8085107ad12de2a99a1bfe17031925c612e",
+    "BackEnd/src/main/java/com/sgp/systemsgp/model/DidacticPlanRevision.java": "d1c01e92d023f536d0c36f5d670e5ecdb38b05165a5da56b3858ce7968853bd5",
+    "BackEnd/src/main/java/com/sgp/systemsgp/repository/AuthSessionRepository.java": "fc8c0aecb2aaac09926161e4c6805bc1c4a1fac5939cd93a73883649e1c0c067",
+    "BackEnd/src/main/java/com/sgp/systemsgp/repository/AccountRepository.java": "8111b4dd93bf190d8860c00317f9415f030e1c514fede98a676cde150c67ba89",
+    "BackEnd/src/main/java/com/sgp/systemsgp/repository/DidacticPlanRepository.java": "a1cfc29fc8aa712b4f49ad0b4b4248b590195134900f27d347508ee4fcdb5c07",
+    "BackEnd/src/main/java/com/sgp/systemsgp/repository/DidacticPlanRevisionRepository.java": "ce3b863178061407e4a609d067d5f97404b50ebb99609e713096839cba20833f",
+    "BackEnd/src/main/java/com/sgp/systemsgp/repository/StudentPracticeFormRepository.java": "004517e8986e72d8948d49fc1009b780b1c2508a2645f630d9faf7722c9185b8",
+    "BackEnd/src/main/java/com/sgp/systemsgp/config/JwtService.java": "84420535cb08fbcb3e841a28ee093c782f4a26a6741e5424bbe2bdbc5d5fd74f",
+    "BackEnd/src/main/java/com/sgp/systemsgp/config/JwtAuthFilter.java": "43d12f34479abd1d79b9b842b7b104ab25b7110c01dccd6e2f3e9939d742a20a",
+    "BackEnd/src/main/java/com/sgp/systemsgp/config/SecurityConfig.java": "72562ca7ad571d95a88ec68fd6213ac644678e9f7a9829571bb622f1dc4a29b6",
+    "BackEnd/src/main/java/com/sgp/systemsgp/config/RateLimitingFilter.java": "24bed67c79d3c0eb196c589ee3756503d21de04ef3c27b3aad935e60dd18473f",
+    "BackEnd/src/main/java/com/sgp/systemsgp/controller/AuthController.java": "76881662bbe95c9b4719b57458bf560a65323f9a8fee485e4aa3bd59d1667532",
+    "BackEnd/src/main/java/com/sgp/systemsgp/controller/DidacticPlanController.java": "eca7a9941fe6bafa11300eaaff3c6ac7086b2a3240d8c196b18081af7a8d77f1",
+    "BackEnd/src/main/java/com/sgp/systemsgp/websocket/WebSocketAuthInterceptor.java": "c40798826262763faccbd2078cc8825e3f342386942598910693d50090e35fba",
+    "BackEnd/src/main/java/com/sgp/systemsgp/websocket/NotificationWebSocketHandler.java": "142467744982d36edc519c3612679568bd8720c253e635e1bea09fab4fe0ad16",
+    "BackEnd/src/main/java/com/sgp/systemsgp/dto/auth/RefreshSessionRequest.java": "18ae09ce1576b6d3c4c6b524eb2bae1e8cc338c287e65b14e163097d2b57e077",
+    "BackEnd/src/main/java/com/sgp/systemsgp/dto/didacticplan/ReturnDidacticPlanRequest.java": "97ee67c9c2ea1bc1cc9dca5bb095b4da20f1efa279da990617c1c8e61058df0c",
+    "BackEnd/src/main/java/com/sgp/systemsgp/dto/didacticplan/DidacticPlanRevisionSummary.java": "33d2c82c6d0472d812214a63dfaa617fd41ab0a68c25eccbabcab53655f37249",
+    "BackEnd/src/main/java/com/sgp/systemsgp/dto/didacticplan/DidacticPlanResponse.java": "7064d8b46d9d8a8fbd9fc28ff7dd262cc191e2681acb975c7370ded368904d5e",
+    "BackEnd/src/main/java/com/sgp/systemsgp/dto/didacticplan/DidacticPlanWeekResponse.java": "101f76108deecba6abe764a78a2ba107709a70d161b8dfd2f816878ad2ac3b5d",
+    "FrontEnd/src/api/client.jsx": "ec8f0a736bdd6a6f51d2da23db9fa03d6ecd8652b21b96fa90c7bd112c4097e9",
+    "FrontEnd/src/api/sessionRenewal.test.jsx": "d85777f2b069c7e66de912129ccbb993475174085a0ac6873ab00166c9499f99",
+    "FrontEnd/src/auth/storage.jsx": "f934f3c167d14d9216f8bbb9eb0c645b2b4990be67a0545bc92984ac8b9c8ece",
+    "FrontEnd/src/auth/AuthContext.jsx": "3b9b157a3eb9e3eec08734e2fbfb44ac2806e7681b33c1090bfc57f6a2d092cc",
+    "FrontEnd/src/pages/LoginPage.jsx": "7b95a20b5ce21ce8c8a5489f860be3a7d0b40713437c47738475a9d2f6b0e177",
+    "FrontEnd/src/pages/ProfilePage.jsx": "f4bb83b9c6bc34466e5d24c6c385cfdc7448cf5b82a6dcfa621a5d679588e4da",
+    "FrontEnd/src/pages/PracticeFormsPage.jsx": "b5f21b726d9b90e87d49b0b3cd1d78f904443ad405e2ba17c578fc2296feac54",
+    "FrontEnd/src/pages/DidacticPlansPage.jsx": "721c84475ba8eddec26a06ea29f3b611522e2427c747ddbf4dc00d5bcd5ebf6b",
+    "FrontEnd/src/components/DidacticPlanContinuity.jsx": "3fc371d4f1f0e655ec1cc0eb4ed1e1667c61aa78d49e0adcb9c58daae266377a",
+    "FrontEnd/src/components/SessionControls.jsx": "8c61f849841ce9de2004ac81b8464adaef787258ca66059df36949551e8b215c",
+    "FrontEnd/src/components/DidacticPlanContinuity.test.jsx": "f40cb69d6766824466e2d5024c41183217fab68eada1ffaf4f99c16af41e1c00",
+    "FrontEnd/src/components/SessionControls.test.jsx": "5e766aee222a1d7cd08896054e1d6668246ff27a0f8215623a3e6758b9b1f318",
+    "BackEnd/src/main/resources/db/migration/V24__sessions_and_institutional_plan_revisions.sql": "23fa0af22cb4b4fe64aef8a0a3ae74bf231afaec0fa87a4cbb858bdd0aea0176",
+    "docs/testing/qa/browser-continuity-sessions.cjs": "357f36f0296d140e31c3b68972727a6ac310c2fa8b0b942f72d24fa41f511d06",
+    "BackEnd/src/test/java/com/sgp/systemsgp/service/ContinuityWorkflowTest.java": "39cf092f24e2d65bd5dec3114f415fcdb4047c47a67f6fe143ba7cb12929fff6",
+    "BackEnd/src/test/java/com/sgp/systemsgp/websocket/NotificationSessionRevocationTest.java": "9b1fbf4b67c38deca0996682f66a6ee92e1ee10a3c4ad0211418432fc26aa184"
+  }
+}

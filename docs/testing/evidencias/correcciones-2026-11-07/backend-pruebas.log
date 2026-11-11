@@ -1,0 +1,225 @@
+Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+WARNING: A Java agent has been loaded dynamically (/home/cristhian/.m2/repository/net/bytebuddy/byte-buddy-agent/1.17.8/byte-buddy-agent-1.17.8.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+14:09:39.978 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.sgp.systemsgp.service.PracticeWorkflowRegressionTest]: PracticeWorkflowRegressionTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+14:09:40.209 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.sgp.systemsgp.SystemsgpApplication for test class com.sgp.systemsgp.service.PracticeWorkflowRegressionTest
+14:09:40.328 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.sgp.systemsgp.service.PracticeWorkflowRegressionTest]: PracticeWorkflowRegressionTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+14:09:40.332 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.sgp.systemsgp.SystemsgpApplication for test class com.sgp.systemsgp.service.PracticeWorkflowRegressionTest
+14:09:40.410 [main] INFO org.springframework.boot.devtools.restart.RestartApplicationListener -- Restart disabled due to context in which it is running
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.6)
+
+2026-11-07T14:09:40.754-05:00  INFO 54287 --- [           main] c.s.s.s.PracticeWorkflowRegressionTest   : Starting PracticeWorkflowRegressionTest using Java 21.0.12.1 with PID 54287 (started by cristhian in /home/cristhian/Escritorio/SGP/SGPv1/BackEnd)
+2026-11-07T14:09:40.755-05:00  INFO 54287 --- [           main] c.s.s.s.PracticeWorkflowRegressionTest   : The following 1 profile is active: "test"
+2026-11-07T14:09:42.214-05:00  INFO 54287 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-07T14:09:42.409-05:00  INFO 54287 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 181 ms. Found 34 JPA repository interfaces.
+2026-11-07T14:09:43.379-05:00  INFO 54287 --- [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-11-07T14:09:43.454-05:00  INFO 54287 --- [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.12.Final
+2026-11-07T14:09:43.799-05:00  INFO 54287 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-07T14:09:43.831-05:00  INFO 54287 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-11-07T14:09:44.068-05:00  INFO 54287 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:sgp_test user=SA
+2026-11-07T14:09:44.071-05:00  INFO 54287 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-11-07T14:09:44.145-05:00  INFO 54287 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:sgp_test]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: sgp_test/public
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-07T14:09:46.302-05:00  INFO 54287 --- [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-07T14:09:46.602-05:00  INFO 54287 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-07T14:09:46.733-05:00  INFO 54287 --- [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-11-07T14:09:49.187-05:00  INFO 54287 --- [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2026-11-07T14:09:50.626-05:00  INFO 54287 --- [           main] c.s.s.w.NotificationWebSocketConfig      : Registering WebSocket handler at /ws/notifications
+2026-11-07T14:09:51.371-05:00  INFO 54287 --- [           main] c.s.s.s.PracticeWorkflowRegressionTest   : Started PracticeWorkflowRegressionTest in 10.971 seconds (process running for 16.395)
+2026-11-07T14:09:51.671-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:09:51.672-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:09:51.676-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 3 ms
+2026-11-07T14:09:51.838-05:00  INFO 54287 --- [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:h2:mem:sgp_test (H2 2.4)
+2026-11-07T14:09:51.848-05:00  WARN 54287 --- [           main] o.f.c.internal.database.base.Database    : Using H2 2.4.240 which is newer than the version Flyway has been verified with. The latest verified version of H2 is 2.3.232.
+2026-11-07T14:09:51.885-05:00  INFO 54287 --- [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Schema history table "public"."flyway_schema_history" does not exist yet
+2026-11-07T14:09:51.968-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:09:51.968-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:09:51.970-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2026-11-07T14:09:52.488-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:09:52.488-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:09:52.490-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2026-11-07T14:09:52.699-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:09:52.700-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:09:52.703-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 3 ms
+2026-11-07T14:09:52.774-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:09:52.774-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:09:52.777-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 3 ms
+2026-11-07T14:09:52.825-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:09:52.826-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:09:52.827-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-11-07T14:09:52.928-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:09:52.929-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:09:52.930-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-11-07T14:09:52.986-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:09:52.987-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:09:52.989-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2026-11-07T14:09:53.037-05:00  INFO 54287 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.sgp.systemsgp.service.EntityImageIntegrationTest]: EntityImageIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-07T14:09:53.040-05:00  INFO 54287 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.sgp.systemsgp.SystemsgpApplication for test class com.sgp.systemsgp.service.EntityImageIntegrationTest
+2026-11-07T14:09:53.043-05:00  INFO 54287 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.sgp.systemsgp.service.EntityImageIntegrationTest]: EntityImageIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-07T14:09:53.044-05:00  INFO 54287 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.sgp.systemsgp.SystemsgpApplication for test class com.sgp.systemsgp.service.EntityImageIntegrationTest
+2026-11-07T14:09:53.076-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:09:53.076-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:09:53.077-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-11-07T14:09:53.251-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:09:53.251-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:09:53.253-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2026-11-07T14:09:53.338-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:09:53.338-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:09:53.340-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2026-11-07T14:09:53.461-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:09:53.462-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:09:53.463-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-11-07T14:09:53.525-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:09:53.525-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:09:53.527-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2026-11-07T14:09:53.604-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:09:53.604-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:09:53.607-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 3 ms
+2026-11-07T14:09:53.665-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:09:53.665-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:09:53.667-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2026-11-07T14:09:53.706-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:09:53.707-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:09:53.709-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2026-11-07T14:09:53.745-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:09:53.746-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:09:53.748-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2026-11-07T14:09:54.055-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:09:54.055-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:09:54.057-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2026-11-07T14:09:54.918-05:00  INFO 54287 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.sgp.systemsgp.service.QaUserWorkflowsTest]: QaUserWorkflowsTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-07T14:09:54.926-05:00  INFO 54287 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.sgp.systemsgp.SystemsgpApplication for test class com.sgp.systemsgp.service.QaUserWorkflowsTest
+2026-11-07T14:09:54.930-05:00  INFO 54287 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.sgp.systemsgp.service.QaUserWorkflowsTest]: QaUserWorkflowsTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-07T14:09:54.934-05:00  INFO 54287 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.sgp.systemsgp.SystemsgpApplication for test class com.sgp.systemsgp.service.QaUserWorkflowsTest
+2026-11-07T14:09:55.046-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:09:55.047-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:09:55.054-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 7 ms
+2026-11-07T14:09:56.180-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:09:56.180-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:09:56.184-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 4 ms
+2026-11-07T14:09:56.471-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:09:56.471-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:09:56.478-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 7 ms
+2026-11-07T14:09:56.797-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:09:56.797-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:09:56.801-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 4 ms
+2026-11-07T14:09:57.395-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:09:57.395-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:09:57.399-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 4 ms
+2026-11-07T14:09:57.948-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:09:57.948-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:09:57.950-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2026-11-07T14:09:58.090-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:09:58.090-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:09:58.092-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2026-11-07T14:09:58.766-05:00  INFO 54287 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.sgp.systemsgp.service.RoleSeparationIntegrationTest]: RoleSeparationIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-07T14:09:58.769-05:00  INFO 54287 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.sgp.systemsgp.SystemsgpApplication for test class com.sgp.systemsgp.service.RoleSeparationIntegrationTest
+2026-11-07T14:09:58.770-05:00  INFO 54287 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.sgp.systemsgp.service.RoleSeparationIntegrationTest]: RoleSeparationIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-07T14:09:58.772-05:00  INFO 54287 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.sgp.systemsgp.SystemsgpApplication for test class com.sgp.systemsgp.service.RoleSeparationIntegrationTest
+2026-11-07T14:09:58.802-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:09:58.802-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:09:58.804-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2026-11-07T14:09:58.881-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:09:58.882-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:09:58.884-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2026-11-07T14:09:58.957-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:09:58.957-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:09:58.959-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2026-11-07T14:09:59.020-05:00  WARN 54287 --- [           main] ration$PageModule$WarningLoggingModifier : Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
+	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
+
+2026-11-07T14:09:59.092-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:09:59.092-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:09:59.095-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 3 ms
+2026-11-07T14:09:59.219-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:09:59.220-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:09:59.223-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 3 ms
+2026-11-07T14:09:59.321-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:09:59.321-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:09:59.323-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2026-11-07T14:09:59.362-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:09:59.362-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:09:59.364-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2026-11-07T14:09:59.700-05:00  INFO 54287 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.sgp.systemsgp.service.InstitutionalDefaultsServiceTest]: InstitutionalDefaultsServiceTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-07T14:09:59.703-05:00  INFO 54287 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.sgp.systemsgp.SystemsgpApplication for test class com.sgp.systemsgp.service.InstitutionalDefaultsServiceTest
+2026-11-07T14:09:59.705-05:00  INFO 54287 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.sgp.systemsgp.service.InstitutionalDefaultsServiceTest]: InstitutionalDefaultsServiceTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-07T14:09:59.707-05:00  INFO 54287 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.sgp.systemsgp.SystemsgpApplication for test class com.sgp.systemsgp.service.InstitutionalDefaultsServiceTest
+2026-11-07T14:09:59.837-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:09:59.838-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:09:59.841-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 3 ms
+2026-11-07T14:10:02.065-05:00  INFO 54287 --- [           main] o.s.b.d.r.RestartApplicationListener     : Restart disabled due to context in which it is running
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.6)
+
+2026-11-07T14:10:02.102-05:00  INFO 54287 --- [           main] c.s.systemsgp.config.SecurityConfigTest  : Starting SecurityConfigTest using Java 21.0.12.1 with PID 54287 (started by cristhian in /home/cristhian/Escritorio/SGP/SGPv1/BackEnd)
+2026-11-07T14:10:02.103-05:00  INFO 54287 --- [           main] c.s.systemsgp.config.SecurityConfigTest  : No active profile set, falling back to 1 default profile: "dev"
+2026-11-07T14:10:02.835-05:00  INFO 54287 --- [           main] c.s.systemsgp.config.SecurityConfigTest  : Started SecurityConfigTest in 0.77 seconds (process running for 27.86)
+2026-11-07T14:10:02.840-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:10:02.840-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:10:02.842-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2026-11-07T14:10:02.855-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:10:02.855-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:10:02.857-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-11-07T14:10:02.869-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:10:02.869-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:10:02.871-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2026-11-07T14:10:02.884-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:10:02.885-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:10:02.886-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-11-07T14:10:02.893-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:10:02.893-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:10:02.894-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-11-07T14:10:02.900-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:10:02.900-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:10:02.901-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-11-07T14:10:02.916-05:00  INFO 54287 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:10:02.916-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:10:02.918-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2026-11-07T14:10:03.501-05:00  INFO 54287 --- [           main] o.s.mock.web.MockServletContext          : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:10:03.501-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:10:03.502-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-11-07T14:10:03.621-05:00  INFO 54287 --- [           main] o.s.mock.web.MockServletContext          : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:10:03.621-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:10:03.622-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+2026-11-07T14:10:03.721-05:00  INFO 54287 --- [           main] o.s.mock.web.MockServletContext          : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:10:03.722-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:10:03.722-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+2026-11-07T14:10:03.833-05:00  INFO 54287 --- [           main] o.s.mock.web.MockServletContext          : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:10:03.833-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:10:03.833-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+2026-11-07T14:10:03.868-05:00  INFO 54287 --- [           main] o.s.mock.web.MockServletContext          : Initializing Spring TestDispatcherServlet ''
+2026-11-07T14:10:03.868-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-07T14:10:03.869-05:00  INFO 54287 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+2026-11-07T14:10:03.921-05:00  INFO 54287 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.sgp.systemsgp.SystemsgpApplicationTests]: SystemsgpApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-07T14:10:03.941-05:00  INFO 54287 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.sgp.systemsgp.SystemsgpApplication for test class com.sgp.systemsgp.SystemsgpApplicationTests
+2026-11-07T14:10:03.943-05:00  INFO 54287 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.sgp.systemsgp.SystemsgpApplicationTests]: SystemsgpApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-07T14:10:03.961-05:00  INFO 54287 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.sgp.systemsgp.SystemsgpApplication for test class com.sgp.systemsgp.SystemsgpApplicationTests

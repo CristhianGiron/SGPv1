@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          PracticeFollowUpReportRepository.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Define las consultas de persistencia para el seguimiento de prácticas (L.5).
+ */
+
 package com.sgp.systemsgp.repository;
 
 import com.sgp.systemsgp.model.PracticeFollowUpReport;
@@ -8,6 +20,8 @@ import java.util.Optional;
 
 public interface PracticeFollowUpReportRepository
         extends JpaRepository<PracticeFollowUpReport, Long> {
+
+    java.util.List<PracticeFollowUpReport> findByEnrollment_IdAndDeletedFalseOrderByIdAsc(Long enrollmentId);
 
     boolean existsByEnrollment_IdAndDeletedFalse(Long enrollmentId);
 

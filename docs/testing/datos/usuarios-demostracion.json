@@ -1,0 +1,155 @@
+{
+  "created": 9,
+  "accounts": [
+    {
+      "username": "demo2026.mateo.ortega",
+      "name": "Mateo Andrés Ortega Salazar",
+      "role": "ROLE_ESTUDIANTE",
+      "stage": "Solicitud pendiente",
+      "enrollmentId": 3,
+      "status": "PENDING",
+      "archived": false,
+      "planStatus": null
+    },
+    {
+      "username": "demo2026.camila.espinosa",
+      "name": "Camila Alejandra Espinosa Rojas",
+      "role": "ROLE_ESTUDIANTE",
+      "stage": "Práctica activa",
+      "enrollmentId": 4,
+      "status": "APPROVED",
+      "archived": false,
+      "planStatus": null
+    },
+    {
+      "username": "demo2026.nicolas.pineda",
+      "name": "Nicolás Sebastián Pineda Torres",
+      "role": "ROLE_ESTUDIANTE",
+      "stage": "Práctica activa",
+      "enrollmentId": 5,
+      "status": "APPROVED",
+      "archived": false,
+      "planStatus": null
+    },
+    {
+      "username": "demo2026.daniela.villavicencio",
+      "name": "Daniela Belén Villavicencio Ruiz",
+      "role": "ROLE_ESTUDIANTE",
+      "stage": "Plan en borrador",
+      "enrollmentId": 6,
+      "status": "APPROVED",
+      "archived": false,
+      "planStatus": "DRAFT"
+    },
+    {
+      "username": "demo2026.sebastian.maldonado",
+      "name": "Sebastián David Maldonado Vélez",
+      "role": "ROLE_ESTUDIANTE",
+      "stage": "Plan en borrador",
+      "enrollmentId": 7,
+      "status": "APPROVED",
+      "archived": false,
+      "planStatus": "DRAFT"
+    },
+    {
+      "username": "demo2026.isabela.samaniego",
+      "name": "Isabela Fernanda Samaniego León",
+      "role": "ROLE_ESTUDIANTE",
+      "stage": "Plan enviado",
+      "enrollmentId": 8,
+      "status": "APPROVED",
+      "archived": false,
+      "planStatus": "SUBMITTED"
+    },
+    {
+      "username": "demo2026.emilio.aguirre",
+      "name": "Emilio Alejandro Aguirre Castillo",
+      "role": "ROLE_ESTUDIANTE",
+      "stage": "Plan con observaciones",
+      "enrollmentId": 9,
+      "status": "APPROVED",
+      "archived": false,
+      "planStatus": "NEEDS_CORRECTION"
+    },
+    {
+      "username": "demo2026.sofia.quezada",
+      "name": "Sofía Gabriela Quezada Moreno",
+      "role": "ROLE_ESTUDIANTE",
+      "stage": "Plan aprobado",
+      "enrollmentId": 10,
+      "status": "APPROVED",
+      "archived": false,
+      "planStatus": "APPROVED"
+    },
+    {
+      "username": "demo2026.gabriel.romero",
+      "name": "Gabriel Esteban Romero Pardo",
+      "role": "ROLE_ESTUDIANTE",
+      "stage": "Plan aprobado",
+      "enrollmentId": 11,
+      "status": "APPROVED",
+      "archived": false,
+      "planStatus": "APPROVED"
+    },
+    {
+      "username": "demo2026.antonella.carrion",
+      "name": "Antonella María Carrión Delgado",
+      "role": "ROLE_ESTUDIANTE",
+      "stage": "Práctica concluida",
+      "enrollmentId": 12,
+      "status": "COMPLETED",
+      "archived": false,
+      "planStatus": "APPROVED"
+    },
+    {
+      "username": "demo2026.david.alvarado",
+      "name": "David Francisco Alvarado Zambrano",
+      "role": "ROLE_ESTUDIANTE",
+      "stage": "Práctica archivada",
+      "enrollmentId": 13,
+      "status": "COMPLETED",
+      "archived": true,
+      "planStatus": "APPROVED"
+    },
+    {
+      "username": "demo2026.valentina.jaramillo",
+      "name": "Valentina Isabel Jaramillo Cueva",
+      "role": "ROLE_ESTUDIANTE",
+      "stage": "Solicitud pendiente",
+      "enrollmentId": 14,
+      "status": "PENDING",
+      "archived": false,
+      "planStatus": null
+    },
+    {
+      "username": "demo2026.marcela.velez",
+      "name": "Marcela Patricia Vélez Samaniego",
+      "role": "ROLE_DIRECTOR_PRACTICAS"
+    },
+    {
+      "username": "demo2026.teresa.cabrera",
+      "name": "Teresa Elizabeth Cabrera Ríos",
+      "role": "ROLE_DIRECTORA_INSTITUCION"
+    },
+    {
+      "username": "demo2026.andres.cordova",
+      "name": "Andrés Mauricio Córdova Molina",
+      "role": "ROLE_TUTOR_PRACTICAS"
+    },
+    {
+      "username": "demo2026.paola.salinas",
+      "name": "Paola Cristina Salinas Cabrera",
+      "role": "ROLE_TUTOR_PRACTICAS"
+    },
+    {
+      "username": "demo2026.elena.benitez",
+      "name": "Elena Rocío Benítez Palacios",
+      "role": "ROLE_TUTOR_INSTITUCIONAL"
+    },
+    {
+      "username": "demo2026.javier.rios",
+      "name": "Javier Eduardo Ríos Valdivieso",
+      "role": "ROLE_TUTOR_INSTITUCIONAL"
+    }
+  ]
+}

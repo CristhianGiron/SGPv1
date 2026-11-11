@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          PublicRegistrationController.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Expone las operaciones HTTP relacionadas con el módulo Public Registration Controller.
+ */
+
 package com.sgp.systemsgp.controller;
 
 import com.sgp.systemsgp.dto.academiccycle.AcademicCycleResponse;
@@ -36,6 +48,11 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class PublicRegistrationController {
+
+    private final com.sgp.systemsgp.service.InstitutionalDefaultsService defaultsService;
+
+    @GetMapping("/institutional-defaults")
+    public com.sgp.systemsgp.service.InstitutionalDefaultsService.Defaults institutionalDefaults() { return defaultsService.current(); }
 
     private final AcademicCycleService academicCycleService;
 

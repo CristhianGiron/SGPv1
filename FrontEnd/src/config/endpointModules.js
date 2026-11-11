@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          endpointModules.js
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Define la configuración de endpointModules utilizada por la interfaz.
+ */
+
 const STUDENT_ROLES = ['ROLE_ESTUDIANTE'];
 const PRACTICE_TUTOR_ROLES = ['ROLE_TUTOR_PRACTICAS'];
 const PRACTICE_REVIEW_ROLES = ['ROLE_TUTOR_PRACTICAS', 'ROLE_DIRECTOR_PRACTICAS'];
@@ -130,8 +142,8 @@ export const DOCUMENT_MODULES = [
     listPath: '/api/final-reports/me/summary',
     listRoles: STUDENT_ROLES,
     altLists: [
-      { label: 'Revision del tutor', path: '/api/final-reports/practice-review/summary', roles: PRACTICE_TUTOR_ROLES },
-      { label: 'Revision institucional', path: '/api/final-reports/institutional-review/summary', roles: INSTITUTIONAL_TUTOR_ROLES },
+      { label: 'Revisión del tutor', path: '/api/final-reports/practice-review/summary', roles: PRACTICE_TUTOR_ROLES },
+      { label: 'Revisión institucional', path: '/api/final-reports/institutional-review/summary', roles: INSTITUTIONAL_TUTOR_ROLES },
       { label: 'Enviados', path: '/api/final-reports/submitted/summary', roles: PRACTICE_MANAGEMENT_ROLES },
     ],
     createPath: '/api/final-reports',
@@ -154,7 +166,7 @@ export const DOCUMENT_MODULES = [
     reviewRoles: PRACTICE_REVIEW_ROLES,
     extraActions: [
       {
-        label: 'Revision institucional',
+        label: 'Revisión institucional',
         roles: INSTITUTIONAL_TUTOR_ROLES,
         needsId: true,
         body: true,
@@ -171,18 +183,33 @@ export const DOCUMENT_MODULES = [
         path: (id) => `/api/final-reports/${id}/institutional-review`,
       },
       {
+        label: 'Adjuntar membrete al L.3 aprobado',
+        letterhead: true,
+        roles: INSTITUTIONAL_TUTOR_ROLES,
+        needsId: true,
+        body: true,
+        method: 'PUT',
+        sample: {},
+        visibleWhen: record => record.status === 'APPROVED' && !record.letterheadImageUrl,
+        path: id => `/api/final-reports/${id}/letterhead`,
+      },
+      {
         label: 'Guardar comentarios institucionales',
+        letterhead: true,
         roles: INSTITUTIONAL_TUTOR_ROLES,
         needsId: true,
         body: true,
         method: 'PATCH',
         sample: {
-          conclusion1: 'Conclusion relacionada con el objetivo especifico 1.',
-          conclusion2: 'Conclusion relacionada con el objetivo especifico 2.',
-          conclusion3: 'Conclusion relacionada con el objetivo especifico 3.',
-          recommendation1: 'Recomendacion relacionada con la conclusion 1.',
-          recommendation2: 'Recomendacion relacionada con la conclusion 2.',
-          recommendation3: 'Recomendacion relacionada con la conclusion 3.',
+          completedHours: null,
+          completedMinutes: null,
+          reportDate: null,
+          conclusion1: 'Conclusión relacionada con el objetivo específico 1.',
+          conclusion2: 'Conclusión relacionada con el objetivo específico 2.',
+          conclusion3: 'Conclusión relacionada con el objetivo específico 3.',
+          recommendation1: 'Recomendacion relacionada con la conclusión 1.',
+          recommendation2: 'Recomendacion relacionada con la conclusión 2.',
+          recommendation3: 'Recomendacion relacionada con la conclusión 3.',
         },
         path: (id) => `/api/final-reports/${id}/institutional-section`,
       },
@@ -201,9 +228,9 @@ export const DOCUMENT_MODULES = [
   },
   {
     id: 'activity-evaluations',
-    title: 'L.4. Evaluación de Actividades.',
+    title: 'L.4. Evaluación de Actividades',
     documentOrder: 4,
-    pdfFilename: 'L.4. Evaluación de Actividades..pdf',
+    pdfFilename: 'L.4. Evaluación de Actividades.pdf',
     roles: ['ROLE_ESTUDIANTE', 'ROLE_TUTOR_PRACTICAS'],
     listPath: '/api/activity-evaluations/me',
     listRoles: STUDENT_ROLES,
@@ -237,16 +264,14 @@ export const DOCUMENT_MODULES = [
       academicPeriod: '',
       developmentMode: '',
       aspects: [
-        {
-          aspectType: 'GENERAL',
-          item: '',
-          level: '',
-        },
-        {
-          aspectType: 'ESPECIFICO',
-          item: '',
-          level: '',
-        },
+        { aspectType: 'GENERAL', item: 'Conoce en qué consiste la práctica preprofesional que realiza.', level: '' },
+        { aspectType: 'GENERAL', item: 'Realiza con calidad los trabajos encomendados.', level: '' },
+        { aspectType: 'GENERAL', item: 'Ejecuta con responsabilidad las instrucciones y/o tareas encargadas.', level: '' },
+        { aspectType: 'GENERAL', item: 'Respeta los procedimientos y normas establecidas en la institución educativa.', level: '' },
+        { aspectType: 'ESPECIFICO', item: 'Aplicación de instrumentos: recolección de información mediante entrevistas y de las planificaciones microcurriculares del tutor institucional.', level: '' },
+        { aspectType: 'ESPECIFICO', item: 'Análisis y sistematización de la información obtenida del docente tutor institucional sobre las dificultades de aprendizaje.', level: '' },
+        { aspectType: 'ESPECIFICO', item: 'Registro de la información recolectada de la observación áulica en la institución educativa de acogida.', level: '' },
+        { aspectType: 'ESPECIFICO', item: 'Diseño, elaboración y presentación de la planificación microcurricular, el recurso educativo digital y los informes de práctica.', level: '' },
       ],
       hoursCompleted: '',
       activitiesCompletionPercentage: '',
@@ -296,6 +321,7 @@ export const DOCUMENT_MODULES = [
           startTime: '',
           endTime: '',
           supervisedActivities: '',
+          observations: '',
         },
       ],
       deliveryDate: '',
@@ -389,7 +415,7 @@ export const SCHEDULE_MODULES = [
     listRoles: STUDENT_ROLES,
     altLists: [
       { label: 'Mis jornadas', path: '/api/practice-schedules/managed', roles: INSTITUTIONAL_TUTOR_ROLES },
-      { label: 'Jornadas de mi institucion', path: '/api/practice-schedules/institution-review', roles: INSTITUTION_DIRECTOR_ROLES },
+      { label: 'Jornadas de mi institución', path: '/api/practice-schedules/institution-review', roles: INSTITUTION_DIRECTOR_ROLES },
       { label: 'Revisión', path: '/api/practice-schedules/review', roles: ['ROLE_TUTOR_PRACTICAS', 'ROLE_DIRECTOR_PRACTICAS', 'ROLE_ADMIN'] },
     ],
     createPath: '/api/practice-schedules',

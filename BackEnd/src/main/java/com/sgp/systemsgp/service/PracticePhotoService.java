@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          PracticePhotoService.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa la lógica de aplicación de las evidencias fotográficas.
+ */
+
 package com.sgp.systemsgp.service;
 
 import com.sgp.systemsgp.dto.practicephoto.PracticePhotoFileResponse;
@@ -104,6 +116,7 @@ public class PracticePhotoService {
         Account student = getAccount(username);
 
         validateStudentOwnsPhoto(student, photo);
+        PracticeAccessService.requireOperationalEnrollment(photo.getEnrollment());
 
         photo.setDeleted(true);
         photo.setDeletedAt(LocalDateTime.now());
@@ -140,6 +153,7 @@ public class PracticePhotoService {
 
             return uniquePhotos(photos)
                     .stream()
+                    .filter(photo -> canViewPhoto(photo, reviewer))
                     .map(this::mapToResponse)
                     .toList();
         }
@@ -164,6 +178,7 @@ public class PracticePhotoService {
 
             return uniquePhotos(photos)
                     .stream()
+                    .filter(photo -> canViewPhoto(photo, reviewer))
                     .map(this::mapToResponse)
                     .toList();
         }
@@ -305,6 +320,8 @@ public class PracticePhotoService {
             throw new BadRequestException(
                     "Solo se pueden subir fotografias de una inscripcion aprobada");
         }
+        PracticeAccessService.requireOperationalEnrollment(enrollment);
+
 
         if (!isActiveCourseEnrollment(enrollment)) {
             throw new BadRequestException(
@@ -364,6 +381,7 @@ public class PracticePhotoService {
             throw new BadRequestException(
                     "Formato de fotografia no permitido");
         }
+        PracticeImageValidator.validate(readBytes(file), contentType);
     }
 
     private byte[] readBytes(MultipartFile file) {

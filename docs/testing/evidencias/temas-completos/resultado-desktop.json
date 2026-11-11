@@ -1,0 +1,211 @@
+{
+  "date": "2026-11-06",
+  "mode": "Chrome; isolated API",
+  "checks": [
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "Panel fits, actions exposed and avatars square",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "Explicit dark applied and persisted",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "System follows device without changing preference",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "Explicit light ignores device changes",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "light bosque applied across surfaces",
+      "appearance": {
+        "palette": "bosque",
+        "mode": "light",
+        "page": "rgb(234, 243, 236)",
+        "panel": "rgb(252, 254, 250)",
+        "soft": "rgb(224, 238, 227)",
+        "sidebar": "rgb(21, 61, 46)",
+        "table": "rgb(224, 238, 227)",
+        "accent": "rgb(27, 80, 60)",
+        "contrast": [
+          10.722450907421605,
+          10.460225265982901,
+          5.587106144202671,
+          8.70610969301915,
+          6.182864057715736
+        ]
+      }
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "light claro applied across surfaces",
+      "appearance": {
+        "palette": "claro",
+        "mode": "light",
+        "page": "rgb(240, 239, 242)",
+        "panel": "rgb(255, 255, 255)",
+        "soft": "rgb(232, 231, 236)",
+        "sidebar": "rgb(41, 39, 47)",
+        "table": "rgb(232, 231, 236)",
+        "accent": "rgb(55, 53, 62)",
+        "contrast": [
+          12.860977841583102,
+          12.754825975656473,
+          6.019993626177092,
+          10.61948781353291,
+          8.3637407074936
+        ]
+      }
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "light unl applied across surfaces",
+      "appearance": {
+        "palette": "unl",
+        "mode": "light",
+        "page": "rgb(237, 243, 251)",
+        "panel": "rgb(255, 255, 255)",
+        "soft": "rgb(231, 239, 249)",
+        "sidebar": "rgb(21, 43, 72)",
+        "table": "rgb(231, 239, 249)",
+        "accent": "rgb(27, 58, 92)",
+        "contrast": [
+          12.807809457915793,
+          12.248890099507301,
+          5.787092435370589,
+          10.291200374884022,
+          7.581318315975039
+        ]
+      }
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "dark bosque applied across surfaces",
+      "appearance": {
+        "palette": "bosque",
+        "mode": "dark",
+        "page": "rgb(14, 32, 24)",
+        "panel": "rgb(26, 48, 37)",
+        "soft": "rgb(38, 67, 51)",
+        "sidebar": "rgb(21, 61, 46)",
+        "table": "rgb(38, 67, 51)",
+        "accent": "rgb(156, 217, 183)",
+        "contrast": [
+          14.825972843710465,
+          11.490328662477198,
+          7.356769993360146,
+          8.70610969301915,
+          6.182864057715736
+        ]
+      }
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "dark claro applied across surfaces",
+      "appearance": {
+        "palette": "claro",
+        "mode": "dark",
+        "page": "rgb(24, 23, 28)",
+        "panel": "rgb(37, 36, 43)",
+        "soft": "rgb(50, 48, 57)",
+        "sidebar": "rgb(41, 39, 47)",
+        "table": "rgb(50, 48, 57)",
+        "accent": "rgb(207, 204, 216)",
+        "contrast": [
+          15.47243966706448,
+          12.417562663333829,
+          7.6055988993379815,
+          10.61948781353291,
+          8.3637407074936
+        ]
+      }
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "dark unl applied across surfaces",
+      "appearance": {
+        "palette": "unl",
+        "mode": "dark",
+        "page": "rgb(13, 23, 38)",
+        "panel": "rgb(23, 38, 58)",
+        "soft": "rgb(32, 52, 78)",
+        "sidebar": "rgb(21, 43, 72)",
+        "table": "rgb(32, 52, 78)",
+        "accent": "rgb(167, 201, 236)",
+        "contrast": [
+          15.2984214797177,
+          12.054264965759145,
+          7.465012925066863,
+          10.291200374884022,
+          7.581318315975039
+        ]
+      }
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "Tab stays in panel",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "Escape restores focus and scrolling",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "Preferences survive reload",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "Accessibility stacks above account",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "Theme retains accessibility adjustments",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "200 percent text fits and actions remain reachable",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "Outside click dismisses panel",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "Profile navigation closes account",
+      "pass": true
+    }
+  ],
+  "errors": []
+}

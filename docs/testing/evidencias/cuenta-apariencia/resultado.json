@@ -1,0 +1,763 @@
+{
+  "date": "2026-11-06",
+  "mode": "Chrome; isolated API",
+  "checks": [
+    {
+      "theme": "light",
+      "width": 320,
+      "label": "Panel fits, actions exposed and avatars square",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "label": "Explicit dark applied and persisted",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "label": "System follows device without changing preference",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "label": "Explicit light ignores device changes",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "label": "Palette bosque independent of mode",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "label": "Palette claro independent of mode",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "label": "Palette unl independent of mode",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "label": "Tab stays in panel",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "label": "Escape restores focus and scrolling",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "label": "Preferences survive reload",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "label": "Accessibility stacks above account",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "label": "Theme retains accessibility adjustments",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "label": "200 percent text fits and actions remain reachable",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "label": "Mobile navigation opens shared account panel",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "label": "Outside click dismisses panel",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "label": "Profile navigation closes account",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "label": "Panel fits, actions exposed and avatars square",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "label": "Explicit dark applied and persisted",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "label": "System follows device without changing preference",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "label": "Explicit light ignores device changes",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "label": "Palette bosque independent of mode",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "label": "Palette claro independent of mode",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "label": "Palette unl independent of mode",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "label": "Tab stays in panel",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "label": "Escape restores focus and scrolling",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "label": "Preferences survive reload",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "label": "Accessibility stacks above account",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "label": "Theme retains accessibility adjustments",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "label": "200 percent text fits and actions remain reachable",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "label": "Mobile navigation opens shared account panel",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "label": "Outside click dismisses panel",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "label": "Profile navigation closes account",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 768,
+      "label": "Panel fits, actions exposed and avatars square",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 768,
+      "label": "Explicit dark applied and persisted",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 768,
+      "label": "System follows device without changing preference",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 768,
+      "label": "Explicit light ignores device changes",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 768,
+      "label": "Palette bosque independent of mode",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 768,
+      "label": "Palette claro independent of mode",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 768,
+      "label": "Palette unl independent of mode",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 768,
+      "label": "Tab stays in panel",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 768,
+      "label": "Escape restores focus and scrolling",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 768,
+      "label": "Preferences survive reload",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 768,
+      "label": "Accessibility stacks above account",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 768,
+      "label": "Theme retains accessibility adjustments",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 768,
+      "label": "200 percent text fits and actions remain reachable",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 768,
+      "label": "Mobile navigation opens shared account panel",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 768,
+      "label": "Outside click dismisses panel",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 768,
+      "label": "Profile navigation closes account",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "Panel fits, actions exposed and avatars square",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "Explicit dark applied and persisted",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "System follows device without changing preference",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "Explicit light ignores device changes",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "Palette bosque independent of mode",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "Palette claro independent of mode",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "Palette unl independent of mode",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "Tab stays in panel",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "Escape restores focus and scrolling",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "Preferences survive reload",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "Accessibility stacks above account",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "Theme retains accessibility adjustments",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "200 percent text fits and actions remain reachable",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "Outside click dismisses panel",
+      "pass": true
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "Profile navigation closes account",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "label": "Panel fits, actions exposed and avatars square",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "label": "Explicit dark applied and persisted",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "label": "System follows device without changing preference",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "label": "Explicit light ignores device changes",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "label": "Palette bosque independent of mode",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "label": "Palette claro independent of mode",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "label": "Palette unl independent of mode",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "label": "Tab stays in panel",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "label": "Escape restores focus and scrolling",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "label": "Preferences survive reload",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "label": "Accessibility stacks above account",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "label": "Theme retains accessibility adjustments",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "label": "200 percent text fits and actions remain reachable",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "label": "Mobile navigation opens shared account panel",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "label": "Outside click dismisses panel",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "label": "Profile navigation closes account",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "label": "Panel fits, actions exposed and avatars square",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "label": "Explicit dark applied and persisted",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "label": "System follows device without changing preference",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "label": "Explicit light ignores device changes",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "label": "Palette bosque independent of mode",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "label": "Palette claro independent of mode",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "label": "Palette unl independent of mode",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "label": "Tab stays in panel",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "label": "Escape restores focus and scrolling",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "label": "Preferences survive reload",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "label": "Accessibility stacks above account",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "label": "Theme retains accessibility adjustments",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "label": "200 percent text fits and actions remain reachable",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "label": "Mobile navigation opens shared account panel",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "label": "Outside click dismisses panel",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "label": "Profile navigation closes account",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 768,
+      "label": "Panel fits, actions exposed and avatars square",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 768,
+      "label": "Explicit dark applied and persisted",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 768,
+      "label": "System follows device without changing preference",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 768,
+      "label": "Explicit light ignores device changes",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 768,
+      "label": "Palette bosque independent of mode",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 768,
+      "label": "Palette claro independent of mode",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 768,
+      "label": "Palette unl independent of mode",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 768,
+      "label": "Tab stays in panel",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 768,
+      "label": "Escape restores focus and scrolling",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 768,
+      "label": "Preferences survive reload",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 768,
+      "label": "Accessibility stacks above account",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 768,
+      "label": "Theme retains accessibility adjustments",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 768,
+      "label": "200 percent text fits and actions remain reachable",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 768,
+      "label": "Mobile navigation opens shared account panel",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 768,
+      "label": "Outside click dismisses panel",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 768,
+      "label": "Profile navigation closes account",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "label": "Panel fits, actions exposed and avatars square",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "label": "Explicit dark applied and persisted",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "label": "System follows device without changing preference",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "label": "Explicit light ignores device changes",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "label": "Palette bosque independent of mode",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "label": "Palette claro independent of mode",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "label": "Palette unl independent of mode",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "label": "Tab stays in panel",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "label": "Escape restores focus and scrolling",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "label": "Preferences survive reload",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "label": "Accessibility stacks above account",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "label": "Theme retains accessibility adjustments",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "label": "200 percent text fits and actions remain reachable",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "label": "Outside click dismisses panel",
+      "pass": true
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "label": "Profile navigation closes account",
+      "pass": true
+    }
+  ],
+  "errors": []
+}

@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          JwtAuthFilter.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Configura los componentes de la autenticación de usuarios en el backend.
+ */
+
 package com.sgp.systemsgp.config;
 
 import io.jsonwebtoken.JwtException;
@@ -37,6 +49,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         private final CustomUserDetailsService userDetailsService;
 
         private final AccountRepository accountRepository;
+        private final com.sgp.systemsgp.service.AuthSessionService authSessionService;
 
         @Override
         protected void doFilterInternal(
@@ -83,6 +96,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                                 }
 
                                 if (jwtService.isValid(token, user)) {
+                                        if(!authSessionService.isAccessAllowed(token,account)) {
+                                            response.sendError(401,"La sesión fue cerrada o revocada");return;
+                                        }
 
                                         if (mustChangePassword(account)
                                                         && !isPasswordChangeRequestAllowed(request)) {
@@ -140,6 +156,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                                 : requestUri.substring(contextPath.length());
 
                 return path.equals("/api/account/me")
-                                || path.equals("/api/account/me/password");
+                                || path.equals("/api/account/me/password")
+                                || path.equals("/api/auth/logout") || path.equals("/api/auth/logout-all");
         }
 }

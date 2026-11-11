@@ -1,9 +1,25 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          PhotosPage.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Permite registrar y consultar las evidencias fotográficas de las prácticas.
+ */
+
+import { useDialogFocus } from '../hooks/useDialogFocus';
+import { usePracticeRequest, usePracticeWorkspace } from '../contexts/PracticeWorkspaceContext';
+import { workflowCopy } from '../config/roleExperience';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Download, ImagePlus, Maximize2, RefreshCw, Trash2, X } from 'lucide-react';
-import { apiBlob, apiRequest, unwrapPage } from '../api/client';
+import { apiBlob, unwrapPage } from '../api/client';
 import { useAuth } from '../auth/AuthContext';
 import { Alert } from '../components/ui/Alert';
-import { ActionBar, PrimaryButton, SecondaryButton,CloseButton } from '../components/ui/ActionBar';
+import { ActionBar, PrimaryButton, SecondaryButton } from '../components/ui/ActionBar';
 import { ActionMenu } from '../components/ui/ActionMenu';
 import { useConfirm } from '../components/ui/ConfirmDialog';
 import { EmptyState } from '../components/ui/EmptyState';
@@ -13,6 +29,7 @@ import { ModuleTab, ModuleTabs } from '../components/ui/ModuleTabs';
 import { PageHeader } from '../components/ui/PageHeader';
 import { SectionCard } from '../components/ui/SectionCard';
 import { StatusBadge } from '../components/ui/StatusBadge';
+import { getPortalRoot } from '../utils/portal';
 import { formatBytes } from '../utils/format';
 
 const REVIEW_ROLES = [
@@ -30,6 +47,8 @@ const GROUPED_REVIEW_ROLES = [
 ];
 
 export function PhotosPage() {
+  const apiRequest = usePracticeRequest();
+  const workspace = usePracticeWorkspace();
   const { token, roles } = useAuth();
   const confirm = useConfirm();
   const isStudent = roles.includes('ROLE_ESTUDIANTE');
@@ -85,7 +104,7 @@ export function PhotosPage() {
     } finally {
       setLoading(false);
     }
-  }, [token, isStudent, canReview]);
+  }, [token, isStudent, canReview, apiRequest]);
 
   useEffect(() => {
     loadPhotos();
@@ -106,10 +125,10 @@ export function PhotosPage() {
   async function handleUpload(event) {
     event.preventDefault();
     const form = event.currentTarget;
-    const enrollmentId = selectedEnrollmentId;
+    const enrollmentId = workspace?.id ?? (approvedEnrollments.length === 1 ? approvedEnrollments[0].id : selectedEnrollmentId);
 
     if (!enrollmentId) {
-      setError('Selecciona la inscripcion a la que pertenece la fotografia');
+      setError('Selecciona la inscripción a la que pertenece la fotografia');
       return;
     }
 
@@ -225,48 +244,52 @@ export function PhotosPage() {
       <PageHeader
         eyebrow="Evidencias"
         title="Evidencias fotograficas"
-        description="Sube, consulta y revisa fotografias relacionadas con la practica."
-        action={
-          <SecondaryButton icon={RefreshCw} loading={loading} onClick={loadPhotos} type="button">
-            Actualizar
-          </SecondaryButton>
-        }
+        description={workflowCopy('photos', roles)}
+        helpText={workflowCopy('photos', roles)}
       />
 
       {error && <Alert tone="error">{error}</Alert>}
       {message && <Alert tone="success">{message}</Alert>}
 
-      <SectionCard>
-        <ModuleTabs>
-          {[
-            isStudent && ['mine', 'Mis evidencias'],
-            isStudent && ['upload', 'Subir evidencia'],
-            canReview && ['review', 'Por revisar'],
-          ]
-            .filter(Boolean)
-            .map(([id, label]) => (
-              <ModuleTab
-                active={activeView === id}
-                key={id}
-                onClick={() => setActiveView(id)}
-              >
-                {label}
-              </ModuleTab>
-            ))}
-        </ModuleTabs>
-      </SectionCard>
+      {canReview && activeView === 'review' && !isStudent ? (
+        <PhotoReviewFilters
+          action={
+            <SecondaryButton
+              className="!w-auto"
+              icon={RefreshCw}
+              loading={loading}
+              onClick={loadPhotos}
+              type="button"
+            >
+              Actualizar
+            </SecondaryButton>
+          }
+          filters={reviewFilters}
+          leading={<PhotoViewTabs canUpload={!workspace || (workspace.status === 'APPROVED' && !workspace.archived && workspace.courseActive !== false)} activeView={activeView} canReview={canReview} isStudent={isStudent} onChange={setActiveView} />}
+          options={reviewFilterOptions}
+          totalCount={reviewPhotos.length}
+          visibleCount={filteredReviewPhotos.length}
+          onChange={setReviewFilters}
+        />
+      ) : (
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-line bg-panel-soft p-2.5 dark:bg-surface-soft">
+          <PhotoViewTabs canUpload={!workspace || (workspace.status === 'APPROVED' && !workspace.archived && workspace.courseActive !== false)} activeView={activeView} canReview={canReview} isStudent={isStudent} onChange={setActiveView} />
+          <SecondaryButton className="!w-auto" icon={RefreshCw} loading={loading} onClick={loadPhotos} type="button">
+            Actualizar
+          </SecondaryButton>
+        </div>
+      )}
 
       {isStudent && activeView === 'upload' && (
         <SectionCard
           title="Agregar evidencia"
-          action={<span className="text-sm text-body">{approvedEnrollments.length} paralelos activos</span>}
         >
           {approvedEnrollments.length === 0 && (
-            <Alert tone="info">Necesitas una inscripcion aprobada en un paralelo activo para subir evidencias.</Alert>
+            <Alert tone="info">Necesitas una inscripción aprobada en un paralelo activo para subir evidencias.</Alert>
           )}
           {approvedEnrollments.length > 0 && (
             <form className="grid gap-4 lg:grid-cols-2" onSubmit={handleUpload}>
-              <Field label="Paralelo de practica">
+              {!workspace && approvedEnrollments.length > 1 && <Field label="Paralelo de práctica">
                 <Select
                   value={selectedEnrollmentId}
                   onChange={(event) => setSelectedEnrollmentId(event.target.value)}
@@ -277,7 +300,7 @@ export function PhotosPage() {
                     </option>
                   ))}
                 </Select>
-              </Field>
+              </Field>}
               <Field label="Fecha">
                 <Input
                   type="date"
@@ -292,7 +315,7 @@ export function PhotosPage() {
                   onChange={(event) => setSelectedFile(event.target.files?.[0] || null)}
                 />
               </Field>
-              <Field className="lg:col-span-2" label="Descripcion de la evidencia">
+              <Field className="lg:col-span-2" label="Descripción de la evidencia">
                 <Textarea value={description} onChange={(event) => setDescription(event.target.value)} />
               </Field>
               <div className="lg:col-span-2">
@@ -307,23 +330,15 @@ export function PhotosPage() {
 
       {isStudent && activeView === 'mine' && (
         <PhotoSection
-          canDelete
+          canDelete={!workspace || (workspace.status === 'APPROVED' && !workspace.archived && workspace.courseActive !== false)}
           emptyText="Aun no has subido evidencias fotograficas."
           photos={myPhotos}
+          showStudent={false}
           title="Mis evidencias"
           token={token}
           onDelete={handleDelete}
           onDownload={handleDownload}
           onOpen={setFullscreenPhoto}
-        />
-      )}
-      {canReview && activeView === 'review' && !isStudent && (
-        <PhotoReviewFilters
-          filters={reviewFilters}
-          options={reviewFilterOptions}
-          totalCount={reviewPhotos.length}
-          visibleCount={filteredReviewPhotos.length}
-          onChange={setReviewFilters}
         />
       )}
       {canReview && activeView === 'review' && canGroupReviewPhotos && (
@@ -352,22 +367,53 @@ export function PhotosPage() {
   );
 }
 
+function PhotoViewTabs({ canUpload = true, activeView, canReview, isStudent, onChange }) {
+  return (
+    <nav aria-label="Vistas de evidencias" className="min-w-0 max-w-full">
+      <ModuleTabs className="gap-1.5">
+        {[
+          isStudent && ['mine', 'Mis evidencias'],
+          isStudent && canUpload && ['upload', 'Subir evidencia'],
+          canReview && ['review', 'Por revisar'],
+        ]
+          .filter(Boolean)
+          .map(([id, label]) => (
+            <ModuleTab active={activeView === id} key={id} onClick={() => onChange(id)}>
+              {label}
+            </ModuleTab>
+          ))}
+      </ModuleTabs>
+    </nav>
+  );
+}
+
 function isActiveApprovedEnrollment(enrollment) {
   return enrollment.status === 'APPROVED' && enrollment.courseActive !== false;
 }
 
-function PhotoSection({ title, photos, token, emptyText, canDelete = false, onDelete, onDownload, onOpen }) {
+function PhotoSection({
+  title,
+  photos,
+  token,
+  emptyText,
+  canDelete = false,
+  showStudent = true,
+  onDelete,
+  onDownload,
+  onOpen,
+}) {
   return (
     <SectionCard title={title} action={<span className="text-sm text-body">{photos.length}</span>}>
       {photos.length === 0 ? (
         <EmptyState text={emptyText} />
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-4 [grid-template-columns:repeat(auto-fill,minmax(min(100%,18rem),1fr))]">
           {photos.map((photo) => (
             <PhotoCard
               canDelete={canDelete}
               key={photo.id}
               photo={photo}
+              showStudent={showStudent}
               token={token}
               onDelete={onDelete}
               onDownload={onDownload}
@@ -380,7 +426,7 @@ function PhotoSection({ title, photos, token, emptyText, canDelete = false, onDe
   );
 }
 
-function PhotoReviewFilters({ filters, options, totalCount, visibleCount, onChange }) {
+function PhotoReviewFilters({ action, filters, leading, options, totalCount, visibleCount, onChange }) {
   function setFilter(key, value) {
     onChange((current) => ({
       ...current,
@@ -391,12 +437,14 @@ function PhotoReviewFilters({ filters, options, totalCount, visibleCount, onChan
   return (
     <FilterPanel
       activeCount={countActiveFilters(filters, ['search'])}
+      action={action}
       hasActiveFilters={countActiveFilters(filters) > 0}
+      leading={leading}
       onClear={() => onChange({ search: '', course: '', student: '', enrollment: '' })}
       search={(
         <Field label="Buscar">
           <Input
-            placeholder="Descripcion, archivo, paralelo o estudiante"
+            placeholder="Descripción, archivo, paralelo o estudiante"
             type="search"
             value={filters.search}
             onChange={(event) => setFilter('search', event.target.value)}
@@ -426,7 +474,7 @@ function PhotoReviewFilters({ filters, options, totalCount, visibleCount, onChan
             ))}
           </Select>
         </Field>
-        <Field label="Inscripcion">
+        <Field label="Inscripción">
           <Select value={filters.enrollment} onChange={(event) => setFilter('enrollment', event.target.value)}>
             <option value="">Todas</option>
             {options.enrollments.map((option) => (
@@ -511,11 +559,12 @@ function normalizeText(value) {
 
 function enrollmentLabel(enrollment) {
   const parts = [
+    enrollment.practiceName,
     enrollment.courseName,
     enrollment.groupName && `Grupo ${enrollment.groupName}`,
   ].filter(Boolean);
 
-  return parts.join(' - ') || 'Paralelo de practica';
+  return parts.join(' - ') || 'Paralelo de práctica';
 }
 
 function enrollmentLabelFromPhoto(photo) {
@@ -544,7 +593,7 @@ function GroupedPhotoSection({ photos, token, emptyText, onDownload, onOpen }) {
           key={group.key}
           title={group.label}
         >
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-4 [grid-template-columns:repeat(auto-fill,minmax(min(100%,18rem),1fr))]">
             {group.photos.map((photo) => (
               <PhotoCard
                 key={photo.id}
@@ -587,7 +636,15 @@ function groupPhotosByEnrollment(photos) {
     .sort((a, b) => a.label.localeCompare(b.label, 'es'));
 }
 
-function PhotoCard({ photo, token, canDelete = false, onDelete, onDownload, onOpen }) {
+function PhotoCard({
+  photo,
+  token,
+  canDelete = false,
+  showStudent = true,
+  onDelete,
+  onDownload,
+  onOpen,
+}) {
   const actions = [
     {
       key: 'view',
@@ -619,8 +676,8 @@ function PhotoCard({ photo, token, canDelete = false, onDelete, onDownload, onOp
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className="text-sm font-semibold text-heading dark:text-heading">{photo.courseName || photo.originalFilename}</p>
-            <p className="text-xs text-body">{photo.studentFullName || photo.studentUsername || 'Estudiante'}</p>
-            <p className="text-xs text-body">Evidencia de practica</p>
+            {showStudent && <p className="text-xs text-body">{photo.studentFullName || photo.studentUsername || 'Estudiante'}</p>}
+            <p className="text-xs text-body">Evidencia de práctica</p>
           </div>
           <StatusBadge status={photo.practiceDate ? 'COMPLETED' : 'DRAFT'} />
         </div>
@@ -692,7 +749,7 @@ function PhotoPreview({ photo, token, onOpen }) {
       type="button"
     >
       <img
-        alt={photo.description || photo.originalFilename || 'Fotografia de practica'}
+        alt={photo.description || photo.originalFilename || 'Fotografia de práctica'}
         className="aspect-[4/3] w-full object-cover"
         onError={() => setFailed(true)}
         src={source}
@@ -702,8 +759,11 @@ function PhotoPreview({ photo, token, onOpen }) {
 }
 
 function PhotoFullscreen({ photo, token, onClose }) {
+  const dialogRef = useRef(null);
+  useDialogFocus(true, dialogRef, onClose);
   const [source, setSource] = useState('');
   const [failed, setFailed] = useState(false);
+  const portalRoot = getPortalRoot();
 
   useEffect(() => {
     let active = true;
@@ -735,29 +795,24 @@ function PhotoFullscreen({ photo, token, onClose }) {
     };
   }, [photo.contentUrl, token]);
 
-  useEffect(() => {
-    function handleKeyDown(event) {
-      if (event.key === 'Escape') {
-        onClose();
-      }
-    }
+  if (!portalRoot) {
+    return null;
+  }
 
-    document.addEventListener('keydown', handleKeyDown);
-
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [onClose]);
-
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-[100001] flex items-center justify-center bg-page/95 p-4 bg-black/75"
-      onMouseDown={onClose}
+      className="fixed inset-0 z-[100001] flex items-center justify-center overflow-auto overscroll-contain bg-black/75 p-4"
+      onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}
+      ref={dialogRef}
+      tabIndex={-1}
+      aria-label={`Fotografía: ${photo.description || photo.originalFilename || 'Evidencia de práctica'}`}
       role="dialog"
       aria-modal="true"
     >
-      <div className="absolute right-4 top-4">
-        <CloseButton icon={X} onClick={onClose} type="button">
+      <div className="absolute right-4 top-4 z-10">
+        <SecondaryButton icon={X} onClick={onClose} type="button">
           Cerrar
-        </CloseButton>
+        </SecondaryButton>
       </div>
       <div className="max-h-full max-w-full" onMouseDown={(event) => event.stopPropagation()}>
         {!source || failed ? (
@@ -766,13 +821,14 @@ function PhotoFullscreen({ photo, token, onClose }) {
           </div>
         ) : (
           <img
-            alt={photo.description || photo.originalFilename || 'Fotografia de practica'}
+            alt={photo.description || photo.originalFilename || 'Fotografia de práctica'}
             className="max-h-[88vh] max-w-[96vw] object-contain"
             onError={() => setFailed(true)}
             src={source}
           />
         )}
       </div>
-    </div>
+    </div>,
+    portalRoot
   );
 }

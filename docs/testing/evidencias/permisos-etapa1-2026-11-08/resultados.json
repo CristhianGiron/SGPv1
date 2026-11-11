@@ -1,0 +1,1047 @@
+{
+  "stage": "Etapa 1: H01, H02, H12, H13",
+  "recorded_at": "2026-11-08T22:01:46.342658-05:00",
+  "environment": {
+    "database": "H2 in memory; rollback per integration test",
+    "http": "MockMvc with Spring Security",
+    "production_database_used": false,
+    "browser_run": false
+  },
+  "baseline_regression_results": [
+    {
+      "test": "disabledResponsibleDoesNotReceiveANotification",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "test": "l3FullAndSummaryQueuesExcludeAnotherGroupsRecords",
+      "passed": false,
+      "failure": "JSON path \"$.length()\" expected:<0> but was:<1>"
+    },
+    {
+      "test": "pendingEnrollmentNoticesStayWithinTheCareer",
+      "passed": false,
+      "failure": "\nExpecting empty but was: [NotificationResponse(id=6, title=Inscripción pendiente de aprobación, message=rw.student Auditoría está en espera de aprobación para el curso Paralelo de prueba., link=#/courses?courseId=3&view=enrollments, type=ENROLLMENT_PENDING, read=false, createdAt=2026-11-08T21:59:21.732281160, updatedAt=2026-11-08T21:59:21.73228116"
+    },
+    {
+      "test": "directorsCanReadL4AndL5OnlyWithinTheirCareerIncludingPdf",
+      "passed": false,
+      "failure": "Status expected:<403> but was:<200>"
+    },
+    {
+      "test": "courseTutorFallbackRetainsListsWhenTheGroupHasNoTutor",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "test": "anUnassignedSingleGroupIsNotShownOrUsedForAuthorization",
+      "passed": false,
+      "failure": "\nexpected: null\n but was: 3L"
+    },
+    {
+      "test": "photoQueueDoesNotExposeMetadataOrPublicLinksFromAnotherGroup",
+      "passed": false,
+      "failure": "JSON path \"$.length()\" expected:<0> but was:<1>"
+    },
+    {
+      "test": "displayedTutorAndInstitutionMatchTheExplicitAssignment",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "test": "l3NotifiesTheEffectiveGroupTutorInsteadOfTheFallbackTutor",
+      "passed": false,
+      "failure": "\nExpected size: 1 but was: 0 in:\n[]"
+    },
+    {
+      "test": "l3UsesCourseTutorWhenNoGroupTutorIsAssigned",
+      "passed": false,
+      "failure": "\nExpected size: 1 but was: 0 in:\n[]"
+    },
+    {
+      "test": "allStudentDocumentSubmissionsNotifyOnlyScopedManagersAndAssignedTutor",
+      "passed": false,
+      "failure": "\nExpecting empty but was: [NotificationResponse(id=26, title=Nuevo registro de actividades cumplidas enviado, message=El estudiante rw.student ha enviado el registro de actividades cumplidas del curso Paralelo de prueba para revisión., link=#/documents/completed-records?recordId=1&operation=detail, type=COMPLETED_ACTIVITY_RECORD_SUBMITTED, read=fal"
+    },
+    {
+      "test": "scheduleListsAndDetailsApplyTheSameEffectiveTutor",
+      "passed": false,
+      "failure": "JSON path \"$.length()\" expected:<0> but was:<1>"
+    }
+  ],
+  "totals": {
+    "tests": 171,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 1
+  },
+  "classes": [
+    {
+      "class": "com.sgp.systemsgp.SystemsgpApplicationTests",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "contextLoads",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "class": "com.sgp.systemsgp.config.JwtServiceTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "configuredExpirationAppliesToAccessTokensAndRefreshCannotAuthenticateAsAccess",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "class": "com.sgp.systemsgp.config.SecurityConfigTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "practiceCompletionEndpointsAreOnlyReachableForDirector",
+          "outcome": "passed"
+        },
+        {
+          "name": "coordinationReportsAreReachableForAdminAndDirectorOnly",
+          "outcome": "passed"
+        },
+        {
+          "name": "documentPdfEndpointsAreReachableForAllowedRoles",
+          "outcome": "passed"
+        },
+        {
+          "name": "archiveBatchEndpointIsOnlyReachableForAdmin",
+          "outcome": "passed"
+        },
+        {
+          "name": "corsAllowsTheConfiguredNetworkHost",
+          "outcome": "passed"
+        },
+        {
+          "name": "directorCanReachAllDirectorReviewEndpoints",
+          "outcome": "passed"
+        },
+        {
+          "name": "studentCannotReachReviewerEndpoints",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "class": "com.sgp.systemsgp.controller.DocumentControllerFlowTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "activityPlanHttpFlowCoversCorrectionAndDirectorApproval",
+          "outcome": "passed"
+        },
+        {
+          "name": "completedActivityRecordHttpFlowCoversCorrectionAndDirectorApproval",
+          "outcome": "passed"
+        },
+        {
+          "name": "practiceReportHttpFlowCoversCorrectionAndDirectorApproval",
+          "outcome": "passed"
+        },
+        {
+          "name": "activityPlanReviewAcceptsFeedbackWithoutDecision",
+          "outcome": "passed"
+        },
+        {
+          "name": "finalReportHttpFlowCoversPracticeInstitutionalAndDirectorApproval",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "class": "com.sgp.systemsgp.service.AccountServiceRecoveryTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "recoverAdminPasswordUpdatesPasswordWhenRecoveryIsEnabled",
+          "outcome": "passed"
+        },
+        {
+          "name": "recoverAdminPasswordRejectsNonAdminAccounts",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "class": "com.sgp.systemsgp.service.ActivityEvaluationServiceTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "createRejectsPendingEnrollment",
+          "outcome": "passed"
+        },
+        {
+          "name": "createBuildsEvaluationFromApprovedEnrollment",
+          "outcome": "passed"
+        },
+        {
+          "name": "studentCanViewOwnEvaluation",
+          "outcome": "passed"
+        },
+        {
+          "name": "exportPdfUsesActivityEvaluationTemplate",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "class": "com.sgp.systemsgp.service.ActivityPlanServiceTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "approvalRequiresPracticeTutorAndDirector",
+          "outcome": "passed"
+        },
+        {
+          "name": "createRejectsPendingEnrollment",
+          "outcome": "passed"
+        },
+        {
+          "name": "correctionFlowClearsCurrentFeedbackAndApprovesAfterBothReviews",
+          "outcome": "passed"
+        },
+        {
+          "name": "updateSubmittedPlanReturnsItToPrivateDraft",
+          "outcome": "passed"
+        },
+        {
+          "name": "reviewSendsPlanBackForCorrection",
+          "outcome": "passed"
+        },
+        {
+          "name": "submitAllowsIncompleteDraft",
+          "outcome": "passed"
+        },
+        {
+          "name": "createBuildsDraftFromApprovedEnrollment",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "class": "com.sgp.systemsgp.service.CompletedActivityRecordServiceTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "reviewSendsRecordBackWithEntryFeedback",
+          "outcome": "passed"
+        },
+        {
+          "name": "createRejectsPendingEnrollment",
+          "outcome": "passed"
+        },
+        {
+          "name": "correctionFlowClearsCurrentFeedbackAndApprovesAfterBothReviews",
+          "outcome": "passed"
+        },
+        {
+          "name": "createBuildsDraftAndCalculatesMinutes",
+          "outcome": "passed"
+        },
+        {
+          "name": "submitAllowsIncompleteDraft",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "class": "com.sgp.systemsgp.service.CoordinationReportServiceTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "administratorSeesAllCareersWithoutMergingCoursesWithTheSameName",
+          "outcome": "passed"
+        },
+        {
+          "name": "correctionsCountUniqueStudentsAndTotalsIncludeEveryStatus",
+          "outcome": "passed"
+        },
+        {
+          "name": "directorOnlySeesDocumentsFromTheirCareerIncludingSubjectFallback",
+          "outcome": "passed"
+        },
+        {
+          "name": "noCompletedReviewsIsNotReportedAsAnInstantApproval",
+          "outcome": "passed"
+        },
+        {
+          "name": "averagesUseOnlyApprovedDocumentsWithValidTimesAndPreserveZeroHours",
+          "outcome": "passed"
+        },
+        {
+          "name": "rejectsAnUnauthorizedRoleAndDirectorWithoutCareerHasNoCrossCareerData",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "class": "com.sgp.systemsgp.service.CourseServiceTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "assignInstitutionalTutorRejectsUniversityInstitution",
+          "outcome": "passed"
+        },
+        {
+          "name": "createCourseAcceptsAcademicCycleParallel",
+          "outcome": "passed"
+        },
+        {
+          "name": "assignPracticeTutorStoresValidUnlTutor",
+          "outcome": "passed"
+        },
+        {
+          "name": "createCourseRejectsMissingAcademicCycle",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "class": "com.sgp.systemsgp.service.EnrollmentServiceTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "cancelRejectsNonPendingEnrollment",
+          "outcome": "passed"
+        },
+        {
+          "name": "approveRejectsNonPendingEnrollment",
+          "outcome": "passed"
+        },
+        {
+          "name": "approveNotifiesStudent",
+          "outcome": "passed"
+        },
+        {
+          "name": "rejectRejectsNonPendingEnrollment",
+          "outcome": "passed"
+        },
+        {
+          "name": "archiveBatchArchivesCompletedPracticesAndAuditsEachOne",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "class": "com.sgp.systemsgp.service.EntityImageIntegrationTest",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "replacementChangesVersionAndRemovalRestoresDefaultState",
+          "outcome": "passed"
+        },
+        {
+          "name": "foreignDirectorCannotReplaceAnotherCareerCover",
+          "outcome": "passed"
+        },
+        {
+          "name": "institutionLogoIsCreatedAtomicallyAndOnlyManagersCanRemoveIt",
+          "outcome": "passed"
+        },
+        {
+          "name": "emptyOversizedAndUnsupportedImagesAreRejected",
+          "outcome": "passed"
+        },
+        {
+          "name": "studentsCannotUploadOrReplaceCovers",
+          "outcome": "passed"
+        },
+        {
+          "name": "jsonCreationWithoutImageIsStillSupported",
+          "outcome": "passed"
+        },
+        {
+          "name": "invalidImageDoesNotCreateAnIncompleteCourse",
+          "outcome": "passed"
+        },
+        {
+          "name": "declaredFormatMustMatchActualImageBytes",
+          "outcome": "passed"
+        },
+        {
+          "name": "finalReportLetterheadPersistsReplacesAndRespectsDocumentAccess",
+          "outcome": "passed"
+        },
+        {
+          "name": "createWithCoverPersistsAndOnlyAuthorizedViewersCanRead",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "class": "com.sgp.systemsgp.service.FacultyServiceTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "createRejectsSchoolInstitution",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "class": "com.sgp.systemsgp.service.FinalReportServiceTest",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "studentUpdateSubmittedFinalReportInvalidatesPartialReviews",
+          "outcome": "passed"
+        },
+        {
+          "name": "createRejectsPendingEnrollment",
+          "outcome": "passed"
+        },
+        {
+          "name": "institutionalFormSavesItsLetterheadHoursAndDateTogether",
+          "outcome": "passed"
+        },
+        {
+          "name": "institutionalTutorCompletesConclusionsAndRecommendations",
+          "outcome": "passed"
+        },
+        {
+          "name": "submitAllowsIncompleteStudentSection",
+          "outcome": "passed"
+        },
+        {
+          "name": "approvingFinalReportRequiresAllReviewers",
+          "outcome": "passed"
+        },
+        {
+          "name": "institutionalHoursCanComeFromTheSameEnrollmentsL6",
+          "outcome": "passed"
+        },
+        {
+          "name": "correctionFlowClearsCurrentFeedbackAndApprovesAfterAllReviews",
+          "outcome": "passed"
+        },
+        {
+          "name": "legacyApprovedReportCanReceiveItsMissingLetterheadOnlyOnce",
+          "outcome": "passed"
+        },
+        {
+          "name": "invalidLetterheadDoesNotSaveInstitutionalComments",
+          "outcome": "passed"
+        },
+        {
+          "name": "createBuildsDraftFromApprovedEnrollment",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "class": "com.sgp.systemsgp.service.GradeServiceTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "updateRejectsUniversityInstitution",
+          "outcome": "passed"
+        },
+        {
+          "name": "createRejectsUniversityInstitution",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "class": "com.sgp.systemsgp.service.InstitutionalDefaultsServiceTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "reusesAnExistingHierarchyDespiteDifferentCodesAndPunctuation",
+          "outcome": "passed"
+        },
+        {
+          "name": "additionalUniversitiesCoexistWithTheDefaultAndCanBecomeTheConfiguredContext",
+          "outcome": "passed"
+        },
+        {
+          "name": "doesNotReactivateAnInstitutionOrCreateChildrenUnderIt",
+          "outcome": "passed"
+        },
+        {
+          "name": "publicEndpointReturnsCorrectNamesFromActualApplicationConfiguration",
+          "outcome": "passed"
+        },
+        {
+          "name": "initializesTheDefaultHierarchyOnceWithoutCreatingUsers",
+          "outcome": "passed"
+        },
+        {
+          "name": "seedingCanBeDisabled",
+          "outcome": "passed"
+        },
+        {
+          "name": "applicationPropertiesBindSpanishNamesWithoutMojibake",
+          "outcome": "passed"
+        },
+        {
+          "name": "repairsPreviouslySeededNamesAndKeepsExistingIdsAndCustomNames",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "class": "com.sgp.systemsgp.service.MigrationChainMariaDbTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1,
+      "cases": [
+        {
+          "name": "migratesAnEmptyDatabaseAndValidatesItsHistory",
+          "outcome": "skipped"
+        }
+      ]
+    },
+    {
+      "class": "com.sgp.systemsgp.service.NotificationServiceTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "documentSubmissionNotifiesPracticeTutorDirectorAndAdmin",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "class": "com.sgp.systemsgp.service.PdfExportServiceTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "createPdfRendersWeeklyTables",
+          "outcome": "passed"
+        },
+        {
+          "name": "createPdfRendersScheduleMatrix",
+          "outcome": "passed"
+        },
+        {
+          "name": "spanishCharactersAlsoSurviveLandscapeTables",
+          "outcome": "passed"
+        },
+        {
+          "name": "scheduleWeekRequestAcceptsActivitiesAlias",
+          "outcome": "passed"
+        },
+        {
+          "name": "spanishAccentsAndPunctuationSurvivePdfExportIncludingPastedCombiningMarks",
+          "outcome": "passed"
+        },
+        {
+          "name": "createPdfRendersScheduleMatrixWhenRowsHaveNoActivityText",
+          "outcome": "passed"
+        },
+        {
+          "name": "createPdfReturnsPdfBytes",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "class": "com.sgp.systemsgp.service.PdfReferenceLayoutTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "aLongWeekAndSchedulePreserveTheEndOfEveryActivity",
+          "outcome": "passed"
+        },
+        {
+          "name": "sixReferenceDocumentsKeepTextInsideThePageAndEmbedTheirImages",
+          "outcome": "passed"
+        },
+        {
+          "name": "institutionalLetterheadRepeatsWithoutCoverOrUniversityBranding",
+          "outcome": "passed"
+        },
+        {
+          "name": "longFollowUpAndCompletedActivitiesContinueAcrossPages",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "class": "com.sgp.systemsgp.service.PracticeAccessServiceTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "institutionalTutorCanViewOnlyAssignedEnrollment",
+          "outcome": "passed"
+        },
+        {
+          "name": "practiceCompletionAndArchiveHaveSeparateManagers",
+          "outcome": "passed"
+        },
+        {
+          "name": "directorCanViewOnlyCoursesFromOwnCareer",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "class": "com.sgp.systemsgp.service.PracticeAuthorizationRegressionTest",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "disabledResponsibleDoesNotReceiveANotification",
+          "outcome": "passed"
+        },
+        {
+          "name": "l3FullAndSummaryQueuesExcludeAnotherGroupsRecords",
+          "outcome": "passed"
+        },
+        {
+          "name": "pendingEnrollmentNoticesStayWithinTheCareer",
+          "outcome": "passed"
+        },
+        {
+          "name": "directorsCanReadL4AndL5OnlyWithinTheirCareerIncludingPdf",
+          "outcome": "passed"
+        },
+        {
+          "name": "courseTutorFallbackRetainsListsWhenTheGroupHasNoTutor",
+          "outcome": "passed"
+        },
+        {
+          "name": "anUnassignedSingleGroupIsNotShownOrUsedForAuthorization",
+          "outcome": "passed"
+        },
+        {
+          "name": "photoQueueDoesNotExposeMetadataOrPublicLinksFromAnotherGroup",
+          "outcome": "passed"
+        },
+        {
+          "name": "displayedTutorAndInstitutionMatchTheExplicitAssignment",
+          "outcome": "passed"
+        },
+        {
+          "name": "l3NotifiesTheEffectiveGroupTutorInsteadOfTheFallbackTutor",
+          "outcome": "passed"
+        },
+        {
+          "name": "l3UsesCourseTutorWhenNoGroupTutorIsAssigned",
+          "outcome": "passed"
+        },
+        {
+          "name": "allStudentDocumentSubmissionsNotifyOnlyScopedManagersAndAssignedTutor",
+          "outcome": "passed"
+        },
+        {
+          "name": "scheduleListsAndDetailsApplyTheSameEffectiveTutor",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "class": "com.sgp.systemsgp.service.PracticeFollowUpReportServiceTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "createBuildsReportAndCalculatesMinutes",
+          "outcome": "passed"
+        },
+        {
+          "name": "createRejectsPendingEnrollment",
+          "outcome": "passed"
+        },
+        {
+          "name": "studentCanViewOwnReport",
+          "outcome": "passed"
+        },
+        {
+          "name": "exportPdfUsesFollowUpTemplate",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "class": "com.sgp.systemsgp.service.PracticeImageValidatorTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "rejectsMismatchedMime",
+          "outcome": "passed"
+        },
+        {
+          "name": "acceptsRealImages(String)[1]",
+          "outcome": "passed"
+        },
+        {
+          "name": "acceptsRealImages(String)[2]",
+          "outcome": "passed"
+        },
+        {
+          "name": "rejectsTextDisguisedAsAPhoto(String)[1]",
+          "outcome": "passed"
+        },
+        {
+          "name": "rejectsTextDisguisedAsAPhoto(String)[2]",
+          "outcome": "passed"
+        },
+        {
+          "name": "rejectsTextDisguisedAsAPhoto(String)[3]",
+          "outcome": "passed"
+        },
+        {
+          "name": "rejectsTextDisguisedAsAPhoto(String)[4]",
+          "outcome": "passed"
+        },
+        {
+          "name": "rejectsTextDisguisedAsAPhoto(String)[5]",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "class": "com.sgp.systemsgp.service.PracticePhotoServiceTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "practiceTutorCannotOpenUploadedPhotoFromUnassignedCourse",
+          "outcome": "passed"
+        },
+        {
+          "name": "institutionalTutorSeesAssignedCoursePhotos",
+          "outcome": "passed"
+        },
+        {
+          "name": "studentCannotDeleteAnotherStudentPhoto",
+          "outcome": "passed"
+        },
+        {
+          "name": "studentDeletesOwnPhoto",
+          "outcome": "passed"
+        },
+        {
+          "name": "practiceTutorCanOpenPhotoWhenDirectPhotoCourseIsMissing",
+          "outcome": "passed"
+        },
+        {
+          "name": "practiceTutorSeesUploadedPhotosGroupedByStudentScope",
+          "outcome": "passed"
+        },
+        {
+          "name": "studentUploadsPhotoForApprovedEnrollment",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "class": "com.sgp.systemsgp.service.PracticeReportServiceTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "createRejectsPendingEnrollment",
+          "outcome": "passed"
+        },
+        {
+          "name": "correctionFlowClearsCurrentFeedbackAndApprovesAfterBothReviews",
+          "outcome": "passed"
+        },
+        {
+          "name": "submitAllowsIncompleteDraft",
+          "outcome": "passed"
+        },
+        {
+          "name": "reviewSendsReportBackForCorrection",
+          "outcome": "passed"
+        },
+        {
+          "name": "createBuildsDraftFromApprovedEnrollment",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "class": "com.sgp.systemsgp.service.PracticeScheduleServiceTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "institutionDirectorCanViewScheduleFromOwnInstitution",
+          "outcome": "passed"
+        },
+        {
+          "name": "createRejectsPendingEnrollment",
+          "outcome": "passed"
+        },
+        {
+          "name": "attendanceDateMustMatchSelectedPeriodDay",
+          "outcome": "passed"
+        },
+        {
+          "name": "institutionDirectorCanReviewSchedulesFromOwnInstitution",
+          "outcome": "passed"
+        },
+        {
+          "name": "institutionalTutorRegistersAttendanceFromPeriod",
+          "outcome": "passed"
+        },
+        {
+          "name": "studentCanViewOwnSchedule",
+          "outcome": "passed"
+        },
+        {
+          "name": "attendanceCannotInflateMinutesBeyondRegisteredTimes",
+          "outcome": "passed"
+        },
+        {
+          "name": "createBuildsScheduleAndCalculatesMinutes",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "class": "com.sgp.systemsgp.service.PracticeWorkflowRegressionTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "flywayResolvesMigrationVersionsWithoutDuplicates",
+          "outcome": "passed"
+        },
+        {
+          "name": "rejectsAttendanceForAnArchivedPractice",
+          "outcome": "passed"
+        },
+        {
+          "name": "rejectsDidacticPlanUpdatesAfterPracticeIsArchived",
+          "outcome": "passed"
+        },
+        {
+          "name": "rejectsTextUploadedAsAnEvidencePng",
+          "outcome": "passed"
+        },
+        {
+          "name": "rejectsDidacticPlanCreationForInactiveCourse",
+          "outcome": "passed"
+        },
+        {
+          "name": "allowsClearingOptionalPeriodCount",
+          "outcome": "passed"
+        },
+        {
+          "name": "rejectsAttendanceOutsideScheduleDateRange",
+          "outcome": "passed"
+        },
+        {
+          "name": "preservesOmittedOptionalValuesAndAcceptsZero",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "class": "com.sgp.systemsgp.service.QaUserWorkflowsTest",
+      "tests": 17,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "allSixPdfPreviewsAndTheCompleteArchiveWorkThroughTheSecuredHttpEndpoints",
+          "outcome": "passed"
+        },
+        {
+          "name": "observationNumericTabulationSurvivesPersistenceAndCountsZero",
+          "outcome": "passed"
+        },
+        {
+          "name": "bearerAuthenticationRejectsRefreshTokensAndBlockedAccounts",
+          "outcome": "passed"
+        },
+        {
+          "name": "draftPdfPreviewWorksBeforeApprovalAndCannotBypassAccessOrFinalExport",
+          "outcome": "passed"
+        },
+        {
+          "name": "institutionalDirectorCanAnswerTheirInterviewAndFalseIsAValidResponse",
+          "outcome": "passed"
+        },
+        {
+          "name": "methodSecurityRejectsForeignRolesOnAccountsAndCoordination",
+          "outcome": "passed"
+        },
+        {
+          "name": "foreignStudentCannotReadAnotherStudentsSubmittedPlan",
+          "outcome": "passed"
+        },
+        {
+          "name": "archiveContainsOnlyThisPracticesApprovedDocumentsEvidenceAndAnHonestIndex",
+          "outcome": "passed"
+        },
+        {
+          "name": "enrollmentConclusionArchiveRecoveryAndReopeningPersistCorrectly",
+          "outcome": "passed"
+        },
+        {
+          "name": "spanishTextSurvivesUtf8HttpAndDatabasePersistence",
+          "outcome": "passed"
+        },
+        {
+          "name": "didacticPlanGoesFromDraftToRecommendationsCorrectionAndResubmission",
+          "outcome": "passed"
+        },
+        {
+          "name": "interviewCanBeAnsweredInterpretedAndReadByItsSupervisors",
+          "outcome": "passed"
+        },
+        {
+          "name": "quantitativeInterviewsKeepTheirCountsAndTheStudentsQualitativeInterpretation",
+          "outcome": "passed"
+        },
+        {
+          "name": "pendingEnrollmentCanBeWithdrawnAndAnApprovedEnrollmentCanBeAssignedToAGroup",
+          "outcome": "passed"
+        },
+        {
+          "name": "serverDraftsArePrivateAndRejectStaleWritesIncludingAfterClearing",
+          "outcome": "passed"
+        },
+        {
+          "name": "validationResponseIdentifiesTheFieldAndNestedQuestionWithoutLosingTheSummary",
+          "outcome": "passed"
+        },
+        {
+          "name": "pdfUploadRejectsRenamedTextAndAcceptsAnActualPdf",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "class": "com.sgp.systemsgp.service.RoleSeparationIntegrationTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "practiceHistoryIsRestrictedToTheOwnerAndAssignedStaff",
+          "outcome": "passed"
+        },
+        {
+          "name": "publicRegistrationCannotProvisionStaffAccounts",
+          "outcome": "passed"
+        },
+        {
+          "name": "studentAndTutorCannotSearchOtherAcademicScopesByChangingQueryParameters",
+          "outcome": "passed"
+        },
+        {
+          "name": "directorReadsOnlyTheirAcademicHierarchyAndCannotMutateIt",
+          "outcome": "passed"
+        },
+        {
+          "name": "administratorCanSearchWithoutOptionalBooleanFilters",
+          "outcome": "passed"
+        },
+        {
+          "name": "administratorRetainsCrossUniversityManagement",
+          "outcome": "passed"
+        },
+        {
+          "name": "tutorSelectionDoesNotExposeOtherUniversitiesOrPersonalIdentifiers",
+          "outcome": "passed"
+        }
+      ]
+    }
+  ],
+  "source_sha256": {
+    "BackEnd/src/main/java/com/sgp/systemsgp/service/ActivityEvaluationService.java": "34651c52dc719e42b1c9afa461ee159a88dbfbe259fa8b0ae9bdcd4212bb449c",
+    "BackEnd/src/main/java/com/sgp/systemsgp/service/PracticeFollowUpReportService.java": "e7da5d0ee5ef00517ec1e0cba45f8996df78bce781f0f558ebfe7d666945eecc",
+    "BackEnd/src/main/java/com/sgp/systemsgp/service/NotificationService.java": "a0398e3b19004500504bb3b80c2d0e14707c75fc2f1201ff67171ae00231cbb9",
+    "BackEnd/src/main/java/com/sgp/systemsgp/service/EnrollmentService.java": "e11e3697c56b9b28202b207aaf773569665561c53acd5c846e6a22e6b5b001e9",
+    "BackEnd/src/main/java/com/sgp/systemsgp/service/PracticeScheduleService.java": "201e86c5200ca7f613a4134f08e35ec090f5897767a939003c5ab06c3c2c8136",
+    "BackEnd/src/main/java/com/sgp/systemsgp/service/FinalReportService.java": "a178d33d06e4d435932e2f50ba82de5d3c8fb8dbd4fe886deb1ac279174e030b",
+    "BackEnd/src/main/java/com/sgp/systemsgp/service/PracticePhotoService.java": "9cc607d018b6f4a78d048fa0c590b14016f92c8777ec9990c712106f81403d6f",
+    "BackEnd/src/test/java/com/sgp/systemsgp/service/PracticeAuthorizationRegressionTest.java": "d77378de61465123da9c46163cd416280833035a5a7f7ac40350da0120134912",
+    "BackEnd/src/test/java/com/sgp/systemsgp/service/ActivityEvaluationServiceTest.java": "f25557e5fd1abc3ff4e45dcda4e18190a8dacfc56891e795650e5bb9f070c102",
+    "BackEnd/src/test/java/com/sgp/systemsgp/service/PracticeFollowUpReportServiceTest.java": "1c71e6170a4d5f1551beafc659c2859111b45e81392eed1ffdccbb8c682c86ee",
+    "BackEnd/src/test/java/com/sgp/systemsgp/service/NotificationServiceTest.java": "14574619f239f5041d47460651f716001253516ff67831b7992ec8e33d88bed5"
+  }
+}

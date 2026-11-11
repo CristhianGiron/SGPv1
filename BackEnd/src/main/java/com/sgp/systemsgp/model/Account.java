@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          Account.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Representa los datos persistentes de las cuentas de usuario.
+ */
+
 package com.sgp.systemsgp.model;
 
 import com.sgp.systemsgp.model.listener.AuditEntityListener;
@@ -14,6 +26,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
+@org.hibernate.annotations.DynamicUpdate
 @Table(name = "accounts")
 @Getter
 @Setter
@@ -25,6 +38,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
         AuditEntityListener.class
 })
 public class Account {
+
+    @jakarta.persistence.Column(nullable=false)
+    private long authVersion;
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

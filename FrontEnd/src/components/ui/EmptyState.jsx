@@ -1,13 +1,20 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          EmptyState.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa el componente EmptyState de la interfaz del SGP.
+ */
+
 import { Inbox } from 'lucide-react';
 
-export function EmptyState({ text = 'Aun no hay informacion para mostrar.' }) {
-  return (
-    <div className="relative flex items-center gap-3 overflow-hidden rounded-lg border border-dashed border-[color:var(--module-accent)] bg-[var(--module-accent-soft)] p-4 text-sm text-[color:var(--module-accent-strong)] shadow-card dark:border-[color:var(--module-accent)] dark:bg-[var(--module-accent-soft)] dark:text-[color:var(--module-accent-strong)]">
-      <span aria-hidden="true" className="absolute -right-7 -top-8 h-20 w-20 rounded-full bg-inverse/20" />
-      <span className="relative grid h-10 w-10 flex-none place-items-center rounded-lg border-4 border-panel bg-[var(--module-accent)] text-inverse shadow-card">
-        <Inbox aria-hidden="true" size={18} />
-      </span>
-      <span className="relative">{text}</span>
-    </div>
-  );
+export function EmptyState({ text = 'Aún no hay información para mostrar.', title, action, icon: Icon = Inbox }) {
+  return <div className="flex flex-col items-start gap-4 rounded-xl bg-panel-soft p-5 text-sm leading-6 text-body sm:flex-row sm:items-center sm:p-6">
+    <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-panel text-muted"><Icon aria-hidden="true" size={23} /></span>
+    <div className="min-w-0 flex-1">{title && <p className="font-semibold text-heading">{title}</p>}<p className={title ? 'mt-1' : ''}>{text}</p>{action && <div className="mt-3">{action}</div>}</div>
+  </div>;
 }

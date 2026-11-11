@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          NotificationBell.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa el componente NotificationBell de la interfaz del SGP.
+ */
+
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Bell, BellRing, Check, ChevronDown, X } from 'lucide-react';
 import { useNotifications } from '../../hooks/useNotifications';
@@ -7,9 +19,9 @@ import { splitNotificationsForArchive } from '../../utils/notificationArchive';
 import { setHashRoute } from '../../utils/routes';
 
 const bellButtonClass =
-  'relative inline-flex h-[1.82rem] w-[1.82rem] items-center justify-center rounded-full border border-accent bg-transparent text-inverse transition-colors hover:border-inverse hover:bg-primary-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-panel/50 dark:border-accent dark:text-ink dark:hover:border-accent-strong dark:hover:bg-surface-soft';
+  'relative inline-flex h-10 w-10 items-center justify-center rounded-md text-body transition-colors hover:bg-panel-soft hover:text-heading focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus';
 
-const unreadIconClass = 'text-accent dark:text-accent-strong';
+const unreadIconClass = 'text-body';
 
 const smallActionButtonClass =
   'inline-flex min-h-8 items-center justify-center rounded-lg border border-accent bg-transparent px-2.5 py-1.5 text-xs font-medium text-primary transition-colors hover:border-primary-strong hover:bg-primary-strong hover:text-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:bg-surface-soft dark:text-ink dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong';
@@ -83,7 +95,8 @@ export function NotificationBell() {
 
   const handleSelectNotification = async (notification) => {
     if (!notification.read) {
-      await markAsRead(notification.id);
+      const updated = await markAsRead(notification.id);
+      if (!updated) return false;
     }
 
     if (hasNotificationLink(notification.link)) {
@@ -99,6 +112,7 @@ export function NotificationBell() {
         onClick={handleBellClick}
         className={bellButtonClass}
         aria-label="Ver notificaciones"
+        aria-expanded={open}
       >
         {unreadCount > 0 ? (
           <BellRing
@@ -118,6 +132,7 @@ export function NotificationBell() {
       </button>
 
       <div
+        inert={!open}
         className={`${dropdownPanelClass} ${
           open
             ? 'pointer-events-auto translate-y-0 opacity-100'

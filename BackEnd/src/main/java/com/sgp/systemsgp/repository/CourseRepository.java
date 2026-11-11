@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          CourseRepository.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Define las consultas de persistencia para los paralelos académicos.
+ */
+
 package com.sgp.systemsgp.repository;
 
 import com.sgp.systemsgp.model.Course;
@@ -13,6 +25,10 @@ import java.util.Optional;
 public interface CourseRepository
         extends JpaRepository<Course, Long>,
                 JpaSpecificationExecutor<Course> {
+
+    @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
+    @Query("select c from Course c where c.id = :id and c.deleted = false")
+    Optional<Course> findForUpdate(@Param("id") Long id);
 
     boolean existsByCode(String code);
 

@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          ActivityEvaluationController.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Expone las operaciones HTTP relacionadas con la evaluación de actividades (L.4).
+ */
+
 package com.sgp.systemsgp.controller;
 
 import com.sgp.systemsgp.dto.activityevaluation.ActivityEvaluationResponse;
@@ -77,6 +89,12 @@ public class ActivityEvaluationController {
                 authentication.getName());
     }
 
+    @GetMapping("/{id}/pdf/preview")
+    @PreAuthorize("hasAnyRole('ESTUDIANTE','TUTOR_PRACTICAS','DIRECTOR_PRACTICAS','ADMIN')")
+    public org.springframework.http.ResponseEntity<byte[]> previewPdf(Authentication authentication, @PathVariable Long id) {
+        return PdfResponseFactory.inline(com.sgp.systemsgp.service.PdfPreview.mark(activityEvaluationService.exportPdf(id, authentication.getName())));
+    }
+
     @GetMapping("/{id}/pdf")
     @PreAuthorize("hasAnyRole('ESTUDIANTE','TUTOR_PRACTICAS','DIRECTOR_PRACTICAS','ADMIN')")
     public org.springframework.http.ResponseEntity<byte[]> exportPdf(
@@ -87,7 +105,7 @@ public class ActivityEvaluationController {
                 activityEvaluationService.exportPdf(
                         id,
                         authentication.getName()),
-                "L.4. Evaluación de Actividades..pdf");
+                "L.4. Evaluación de Actividades.pdf");
     }
 
     @PutMapping("/{id}")

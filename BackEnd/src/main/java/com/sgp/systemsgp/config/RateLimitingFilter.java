@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          RateLimitingFilter.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Configura los componentes de el módulo Rate Limiting Filter en el backend.
+ */
+
 package com.sgp.systemsgp.config;
 
 import java.io.IOException;
@@ -19,6 +31,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class RateLimitingFilter extends OncePerRequestFilter {
 
     private static final Map<String, RateLimitRule> RULES = Map.of(
+            "POST /api/auth/refresh", new RateLimitRule(30, Duration.ofMinutes(1)),
             "POST /api/auth/login", new RateLimitRule(8, Duration.ofMinutes(1)),
             "POST /api/auth/register", new RateLimitRule(5, Duration.ofMinutes(10)),
             "POST /api/admin/accounts", new RateLimitRule(20, Duration.ofMinutes(10)),

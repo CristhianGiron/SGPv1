@@ -1,0 +1,79 @@
+@startuml
+/'
+  @institucion   Universidad Nacional de Loja
+  @carrera       Pedagogía de las Ciencias Experimentales - Informática
+  @asignatura    Programación Web
+  @docente       Johnny H. Sánchez L.
+  @proyecto      Sistema de Gestión de Prácticas (SGP)
+  @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+  @file          diagrama-secuencia-login.puml
+  @fecha         2026-11-09 11:20:34
+  @nota          Representa la secuencia de inicio de sesión, validación de la cuenta y selección del espacio de trabajo.
+'/
+
+title CU01 — Autenticación e inicio de sesión en el SGP
+hide footbox
+autonumber
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+skinparam maxMessageSize 55
+
+actor "Usuario" as U
+boundary "Pantalla de acceso" as UI
+control "API SGP" as API
+control "Spring Security" as Security
+database "Base de datos" as DB
+control "Servicio JWT" as JWT
+
+U -> UI : Ingresar usuario o correo y contraseña
+UI -> UI : Comprobar campos obligatorios
+UI -> API : POST /api/auth/login\nEnviar credenciales
+API -> API : Validar datos recibidos
+API -> Security : Autenticar credenciales
+Security -> DB : Buscar cuenta no eliminada\npor usuario o correo institucional
+DB --> Security : Cuenta, hash de contraseña y roles
+Security -> Security : Comprobar estado de la cuenta\ny verificar contraseña con BCrypt
+
+note over Security, DB
+  BCrypt compara la contraseña con su hash almacenado.
+  No se descifra la contraseña ni se compara en texto plano.
+end note
+
+alt Credenciales incorrectas o cuenta no disponible
+    Security --> API : Autenticación rechazada
+    API --> UI : HTTP 401: credenciales incorrectas\nHTTP 403: cuenta bloqueada o desactivada
+    UI --> U : Mostrar el error de acceso
+else Autenticación correcta
+    Security --> API : Usuario autenticado
+    API -> DB : Recargar los datos del usuario autenticado
+    DB --> API : Datos de la cuenta y cambio de contraseña requerido
+    API -> JWT : Generar y firmar accessToken y refreshToken
+    JWT --> API : Tokens JWT firmados y con caducidad
+    API --> UI : HTTP 200: tokens, usuario\ny passwordChangeRequired
+    UI -> UI : Guardar autenticación en localStorage
+
+    UI -> API : GET /api/account/me\nAuthorization: Bearer accessToken
+    API -> JWT : Comprobar firma, caducidad y tipo del token
+    JWT --> API : Resultado de la validación
+    API -> API : Comprobar vigencia de la cuenta\ny consultar perfil y roles
+
+    alt Token o cuenta rechazados (HTTP 401 / 403)
+        API --> UI : Rechazar la consulta del perfil
+        UI -> UI : Eliminar la autenticación almacenada
+        UI --> U : Mostrar nuevamente el acceso
+    else Perfil autorizado
+        API --> UI : Perfil, roles y estado de la contraseña
+        alt Requiere cambio de contraseña
+            UI --> U : Solicitar cambio antes de continuar
+        else Puede continuar
+            UI --> U : Mostrar la ruta autorizada\no el panel según sus roles
+        end
+    end
+end
+
+note over API, JWT
+  Los JWT se firman para comprobar su integridad y autenticidad;
+  su contenido no está cifrado. La renovación de tokens y el cambio
+  de contraseña completo corresponden a otros flujos.
+end note
+@enduml

@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          SectionCard.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa el componente SectionCard de la interfaz del SGP.
+ */
+
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 
@@ -11,17 +23,17 @@ export function SectionCard({
   action,
   children,
   className = '',
-  collapsible,
+  collapsible = false,
   defaultCollapsed = false,
 }) {
-  const canCollapse = collapsible ?? Boolean(title || description);
+  const canCollapse = collapsible || defaultCollapsed;
   const [collapsed, setCollapsed] = useState(defaultCollapsed);
 
   if (collapsed) {
     return (
       <section
         className={cx(
-          'sgp-section-card relative min-w-0 overflow-hidden rounded-lg border border-line bg-panel px-3 py-2 text-ink shadow-card dark:border-line-soft dark:bg-surface',
+          'sgp-section-card relative min-w-0 overflow-hidden rounded-lg border border-line bg-panel px-3 py-2 text-ink dark:border-line-soft dark:bg-surface',
           className,
         )}
       >
@@ -32,7 +44,7 @@ export function SectionCard({
         <div className="flex min-h-9 items-center justify-between gap-3">
           <div className="min-w-0">
             {title && (
-              <h2 className="truncate text-base font-medium leading-none text-heading dark:text-heading">
+              <h2 className="truncate text-base font-semibold leading-none text-heading dark:text-heading">
                 {title}
               </h2>
             )}
@@ -44,7 +56,8 @@ export function SectionCard({
                 aria-expanded="false"
                 className="grid h-9 w-9 flex-none place-items-center rounded-lg border border-accent bg-transparent text-primary transition-colors hover:border-primary hover:bg-primary hover:text-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:bg-surface-soft dark:text-ink dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong"
                 onClick={() => setCollapsed(false)}
-                title="Expandir seccion"
+                aria-label={`Expandir ${title || 'sección'}`}
+                title="Expandir sección"
                 type="button"
               >
                 <ChevronDown
@@ -63,9 +76,9 @@ export function SectionCard({
   return (
     <section
       className={cx(
-        'relative min-w-0 overflow-hidden rounded-lg border border-line bg-panel text-ink shadow-card dark:border-line-soft dark:bg-surface',
+        'relative min-w-0 overflow-hidden rounded-lg border border-line bg-panel text-ink dark:border-line-soft dark:bg-surface',
         'sgp-section-card',
-        'p-3 sm:p-4',
+        'p-4 sm:p-6',
         className,
       )}
     >
@@ -76,13 +89,13 @@ export function SectionCard({
       {(title || description || action) && (
         <div
           className={cx(
-            'mb-3 flex flex-col gap-3 border-b border-line-soft pb-3 sm:flex-row sm:items-start sm:justify-between dark:border-line-soft',
+            'mb-3 flex flex-col gap-3 pb-2 sm:flex-row sm:items-start sm:justify-between dark:border-line-soft',
           )}
         >
           {(title || description) && (
             <div className="min-w-0">
               {title && (
-                <h2 className="text-base font-medium leading-tight text-heading dark:text-heading">
+                <h2 className="text-base font-semibold leading-tight text-heading dark:text-heading">
                   {title}
                 </h2>
               )}
@@ -100,7 +113,8 @@ export function SectionCard({
                 aria-expanded={!collapsed}
                 className="grid h-9 w-9 flex-none place-items-center rounded-lg border border-accent bg-transparent text-primary transition-colors hover:border-primary hover:bg-primary hover:text-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:bg-surface-soft dark:text-ink dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong"
                 onClick={() => setCollapsed((current) => !current)}
-                title={collapsed ? 'Expandir seccion' : 'Contraer seccion'}
+                aria-label={`${collapsed ? 'Expandir' : 'Contraer'} ${title || 'sección'}`}
+                title={collapsed ? 'Expandir sección' : 'Contraer sección'}
                 type="button"
               >
                 <ChevronDown
@@ -113,7 +127,7 @@ export function SectionCard({
           </div>
         </div>
       )}
-      <div className="min-w-0 overflow-hidden transition-[max-height,opacity] duration-200">
+      <div className="min-w-0">
         {children}
       </div>
     </section>

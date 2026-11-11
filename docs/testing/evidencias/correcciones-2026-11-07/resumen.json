@@ -1,0 +1,39 @@
+{
+  "clipping/resultado.json": {
+    "errors": 0,
+    "observations": 24
+  },
+  "accesibilidad-movil/resultado.json": {
+    "errors": 0,
+    "observations": 72
+  },
+  "limite-listados.json": {
+    "errors": 0,
+    "observations": 2
+  },
+  "visor-modales.json": {
+    "errors": 0,
+    "observations": 2
+  },
+  "contextos-modales.json": {
+    "errors": 0,
+    "observations": 132
+  },
+  "migrations": {
+    "count": 20,
+    "sqlLog": "migraciones-mariadb.log",
+    "automaticStartup": true,
+    "temporaryDatabasesOnly": true
+  },
+  "frontend": {
+    "tests": 187,
+    "suites": 53,
+    "failures": 0,
+    "build": "passed"
+  },
+  "backend": {
+    "passed": 158,
+    "failures": 0,
+    "optionalSqlTestExecutedSeparately": true
+  }
+}

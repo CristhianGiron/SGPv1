@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          ForcePasswordChangePage.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Permite actualizar la contraseña cuando la cuenta requiere un cambio inicial.
+ */
+
 import { useState } from 'react';
 import { KeyRound, LogOut, ShieldCheck } from 'lucide-react';
 import { apiRequest } from '../api/client';
@@ -5,6 +17,7 @@ import { useAuth } from '../auth/AuthContext';
 import { Alert } from '../components/ui/Alert';
 import { PrimaryButton, SecondaryButton } from '../components/ui/ActionBar';
 import { Field, PasswordInput } from '../components/ui/FormControls';
+import { PageInfoButton } from '../components/ui/PageHeader';
 import { ThemeToggle } from '../components/ui/ThemeToggle';
 import { joinText } from '../utils/format';
 
@@ -51,7 +64,11 @@ export function ForcePasswordChangePage() {
       <div aria-hidden="true" className="h-[5px] bg-primary" />
       <div className="mx-auto flex min-h-[calc(100vh-5px)] w-full max-w-6xl items-center px-5 py-10">
         <section className="mx-auto w-full max-w-xl rounded-lg border border-border bg-panel p-6 shadow-card dark:border-line dark:bg-surface">
-          <div className="mb-5 flex justify-end">
+          <div className="mb-5 flex items-center justify-end gap-1">
+            <PageInfoButton
+              description="Por seguridad, debes reemplazar la contraseña temporal antes de acceder a la plataforma. Ingresa la contraseña actual, escribe una nueva de al menos ocho caracteres y repítela para confirmar. También puedes cerrar la sesión si no reconoces esta cuenta."
+              title="Cambio obligatorio de contraseña"
+            />
             <ThemeToggle />
           </div>
           <div className="mb-7">

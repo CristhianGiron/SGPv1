@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          navigation.js
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Define la configuración de navigation utilizada por la interfaz.
+ */
+
 /**
  * NAVIGATION CONFIG - Configuración del menú de navegación
  * 
@@ -98,6 +110,9 @@ export const UNIVERSITY_NAV_ITEMS = [
  * El orden aquí define el orden en el menú de la aplicación
  */
 export const NAV_ITEMS = [
+  { id: 'institution-work', label: 'Mis estudiantes institucionales', Icon: UsersRound, roles: ['ROLE_DIRECTORA_INSTITUCION'] },
+  { id: 'practices', label: 'Prácticas', Icon: GraduationCap, roles: [] },
+  { id: 'overview', label: 'Resumen de seguimiento', Icon: BarChart3, roles: ['ROLE_ADMIN', 'ROLE_DIRECTOR_PRACTICAS', 'ROLE_TUTOR_PRACTICAS', 'ROLE_TUTOR_INSTITUCIONAL'] },
   {
     id: 'dashboard',
     label: 'Inicio',
@@ -145,7 +160,7 @@ export const NAV_ITEMS = [
     id: 'courses',
     label: 'Paralelos y prácticas',
     Icon: GraduationCap,
-    roles: ['ROLE_ESTUDIANTE', 'ROLE_TUTOR_PRACTICAS', 'ROLE_ADMIN', 'ROLE_DIRECTOR_PRACTICAS'],
+    roles: ['ROLE_TUTOR_PRACTICAS', 'ROLE_ADMIN', 'ROLE_DIRECTOR_PRACTICAS'],
   },
   {
     id: 'practice-archive',
@@ -167,7 +182,7 @@ export const NAV_ITEMS = [
   },
   {
     id: 'documents',
-    label: 'Documentos de practica',
+    label: 'Documentos de práctica',
     Icon: FileText,
     ToggleIcon: ChevronDown,
     isGroupHeader: true,
@@ -195,7 +210,7 @@ export const NAV_ITEMS = [
   },
   {
     id: 'institutions',
-    label: 'Instituciones de practica',
+    label: 'Instituciones de práctica',
     Icon: Building2,
     ToggleIcon: ChevronDown,
     isGroupHeader: true,

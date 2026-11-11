@@ -1,0 +1,149 @@
+
+> front@0.1.0 test
+> react-scripts test --watchAll=false --runInBand
+
+PASS src/components/accessibility/AccessibilityWidget.test.jsx
+PASS src/components/ui/DataTable.test.jsx
+PASS src/layout/AppLayout.test.jsx
+PASS src/pages/DidacticPlansPage.test.jsx
+PASS src/pages/NotificationsPage.test.jsx
+  ● Console
+
+    console.error
+      An update to PageHeader inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+      149 |       } catch {
+      150 |         if (active) {
+    > 151 |           setBannerImages([]);
+          |           ^
+      152 |         }
+      153 |       }
+      154 |     }
+
+      at node_modules/react-dom/cjs/react-dom-client.development.js:18758:19
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom-client.development.js:18757:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:16409:11)
+      at dispatchSetStateInternal (node_modules/react-dom/cjs/react-dom-client.development.js:9170:13)
+      at setBannerImages (node_modules/react-dom/cjs/react-dom-client.development.js:9127:7)
+      at loadBanner (src/components/ui/PageHeader.jsx:151:11)
+
+    console.error
+      An update to PageHeader inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+      149 |       } catch {
+      150 |         if (active) {
+    > 151 |           setBannerImages([]);
+          |           ^
+      152 |         }
+      153 |       }
+      154 |     }
+
+      at node_modules/react-dom/cjs/react-dom-client.development.js:18758:19
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom-client.development.js:18757:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:16409:11)
+      at dispatchSetStateInternal (node_modules/react-dom/cjs/react-dom-client.development.js:9170:13)
+      at setBannerImages (node_modules/react-dom/cjs/react-dom-client.development.js:9127:7)
+      at loadBanner (src/components/ui/PageHeader.jsx:151:11)
+
+    console.error
+      An update to PageHeader inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+      149 |       } catch {
+      150 |         if (active) {
+    > 151 |           setBannerImages([]);
+          |           ^
+      152 |         }
+      153 |       }
+      154 |     }
+
+      at node_modules/react-dom/cjs/react-dom-client.development.js:18758:19
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom-client.development.js:18757:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:16409:11)
+      at dispatchSetStateInternal (node_modules/react-dom/cjs/react-dom-client.development.js:9170:13)
+      at setBannerImages (node_modules/react-dom/cjs/react-dom-client.development.js:9127:7)
+      at loadBanner (src/components/ui/PageHeader.jsx:151:11)
+
+PASS src/pages/PracticeWorkspacePage.test.jsx
+PASS src/pages/LoginPage.test.jsx
+PASS src/components/InstitutionalLetterhead.test.jsx
+PASS src/pages/CatalogWorkflowPage.test.jsx
+PASS src/pages/PracticeFormsInterpretation.test.jsx
+PASS src/App.test.js
+PASS src/components/ui/AccountMenu.test.jsx
+PASS src/pages/AccountsPage.test.jsx
+PASS src/pages/RegisterPublic.test.jsx
+PASS src/components/EndpointConsole.test.jsx
+PASS src/hooks/useRecoverableDraft.test.jsx
+PASS src/pages/StaffHomePage.test.jsx
+PASS src/components/GuidedForm.test.jsx
+PASS src/components/ui/FilterPanel.test.jsx
+PASS src/components/ui/ActionBar.test.jsx
+PASS src/components/ui/EntityImage.test.jsx
+PASS src/components/ui/FormFeedback.test.jsx
+PASS src/components/DataInspector.test.jsx
+PASS src/components/ui/Modal.test.jsx
+PASS src/components/ui/AgendaView.interaction.test.jsx
+PASS src/components/ui/EntitySelect.test.jsx
+PASS src/components/PracticeOverview.test.jsx
+PASS src/components/ResourceCrud.test.jsx
+PASS src/hooks/useServerDraft.test.jsx
+PASS src/components/ui/Alert.test.jsx
+PASS src/components/ui/ThemeToggle.test.jsx
+PASS src/hooks/useNotifications.test.jsx
+PASS src/components/ui/PageHeader.test.jsx
+PASS src/pages/PracticeFormsPage.test.jsx
+PASS src/components/ui/PdfPreviewDialog.test.jsx
+PASS src/components/ui/ColorThemeSelect.test.jsx
+PASS src/pages/DashboardPage.test.jsx
+PASS src/hooks/useButtonTooltips.test.js
+PASS src/hooks/useThemeMode.test.js
+PASS src/components/ui/ActionMenu.test.jsx
+PASS src/contexts/PracticeWorkspaceContext.test.jsx
+PASS src/utils/routes.test.jsx
+PASS src/components/ui/ModuleTabs.test.jsx
+PASS src/components/ui/AgendaView.test.jsx
+PASS src/pages/InstitutionWorkPage.test.jsx
+PASS src/utils/actionIntent.test.js
+PASS src/utils/practiceIndicators.test.js
+PASS src/pages/PracticeArchivePage.test.jsx
+PASS src/config/roleExperience.test.js
+PASS src/utils/practiceExperience.test.js
+PASS src/utils/notificationInbox.test.js
+PASS src/utils/pagination.test.js
+PASS src/api/client.test.jsx
+
+Test Suites: 53 passed, 53 total
+Tests:       187 passed, 187 total
+Snapshots:   0 total
+Time:        25.718 s, estimated 28 s
+Ran all test suites.

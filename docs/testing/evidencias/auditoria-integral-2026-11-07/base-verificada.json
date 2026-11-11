@@ -1,0 +1,20 @@
+{
+  "date": "2026-11-07",
+  "frontend": {
+    "suites": 52,
+    "tests": 183,
+    "failures": 0,
+    "build": "passed"
+  },
+  "backend": {
+    "tests": 142,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "contracts": {
+    "checked": 68,
+    "missing": []
+  },
+  "scope": "Local build, Chrome fixtures and H2/MockMvc. No real MySQL or AWS requests."
+}

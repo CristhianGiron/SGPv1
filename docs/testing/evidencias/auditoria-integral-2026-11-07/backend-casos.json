@@ -1,0 +1,858 @@
+{
+  "date": "2026-11-07",
+  "count": 142,
+  "cases": [
+    {
+      "suite": "com.sgp.systemsgp.service.PdfExportServiceTest",
+      "case": "createPdfRendersWeeklyTables",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PdfExportServiceTest",
+      "case": "createPdfRendersScheduleMatrix",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PdfExportServiceTest",
+      "case": "spanishCharactersAlsoSurviveLandscapeTables",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PdfExportServiceTest",
+      "case": "scheduleWeekRequestAcceptsActivitiesAlias",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PdfExportServiceTest",
+      "case": "spanishAccentsAndPunctuationSurvivePdfExportIncludingPastedCombiningMarks",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PdfExportServiceTest",
+      "case": "createPdfRendersScheduleMatrixWhenRowsHaveNoActivityText",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PdfExportServiceTest",
+      "case": "createPdfReturnsPdfBytes",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.GradeServiceTest",
+      "case": "updateRejectsUniversityInstitution",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.GradeServiceTest",
+      "case": "createRejectsUniversityInstitution",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PracticePhotoServiceTest",
+      "case": "practiceTutorCannotOpenUploadedPhotoFromUnassignedCourse",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PracticePhotoServiceTest",
+      "case": "institutionalTutorSeesAssignedCoursePhotos",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PracticePhotoServiceTest",
+      "case": "studentCannotDeleteAnotherStudentPhoto",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PracticePhotoServiceTest",
+      "case": "studentDeletesOwnPhoto",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PracticePhotoServiceTest",
+      "case": "practiceTutorCanOpenPhotoWhenDirectPhotoCourseIsMissing",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PracticePhotoServiceTest",
+      "case": "practiceTutorSeesUploadedPhotosGroupedByStudentScope",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PracticePhotoServiceTest",
+      "case": "studentUploadsPhotoForApprovedEnrollment",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.EnrollmentServiceTest",
+      "case": "cancelRejectsNonPendingEnrollment",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.EnrollmentServiceTest",
+      "case": "approveRejectsNonPendingEnrollment",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.EnrollmentServiceTest",
+      "case": "approveNotifiesStudent",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.EnrollmentServiceTest",
+      "case": "rejectRejectsNonPendingEnrollment",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.EnrollmentServiceTest",
+      "case": "archiveBatchArchivesCompletedPracticesAndAuditsEachOne",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.QaUserWorkflowsTest",
+      "case": "allSixPdfPreviewsAndTheCompleteArchiveWorkThroughTheSecuredHttpEndpoints",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.QaUserWorkflowsTest",
+      "case": "observationNumericTabulationSurvivesPersistenceAndCountsZero",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.QaUserWorkflowsTest",
+      "case": "bearerAuthenticationRejectsRefreshTokensAndBlockedAccounts",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.QaUserWorkflowsTest",
+      "case": "draftPdfPreviewWorksBeforeApprovalAndCannotBypassAccessOrFinalExport",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.QaUserWorkflowsTest",
+      "case": "institutionalDirectorCanAnswerTheirInterviewAndFalseIsAValidResponse",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.QaUserWorkflowsTest",
+      "case": "methodSecurityRejectsForeignRolesOnAccountsAndCoordination",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.QaUserWorkflowsTest",
+      "case": "foreignStudentCannotReadAnotherStudentsSubmittedPlan",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.QaUserWorkflowsTest",
+      "case": "archiveContainsOnlyThisPracticesApprovedDocumentsEvidenceAndAnHonestIndex",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.QaUserWorkflowsTest",
+      "case": "enrollmentConclusionArchiveRecoveryAndReopeningPersistCorrectly",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.QaUserWorkflowsTest",
+      "case": "spanishTextSurvivesUtf8HttpAndDatabasePersistence",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.QaUserWorkflowsTest",
+      "case": "didacticPlanGoesFromDraftToRecommendationsCorrectionAndResubmission",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.QaUserWorkflowsTest",
+      "case": "interviewCanBeAnsweredInterpretedAndReadByItsSupervisors",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.QaUserWorkflowsTest",
+      "case": "quantitativeInterviewsKeepTheirCountsAndTheStudentsQualitativeInterpretation",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.QaUserWorkflowsTest",
+      "case": "pendingEnrollmentCanBeWithdrawnAndAnApprovedEnrollmentCanBeAssignedToAGroup",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.QaUserWorkflowsTest",
+      "case": "serverDraftsArePrivateAndRejectStaleWritesIncludingAfterClearing",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.QaUserWorkflowsTest",
+      "case": "validationResponseIdentifiesTheFieldAndNestedQuestionWithoutLosingTheSummary",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.QaUserWorkflowsTest",
+      "case": "pdfUploadRejectsRenamedTextAndAcceptsAnActualPdf",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.RoleSeparationIntegrationTest",
+      "case": "practiceHistoryIsRestrictedToTheOwnerAndAssignedStaff",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.RoleSeparationIntegrationTest",
+      "case": "publicRegistrationCannotProvisionStaffAccounts",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.RoleSeparationIntegrationTest",
+      "case": "studentAndTutorCannotSearchOtherAcademicScopesByChangingQueryParameters",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.RoleSeparationIntegrationTest",
+      "case": "directorReadsOnlyTheirAcademicHierarchyAndCannotMutateIt",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.RoleSeparationIntegrationTest",
+      "case": "administratorCanSearchWithoutOptionalBooleanFilters",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.RoleSeparationIntegrationTest",
+      "case": "administratorRetainsCrossUniversityManagement",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.RoleSeparationIntegrationTest",
+      "case": "tutorSelectionDoesNotExposeOtherUniversitiesOrPersonalIdentifiers",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.CoordinationReportServiceTest",
+      "case": "administratorSeesAllCareersWithoutMergingCoursesWithTheSameName",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.CoordinationReportServiceTest",
+      "case": "correctionsCountUniqueStudentsAndTotalsIncludeEveryStatus",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.CoordinationReportServiceTest",
+      "case": "directorOnlySeesDocumentsFromTheirCareerIncludingSubjectFallback",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.CoordinationReportServiceTest",
+      "case": "noCompletedReviewsIsNotReportedAsAnInstantApproval",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.CoordinationReportServiceTest",
+      "case": "averagesUseOnlyApprovedDocumentsWithValidTimesAndPreserveZeroHours",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.CoordinationReportServiceTest",
+      "case": "rejectsAnUnauthorizedRoleAndDirectorWithoutCareerHasNoCrossCareerData",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.CourseServiceTest",
+      "case": "assignInstitutionalTutorRejectsUniversityInstitution",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.CourseServiceTest",
+      "case": "createCourseAcceptsAcademicCycleParallel",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.CourseServiceTest",
+      "case": "assignPracticeTutorStoresValidUnlTutor",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.CourseServiceTest",
+      "case": "createCourseRejectsMissingAcademicCycle",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.InstitutionalDefaultsServiceTest",
+      "case": "reusesAnExistingHierarchyDespiteDifferentCodesAndPunctuation",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.InstitutionalDefaultsServiceTest",
+      "case": "additionalUniversitiesCoexistWithTheDefaultAndCanBecomeTheConfiguredContext",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.InstitutionalDefaultsServiceTest",
+      "case": "doesNotReactivateAnInstitutionOrCreateChildrenUnderIt",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.InstitutionalDefaultsServiceTest",
+      "case": "publicEndpointReturnsCorrectNamesFromActualApplicationConfiguration",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.InstitutionalDefaultsServiceTest",
+      "case": "initializesTheDefaultHierarchyOnceWithoutCreatingUsers",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.InstitutionalDefaultsServiceTest",
+      "case": "seedingCanBeDisabled",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.InstitutionalDefaultsServiceTest",
+      "case": "applicationPropertiesBindSpanishNamesWithoutMojibake",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.InstitutionalDefaultsServiceTest",
+      "case": "repairsPreviouslySeededNamesAndKeepsExistingIdsAndCustomNames",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.ActivityEvaluationServiceTest",
+      "case": "createRejectsPendingEnrollment",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.ActivityEvaluationServiceTest",
+      "case": "createBuildsEvaluationFromApprovedEnrollment",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.ActivityEvaluationServiceTest",
+      "case": "studentCanViewOwnEvaluation",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.ActivityEvaluationServiceTest",
+      "case": "exportPdfUsesActivityEvaluationTemplate",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PracticeAccessServiceTest",
+      "case": "institutionalTutorCanViewOnlyAssignedEnrollment",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PracticeAccessServiceTest",
+      "case": "practiceCompletionAndArchiveHaveSeparateManagers",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PracticeAccessServiceTest",
+      "case": "directorCanViewOnlyCoursesFromOwnCareer",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.FacultyServiceTest",
+      "case": "createRejectsSchoolInstitution",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.NotificationServiceTest",
+      "case": "documentSubmissionNotifiesPracticeTutorDirectorAndAdmin",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.SystemsgpApplicationTests",
+      "case": "contextLoads",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PracticeScheduleServiceTest",
+      "case": "institutionDirectorCanViewScheduleFromOwnInstitution",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PracticeScheduleServiceTest",
+      "case": "createRejectsPendingEnrollment",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PracticeScheduleServiceTest",
+      "case": "attendanceDateMustMatchSelectedPeriodDay",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PracticeScheduleServiceTest",
+      "case": "institutionDirectorCanReviewSchedulesFromOwnInstitution",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PracticeScheduleServiceTest",
+      "case": "institutionalTutorRegistersAttendanceFromPeriod",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PracticeScheduleServiceTest",
+      "case": "studentCanViewOwnSchedule",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PracticeScheduleServiceTest",
+      "case": "attendanceCannotInflateMinutesBeyondRegisteredTimes",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PracticeScheduleServiceTest",
+      "case": "createBuildsScheduleAndCalculatesMinutes",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.EntityImageIntegrationTest",
+      "case": "replacementChangesVersionAndRemovalRestoresDefaultState",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.EntityImageIntegrationTest",
+      "case": "foreignDirectorCannotReplaceAnotherCareerCover",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.EntityImageIntegrationTest",
+      "case": "institutionLogoIsCreatedAtomicallyAndOnlyManagersCanRemoveIt",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.EntityImageIntegrationTest",
+      "case": "emptyOversizedAndUnsupportedImagesAreRejected",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.EntityImageIntegrationTest",
+      "case": "studentsCannotUploadOrReplaceCovers",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.EntityImageIntegrationTest",
+      "case": "jsonCreationWithoutImageIsStillSupported",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.EntityImageIntegrationTest",
+      "case": "invalidImageDoesNotCreateAnIncompleteCourse",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.EntityImageIntegrationTest",
+      "case": "declaredFormatMustMatchActualImageBytes",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.EntityImageIntegrationTest",
+      "case": "finalReportLetterheadPersistsReplacesAndRespectsDocumentAccess",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.EntityImageIntegrationTest",
+      "case": "createWithCoverPersistsAndOnlyAuthorizedViewersCanRead",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.CompletedActivityRecordServiceTest",
+      "case": "reviewSendsRecordBackWithEntryFeedback",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.CompletedActivityRecordServiceTest",
+      "case": "createRejectsPendingEnrollment",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.CompletedActivityRecordServiceTest",
+      "case": "correctionFlowClearsCurrentFeedbackAndApprovesAfterBothReviews",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.CompletedActivityRecordServiceTest",
+      "case": "createBuildsDraftAndCalculatesMinutes",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.CompletedActivityRecordServiceTest",
+      "case": "submitAllowsIncompleteDraft",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.FinalReportServiceTest",
+      "case": "studentUpdateSubmittedFinalReportInvalidatesPartialReviews",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.FinalReportServiceTest",
+      "case": "createRejectsPendingEnrollment",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.FinalReportServiceTest",
+      "case": "institutionalFormSavesItsLetterheadHoursAndDateTogether",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.FinalReportServiceTest",
+      "case": "institutionalTutorCompletesConclusionsAndRecommendations",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.FinalReportServiceTest",
+      "case": "submitAllowsIncompleteStudentSection",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.FinalReportServiceTest",
+      "case": "approvingFinalReportRequiresAllReviewers",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.FinalReportServiceTest",
+      "case": "institutionalHoursCanComeFromTheSameEnrollmentsL6",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.FinalReportServiceTest",
+      "case": "correctionFlowClearsCurrentFeedbackAndApprovesAfterAllReviews",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.FinalReportServiceTest",
+      "case": "legacyApprovedReportCanReceiveItsMissingLetterheadOnlyOnce",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.FinalReportServiceTest",
+      "case": "invalidLetterheadDoesNotSaveInstitutionalComments",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.FinalReportServiceTest",
+      "case": "createBuildsDraftFromApprovedEnrollment",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PracticeReportServiceTest",
+      "case": "createRejectsPendingEnrollment",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PracticeReportServiceTest",
+      "case": "correctionFlowClearsCurrentFeedbackAndApprovesAfterBothReviews",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PracticeReportServiceTest",
+      "case": "submitAllowsIncompleteDraft",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PracticeReportServiceTest",
+      "case": "reviewSendsReportBackForCorrection",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PracticeReportServiceTest",
+      "case": "createBuildsDraftFromApprovedEnrollment",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PdfReferenceLayoutTest",
+      "case": "aLongWeekAndSchedulePreserveTheEndOfEveryActivity",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PdfReferenceLayoutTest",
+      "case": "sixReferenceDocumentsKeepTextInsideThePageAndEmbedTheirImages",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PdfReferenceLayoutTest",
+      "case": "institutionalLetterheadRepeatsWithoutCoverOrUniversityBranding",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PdfReferenceLayoutTest",
+      "case": "longFollowUpAndCompletedActivitiesContinueAcrossPages",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.AccountServiceRecoveryTest",
+      "case": "recoverAdminPasswordUpdatesPasswordWhenRecoveryIsEnabled",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.AccountServiceRecoveryTest",
+      "case": "recoverAdminPasswordRejectsNonAdminAccounts",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PracticeFollowUpReportServiceTest",
+      "case": "createBuildsReportAndCalculatesMinutes",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PracticeFollowUpReportServiceTest",
+      "case": "createRejectsPendingEnrollment",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PracticeFollowUpReportServiceTest",
+      "case": "studentCanViewOwnReport",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.PracticeFollowUpReportServiceTest",
+      "case": "exportPdfUsesFollowUpTemplate",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.config.SecurityConfigTest",
+      "case": "practiceCompletionEndpointsAreOnlyReachableForDirector",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.config.SecurityConfigTest",
+      "case": "coordinationReportsAreReachableForAdminAndDirectorOnly",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.config.SecurityConfigTest",
+      "case": "documentPdfEndpointsAreReachableForAllowedRoles",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.config.SecurityConfigTest",
+      "case": "archiveBatchEndpointIsOnlyReachableForAdmin",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.config.SecurityConfigTest",
+      "case": "corsAllowsTheConfiguredNetworkHost",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.config.SecurityConfigTest",
+      "case": "directorCanReachAllDirectorReviewEndpoints",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.config.SecurityConfigTest",
+      "case": "studentCannotReachReviewerEndpoints",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.ActivityPlanServiceTest",
+      "case": "approvalRequiresPracticeTutorAndDirector",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.ActivityPlanServiceTest",
+      "case": "createRejectsPendingEnrollment",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.ActivityPlanServiceTest",
+      "case": "correctionFlowClearsCurrentFeedbackAndApprovesAfterBothReviews",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.ActivityPlanServiceTest",
+      "case": "updateSubmittedPlanReturnsItToPrivateDraft",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.ActivityPlanServiceTest",
+      "case": "reviewSendsPlanBackForCorrection",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.ActivityPlanServiceTest",
+      "case": "submitAllowsIncompleteDraft",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.service.ActivityPlanServiceTest",
+      "case": "createBuildsDraftFromApprovedEnrollment",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.controller.DocumentControllerFlowTest",
+      "case": "activityPlanHttpFlowCoversCorrectionAndDirectorApproval",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.controller.DocumentControllerFlowTest",
+      "case": "completedActivityRecordHttpFlowCoversCorrectionAndDirectorApproval",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.controller.DocumentControllerFlowTest",
+      "case": "practiceReportHttpFlowCoversCorrectionAndDirectorApproval",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.controller.DocumentControllerFlowTest",
+      "case": "activityPlanReviewAcceptsFeedbackWithoutDecision",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.controller.DocumentControllerFlowTest",
+      "case": "finalReportHttpFlowCoversPracticeInstitutionalAndDirectorApproval",
+      "failed": false,
+      "error": false
+    },
+    {
+      "suite": "com.sgp.systemsgp.config.JwtServiceTest",
+      "case": "configuredExpirationAppliesToAccessTokensAndRefreshCannotAuthenticateAsAccess",
+      "failed": false,
+      "error": false
+    }
+  ]
+}

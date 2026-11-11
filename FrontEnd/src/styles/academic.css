@@ -1,0 +1,230 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          academic.css
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Define los estilos de la interfaz del SGP para academic.
+ */
+
+/* Shared academic visual system. Screen-only rules preserve document printing. */
+@media screen {
+  html { scroll-padding-top: 5.5rem; }
+  body { font-size: 14px; line-height: 1.6; }
+  ::selection { background: var(--color-primary-soft); color: var(--color-primary-strong); }
+  input, select, textarea { accent-color: var(--color-accent); }
+
+  .sgp-app-layout { --module-table: var(--color-table-header); --module-table-ink: var(--color-heading); }
+  .sgp-layout-body { padding-top: 2rem; }
+  .sgp-page-canvas { grid-template-columns: minmax(0, 1fr); gap: 1.75rem; }
+  .practice-workspace-content, .sgp-document-workspace { min-width: 0; max-width: 100%; }
+  html.dark .text-primary { color: var(--color-primary-strong); }
+  .sgp-page-header { padding-bottom: .8rem; }
+  .sgp-page-header > div > div:first-child > p:first-child { letter-spacing: .12em; }
+  .sgp-page-header h1 { text-wrap: balance; font-weight: 650; }
+  .sgp-page-header h1 + p { max-width: 66ch; line-height: 1.75; }
+  .sgp-page-header-compact { padding-block: 0; }
+  .sgp-page-header-compact > div { flex-direction: row; align-items: center; }
+  .sgp-page-header-compact h2 { margin-top: 0; font-size: clamp(1.3rem, 2.2vw, 1.85rem); }
+  .sgp-document-workspace fieldset { min-inline-size: 0; }
+  .sgp-form-stepper { min-width: 0; max-width: 100%; }
+  .sgp-editor-actions {
+    min-width: 0;
+    max-width: 100%;
+    position: sticky;
+    bottom: max(.75rem, env(safe-area-inset-bottom));
+    z-index: 20;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .75rem 1.5rem;
+    padding: .85rem 1rem;
+    border: 1px solid var(--color-line);
+    border-radius: .85rem;
+    background: var(--color-panel);
+    box-shadow: 0 -4px 24px rgb(15 30 50 / .09);
+  }
+  .sgp-editor-actions > div:first-child { flex-basis: 16rem; }
+  .sgp-editor-actions > div:last-child { flex: 1 1 auto; justify-content: flex-end; }
+  .sgp-editor-actions .sgp-action-solid { order: -1; }
+  .sgp-form-control[aria-invalid="true"] { border-color: var(--color-danger); }
+
+  /* Persistent navigation has its own contrast-safe palette in both themes. */
+  .sgp-sidebar-shell {
+    --unl-graphite: #f0f5fc;
+    --color-heading: #f0f5fc;
+    --color-ink: #e5edf8;
+    --color-body: #d3dce5;
+    --color-muted: #b8c5d0;
+    --color-subtle: #a6b8d0;
+    --color-nav-text: #d3dce5;
+    --color-nav-subtext: #b3c3d9;
+    --color-primary: var(--color-sidebar-accent);
+    --color-primary-strong: #ecf5ff;
+    --color-primary-soft: var(--color-sidebar-active);
+    --color-info-strong: #d7eaff;
+    --color-panel: var(--color-sidebar);
+    --color-panel-soft: var(--color-sidebar-soft);
+    --color-surface: var(--color-sidebar);
+    --color-surface-soft: var(--color-sidebar-soft);
+    --color-page: var(--color-sidebar);
+    --color-line: var(--color-sidebar-line);
+    --color-line-soft: var(--color-sidebar-line);
+    --color-border: var(--color-sidebar-line);
+    --color-hover-soft: var(--color-sidebar-active);
+    --color-focus: var(--color-sidebar-accent);
+    background: var(--color-sidebar);
+    color: #e5edf8;
+    border-color: var(--color-sidebar);
+    box-shadow: 4px 0 20px rgb(15 30 50 / .035);
+  }
+  .sgp-sidebar-shell > div:first-child { padding-top: .5rem; padding-bottom: 1.6rem; }
+  .sgp-sidebar-shell nav button { border-radius: .65rem; }
+  .sgp-sidebar-shell nav button[aria-current="page"] { box-shadow: inset 3px 0 0 #bda16c; color: #fff; background: var(--color-sidebar-active); }
+  .sgp-sidebar-shell nav button[aria-current="page"] svg { color: var(--color-sidebar-accent); }
+  .sgp-sidebar-shell nav p { font-size: 11px; letter-spacing: .09em; text-transform: uppercase; }
+  .sgp-sidebar-shell .bg-primary.text-inverse { background: var(--color-sidebar-soft); color: #eaf3ff; border-color: var(--color-sidebar-line); }
+  .sgp-sidebar-identity { padding-bottom: .5rem; }
+  .sgp-institution-mark { position: relative; display: block; width: 132px; height: 45px; overflow: hidden; margin-bottom: 1rem; }
+  .sgp-institution-mark img { position: absolute; top: -15.4px; left: 0; width: 132px; max-width: none; }
+  .sgp-institution-mark-ink { filter: brightness(0) invert(1); clip-path: inset(0 0 0 28%); }
+
+  .sgp-app-topbar { background: color-mix(in srgb, var(--color-panel) 94%, transparent); backdrop-filter: blur(14px); }
+  .sgp-app-topbar > div > div:first-child { height: 4.4rem; }
+  .sgp-app-topbar .sgp-search-trigger { width:44px; height:44px; border:1px solid transparent; background:transparent; color:var(--color-muted); border-radius:.65rem; }
+  .sgp-app-topbar .sgp-search-trigger:hover, .sgp-app-topbar .sgp-search-trigger[aria-expanded="true"] { background:var(--color-panel-soft); color:var(--color-heading); }
+  .sgp-app-topbar .sgp-search-trigger:focus-visible { outline:2px solid var(--color-focus); outline-offset:2px; }
+
+  /* Neutral surfaces and restrained elevation give content the visual priority. */
+  .sgp-section-card { border-radius: .9rem; box-shadow: var(--shadow-card); }
+  .sgp-section-card h2 { letter-spacing: -.015em; }
+  .sgp-section-card > div:first-of-type:has(> div > h2) { padding-bottom: .7rem; }
+  .sgp-table-shell { border-radius: .75rem; box-shadow: none; }
+  .sgp-table-shell thead { background: var(--color-table-header); color: var(--color-heading); }
+  .sgp-table-shell th { padding: .85rem 1rem; font-size: 12px; letter-spacing: .015em; color: var(--color-muted); border-bottom: 1px solid var(--color-line); }
+  .sgp-table-shell td { padding: 1rem; font-size: 14px; font-variant-numeric: tabular-nums; }
+  .sgp-table-shell tbody tr:last-child td { border-bottom: 0; }
+  .sgp-table-shell tbody tr:hover { background: var(--color-panel-soft); }
+  .sgp-status-badge { border-color: transparent; padding: .4rem .65rem; font-size: 12px; font-weight: 550; }
+
+  .sgp-form-control { background: var(--color-panel); border-color: var(--color-field-border); border-radius: .6rem; padding: .7rem .85rem; box-shadow: 0 1px 2px rgb(15 23 42 / .02); }
+  .sgp-form-control:focus { border-color: var(--color-accent); box-shadow: 0 0 0 3px var(--color-focus-soft); }
+  .sgp-form-control:disabled { background: var(--color-panel-soft); box-shadow: none; }
+  .sgp-action { border-radius: .6rem; font-size: 13px; font-weight: 550; padding-inline: 1rem; }
+  .sgp-action.sgp-action-solid[data-intent] { box-shadow: 0 1px 2px rgb(15 23 42 / .07); }
+  .sgp-action.sgp-action-soft[data-intent]:not([data-intent="neutral"]) { background: var(--color-panel); border-color: color-mix(in srgb, var(--action-color) 23%, var(--color-line)); }
+  .sgp-action-menu-item[data-intent] svg { background: transparent; }
+
+  .sgp-tab-strip { gap: .8rem; padding-inline: 0; }
+  .sgp-tab-strip > [role="tab"] { border-bottom-width: 2px; padding: .75rem .5rem; font-size: 13px; }
+  .sgp-tab-strip > [role="tab"][aria-selected="true"] { background: transparent; color: var(--color-primary-strong); }
+
+  .sgp-workflow-card {
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr);
+    align-items: flex-start;
+    gap: 1rem;
+    min-height: 194px;
+    padding: 1.5rem 1.5rem 2.5rem;
+    border: 1px solid var(--color-line);
+    border-radius: .95rem;
+    background: var(--color-panel);
+    box-shadow: var(--shadow-card);
+  }
+  .sgp-workflow-card .sgp-workflow-icon { width: 42px; height: 42px; border-radius: .7rem; background: var(--color-primary-soft); color: var(--color-primary-strong); }
+  .sgp-workflow-icon::before { content: none; }
+  .sgp-workflow-copy { flex-basis: calc(100% - 58px); }
+  .sgp-workflow-copy > span:first-child { letter-spacing: -.015em; font-size: 15px; }
+  .sgp-workflow-copy > span:last-child { color: var(--color-muted); font-size: 13px; }
+  .sgp-workflow-arrow { position: absolute; right: 1.25rem; bottom: 1rem; background: transparent; color: var(--color-muted); }
+  .sgp-workflow-card:hover, .sgp-workflow-card:focus-visible { transform: none; border-color: color-mix(in srgb, var(--color-accent) 40%, var(--color-line)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-accent) 18%, transparent); }
+  .sgp-workflow-card:hover .sgp-workflow-arrow { background: transparent; color: var(--color-primary-strong); }
+  html.dark .sgp-workflow-card { box-shadow: var(--shadow-card); }
+  .sgp-color-card, .sgp-visual-card { border-radius: .85rem; }
+  .sgp-visual-card { background: var(--color-panel); border-color: var(--color-line); }
+
+  .sgp-modal-dialog > div { border-radius: 1rem; }
+  ::-webkit-scrollbar-thumb { background-color: color-mix(in srgb, var(--color-muted) 35%, transparent); }
+  * { scrollbar-color: color-mix(in srgb, var(--color-muted) 35%, transparent) transparent; }
+
+  /* Existing institutional photography and supplied logo remain the sign-in identity. */
+  .institutional-login .login-card { max-width: 420px; border-radius: 1rem; border-color: var(--color-line); box-shadow: 0 10px 36px rgb(20 40 65 / .07); }
+  .institutional-login .login-card-heading { padding-top: 24px; }
+  .institutional-login .login-card-heading h1 { text-transform: none; font-size: 23px; font-weight: 600; letter-spacing: -.025em; }
+  .institutional-login .login-fields { padding-inline: 24px; }
+  .institutional-login .login-fields input { border-radius: .6rem; }
+  .institutional-login .login-submit { min-height: 46px; border-radius: .6rem; text-transform: none; font-weight: 600; }
+}
+
+@media screen and (min-width: 1024px) {
+  .sgp-layout-body { padding: 2.5rem clamp(1.75rem, 3vw, 3.25rem) 4rem; }
+}
+@media screen and (max-width: 1023px) {
+  body:has(.sgp-editor-actions) [data-accessibility-widget]:not([data-custom-position="true"]):not([data-auto-position="true"]) { bottom: calc(var(--sgp-editor-actions-height, 0px) + max(1.75rem, env(safe-area-inset-bottom, 0px) + .75rem)) !important; }
+}
+@media screen and (max-width: 640px) {
+  .sgp-layout-body { padding: 1.35rem 1rem 3rem; }
+  .sgp-page-canvas { gap: 1.25rem; }
+  .sgp-page-header { padding-bottom: .3rem; }
+  .sgp-section-card { border-radius: .75rem; }
+  .sgp-workflow-card { grid-template-columns: 36px minmax(0, 1fr) 18px; gap: .75rem; min-height: 104px; padding: 1rem; }
+  .sgp-workflow-card .sgp-workflow-icon { width: 36px; height: 36px; }
+  .sgp-workflow-card .sgp-workflow-arrow { position: static; align-self: center; }
+  .sgp-practice-metrics > div { padding: .85rem; }
+  .sgp-editor-actions { gap: .5rem; padding: .75rem; }
+  .sgp-editor-actions > div:first-child { flex-basis: 100%; }
+  .sgp-editor-actions > div:last-child { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
+  .sgp-editor-actions .sgp-action { width: 100%; min-width: 0; padding-inline: .5rem; font-size: 12px; }
+  .sgp-table-shell td, .sgp-table-shell th { padding-inline: .8rem; }
+}
+@media screen and (prefers-reduced-motion: reduce) {
+  .sgp-workflow-card, .sgp-workflow-arrow { transition: none; }
+  .sgp-workflow-card:hover, .sgp-workflow-card:focus-visible { transform: none; }
+}
+
+/* Geometry and motion share one duration; labels never rewrap during a resize. */
+@media screen {
+  .sgp-avatar { flex: none; aspect-ratio: 1; max-width: none; align-self: center; overflow: hidden; border-radius: 50%; }
+  .sgp-app-layout { --sidebar-duration: 260ms; --sidebar-easing: cubic-bezier(.22, 1, .36, 1); }
+  .sgp-sidebar-desktop { transition: width var(--sidebar-duration) var(--sidebar-easing); }
+  .sgp-sidebar-header { height: 76px; }
+  .sgp-sidebar-header .sgp-sidebar-toggle { position: absolute; right: 0; top: .5rem; transition: right var(--sidebar-duration) var(--sidebar-easing), color 130ms ease, background-color 130ms ease; }
+  .sgp-sidebar-desktop[data-collapsed="true"] .sgp-sidebar-toggle { right: 10px; }
+  .sgp-sidebar-brand { width: 194px; white-space: nowrap; padding-top: .5rem; }
+  .sgp-sidebar-desktop .sgp-sidebar-item { height: 44px; overflow: hidden; }
+  .sgp-sidebar-label { overflow: hidden; }
+  .sgp-sidebar-label > span { display: block; width: 158px; white-space: normal; }
+  .sgp-sidebar-section-title { height: 40px; overflow: hidden; white-space: nowrap; }
+  .sgp-sidebar-identity { width: 234px; flex: none; }
+  .sgp-sidebar-brand, .sgp-sidebar-label, .sgp-sidebar-section-title, .sgp-sidebar-identity {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 130ms ease 70ms, visibility 0s;
+  }
+  .sgp-sidebar-desktop[data-collapsed="true"] .sgp-sidebar-brand,
+  .sgp-sidebar-desktop[data-collapsed="true"] .sgp-sidebar-label,
+  .sgp-sidebar-desktop[data-collapsed="true"] .sgp-sidebar-section-title,
+  .sgp-sidebar-desktop[data-collapsed="true"] .sgp-sidebar-identity {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 100ms ease, visibility 0s 100ms;
+  }
+  .sgp-sidebar-submenu { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows var(--sidebar-duration) var(--sidebar-easing), opacity 130ms ease; }
+  .sgp-sidebar-submenu[data-open="true"] { grid-template-rows: 1fr; opacity: 1; }
+  .sgp-sidebar-submenu-clip { min-height: 0; overflow: hidden; }
+  .sgp-sidebar-submenu-content { width: 210px; }
+  .sgp-workflow-card, .sgp-visual-card { transition-property: background-color, border-color, box-shadow; }
+  .sgp-workflow-card:focus-visible, .sgp-visual-card:focus-visible { outline-offset: -3px; }
+  .sgp-visual-card:hover { box-shadow: inset 0 0 0 1px var(--color-line-strong); }
+}
+@media screen and (min-width: 1024px) {
+  .sgp-app-topbar, .sgp-layout-body { transition: margin-left var(--sidebar-duration) var(--sidebar-easing); }
+}
+@media screen and (prefers-reduced-motion: reduce) {
+  .sgp-app-layout { --sidebar-duration: 0ms; }
+  .sgp-sidebar-desktop, .sgp-sidebar-header .sgp-sidebar-toggle, .sgp-app-topbar, .sgp-layout-body,
+  .sgp-sidebar-brand, .sgp-sidebar-label, .sgp-sidebar-section-title, .sgp-sidebar-identity, .sgp-sidebar-submenu { transition: none !important; }
+}

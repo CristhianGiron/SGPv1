@@ -1,8 +1,22 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          PracticeArchivePage.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Presenta el historial y las acciones autorizadas de conclusión, reapertura y archivo de prácticas.
+ */
+
+import { practiceCompletionConfirmation } from '../utils/practiceCompletion';
+import { workflowCopy } from '../config/roleExperience';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Archive, ArchiveRestore, CheckCircle2, RefreshCw, RotateCcw } from 'lucide-react';
 import { apiRequest } from '../api/client';
 import { useAuth } from '../auth/AuthContext';
-import { ActionBar, PrimaryButton, SecondaryButton } from '../components/ui/ActionBar';
+import { SecondaryButton } from '../components/ui/ActionBar';
 import { ActionMenu } from '../components/ui/ActionMenu';
 import { Alert } from '../components/ui/Alert';
 import { DataTable } from '../components/ui/DataTable';
@@ -19,6 +33,11 @@ export function PracticeArchivePage() {
   const confirm = useConfirm();
   const canComplete = roles.includes('ROLE_DIRECTOR_PRACTICAS');
   const canArchive = roles.includes('ROLE_ADMIN');
+  const isStudent = roles.includes('ROLE_ESTUDIANTE');
+  const canManagePractices = roles.some((role) =>
+    ['ROLE_ADMIN', 'ROLE_DIRECTOR_PRACTICAS', 'ROLE_TUTOR_PRACTICAS', 'ROLE_TUTOR_INSTITUCIONAL'].includes(role)
+  );
+  const hideStudentColumn = isStudent && !canManagePractices;
   const [practices, setPractices] = useState([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -70,6 +89,12 @@ export function PracticeArchivePage() {
   );
 
   async function runPracticeAction(path, confirmation, successMessage) {
+    try {
+      confirmation = await practiceCompletionConfirmation(path, confirmation, token);
+    } catch (requestError) {
+      setError(requestError.message);
+      return false;
+    }
     const accepted = await confirm(confirmation);
 
     if (!accepted) {
@@ -133,15 +158,12 @@ export function PracticeArchivePage() {
 
   const columns = [
 
-    /*PROVICIONALMENTE COMENTADO YA QUE SON DEMASIADAS COLUMNAS Y ME GUSTARÍA MEJOR QUE ESTA TABLA ESTE COMPUESTA POR PARALELO DE PRACTICAS Y AL ARCHIVAR O DESARCHIVAR ARCHIVAR TODO EL PARALELO DE PRACTICAS PERO QUE LUEGO TAMBIEN PUEDA DESARCHIVAR O ARCHIVAR ALGUNA PRACTICA DE FORMA INDIVIDUAL, PERO PARA ESO HAY QUE CAMBIAR EL MODELO DE DATOS Y LA API PRIMERO, ASÍ QUE POR AHORA LO COMENTO PARA SIMPLIFICAR LA TABLa
-    { key: 'facultyName', header: 'Facultad', render: (row) => row.facultyName || '-' },
-    { key: 'careerName', header: 'Carrera', render: (row) => row.careerName || '-' },
-    { key: 'academicCycleName', header: 'Ciclo', render: (row) => row.academicCycleName || row.courseAcademicCycle || '-' },
-    { key: 'courseName', header: 'Paralelo', render: (row) => row.courseName || '-' },*/
-    { key: 'studentFullName', header: 'Estudiante', render: (row) => row.studentFullName || row.student || '-' },
+    { key: 'practiceName', header: 'Práctica', render: row => row.practiceName || row.courseName || '-' },
+    { key: 'courseName', header: 'Paralelo', render: row => row.courseName || '-' },
+    !hideStudentColumn && { key: 'studentFullName', header: 'Estudiante', render: (row) => row.studentFullName || row.student || '-' },
     { key: 'groupName', header: 'Grupo', render: (row) => row.groupName || '-' },
-    { key: 'practiceTutor', header: 'Tutor de prácticas', render: (row) => row.practiceTutor || '-' },
-    { key: 'institutionalTutor', header: 'Tutor institucional', render: (row) => row.institutionalTutor || '-' },
+    { key: 'practiceTutor', secondary: true, header: 'Tutor de prácticas', render: (row) => row.practiceTutor || '-' },
+    { key: 'institutionalTutor', secondary: true, header: 'Tutor institucional', render: (row) => row.institutionalTutor || '-' },
     { key: 'status', header: 'Estado', render: (row) => <StatusBadge status={row.status} /> },
     {
       key: 'archived',
@@ -152,7 +174,7 @@ export function PracticeArchivePage() {
     },
     { key: 'enrolledAt', header: 'Inscripción', render: (row) => formatDateTime(row.enrolledAt) },
     { key: 'archivedAt', header: 'Archivado', render: (row) => row.archivedAt ? formatDateTime(row.archivedAt) : '-' },
-  ];
+  ].filter(Boolean);
 
   if (canArchive || canComplete) {
     columns.push({
@@ -222,37 +244,21 @@ export function PracticeArchivePage() {
 
         }
 
-        if (canComplete && row.status === 'COMPLETED' && row.archived) {
+        if (canComplete && row.status === 'COMPLETED') {
           actions.push({
             key: 'reopen',
             label: 'Reabrir práctica',
             icon: RotateCcw,
+            disabled: row.archived || row.courseActive === false,
+            disabledReason: row.archived
+              ? 'Administración debe desarchivar la práctica antes de reabrirla.'
+              : row.courseActive === false ? 'Activa el paralelo antes de reabrir la práctica.' : '',
             onClick: () =>
               runPracticeAction(
                 `/api/enrollments/${row.id}/reopen`,
                 {
                   title: 'Reabrir práctica',
-                  description: 'La práctica volverá a quedar aprobada si el estudiante no tiene otra práctica activa.',
-                  details: row.studentFullName || row.student || row.courseName,
-                  confirmLabel: 'Reabrir',
-                  tone: 'warning',
-                },
-                'Práctica reabierta'
-              ),
-          });
-        }
-
-        if (canComplete && row.status === 'COMPLETED' && !row.archived) {
-          actions.push({
-            key: 'reopen',
-            label: 'Reabrir práctica',
-            icon: RotateCcw,
-            onClick: () =>
-              runPracticeAction(
-                `/api/enrollments/${row.id}/reopen`,
-                {
-                  title: 'Reabrir práctica',
-                  description: 'La práctica volverá a quedar aprobada si el estudiante no tiene otra práctica activa.',
+                  description: 'La práctica volverá a estar aprobada si el paralelo y el grupo están disponibles y hay cupo. Puedes mantener prácticas en otros paralelos asignados.',
                   details: row.studentFullName || row.student || row.courseName,
                   confirmLabel: 'Reabrir',
                   tone: 'warning',
@@ -326,14 +332,8 @@ export function PracticeArchivePage() {
       <PageHeader
         eyebrow="Prácticas"
         title="Archivo de prácticas"
-        description="Consulta todas las prácticas visibles y archiva o recupera las concluidas desde una sola tabla."
-        action={(
-          <ActionBar>
-            <SecondaryButton icon={RefreshCw} loading={loading} onClick={loadPractices} type="button">
-              Actualizar
-            </SecondaryButton>
-          </ActionBar>
-        )}
+        description={workflowCopy('archive', roles)}
+        helpText={workflowCopy('archive', roles)}
       />
 
       {error && <Alert tone="error">{error}</Alert>}
@@ -345,10 +345,10 @@ export function PracticeArchivePage() {
       )}
 
       <div className="grid gap-3 md:grid-cols-4">
-        <SummaryCard icon={RotateCcw} label="Pendientes" value={summary.pending} variant="d" />
-        <SummaryCard icon={CheckCircle2} label="Aprobadas" value={summary.approved} variant="b" />
-        <SummaryCard icon={CheckCircle2} label="Concluidas" value={summary.completed} variant="c" />
-        <SummaryCard icon={Archive} label="Archivadas" value={summary.archived} variant="e" />
+        <SummaryCard icon={RotateCcw} label="Pendientes" value={loading || error ? '—' : summary.pending} variant="d" />
+        <SummaryCard icon={CheckCircle2} label="Aprobadas" value={loading || error ? '—' : summary.approved} variant="b" />
+        <SummaryCard icon={CheckCircle2} label="Concluidas" value={loading || error ? '—' : summary.completed} variant="c" />
+        <SummaryCard icon={Archive} label="Archivadas" value={loading || error ? '—' : summary.archived} variant="e" />
       </div>
 
       {!canArchive && (
@@ -441,6 +441,11 @@ export function PracticeArchivePage() {
 
         <FilterPanel
           activeCount={countActiveFilters(filters, ['query'])}
+          action={
+            <SecondaryButton className="!w-auto" icon={RefreshCw} loading={loading} onClick={loadPractices} type="button">
+              Actualizar
+            </SecondaryButton>
+          }
           hasActiveFilters={countActiveFilters(filters) > 0}
           onClear={() => setFilters(emptyFilters())}
           search={(
@@ -587,29 +592,52 @@ function SummaryCard({ icon: Icon, label, value, variant }) {
 }
 
 function CohortArchiveActions({ loading, row, onArchive, onUnarchive }) {
-  const actions = [
-    {
-      key: 'archive',
-      label: 'Archivar cohorte',
-      icon: Archive,
-      disabled: loading || row.archivable <= 0,
-      onClick: onArchive,
-    },
-    {
-      key: 'unarchive',
-      label: 'Desarchivar cohorte',
-      icon: ArchiveRestore,
-      disabled: loading || row.archived <= 0,
-      onClick: onUnarchive,
-    },
-  ];
+  const hasArchivable = row.archivable > 0;
+  const hasArchived = row.archived > 0;
+  const actionDisabled = loading || (!hasArchivable && !hasArchived);
+  const actionLabel = hasArchivable
+    ? 'Archivar cohorte'
+    : hasArchived
+      ? 'Desarchivar cohorte'
+      : 'Sin cambios de archivo';
+  const actionIcon = hasArchivable ? Archive : ArchiveRestore;
+  const actionOnClick = hasArchivable ? onArchive : onUnarchive;
+  const actionTitle = buildArchiveActionTooltip(row, loading);
 
-  return <ActionMenu actions={actions} label="Acciones de cohorte" />;
+  return (
+    <ActionMenu
+      actions={[
+        {
+          key: 'toggle-archive',
+          label: actionLabel,
+          icon: actionIcon,
+          disabled: actionDisabled,
+          title: actionTitle,
+          onClick: actionOnClick,
+        },
+      ]}
+      label="Acciones de cohorte"
+    />
+  );
 }
 
 function PracticeGroupPanel({ canArchive, group, loading, onArchive, onUnarchive, variant = 'a' }) {
   const hasArchivable = group.archivable > 0;
   const hasArchived = group.archived > 0;
+  const canToggleArchive = hasArchivable || hasArchived;
+  const toggleButtonLabel = hasArchivable
+    ? 'Archivar cohorte'
+    : hasArchived
+      ? 'Desarchivar cohorte'
+      : 'Sin cambios de archivo';
+  const toggleButtonIcon = hasArchivable ? Archive : ArchiveRestore;
+  const toggleOnClick = hasArchivable ? onArchive : onUnarchive;
+  const toggleTitle = buildArchiveActionTooltip(group, loading);
+  const toggleDisabledReason = loading
+    ? 'La operación de cambio de archivo está en curso.'
+    : !canToggleArchive
+      ? 'Este cohorte no tiene prácticas concluidas para archivar ni prácticas archivadas para recuperar.'
+      : '';
   const completionText = group.pending + group.approved > 0
     ? `${group.pending + group.approved} sin concluir`
     : 'Lista para archivo';
@@ -640,28 +668,50 @@ function PracticeGroupPanel({ canArchive, group, loading, onArchive, onUnarchive
 
       {canArchive && (
         <div className="mt-4 flex flex-wrap gap-2">
-          <PrimaryButton
-            disabled={loading || !hasArchivable}
-            icon={Archive}
-            loading={loading}
-            onClick={onArchive}
-            type="button"
-          >
-            Archivar cohorte
-          </PrimaryButton>
-          <SecondaryButton
-            disabled={loading || !hasArchived}
-            icon={ArchiveRestore}
-            loading={loading}
-            onClick={onUnarchive}
-            type="button"
-          >
-            Desarchivar
-          </SecondaryButton>
+          <ActionMenu
+            actions={[
+              {
+                key: 'group-toggle-archive',
+                label: toggleButtonLabel,
+                icon: toggleButtonIcon,
+                disabled: loading || !canToggleArchive,
+                title: toggleDisabledReason || toggleTitle,
+                onClick: toggleOnClick,
+              },
+            ]}
+            label="Acciones del cohorte"
+          />
         </div>
       )}
     </article>
   );
+}
+
+function buildArchiveActionTooltip(group, loading) {
+  if (loading) {
+    return 'La operación de cambio de archivo está en curso.';
+  }
+
+  const hasArchivable = group.archivable > 0;
+  const hasArchived = group.archived > 0;
+
+  if (hasArchivable) {
+    return `${group.archivable} práctica(s) concluidas están listas para archivarse. Es decir, ya están cerradas y sin archivo previo.`;
+  }
+
+  if (hasArchived) {
+    return `${group.archived} práctica(s) ya están archivadas. Puede recuperar este cohorte con la acción de desarchivo.`;
+  }
+
+  if (group.pending > 0) {
+    return `No se puede archivar porque faltan ${group.pending} práctica(s) pendientes de aprobación del tutor de prácticas y/o del director.`;
+  }
+
+  if (group.approved > 0) {
+    return `No se puede archivar porque faltan ${group.approved} práctica(s) aprobadas por concluir antes del archivo.`;
+  }
+
+  return 'Este cohorte no tiene prácticas concluidas para archivar ni prácticas archivadas para recuperar.';
 }
 
 function GroupMetric({ label, value }) {
@@ -736,7 +786,7 @@ function emptyFilters() {
   };
 }
 
-function buildPracticeGroups(practices, groupBy) {
+export function buildPracticeGroups(practices, groupBy) {
   const groups = new Map();
 
   practices.forEach((practice) => {
@@ -753,6 +803,9 @@ function buildPracticeGroups(practices, groupBy) {
         archived: 0,
         archivable: 0,
         facultySet: new Set(),
+        courseIds: new Set(),
+        careerIds: new Set(),
+        cycleIds: new Set(),
         careerSet: new Set(),
         academicCycleSet: new Set(),
         courseSet: new Set(),
@@ -767,6 +820,9 @@ function buildPracticeGroups(practices, groupBy) {
     current.completed += practice.status === 'COMPLETED' ? 1 : 0;
     current.archived += practice.archived ? 1 : 0;
     current.archivable += practice.status === 'COMPLETED' && !practice.archived ? 1 : 0;
+    current.courseIds.add(getPracticeFilterValue(practice, 'course'));
+    current.careerIds.add(getPracticeFilterValue(practice, 'career'));
+    current.cycleIds.add(getPracticeFilterValue(practice, 'academicCycle'));
     addSetValue(current.facultySet, practice.facultyName);
     addSetValue(current.careerSet, practice.careerName);
     addSetValue(current.academicCycleSet, practice.academicCycleName || practice.courseAcademicCycle);
@@ -779,9 +835,9 @@ function buildPracticeGroups(practices, groupBy) {
       facultyNames: Array.from(group.facultySet).sort(compareText).join(', '),
       careerNames: Array.from(group.careerSet).sort(compareText).join(', '),
       academicCycleNames: Array.from(group.academicCycleSet).sort(compareText).join(', '),
-      careerCount: group.careerSet.size,
-      academicCycleCount: group.academicCycleSet.size,
-      courseCount: group.courseSet.size,
+      careerCount: group.careerIds.size,
+      academicCycleCount: group.cycleIds.size,
+      courseCount: group.courseIds.size,
     }))
     .sort((left, right) => {
       const byScope = compareText(left.scopeLabel, right.scopeLabel);

@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          NotificationWebSocketHandler.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa el componente NotificationWebSocketHandler del backend del SGP.
+ */
+
 package com.sgp.systemsgp.websocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,6 +33,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class NotificationWebSocketHandler extends TextWebSocketHandler {
 
     private final ObjectMapper objectMapper;
+    private final com.sgp.systemsgp.service.AuthSessionService authSessions;
 
     private final Map<String, Set<WebSocketSession>> sessionsByUsername = new ConcurrentHashMap<>();
 
@@ -64,6 +77,8 @@ public class NotificationWebSocketHandler extends TextWebSocketHandler {
             TextMessage textMessage = new TextMessage(message);
 
             for (WebSocketSession session : sessions) {
+                Object token=session.getAttributes().get("accessToken");
+                if(!(token instanceof String access) || !authSessions.isAccessAllowed(access)) {closeSession(session);continue;}
                 if (session.isOpen()) {
                     session.sendMessage(textMessage);
                 }

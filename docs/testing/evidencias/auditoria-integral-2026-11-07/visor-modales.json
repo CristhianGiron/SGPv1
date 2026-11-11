@@ -1,0 +1,41 @@
+{
+  "date": "2026-11-07",
+  "mode": "Chrome; isolated API",
+  "results": [
+    {
+      "width": 390,
+      "initial": {
+        "named": false,
+        "focused": false,
+        "locked": true
+      },
+      "focusInsideAfterTab": false,
+      "nested": {
+        "photoRemains": false,
+        "toolsClosed": true,
+        "bodyOverflow": "hidden",
+        "documentOverflow": "hidden",
+        "dialogs": 0
+      },
+      "scrollLockedWithNoDialog": true
+    },
+    {
+      "width": 1440,
+      "initial": {
+        "named": false,
+        "focused": false,
+        "locked": true
+      },
+      "focusInsideAfterTab": false,
+      "nested": {
+        "photoRemains": false,
+        "toolsClosed": true,
+        "bodyOverflow": "hidden",
+        "documentOverflow": "hidden",
+        "dialogs": 0
+      },
+      "scrollLockedWithNoDialog": true
+    }
+  ],
+  "errors": []
+}

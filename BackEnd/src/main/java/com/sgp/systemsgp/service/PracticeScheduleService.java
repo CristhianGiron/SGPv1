@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          PracticeScheduleService.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa la lógica de aplicación de las jornadas de prácticas.
+ */
+
 package com.sgp.systemsgp.service;
 
 import com.sgp.systemsgp.dto.practiceschedule.CreatePracticeScheduleRequest;
@@ -97,6 +109,7 @@ public class PracticeScheduleService {
 
     public List<PracticeScheduleResponse> managedSchedules(String username) {
 
+        Account account = getAccount(username);
         List<PracticeSchedule> schedules = new ArrayList<>();
         schedules.addAll(practiceScheduleRepository
                 .findByEnrollment_Group_InstitutionalTutor_UsernameAndDeletedFalse(username));
@@ -109,6 +122,7 @@ public class PracticeScheduleService {
         return uniqueSchedules
                 .values()
                 .stream()
+                .filter(schedule -> isAssignedInstitutionalTutor(schedule, account))
                 .map(this::mapToResponse)
                 .toList();
     }
@@ -168,7 +182,7 @@ public class PracticeScheduleService {
             String username,
             UpdatePracticeScheduleRequest request) {
 
-        PracticeSchedule schedule = getSchedule(id);
+        PracticeSchedule schedule = getScheduleForUpdate(id);
         Account tutor = getAccount(username);
 
         validateInstitutionalTutorCanManage(schedule.getEnrollment(), tutor);
@@ -188,7 +202,7 @@ public class PracticeScheduleService {
             String username,
             PracticeAttendanceRequest request) {
 
-        PracticeSchedule schedule = getSchedule(scheduleId);
+        PracticeSchedule schedule = getScheduleForUpdate(scheduleId);
         Account tutor = getAccount(username);
 
         validateInstitutionalTutorCanManage(schedule.getEnrollment(), tutor);
@@ -215,7 +229,7 @@ public class PracticeScheduleService {
             String username,
             PracticeAttendanceRequest request) {
 
-        PracticeSchedule schedule = getSchedule(scheduleId);
+        PracticeSchedule schedule = getScheduleForUpdate(scheduleId);
         Account tutor = getAccount(username);
 
         validateInstitutionalTutorCanManage(schedule.getEnrollment(), tutor);
@@ -254,12 +268,19 @@ public class PracticeScheduleService {
                         "Horario de practicas no encontrado"));
     }
 
+    private PracticeSchedule getScheduleForUpdate(Long id) {
+        return practiceScheduleRepository.findForAttendanceUpdate(id)
+                .orElseThrow(() -> new NotFoundException("Horario de practicas no encontrado"));
+    }
+
     private void validateEnrollmentApproved(Enrollment enrollment) {
 
         if (enrollment.getStatus() != EnrollmentStatus.APPROVED) {
             throw new BadRequestException(
                     "Solo se puede crear horario de una inscripcion aprobada");
         }
+        PracticeAccessService.requireOperationalEnrollment(enrollment);
+
 
         if (!isActiveCourseEnrollment(enrollment)) {
             throw new BadRequestException(
@@ -279,6 +300,7 @@ public class PracticeScheduleService {
     private void validateInstitutionalTutorCanManage(
             Enrollment enrollment,
             Account tutor) {
+        PracticeAccessService.requireOperationalEnrollment(enrollment);
 
         if (!hasRole(tutor, RoleName.ROLE_TUTOR_INSTITUCIONAL)
                 || !InstitutionalAssignmentResolver.isAssignedInstitutionalTutor(enrollment, tutor)) {
@@ -626,6 +648,10 @@ public class PracticeScheduleService {
                     "La fecha de asistencia no coincide con el dia del periodo seleccionado");
         }
 
+        if ((schedule.getStartDate() != null && attendance.getAttendanceDate().isBefore(schedule.getStartDate()))
+                || (schedule.getEndDate() != null && attendance.getAttendanceDate().isAfter(schedule.getEndDate()))) {
+            throw new BadRequestException("La fecha de asistencia debe estar dentro del período del horario de prácticas");
+        }
         validateAttendanceTimes(attendance);
         validateDuplicateAttendance(schedule, attendance, currentAttendanceId);
     }
@@ -658,6 +684,12 @@ public class PracticeScheduleService {
                     "El total de minutos de asistencia debe ser mayor o igual a cero");
         }
 
+        if (attendance.getStartTime() != null && attendance.getEndTime() != null
+                && attendance.getTotalMinutes() != null
+                && attendance.getTotalMinutes() != Duration.between(attendance.getStartTime(), attendance.getEndTime()).toMinutes()) {
+            throw new BadRequestException("El total de minutos debe coincidir con la hora de inicio y de fin");
+        }
+
         if (requiresTimes && attendance.getTotalMinutes() <= 0) {
             throw new BadRequestException(
                     "Las asistencias presentes o atrasadas deben sumar minutos asistidos");
@@ -669,24 +701,28 @@ public class PracticeScheduleService {
             PracticeAttendance attendance,
             Long currentAttendanceId) {
 
-        if (attendance.getSchedulePeriodId() == null) {
-            return;
-        }
-
         boolean duplicated = schedule.getAttendances()
                 .stream()
-                .filter(existing -> !Objects.equals(existing.getId(), currentAttendanceId))
-                .anyMatch(existing -> Objects.equals(
-                        existing.getSchedulePeriodId(),
-                        attendance.getSchedulePeriodId())
-                        && Objects.equals(
-                                existing.getAttendanceDate(),
-                                attendance.getAttendanceDate()));
+                .filter(existing -> currentAttendanceId == null
+                        || !Objects.equals(existing.getId(), currentAttendanceId))
+                .filter(existing -> Objects.equals(existing.getAttendanceDate(), attendance.getAttendanceDate()))
+                .anyMatch(existing -> (attendance.getSchedulePeriodId() != null
+                        && Objects.equals(existing.getSchedulePeriodId(), attendance.getSchedulePeriodId()))
+                        || (Objects.equals(existing.getStartTime(), attendance.getStartTime())
+                        && Objects.equals(existing.getEndTime(), attendance.getEndTime()))
+                        || attendanceTimesOverlap(existing, attendance));
 
         if (duplicated) {
             throw new BadRequestException(
-                    "Ya existe una asistencia registrada para ese periodo y fecha");
+                    "Ya existe una asistencia para ese período o una franja que se solapa en la misma fecha");
         }
+    }
+
+    private boolean attendanceTimesOverlap(PracticeAttendance existing, PracticeAttendance attendance) {
+        return existing.getStartTime() != null && existing.getEndTime() != null
+                && attendance.getStartTime() != null && attendance.getEndTime() != null
+                && existing.getStartTime().isBefore(attendance.getEndTime())
+                && attendance.getStartTime().isBefore(existing.getEndTime());
     }
 
     private <T> void setIfNotNull(

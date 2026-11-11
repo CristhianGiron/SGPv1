@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          client.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Proporciona las funciones de client utilizadas por la interfaz del SGP.
+ */
+
 /**
  * API CLIENT - Cliente HTTP para comunicación con el backend
  * 
@@ -11,9 +23,63 @@
  * Todas las peticiones incluyen automáticamente el token en el header Authorization
  */
 
-// Obtener URL base de la API desde variables de entorno
-// Si no existe, usar string vacío (proxy local)
-const API_BASE = (process.env.REACT_APP_API_BASE_URL || '').replace(/\/$/, '');
+import { getStoredAuth, storeAuth, clearStoredAuth } from '../auth/storage';
+let refreshInFlight = null;
+function sessionId(token) {
+  try { return JSON.parse(atob(token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))).sid || null; }
+  catch { return null; }
+}
+function sameSession(token, auth) {
+  return auth && (token === auth.accessToken || (sessionId(token) && sessionId(token) === sessionId(auth.accessToken)));
+}
+async function renewSession() {
+  if (refreshInFlight) return refreshInFlight;
+  const starting = getStoredAuth();
+  if (!starting?.refreshToken) return null;
+  refreshInFlight = (async () => {
+    const response = await fetch(buildUrl('/api/auth/refresh'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ refreshToken: starting.refreshToken }) });
+    const payload = await readResponse(response);
+    const current = getStoredAuth();
+    if (current?.refreshToken !== starting.refreshToken) {
+      return sameSession(starting.accessToken, current) ? current : null;
+    }
+    if (!response.ok) {
+      if ([401,403].includes(response.status)) clearStoredAuth();
+      const error = new Error(errorMessage(payload,'No se pudo renovar la sesión'));
+      error.status = response.status; throw error;
+    }
+    if (!payload?.accessToken || !payload?.refreshToken) throw new Error('Respuesta de renovación incompleta');
+    const renewed = { ...starting, ...payload }; storeAuth(renewed); return renewed;
+  })().finally(() => { refreshInFlight = null; });
+  return refreshInFlight;
+}
+async function authenticatedFetch(path, config, token) {
+  const original = getStoredAuth();
+  let response = await fetch(buildUrl(path), config);
+  if (response.status !== 401 || !token || !path.startsWith('/api/')
+      || ['/api/auth/login','/api/auth/register','/api/auth/refresh'].includes(path) || !sameSession(token,original)) return response;
+  let current = getStoredAuth();
+  if (!sameSession(token,current)) return response;
+  if (current.accessToken === token) current = await renewSession();
+  if (!current || !sameSession(token,current)) return response;
+  return fetch(buildUrl(path), { ...config, headers: { ...config.headers, Authorization: `Bearer ${current.accessToken}` } });
+}
+
+function defaultApiBase() {
+  if (
+    typeof window === 'undefined'
+    || process.env.NODE_ENV !== 'development'
+    || ['localhost', '127.0.0.1'].includes(window.location.hostname)
+  ) {
+    return '';
+  }
+
+  const apiOrigin = new URL(window.location.origin);
+  apiOrigin.port = process.env.REACT_APP_API_PORT || '8080';
+  return apiOrigin.origin;
+}
+
+const API_BASE = (process.env.REACT_APP_API_BASE_URL || defaultApiBase()).replace(/\/$/, '');
 
 /**
  * buildUrl - Construye URL completa para la petición
@@ -130,12 +196,12 @@ export async function apiRequest(path, options = {}) {
   if (body instanceof FormData) {
     config.body = body;  // FormData se envía tal cual (no JSONify)
   } else if (body !== undefined) {
-    requestHeaders['Content-Type'] = 'application/json';
+    requestHeaders['Content-Type'] = 'application/json; charset=UTF-8';
     config.body = JSON.stringify(body);  // Otros datos se convierten a JSON
   }
 
   // Realizar la petición fetch
-  const response = await fetch(buildUrl(path), config);
+  const response = await authenticatedFetch(path, config, token);
   const payload = await readResponse(response);
 
   // Si hay error, lanzar excepción con mensaje descriptivo
@@ -160,9 +226,9 @@ export async function apiRequest(path, options = {}) {
  * @returns {Promise<Blob>} Archivo en formato blob
  */
 export async function apiBlob(path, token) {
-  const response = await fetch(buildUrl(path), {
+  const response = await authenticatedFetch(path, {
     headers: token ? { Authorization: `Bearer ${token}` } : {},
-  });
+  }, token);
 
   if (!response.ok) {
     const payload = await readResponse(response);

@@ -1,4 +1,17 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          FinalReportResponse.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Define los datos de respuesta para el informe del tutor institucional (L.3).
+ */
+
 package com.sgp.systemsgp.dto.finalreport;
+import java.time.LocalDate;
 
 import com.sgp.systemsgp.dto.feedback.FeedbackCommentResponse;
 import com.sgp.systemsgp.dto.feedback.FeedbackHistoryResponse;
@@ -19,6 +32,14 @@ import java.util.List;
 public class FinalReportResponse {
 
     private Long id;
+
+    private String letterheadImageUrl;
+
+    private Integer completedHours;
+
+    private Integer completedMinutes;
+
+    private LocalDate reportDate;
 
     private Long enrollmentId;
 

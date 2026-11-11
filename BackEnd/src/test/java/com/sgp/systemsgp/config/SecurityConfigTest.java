@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          SecurityConfigTest.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Comprueba el comportamiento de el módulo Security Config Test mediante pruebas de regresión.
+ */
+
 package com.sgp.systemsgp.config;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -21,10 +33,15 @@ import org.springframework.web.context.WebApplicationContext;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(classes = SecurityConfigTest.TestApplication.class, properties = "debug=false")
+@SpringBootTest(classes = SecurityConfigTest.TestApplication.class, properties = {
+        "debug=false",
+        "app.network.host=192.168.1.50"
+})
 class SecurityConfigTest {
 
     @Autowired
@@ -47,6 +64,17 @@ class SecurityConfigTest {
         assertPatchAllowedForDirector("/api/practice-reports/1/review");
         assertPatchAllowedForDirector("/api/completed-activity-records/1/review");
         assertPatchAllowedForDirector("/api/final-reports/1/director-review");
+    }
+
+    @Test
+    void corsAllowsTheConfiguredNetworkHost() throws Exception {
+        String origin = "http://192.168.1.50:3000";
+
+        mockMvc.perform(options("/api/auth/login")
+                        .header("Origin", origin)
+                        .header("Access-Control-Request-Method", "POST"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Access-Control-Allow-Origin", origin));
     }
 
     @Test
@@ -161,7 +189,7 @@ class SecurityConfigTest {
 
         @Bean
         JwtAuthFilter jwtAuthFilter() {
-            return new JwtAuthFilter(null, null, null);
+            return new JwtAuthFilter(null, null, null, null);
         }
 
         @Bean

@@ -1,0 +1,165 @@
+{
+  "date": "2026-11-07",
+  "environment": "Chrome; isolated API fixtures",
+  "results": [
+    {
+      "script": "browser-accessibility-widget.cjs",
+      "status": "passed",
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 19,
+      "log": "browser-accessibility-widget.log"
+    },
+    {
+      "script": "browser-account-appearance.cjs",
+      "status": "passed",
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 29,
+      "log": "browser-account-appearance.log"
+    },
+    {
+      "script": "browser-academic-design.cjs",
+      "status": "passed",
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 51,
+      "log": "browser-academic-design.log"
+    },
+    {
+      "script": "browser-action-colors.cjs",
+      "status": "failed",
+      "exitCode": 1,
+      "timedOut": false,
+      "seconds": 5,
+      "log": "browser-action-colors.log",
+      "revalidation": {
+        "status": "passed",
+        "log": "browser-action-colors-revalidado.log",
+        "reason": "Neutral backgrounds follow the palette; semantic foreground and contrast checks remain."
+      }
+    },
+    {
+      "script": "browser-contextual-records.cjs",
+      "status": "passed",
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 23,
+      "log": "browser-contextual-records.log"
+    },
+    {
+      "script": "browser-clipping-regressions.cjs",
+      "status": "failed",
+      "exitCode": 1,
+      "timedOut": false,
+      "seconds": 29,
+      "log": "browser-clipping-regressions.log"
+    },
+    {
+      "script": "browser-drafts-preview-archive.cjs",
+      "status": "passed",
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 9,
+      "log": "browser-drafts-preview-archive.log"
+    },
+    {
+      "script": "browser-inbox-agenda.cjs",
+      "status": "passed",
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 5,
+      "log": "browser-inbox-agenda.log"
+    },
+    {
+      "script": "browser-login-institucional.cjs",
+      "status": "passed",
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 11,
+      "log": "browser-login-institucional.log"
+    },
+    {
+      "script": "browser-mobile-records.cjs",
+      "status": "passed",
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 9,
+      "log": "browser-mobile-records.log"
+    },
+    {
+      "script": "browser-full-themes.cjs",
+      "status": "passed",
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 40,
+      "log": "browser-full-themes.log"
+    },
+    {
+      "script": "browser-motion-regressions.cjs",
+      "status": "passed",
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 26,
+      "log": "browser-motion-regressions.log"
+    },
+    {
+      "script": "browser-movable-accessibility.cjs",
+      "status": "passed",
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 20,
+      "log": "browser-movable-accessibility.log"
+    },
+    {
+      "script": "browser-practice-experience.cjs",
+      "status": "failed",
+      "exitCode": 1,
+      "timedOut": false,
+      "seconds": 8,
+      "log": "browser-practice-experience.log",
+      "revalidation": {
+        "status": "passed",
+        "log": "browser-practice-experience-revalidado.log",
+        "reason": "Updated Spanish accents and the accessible feedback button name."
+      }
+    },
+    {
+      "script": "browser-routes.cjs",
+      "status": "passed",
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 12,
+      "log": "browser-routes.log"
+    },
+    {
+      "script": "browser-workflow-cards.cjs",
+      "status": "failed",
+      "exitCode": 1,
+      "timedOut": false,
+      "seconds": 2,
+      "log": "browser-workflow-cards.log",
+      "revalidation": {
+        "status": "passed",
+        "log": "browser-workflow-cards-revalidado.log",
+        "reason": "Academic cards now use a one-pixel border."
+      }
+    },
+    {
+      "script": "browser-ux-improvements.cjs",
+      "status": "passed",
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 21,
+      "log": "browser-ux-improvements.log"
+    },
+    {
+      "script": "browser-workspaces.cjs",
+      "status": "passed",
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 13,
+      "log": "browser-workspaces.log"
+    }
+  ]
+}

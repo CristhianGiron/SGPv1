@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          FinalReportServiceTest.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Comprueba el comportamiento de el informe del tutor institucional (L.3) mediante pruebas de regresión.
+ */
+
 package com.sgp.systemsgp.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -65,6 +77,9 @@ class FinalReportServiceTest {
     @Mock
     private PdfExportService pdfExportService;
 
+    @Mock
+    private com.sgp.systemsgp.repository.CompletedActivityRecordRepository completedActivityRecordRepository;
+
     private FinalReportService finalReportService;
 
     @BeforeEach
@@ -79,7 +94,8 @@ class FinalReportServiceTest {
                 institutionRepository,
                 notificationService,
                 feedbackCommentService,
-                pdfExportService);
+                pdfExportService,
+                completedActivityRecordRepository);
     }
 
     @Test
@@ -510,6 +526,71 @@ class FinalReportServiceTest {
                 .notifyFinalReportReviewedByDirector(report);
     }
 
+    @Test
+    void institutionalFormSavesItsLetterheadHoursAndDateTogether() throws Exception {
+        Account tutor = institutionalTutor(school());
+        FinalReport report = submittedReport(student(), tutor, practiceTutor());
+        when(accountRepository.findByUsernameAndDeletedFalse("tutor.institucional")).thenReturn(Optional.of(tutor));
+        when(finalReportRepository.findByIdAndDeletedFalse(1L)).thenReturn(Optional.of(report));
+        var request = new UpdateFinalReportInstitutionalSectionRequest();
+        request.setCompletedHours(46);
+        request.setCompletedMinutes(55);
+        request.setReportDate(java.time.LocalDate.of(2026, 11, 4));
+        request.setConclusion1("Conclusión institucional");
+        byte[] image;
+        try (var resource = getClass().getResourceAsStream("/branding/unl-logo.png")) { image = resource.readAllBytes(); }
+        var file = new org.springframework.mock.web.MockMultipartFile("image", "membrete.png", "image/png", image);
+        var response = finalReportService.updateInstitutionalSection(1L, "tutor.institucional", request, file);
+        assertThat(report.getLetterheadImage().getData()).containsExactly(image);
+        assertThat(report.getCompletedPracticeMinutes()).isEqualTo(2815);
+        assertThat(response.getLetterheadImageUrl()).isEqualTo("/api/final-reports/1/letterhead");
+        assertThat(response.getCompletedHours()).isEqualTo(46);
+        assertThat(response.getCompletedMinutes()).isEqualTo(55);
+        assertThat(response.getReportDate()).isEqualTo(request.getReportDate());
+        assertThat(response.getConclusion1()).isEqualTo("Conclusión institucional");
+    }
+
+    @Test
+    void invalidLetterheadDoesNotSaveInstitutionalComments() {
+        var file = new org.springframework.mock.web.MockMultipartFile("image", "membrete.png", "image/png", new byte[]{1, 2, 3});
+        assertThatThrownBy(() -> finalReportService.updateInstitutionalSection(1L, "tutor.institucional",
+                new UpdateFinalReportInstitutionalSectionRequest(), file)).isInstanceOf(BadRequestException.class);
+        verify(finalReportRepository, never()).save(any(FinalReport.class));
+    }
+
+    @Test
+    void legacyApprovedReportCanReceiveItsMissingLetterheadOnlyOnce() throws Exception {
+        Account tutor = institutionalTutor(school());
+        FinalReport report = submittedReport(student(), tutor, practiceTutor());
+        report.setStatus(FinalReportStatus.APPROVED);
+        report.setInstitutionalTutorApproved(true);
+        report.setApprovedAt(LocalDateTime.of(2026, 11, 4, 12, 0));
+        when(accountRepository.findByUsernameAndDeletedFalse("tutor.institucional")).thenReturn(Optional.of(tutor));
+        when(finalReportRepository.findByIdAndDeletedFalse(1L)).thenReturn(Optional.of(report));
+        byte[] image;
+        try (var resource = getClass().getResourceAsStream("/branding/unl-logo.png")) { image = resource.readAllBytes(); }
+        var file = new org.springframework.mock.web.MockMultipartFile("image", "membrete.png", "image/png", image);
+        var response = finalReportService.attachLegacyLetterhead(1L, "tutor.institucional", file);
+        assertThat(response.getStatus()).isEqualTo("APPROVED");
+        assertThat(report.isInstitutionalTutorApproved()).isTrue();
+        assertThat(report.getApprovedAt()).isEqualTo(LocalDateTime.of(2026, 11, 4, 12, 0));
+        assertThatThrownBy(() -> finalReportService.attachLegacyLetterhead(1L, "tutor.institucional", file))
+                .isInstanceOf(BadRequestException.class);
+    }
+
+    @Test
+    void institutionalHoursCanComeFromTheSameEnrollmentsL6() {
+        Account student = student();
+        FinalReport report = submittedReport(student, institutionalTutor(school()), practiceTutor());
+        when(accountRepository.findByUsernameAndDeletedFalse("student01")).thenReturn(Optional.of(student));
+        when(finalReportRepository.findByIdAndDeletedFalse(1L)).thenReturn(Optional.of(report));
+        when(completedActivityRecordRepository.findByEnrollment_IdAndDeletedFalse(report.getEnrollment().getId()))
+                .thenReturn(Optional.of(com.sgp.systemsgp.model.CompletedActivityRecord.builder().totalMinutes(2815).build()));
+        var response = finalReportService.getById(1L, "student01");
+        assertThat(response.getCompletedHours()).isEqualTo(46);
+        assertThat(response.getCompletedMinutes()).isEqualTo(55);
+    }
+
     private FinalReport submittedReport(
             Account student,
             Account institutionalTutor,
@@ -539,6 +620,9 @@ class FinalReportServiceTest {
     }
 
     private void completeInstitutionalSection(FinalReport report) {
+        report.setCompletedPracticeMinutes(2815);
+        report.setLetterheadImage(com.sgp.systemsgp.model.EntityImage.builder()
+                .contentType("image/png").data(new byte[]{1}).build());
 
         report.setConclusion1("Conclusion 1");
         report.setConclusion2("Conclusion 2");

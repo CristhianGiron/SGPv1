@@ -1,11 +1,24 @@
-import { Children, isValidElement, useState } from 'react';
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          FormControls.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa el componente FormControls de la interfaz del SGP.
+ */
+
+import { Children, cloneElement, isValidElement, useId, useState } from 'react';
+import { useFormFeedback } from './FormFeedback';
 import { Eye, EyeOff } from 'lucide-react';
 
 const labelClass =
-  'mb-1 block text-[0.82rem] font-medium text-body dark:text-ink';
+  'mb-2 block text-sm font-medium text-heading';
 
 const fieldClass =
-  'min-h-[2.5rem] w-full rounded-lg border border-line bg-field px-3 py-2 text-sm text-heading outline-none transition-[background-color,border-color,box-shadow] placeholder:text-muted hover:border-line-strong focus:border-primary-strong focus:ring-4 focus:ring-focus-soft disabled:cursor-not-allowed disabled:bg-panel-soft disabled:text-muted dark:border-line dark:bg-page dark:text-heading dark:placeholder:text-muted dark:hover:border-line-strong dark:focus:border-info dark:focus:ring-focus-soft';
+  'sgp-form-control min-h-11 w-full rounded-lg border border-field-border bg-field px-3 py-2 text-sm text-heading outline-none transition-[background-color,border-color,box-shadow] placeholder:text-muted hover:border-line-strong focus:border-primary-strong focus:ring-4 focus:ring-focus-soft disabled:cursor-not-allowed disabled:bg-panel-soft disabled:text-muted dark:border-line dark:bg-page dark:text-heading dark:placeholder:text-muted dark:hover:border-line-strong dark:focus:border-info dark:focus:ring-focus-soft';
 
 const fileInputClass =
   'w-full rounded-lg border border-dashed border-line bg-field-hover px-3 py-2 text-sm text-body outline-none transition-colors file:mr-3 file:rounded-lg file:border file:border-accent file:bg-transparent file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-primary hover:border-line-strong focus:border-primary-strong focus:ring-4 focus:ring-focus-soft dark:border-line dark:bg-page dark:text-heading dark:file:border-accent dark:file:text-accent-strong dark:hover:border-line-strong dark:focus:border-info dark:focus:ring-focus-soft';
@@ -14,22 +27,23 @@ function cx(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
-export function Field({ label, children, className = '' }) {
-  if (canUseImplicitLabel(children)) {
-    return (
-      <label className={`block ${className}`}>
-        <span className={labelClass}>{label}</span>
-        {children}
-      </label>
-    );
-  }
-
-  return (
-    <div className={`block ${className}`}>
-      <span className={labelClass}>{label}</span>
-      {children}
-    </div>
-  );
+export function Field({ label, children, className = '', name, error, hint }) {
+  const generated = useId();
+  const feedback = useFormFeedback();
+  const items = Children.toArray(children);
+  const single = items.length === 1 && isValidElement(items[0]) ? items[0] : null;
+  const fieldName = name || single?.props.name;
+  const message = error || feedback?.errors?.[fieldName];
+  const id = single?.props.id || (fieldName && feedback ? feedback.idFor(fieldName) : `sgp-control-${generated}`);
+  const labelId = `${id}-label`, errorId = `${id}-error`, hintId = `${id}-hint`;
+  const associated = canUseImplicitLabel(children) || Boolean(single?.type?.fieldControl);
+  const described = [single?.props['aria-describedby'], hint && hintId, message && errorId].filter(Boolean).join(' ') || undefined;
+  return <div className={`block ${className}`} data-field-name={fieldName}>
+    {associated ? <label id={labelId} htmlFor={id} className={`block ${labelClass}`}>{label}</label> : <span id={labelId} className={`block ${labelClass}`}>{label}</span>}
+    {hint && <p id={hintId} className="mb-2 text-sm text-muted">{hint}</p>}
+    {associated ? cloneElement(single, {id,name:fieldName,'aria-labelledby':labelId,'aria-describedby':described,'aria-invalid':message ? true : single.props['aria-invalid']}) : children}
+    {message && <p id={errorId} className="mt-2 text-sm text-danger-strong">{message}</p>}
+  </div>;
 }
 
 export function Input({ className = '', ...props }) {

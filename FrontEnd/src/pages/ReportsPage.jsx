@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          ReportsPage.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Presenta los reportes y filtros de consulta autorizados.
+ */
+
 import { useEffect, useState } from 'react';
 import { BarChart3 } from 'lucide-react';
 import { apiRequest } from '../api/client';
@@ -68,7 +80,7 @@ export function ReportsPage() {
       <PageHeader
         eyebrow="Coordinacion"
         title="Seguimiento general"
-        description="Consulta pendientes, correcciones, aprobaciones y tiempos de revision del proceso de practicas."
+        description="Consulta pendientes, correcciones, aprobaciones y tiempos de revisión del proceso de prácticas."
       />
 
       {error && <Alert tone="error">{error}</Alert>}
@@ -77,7 +89,7 @@ export function ReportsPage() {
         <SectionCard>
           <Skeleton lines={6} />
         </SectionCard>
-      ) : (
+      ) : report ? (
         <>
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
             {(report?.summary || []).map((metric, index) => (
@@ -103,7 +115,7 @@ export function ReportsPage() {
           </div>
 
           <SectionCard
-            description="Cantidad de documentos en borrador, revision, correccion y aprobacion."
+            description="Cantidad de documentos en borrador, revisión, corrección y aprobación."
             title="Estado de documentos"
           >
             <DataTable
@@ -115,18 +127,19 @@ export function ReportsPage() {
 
           <SectionCard
             description="Pendientes, correcciones y aprobaciones organizadas por paralelo."
-            title="Revision por paralelo"
+            title="Revisión por paralelo"
           >
             <DataTable
               columns={COURSE_COLUMNS}
+              keyField="courseId"
               emptyText="Aun no hay paralelos con documentos revisables."
               rows={report?.approvalsByCourse || []}
             />
           </SectionCard>
 
           <SectionCard
-            description="Tiempo promedio desde el envio del documento hasta su aprobacion."
-            title="Tiempo de revision"
+            description="Tiempo promedio desde el envío del documento hasta su aprobación."
+            title="Tiempo de revisión"
           >
             <DataTable
               columns={REVIEW_TIME_COLUMNS}
@@ -135,7 +148,7 @@ export function ReportsPage() {
             />
           </SectionCard>
         </>
-      )}
+      ) : <SectionCard title="Reporte no disponible"><p className="text-sm text-body">No se pudieron consultar los indicadores. Recarga la página para reintentar.</p></SectionCard>}
     </>
   );
 }

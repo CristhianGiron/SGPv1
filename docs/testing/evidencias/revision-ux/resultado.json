@@ -1,0 +1,202 @@
+{
+  "mode": "Chrome; API simulada",
+  "checks": [
+    {
+      "theme": "light",
+      "width": 390,
+      "scenario": "pending",
+      "problems": [],
+      "alerts": [
+        {
+          "x": 16,
+          "y": 482.765625,
+          "width": 358,
+          "height": 122
+        }
+      ],
+      "topbar": 71.390625,
+      "ux": {
+        "height": 3487,
+        "canvasLeft": 16,
+        "sidebarRight": 0,
+        "notices": 1
+      }
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "scenario": "form",
+      "problems": [],
+      "alerts": [
+        {
+          "x": 33,
+          "y": 514.75,
+          "width": 324,
+          "height": 58
+        },
+        {
+          "x": 33,
+          "y": 682.75,
+          "width": 324,
+          "height": 194
+        }
+      ],
+      "topbar": 71.390625,
+      "ux": {
+        "height": 2668,
+        "canvasLeft": 16,
+        "sidebarRight": 0,
+        "firstTextArea": 1662.75,
+        "notices": 2
+      }
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "scenario": "pending",
+      "problems": [],
+      "alerts": [
+        {
+          "x": 303.1875,
+          "y": 434.390625,
+          "width": 1093.625,
+          "height": 58
+        }
+      ],
+      "topbar": 71.390625,
+      "ux": {
+        "height": 1974,
+        "canvasLeft": 303.1875,
+        "sidebarRight": 260,
+        "notices": 1
+      }
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "scenario": "form",
+      "problems": [],
+      "alerts": [
+        {
+          "x": 328.1875,
+          "y": 515.375,
+          "width": 1043.625,
+          "height": 58
+        },
+        {
+          "x": 328.1875,
+          "y": 683.375,
+          "width": 1043.625,
+          "height": 74
+        }
+      ],
+      "topbar": 71.390625,
+      "ux": {
+        "height": 1956,
+        "canvasLeft": 303.1875,
+        "sidebarRight": 260,
+        "firstTextArea": 1303.375,
+        "notices": 2
+      }
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "scenario": "pending",
+      "problems": [],
+      "alerts": [
+        {
+          "x": 16,
+          "y": 482.765625,
+          "width": 358,
+          "height": 122
+        }
+      ],
+      "topbar": 71.390625,
+      "ux": {
+        "height": 3487,
+        "canvasLeft": 16,
+        "sidebarRight": 0,
+        "notices": 1
+      }
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "scenario": "form",
+      "problems": [],
+      "alerts": [
+        {
+          "x": 33,
+          "y": 514.75,
+          "width": 324,
+          "height": 58
+        },
+        {
+          "x": 33,
+          "y": 682.75,
+          "width": 324,
+          "height": 194
+        }
+      ],
+      "topbar": 71.390625,
+      "ux": {
+        "height": 2668,
+        "canvasLeft": 16,
+        "sidebarRight": 0,
+        "firstTextArea": 1662.75,
+        "notices": 2
+      }
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "scenario": "pending",
+      "problems": [],
+      "alerts": [
+        {
+          "x": 303.1875,
+          "y": 434.390625,
+          "width": 1093.625,
+          "height": 58
+        }
+      ],
+      "topbar": 71.390625,
+      "ux": {
+        "height": 1974,
+        "canvasLeft": 303.1875,
+        "sidebarRight": 260,
+        "notices": 1
+      }
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "scenario": "form",
+      "problems": [],
+      "alerts": [
+        {
+          "x": 328.1875,
+          "y": 515.375,
+          "width": 1043.625,
+          "height": 58
+        },
+        {
+          "x": 328.1875,
+          "y": 683.375,
+          "width": 1043.625,
+          "height": 74
+        }
+      ],
+      "topbar": 71.390625,
+      "ux": {
+        "height": 1956,
+        "canvasLeft": 303.1875,
+        "sidebarRight": 260,
+        "firstTextArea": 1303.375,
+        "notices": 2
+      }
+    }
+  ],
+  "errors": []
+}

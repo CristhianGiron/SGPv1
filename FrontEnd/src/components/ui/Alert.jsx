@@ -1,9 +1,19 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          Alert.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa el componente Alert de la interfaz del SGP.
+ */
+
 import { useEffect, useState } from 'react';
 import { AlertCircle, AlertTriangle, CheckCircle2, Info, X } from 'lucide-react';
-import { isAccessDeniedMessage } from '../../api/client';
 
-// Ajusta este valor manualmente si quieres que las alertas duren mas o menos tiempo.
-// 1000 = 1 segundo.
+// Only transient success confirmations disappear automatically.
 const ALERT_AUTO_HIDE_MS = 3000;
 
 export function Alert({ tone = 'info', children, dismissible = true }) {
@@ -27,7 +37,7 @@ export function Alert({ tone = 'info', children, dismissible = true }) {
   }, [children, tone]);
 
   useEffect(() => {
-    if (!visible) {
+    if (!visible || tone !== 'success' || !dismissible) {
       return undefined;
     }
 
@@ -36,27 +46,23 @@ export function Alert({ tone = 'info', children, dismissible = true }) {
     }, ALERT_AUTO_HIDE_MS);
 
     return () => window.clearTimeout(timeoutId);
-  }, [children, tone, visible]);
+  }, [children, tone, visible, dismissible]);
 
   if (!visible) {
     return null;
   }
 
-  if (tone === 'error' && isAccessDeniedMessage(getText(children))) {
-    return null;
-  }
-
   return (
     <div
-      className={`fixed left-1/2 top-[calc(env(safe-area-inset-top)+4.25rem)] z-[100002] flex w-[min(34rem,calc(100vw-1.5rem))] -translate-x-1/2 items-start gap-3 rounded-lg border p-3 text-sm leading-6 shadow-soft ${styles[tone] || styles.info}`}
+      className={`sgp-alert flex w-full min-w-0 items-start gap-3 rounded-lg border p-3 text-sm leading-6 ${styles[tone] || styles.info}`}
       role={tone === 'error' ? 'alert' : 'status'}
     >
-      <Icon aria-hidden="true" size={18} />
-      <div className="min-w-0 flex-1">{children}</div>
+      <Icon aria-hidden="true" className="mt-1 flex-none" size={18} />
+      <div className="min-w-0 flex-1 [overflow-wrap:anywhere]">{children}</div>
       {dismissible && (
         <button
           aria-label="Cerrar alerta"
-          className="ml-auto grid min-h-8 min-w-8 place-items-center rounded-lg border border-current/20 bg-panel/40 transition-colors hover:bg-panel/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current/25 dark:bg-page/20 dark:hover:bg-surface/50"
+          className="ml-auto grid min-h-8 min-w-8 flex-none place-items-center rounded-lg border border-current/20 bg-panel/40 transition-colors hover:bg-panel/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current/25 dark:bg-page/20 dark:hover:bg-surface/50"
           onClick={() => setVisible(false)}
           type="button"
         >
@@ -65,20 +71,4 @@ export function Alert({ tone = 'info', children, dismissible = true }) {
       )}
     </div>
   );
-}
-
-function getText(value) {
-  if (Array.isArray(value)) {
-    return value.map(getText).join(' ');
-  }
-
-  if (typeof value === 'string' || typeof value === 'number') {
-    return String(value);
-  }
-
-  if (value?.props?.children) {
-    return getText(value.props.children);
-  }
-
-  return '';
 }

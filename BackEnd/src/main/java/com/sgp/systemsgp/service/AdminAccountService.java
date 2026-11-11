@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          AdminAccountService.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa la lógica de aplicación de las cuentas de usuario.
+ */
+
 package com.sgp.systemsgp.service;
 
 import com.sgp.systemsgp.dto.admin.CreateAccountAdminRequest;
@@ -114,9 +126,10 @@ public class AdminAccountService {
         @Transactional
         public void disable(Long id) {
 
-                Account account = getById(id);
+                Account account = accountRepository.findForMembershipUpdate(id).orElseThrow(()->new NotFoundException("Cuenta no encontrada"));
 
                 account.setEnabled(false);
+                account.setAuthVersion(account.getAuthVersion()+1);
 
                 accountRepository.save(account);
         }
@@ -134,9 +147,10 @@ public class AdminAccountService {
         @Transactional
         public void lock(Long id) {
 
-                Account account = getById(id);
+                Account account = accountRepository.findForMembershipUpdate(id).orElseThrow(()->new NotFoundException("Cuenta no encontrada"));
 
                 account.setLocked(true);
+                account.setAuthVersion(account.getAuthVersion()+1);
 
                 accountRepository.save(account);
         }
@@ -154,13 +168,14 @@ public class AdminAccountService {
         @Transactional
         public void softDelete(Long id) {
 
-                Account account = getById(id);
+                Account account = accountRepository.findForMembershipUpdate(id).orElseThrow(()->new NotFoundException("Cuenta no encontrada"));
 
                 account.setDeleted(true);
 
                 account.setDeletedAt(LocalDateTime.now());
 
                 account.setEnabled(false);
+                account.setAuthVersion(account.getAuthVersion()+1);
 
                 accountRepository.save(account);
         }

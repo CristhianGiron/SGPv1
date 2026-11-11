@@ -1,0 +1,4 @@
+Error: No element found for selector: details[open] button[title="Abrir retroalimentacion"]
+    at assert (file:///home/cristhian/Escritorio/SGP/SGPv1/FrontEnd/node_modules/puppeteer-core/lib/puppeteer/util/assert.js:15:15)
+    at CdpFrame.click (file:///home/cristhian/Escritorio/SGP/SGPv1/FrontEnd/node_modules/puppeteer-core/lib/puppeteer/api/Frame.js:748:17)
+    at async /home/cristhian/Escritorio/SGP/SGPv1/docs/testing/qa/browser-practice-experience.cjs:54:429

@@ -1,0 +1,36 @@
+@startuml
+/'
+  @institucion   Universidad Nacional de Loja
+  @carrera       Pedagogía de las Ciencias Experimentales - Informática
+  @asignatura    Programación Web
+  @docente       Johnny H. Sánchez L.
+  @proyecto      Sistema de Gestión de Prácticas (SGP)
+  @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+  @file          secuencia-revision-documento.puml
+  @fecha         2026-11-10 21:24:04
+  @nota          Describe el diagrama de casos de uso del SGP mediante PlantUML.
+'/
+
+title SGP — Envío y revisión de un plan de actividades (síntesis)
+hide footbox
+autonumber
+skinparam shadowing false
+skinparam maxMessageSize 55
+actor "Estudiante / tutor" as A
+boundary "Pantalla" as UI
+control "Servicio SGP" as S
+database "Base de datos" as DB
+A -> UI : Estudiante: enviar plan guardado
+UI -> S : Enviar plan para revisión
+S -> S : Comprobar propiedad, edición y transición
+S -> DB : Guardar SUBMITTED y ciclo de revisión
+S --> UI : Confirmar envío y notificar revisión
+A -> UI : Tutor autorizado: revisar y comentar
+UI -> S : Enviar decisión o retroalimentación
+S -> S : Validar revisor, práctica y estado
+S -> DB : Guardar revisión, comentarios e historial
+S --> UI : Devolver estado y notificar al estudiante
+note over A, DB
+La primera línea de vida agrupa dos actores que actúan en momentos distintos. El plan de actividades ejemplifica CU-013 y CU-014; los demás documentos pueden tener etapas propias y no se presumen idénticos.
+end note
+@enduml

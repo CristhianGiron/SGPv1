@@ -1,0 +1,87 @@
+<!doctype html>
+<!--
+  @institucion   Universidad Nacional de Loja
+  @carrera       Pedagogía de las Ciencias Experimentales - Informática
+  @asignatura    Programación Web
+  @docente       Johnny H. Sánchez L.
+  @proyecto      Sistema de Gestión de Prácticas (SGP)
+  @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+  @file          01-iniciar-sesion.html
+  @fecha         2026-11-09 11:08:16
+  @nota          Permite ingresar al sistema mediante usuario o correo y contraseña; valida credenciales y el estado de la cuenta.
+  @nota          Redirige al panel según el rol y obliga el cambio inicial de contraseña cuando corresponda.
+  @nota          La maqueta utiliza datos de demostración; las validaciones operativas corresponden a la aplicación.
+-->
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Propuesta visual estática de SGP. Datos ficticios de demostración."
+    />
+    <title>Un nuevo día para aprender. · SGP Estudio</title>
+    <link rel="stylesheet" href="../assets/estilos.css" />
+  </head>
+  <body class="access-page">
+    <a class="skip" href="#contenido">Saltar al contenido</a>
+    <main id="contenido" class="access-layout">
+      <section class="access-story">
+        <a class="access-brand" href="../index.html"
+          >sgp<span>UNIVERSIDAD NACIONAL DE LOJA</span></a
+        >
+        <p class="eyebrow">PRÁCTICAS PREPROFESIONALES</p>
+        <h1>
+          La experiencia<br />que transforma<br />tu formación<span>.</span>
+        </h1>
+        <p>
+          Un espacio para conectar lo que aprendes<br />con lo que puedes
+          aportar.
+        </p>
+        <div class="architecture" aria-hidden="true">
+          <i></i><i></i><i></i><i></i>
+        </div>
+        <p class="small">Formación · Acompañamiento · Comunidad</p>
+      </section>
+      <section class="access-form">
+        <a href="../index.html" class="small">← Explorar interfaces</a>
+        <div>
+          <span class="demo-tag">MAQUETA ESTÁTICA</span>
+          <p class="eyebrow">BIENVENIDA A TU ESPACIO</p>
+          <h2>Un nuevo día para aprender.</h2>
+          <p class="subtitle">
+            Ingresa a tu espacio de prácticas preprofesionales.
+          </p>
+          <div class="fields">
+            <label class="field"
+              ><span>Usuario o correo</span
+              ><input
+                type="text"
+                value="estudiante@ejemplo.edu.ec"
+                readonly /></label
+            ><label class="field"
+              ><span>Contraseña</span
+              ><input type="password" value="demostracion" readonly
+            /></label>
+          </div>
+          <div class="actions">
+            <button type="button" class="button primary">
+              Iniciar sesión →
+            </button>
+          </div>
+          <p class="small">
+            ¿Es tu primera vez?
+            <a href="02-registrar-estudiante.html"
+              >Crea tu cuenta de estudiante</a
+            >
+          </p>
+          <a class="small" href="26-recuperar-acceso.html"
+            >Recuperación administrativa</a
+          >
+        </div>
+        <p class="small muted">Datos de muestra · Sin autenticación real</p>
+      </section>
+    </main>
+  </body>
+</html>

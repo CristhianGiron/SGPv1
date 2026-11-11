@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          DidacticPlanService.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa la lógica de aplicación de las planificaciones didácticas.
+ */
+
 package com.sgp.systemsgp.service;
 
 import com.sgp.systemsgp.dto.didacticplan.DidacticPlanRecommendationRequest;
@@ -28,6 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import org.apache.pdfbox.Loader;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -48,6 +61,11 @@ public class DidacticPlanService {
     private final EnrollmentRepository enrollmentRepository;
     private final AccountRepository accountRepository;
     private final PracticeAccessService practiceAccessService;
+    private final com.sgp.systemsgp.repository.DidacticPlanRevisionRepository revisions;
+    private final com.fasterxml.jackson.databind.ObjectMapper objectMapper;
+    private final PracticeAuditService audit;
+    private final NotificationService notifications;
+
 
     @Transactional
     public DidacticPlanResponse create(
@@ -139,7 +157,7 @@ public class DidacticPlanService {
             String username,
             DidacticPlanRequest request) {
 
-        DidacticPlan plan = getPlan(id);
+        DidacticPlan plan = didacticPlanRepository.findForUpdate(id).orElseThrow(()->new NotFoundException("Planificación no encontrada"));
         Account account = getAccount(username);
         validateCanEdit(plan, account);
         applyData(plan, request);
@@ -157,7 +175,7 @@ public class DidacticPlanService {
     @Transactional
     public DidacticPlanResponse submit(Long id, String username) {
 
-        DidacticPlan plan = getPlan(id);
+        DidacticPlan plan = didacticPlanRepository.findForUpdate(id).orElseThrow(()->new NotFoundException("Planificación no encontrada"));
         Account account = getAccount(username);
         validateCanEdit(plan, account);
         submitPlan(plan);
@@ -186,12 +204,55 @@ public class DidacticPlanService {
     }
 
     @Transactional
+    public DidacticPlanResponse returnInstitutionalPlan(Long id,String username,com.sgp.systemsgp.dto.didacticplan.ReturnDidacticPlanRequest request) {
+        var plan=didacticPlanRepository.findForUpdate(id).orElseThrow(()->new NotFoundException("Planificación no encontrada"));
+        var actor=getAccount(username);
+        PracticeAccessService.requireOperationalEnrollment(plan.getEnrollment());
+        if ((!practiceAccessService.isDirectorForCourse(plan.getCourse(),actor)
+                && !practiceAccessService.isPracticeTutorForCourse(plan.getCourse(),actor))
+                || Objects.equals(plan.getAuthor().getId(),actor.getId()))
+            throw new AccessDeniedException("Solo dirección de la carrera o el tutor de prácticas asignado puede devolver esta planificación");
+        if(plan.getAuthorType()!=DidacticPlanAuthorType.INSTITUTIONAL_TUTOR || plan.getStatus()!=DidacticPlanStatus.SUBMITTED)
+            throw new BadRequestException("Solo se puede devolver una planificación institucional enviada");
+        if(request.reason()==null || request.reason().isBlank() || request.reason().length()>2000)
+            throw new BadRequestException("Indica un motivo de devolución de hasta 2000 caracteres");
+        String snapshot;
+        try {snapshot=objectMapper.writeValueAsString(mapToResponse(plan));}
+        catch(com.fasterxml.jackson.core.JsonProcessingException ex){throw new IllegalStateException("No se pudo preservar la versión enviada",ex);}
+        revisions.save(com.sgp.systemsgp.model.DidacticPlanRevision.builder().plan(plan)
+                .revisionNumber(Math.toIntExact(revisions.countByPlan_Id(id)+1)).returnedBy(actor).returnedAt(LocalDateTime.now())
+                .reason(request.reason().strip()).snapshotJson(snapshot).uploadedPdf(plan.getUploadedPdf())
+                .uploadedPdfFilename(plan.getUploadedPdfFilename()).uploadedPdfContentType(plan.getUploadedPdfContentType()).build());
+        plan.setStatus(DidacticPlanStatus.NEEDS_CORRECTION);plan.setRecommendations(request.reason().strip());
+        plan.setRecommendedBy(actor);plan.setRecommendedAt(LocalDateTime.now());didacticPlanRepository.save(plan);
+        audit.logEnrollmentAction(plan.getEnrollment(),actor,"RETURN_INSTITUTIONAL_PLAN","SUBMITTED","NEEDS_CORRECTION",false,false,"Planificación "+id+": "+request.reason().strip());
+        notifications.createNotification(plan.getAuthor(),"Planificación devuelta para corrección",request.reason().strip(),
+                "#/practices/"+plan.getEnrollment().getId()+"/didactic-plans","DIDACTIC_PLAN_RETURNED");
+        return mapToResponse(plan);
+    }
+    public List<com.sgp.systemsgp.dto.didacticplan.DidacticPlanRevisionSummary> revisions(Long id,String username) {
+        getById(id,username);return revisions.summaries(id);
+    }
+    public DidacticPlanResponse revision(Long id,Long revisionId,String username) {
+        getById(id,username);
+        var revision=revisions.findByIdAndPlan_Id(revisionId,id).orElseThrow(()->new NotFoundException("Versión no encontrada"));
+        try {return objectMapper.readValue(revision.getSnapshotJson(),DidacticPlanResponse.class);}
+        catch(com.fasterxml.jackson.core.JsonProcessingException ex){throw new IllegalStateException("No se pudo leer la versión",ex);}
+    }
+    public UploadedPdf revisionPdf(Long id,Long revisionId,String username) {
+        getById(id,username);
+        var revision=revisions.findByIdAndPlan_Id(revisionId,id).orElseThrow(()->new NotFoundException("Versión no encontrada"));
+        if(revision.getUploadedPdf()==null)throw new NotFoundException("La versión no tiene un PDF adjunto");
+        return new UploadedPdf(revision.getUploadedPdf(),revision.getUploadedPdfFilename(),revision.getUploadedPdfContentType());
+    }
+
+    @Transactional
     public DidacticPlanResponse uploadPdf(
             Long id,
             String username,
             MultipartFile file) {
 
-        DidacticPlan plan = getPlan(id);
+        DidacticPlan plan = didacticPlanRepository.findForUpdate(id).orElseThrow(()->new NotFoundException("Planificación no encontrada"));
         Account account = getAccount(username);
         validateCanEdit(plan, account);
         validatePdf(file);
@@ -233,9 +294,10 @@ public class DidacticPlanService {
     @Transactional
     public void delete(Long id, String username) {
 
-        DidacticPlan plan = getPlan(id);
+        DidacticPlan plan = didacticPlanRepository.findForUpdate(id).orElseThrow(()->new NotFoundException("Planificación no encontrada"));
         Account account = getAccount(username);
         validateCanEdit(plan, account);
+        if(revisions.countByPlan_Id(id)>0)throw new BadRequestException("No se puede eliminar una planificación con versiones enviadas conservadas");
         plan.setDeleted(true);
         plan.setDeletedAt(LocalDateTime.now());
         didacticPlanRepository.save(plan);
@@ -264,6 +326,8 @@ public class DidacticPlanService {
         if (enrollment.getStatus() != EnrollmentStatus.APPROVED) {
             throw new BadRequestException("Solo se puede trabajar sobre inscripciones aprobadas");
         }
+        PracticeAccessService.requireOperationalEnrollment(enrollment);
+
     }
 
     private DidacticPlanAuthorType resolveAuthorType(Account account) {
@@ -345,6 +409,7 @@ public class DidacticPlanService {
     }
 
     private void validateCanEdit(DidacticPlan plan, Account account) {
+        PracticeAccessService.requireOperationalEnrollment(plan.getEnrollment());
 
         if (!plan.getAuthor().getId().equals(account.getId())) {
             throw new AccessDeniedException("Solo el autor puede editar esta planificacion");
@@ -356,6 +421,7 @@ public class DidacticPlanService {
     }
 
     private void validateCanRecommend(DidacticPlan plan, Account account) {
+        PracticeAccessService.requireOperationalEnrollment(plan.getEnrollment());
 
         if (plan.getAuthorType() != DidacticPlanAuthorType.STUDENT) {
             throw new AccessDeniedException("Solo se recomiendan correcciones sobre planificaciones del estudiante");
@@ -394,10 +460,10 @@ public class DidacticPlanService {
         setIfNotNull(request.getTitle(), plan::setTitle);
         setIfNotNull(request.getTeacherName(), plan::setTeacherName);
         setIfNotNull(request.getAreaSubject(), plan::setAreaSubject);
-        setIfNotNull(request.getPeriods(), plan::setPeriods);
-        setIfNotNull(request.getWeeks(), plan::setWeeks);
-        setIfNotNull(request.getStartWeek(), plan::setStartWeek);
-        setIfNotNull(request.getEndWeek(), plan::setEndWeek);
+        if (request.isPeriodsProvided()) plan.setPeriods(request.getPeriods());
+        if (request.isWeeksProvided()) plan.setWeeks(request.getWeeks());
+        if (request.isStartWeekProvided()) plan.setStartWeek(request.getStartWeek());
+        if (request.isEndWeekProvided()) plan.setEndWeek(request.getEndWeek());
         setIfNotNull(request.getGradeCourse(), plan::setGradeCourse);
         setIfNotNull(request.getParallel(), plan::setParallel);
         setIfNotNull(request.getPlanningUnitTitle(), plan::setPlanningUnitTitle);
@@ -476,6 +542,14 @@ public class DidacticPlanService {
 
         if (file.getSize() > MAX_PDF_SIZE) {
             throw new BadRequestException("El PDF no puede superar 10 MB");
+        }
+
+        try (var document = Loader.loadPDF(file.getBytes())) {
+            if (document.isEncrypted()) {
+                throw new BadRequestException("El PDF no debe estar protegido con contraseña");
+            }
+        } catch (IOException exception) {
+            throw new BadRequestException("El archivo no contiene un PDF válido");
         }
     }
 

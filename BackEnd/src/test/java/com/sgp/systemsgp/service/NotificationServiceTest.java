@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          NotificationServiceTest.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Comprueba el comportamiento de las notificaciones mediante pruebas de regresión.
+ */
+
 package com.sgp.systemsgp.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -10,6 +22,10 @@ import static org.mockito.Mockito.when;
 import com.sgp.systemsgp.model.Account;
 import com.sgp.systemsgp.model.ActivityPlan;
 import com.sgp.systemsgp.model.Course;
+import com.sgp.systemsgp.model.Career;
+import com.sgp.systemsgp.model.AcademicCycle;
+import com.sgp.systemsgp.model.Role;
+import java.util.Set;
 import com.sgp.systemsgp.model.Notification;
 import com.sgp.systemsgp.repository.AccountRepository;
 import com.sgp.systemsgp.repository.NotificationRepository;
@@ -44,7 +60,8 @@ class NotificationServiceTest {
         notificationService = new NotificationService(
                 notificationRepository,
                 accountRepository,
-                notificationWebSocketHandler);
+                notificationWebSocketHandler,
+                new PracticeAccessService());
     }
 
     @Test
@@ -54,9 +71,14 @@ class NotificationServiceTest {
         Account admin = account(2L, "admin");
         Account director = account(3L, "director.practicas");
         Account student = account(4L, "student01");
+        Career career = Career.builder().id(1L).build();
+        director.setCareer(career);
+        director.setRoles(Set.of(Role.builder().name("ROLE_DIRECTOR_PRACTICAS").build()));
+        admin.setRoles(Set.of(Role.builder().name("ROLE_ADMIN").build()));
         Course course = Course.builder()
                 .id(1L)
                 .name("Curso de Practicas")
+                .academicCycle(AcademicCycle.builder().career(career).build())
                 .practiceTutor(tutor)
                 .build();
         ActivityPlan plan = ActivityPlan.builder()

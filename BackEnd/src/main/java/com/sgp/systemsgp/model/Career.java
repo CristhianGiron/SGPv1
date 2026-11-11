@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          Career.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Representa los datos persistentes de las carreras universitarias.
+ */
+
 package com.sgp.systemsgp.model;
 
 import java.time.LocalDateTime;
@@ -31,6 +43,9 @@ public class Career {
 
     @Column(unique = true, nullable = false)
     private String code;
+
+    @Column(length = 180)
+    private String degreeTitle;
 
     private String description;
 

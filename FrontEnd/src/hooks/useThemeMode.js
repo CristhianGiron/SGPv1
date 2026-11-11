@@ -1,101 +1,70 @@
-import { useCallback, useEffect, useState } from 'react';
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          useThemeMode.js
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Gestiona el estado y la integración de useThemeMode en la interfaz React.
+ */
 
-const THEME_STORAGE_KEY = 'sgp-theme-mode';
-const THEME_CHANGE_EVENT = 'sgp-theme-mode-change';
-const DARK_THEME = 'dark';
-const LIGHT_THEME = 'light';
+import { useCallback, useEffect, useSyncExternalStore } from 'react';
+import COLOR_THEME_OPTIONS from '../config/colorThemeOptions.json';
 
-function normalizeThemeMode(theme) {
-  return theme === DARK_THEME ? DARK_THEME : LIGHT_THEME;
+const MODE_KEY='sgp-theme-mode', COLOR_KEY='sgp-color-theme';
+const MODE_EVENT='sgp-theme-mode-change', COLOR_EVENT='sgp-color-theme-change';
+const SYSTEM_QUERY='(prefers-color-scheme: dark)';
+// Retain choices for this session if storage is unavailable or full.
+const sessionChoices=new Map();
+const normalizeMode=value=>['light','dark','system'].includes(value)?value:'system';
+const normalizeColor=value=>COLOR_THEME_OPTIONS.some(option=>option.id===value)?value:'unl';
+function read(key) {
+  if(sessionChoices.has(key))return sessionChoices.get(key);
+  if(typeof window==='undefined')return null;
+  try{return window.localStorage.getItem(key);}catch{return null;}
 }
-
-export function applyThemeMode(theme) {
-  const mode = normalizeThemeMode(theme);
-  const root = document.documentElement;
-  const isDark = mode === DARK_THEME;
-
-  root.classList.toggle('dark', isDark);
-  root.classList.toggle('theme-dark', isDark);
-  root.classList.toggle('theme-light', mode === LIGHT_THEME);
-  root.dataset.theme = mode;
-  root.style.colorScheme = mode;
+function write(key,value) {
+  try{window.localStorage.setItem(key,value);sessionChoices.delete(key);}
+  catch{sessionChoices.set(key,value);}
 }
+function systemDark(){return Boolean(typeof window!=='undefined'&&window.matchMedia?.(SYSTEM_QUERY)?.matches);}
+function resolved(preference){return preference==='system'?(systemDark()?'dark':'light'):preference;}
+export function getInitialThemePreference(){return normalizeMode(read(MODE_KEY));}
+export function getInitialThemeMode(){return resolved(getInitialThemePreference());}
+export function getInitialColorTheme(){return normalizeColor(read(COLOR_KEY));}
 
-export function getInitialThemeMode() {
-  if (typeof window === 'undefined') {
-    return LIGHT_THEME;
-  }
-
-  const storedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
-
-  if (storedTheme === DARK_THEME || storedTheme === LIGHT_THEME) {
-    return storedTheme;
-  }
-
-  return window.matchMedia?.('(prefers-color-scheme: dark)').matches
-    ? DARK_THEME
-    : LIGHT_THEME;
+export function applyThemeMode(value) {
+  const preference=normalizeMode(value),theme=resolved(preference),root=document.documentElement;
+  root.classList.toggle('dark',theme==='dark');root.classList.toggle('theme-dark',theme==='dark');root.classList.toggle('theme-light',theme==='light');
+  root.dataset.theme=theme;root.dataset.themePreference=preference;root.style.colorScheme=theme;
 }
-
-export function initializeThemeMode() {
-  if (typeof document === 'undefined') {
-    return;
-  }
-
-  applyThemeMode(getInitialThemeMode());
+export function applyColorTheme(value){document.documentElement.dataset.colorTheme=normalizeColor(value);}
+function applyPreferences(){applyThemeMode(getInitialThemePreference());applyColorTheme(getInitialColorTheme());}
+export function initializeThemeMode(){
+  if(typeof document==='undefined')return;
+  const mode=read(MODE_KEY),color=read(COLOR_KEY);
+  if(mode!==null&&mode!==normalizeMode(mode))write(MODE_KEY,normalizeMode(mode));
+  if(color!==null&&color!==normalizeColor(color))write(COLOR_KEY,normalizeColor(color));
+  applyPreferences();
 }
-
-export function useThemeMode() {
-  const [theme, setTheme] = useState(getInitialThemeMode);
-
-  useEffect(() => {
-    applyThemeMode(theme);
-    window.localStorage.setItem(THEME_STORAGE_KEY, theme);
-    window.dispatchEvent(
-      new CustomEvent(THEME_CHANGE_EVENT, {
-        detail: theme,
-      }),
-    );
-  }, [theme]);
-
-  useEffect(() => {
-    function syncTheme(event) {
-      const nextTheme = normalizeThemeMode(event.detail);
-      setTheme((current) => (current === nextTheme ? current : nextTheme));
-    }
-
-    function syncStoredTheme(event) {
-      if (event.key !== THEME_STORAGE_KEY) return;
-      const nextTheme = normalizeThemeMode(event.newValue);
-      setTheme((current) => (current === nextTheme ? current : nextTheme));
-    }
-
-    window.addEventListener(THEME_CHANGE_EVENT, syncTheme);
-    window.addEventListener('storage', syncStoredTheme);
-
-    return () => {
-      window.removeEventListener(THEME_CHANGE_EVENT, syncTheme);
-      window.removeEventListener('storage', syncStoredTheme);
-    };
-  }, []);
-
-  const updateTheme = useCallback((nextTheme) => {
-    setTheme((current) => {
-      const resolvedTheme =
-        typeof nextTheme === 'function' ? nextTheme(current) : nextTheme;
-
-      return normalizeThemeMode(resolvedTheme);
-    });
-  }, []);
-
-  const toggleTheme = useCallback(() => {
-    updateTheme((current) => (current === DARK_THEME ? LIGHT_THEME : DARK_THEME));
-  }, [updateTheme]);
-
-  return {
-    isDark: theme === DARK_THEME,
-    setTheme: updateTheme,
-    theme,
-    toggleTheme,
-  };
+function snapshot(){return `${getInitialThemePreference()}|${getInitialColorTheme()}|${getInitialThemeMode()}|${sessionChoices.size?'session':'saved'}`;}
+function subscribe(notify){
+  const update=()=>{applyPreferences();notify();};
+  const stored=event=>{if(event.key===null)sessionChoices.clear();else if(event.key===MODE_KEY||event.key===COLOR_KEY)sessionChoices.delete(event.key);else return;update();};
+  const media=window.matchMedia?.(SYSTEM_QUERY);
+  window.addEventListener(MODE_EVENT,update);window.addEventListener(COLOR_EVENT,update);window.addEventListener('storage',stored);
+  if(media?.addEventListener)media.addEventListener('change',update);else media?.addListener?.(update);
+  return ()=>{window.removeEventListener(MODE_EVENT,update);window.removeEventListener(COLOR_EVENT,update);window.removeEventListener('storage',stored);if(media?.removeEventListener)media.removeEventListener('change',update);else media?.removeListener?.(update);};
+}
+function change(key,value,event){write(key,value);applyPreferences();window.dispatchEvent(new CustomEvent(event,{detail:value}));}
+export function useThemeMode(){
+  const state=useSyncExternalStore(subscribe,snapshot,()=> 'system|unl|light|saved');
+  const [themePreference,colorTheme,theme,storageStatus]=state.split('|');
+  useEffect(()=>{initializeThemeMode();},[]);
+  const setTheme=useCallback(value=>change(MODE_KEY,normalizeMode(typeof value==='function'?value(getInitialThemeMode()):value),MODE_EVENT),[]);
+  const setColorTheme=useCallback(value=>change(COLOR_KEY,normalizeColor(value),COLOR_EVENT),[]);
+  const toggleTheme=useCallback(()=>setTheme(getInitialThemeMode()==='dark'?'light':'dark'),[setTheme]);
+  return {theme,themePreference,isDark:theme==='dark',colorTheme,storageStatus,setTheme,setColorTheme,toggleTheme};
 }

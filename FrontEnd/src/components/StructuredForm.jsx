@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          StructuredForm.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa el componente StructuredForm de la interfaz del SGP.
+ */
+
 import { Plus, Trash2 } from 'lucide-react';
 import { ENTITY_RELATIONS } from '../config/resources';
 import { formatValue, labelFromKey } from '../utils/format';
@@ -111,10 +123,10 @@ function formatOptionLabel(value) {
   const labels = {
     MONDAY: 'Lunes',
     TUESDAY: 'Martes',
-    WEDNESDAY: 'Miercoles',
+    WEDNESDAY: 'Miércoles',
     THURSDAY: 'Jueves',
     FRIDAY: 'Viernes',
-    SATURDAY: 'Sabado',
+    SATURDAY: 'Sábado',
     SUNDAY: 'Domingo',
     PRESENT: 'Presente',
     ABSENT: 'Ausente',
@@ -122,11 +134,11 @@ function formatOptionLabel(value) {
     JUSTIFIED: 'Justificado',
     ONLINE: 'En linea',
     PRESENCIAL: 'Presencial',
-    OBSERVACION: 'Observacion',
-    ELABORACION: 'Elaboracion',
+    OBSERVACION: 'Observación',
+    ELABORACION: 'Elaboración',
     DOCENTE: 'Docente',
     GENERAL: 'General',
-    ESPECIFICO: 'Especifico',
+    ESPECIFICO: 'Específico',
     BAJO: 'Bajo',
     MEDIO: 'Medio',
     ALTO: 'Alto',
@@ -262,6 +274,7 @@ function FormNode({ name, path, customFields, readOnlyFields, hiddenFields, rela
   return (
     <PrimitiveField
       name={name}
+      fieldPath={pathName(path)}
       customFields={customFields}
       readOnly={readOnlyFields.has(name)}
       relations={relations}
@@ -306,6 +319,7 @@ function ObjectEditor({ path, customFields, readOnlyFields, hiddenFields, relati
             ) : (
               <PrimitiveField
                 name={key}
+                fieldPath={pathName([...path,key])}
                 customFields={customFields}
                 readOnly={readOnlyFields.has(key)}
                 relations={relations}
@@ -323,12 +337,20 @@ function ObjectEditor({ path, customFields, readOnlyFields, hiddenFields, relati
 function ArrayEditor({ name, path, customFields, readOnlyFields, hiddenFields, relations, value, onChange, root }) {
   const confirm = useConfirm();
   const template = value[0] || {};
+  const weeklyCollection = name === 'activityWeeks' || name === 'scheduleWeeks';
+  const collectionTitle = weeklyCollection
+    ? (name === 'activityWeeks' ? 'Actividades por semana' : 'Cronograma semanal')
+    : labelFromKey(name);
+  const itemTitle = weeklyCollection ? 'Semana' : collectionTitle;
+  const addLabel = weeklyCollection
+    ? (name === 'activityWeeks' ? 'Agregar semana' : 'Agregar semana al cronograma')
+    : `Agregar ${labelFromKey(name).toLowerCase()}`;
 
   async function removeItem(index) {
     const accepted = await confirm({
-      title: `Quitar ${labelFromKey(name).toLowerCase()}`,
-      description: 'Este elemento se quitara del formulario en edicion.',
-      details: `${labelFromKey(name)} ${index + 1}`,
+      title: `Quitar ${itemTitle.toLowerCase()}`,
+      description: 'Este elemento se quitara del formulario en edición.',
+      details: `${itemTitle} ${index + 1}`,
       confirmLabel: 'Quitar',
       tone: 'danger',
     });
@@ -339,16 +361,16 @@ function ArrayEditor({ name, path, customFields, readOnlyFields, hiddenFields, r
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {value.length === 0 && (
         <p className="text-sm text-body">Todavia no hay registros agregados.</p>
       )}
 
       {value.map((item, index) => (
-        <div className="sgp-color-card rounded-lg border border-line bg-panel-soft p-3 dark:border-line dark:bg-surface-soft" key={`${name}-${index}`}>
+        <div className="sgp-color-card rounded-lg border border-line bg-panel-soft p-4 dark:border-line dark:bg-surface-soft" key={`${name}-${index}`}>
           <div className="mb-3 flex items-center justify-between gap-3">
             <h4 className="text-sm font-medium text-heading dark:text-heading">
-              {labelFromKey(name)} {index + 1}
+              {itemTitle} {item.weekNumber || index + 1}
             </h4>
             <DangerButton
               className="inline-flex items-center gap-2 px-3 py-2"
@@ -356,20 +378,34 @@ function ArrayEditor({ name, path, customFields, readOnlyFields, hiddenFields, r
               type="button"
             >
               <Trash2 size={16} />
-              Quitar
+              Quitar {itemTitle.toLowerCase()}
             </DangerButton>
           </div>
-          <FormNode
-            name={`${name}-${index}`}
-            customFields={customFields}
-            hiddenFields={hiddenFields}
-            path={[...path, index]}
-            readOnlyFields={readOnlyFields}
-            relations={relations}
-            root={root}
-            value={item}
-            onChange={onChange}
-          />
+          {weeklyCollection ? (
+            <WeeklyItemEditor
+              collectionName={name}
+              customFields={customFields}
+              hiddenFields={hiddenFields}
+              item={item}
+              itemPath={[...path, index]}
+              readOnlyFields={readOnlyFields}
+              relations={relations}
+              root={root}
+              onChange={onChange}
+            />
+          ) : (
+            <FormNode
+              name={`${name}-${index}`}
+              customFields={customFields}
+              hiddenFields={hiddenFields}
+              path={[...path, index]}
+              readOnlyFields={readOnlyFields}
+              relations={relations}
+              root={root}
+              value={item}
+              onChange={onChange}
+            />
+          )}
         </div>
       ))}
 
@@ -379,13 +415,63 @@ function ArrayEditor({ name, path, customFields, readOnlyFields, hiddenFields, r
         type="button"
       >
         <Plus size={16} />
-        Agregar {labelFromKey(name).toLowerCase()}
+        {addLabel}
       </SecondaryButton>
     </div>
   );
 }
 
-function PrimitiveField({ name, customFields = {}, readOnly = false, relations, value, onChange }) {
+function WeeklyItemEditor({
+  collectionName,
+  customFields,
+  hiddenFields,
+  item,
+  itemPath,
+  readOnlyFields,
+  relations,
+  root,
+  onChange,
+}) {
+  const activityField = collectionName === 'activityWeeks' ? 'activities' : 'scheduledActivities';
+  const fields = [
+    ['weekNumber', ''],
+    ['startDate', ''],
+    ['endDate', ''],
+    [activityField, 'col-span-full'],
+  ];
+
+  return (
+    <div className="grid items-start gap-4 sm:grid-cols-3">
+      {fields.map(([fieldName, className]) => {
+        if (hiddenFields.has(fieldName)) {
+          return null;
+        }
+
+        return (
+          <div className={className} key={fieldName}>
+            <PrimitiveField
+              name={fieldName}
+            fieldPath={pathName([...itemPath,fieldName])}
+              customFields={customFields}
+              readOnly={readOnlyFields.has(fieldName)}
+              relations={relations}
+              value={item[fieldName] ?? ''}
+              onChange={(nextValue) => onChange(setAtPath(
+                root,
+                [...itemPath, fieldName],
+                parseFieldValue(fieldName, nextValue),
+              ))}
+            />
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function pathName(path) { return path.map((part,index) => typeof part === "number" ? `[${part}]` : `${index ? "." : ""}${part}`).join(""); }
+
+function PrimitiveField({ name, fieldPath, customFields = {}, readOnly = false, relations, value, onChange }) {
   const relation = relations[name] || ENTITY_RELATIONS[name];
   const customField = customFields[name];
 
@@ -401,7 +487,7 @@ function PrimitiveField({ name, customFields = {}, readOnly = false, relations, 
 
   if (readOnly) {
     return (
-      <Field label={relation?.label || labelFromKey(name)}>
+      <Field name={fieldPath || name} label={relation?.label || labelFromKey(name)}>
         <ReadOnlyValue name={name} value={value} />
       </Field>
     );
@@ -409,7 +495,7 @@ function PrimitiveField({ name, customFields = {}, readOnly = false, relations, 
 
   if (relation) {
     return (
-      <Field label={relation.label}>
+      <Field name={fieldPath || name} label={relation.label}>
         <EntitySelect
           disabled={relation.disabled}
           getOptionLabel={relation.getOptionLabel}
@@ -441,12 +527,12 @@ function PrimitiveField({ name, customFields = {}, readOnly = false, relations, 
 
   if (options) {
     return (
-      <Field label={labelFromKey(name)}>
+      <Field name={fieldPath || name} label={labelFromKey(name)}>
         <Select
           value={value || ''}
           onChange={(event) => onChange(event.target.value)}
         >
-          <option value="">Selecciona una opcion</option>
+          <option value="">Selecciona una opción</option>
           {options.map((option) => (
             <option key={option} value={option}>
               {formatOptionLabel(option)}
@@ -459,7 +545,7 @@ function PrimitiveField({ name, customFields = {}, readOnly = false, relations, 
 
   if (LONG_TEXT_KEYS.test(name)) {
     return (
-      <Field label={labelFromKey(name)}>
+      <Field name={fieldPath || name} label={labelFromKey(name)}>
         <Textarea
           value={normalizePrimitiveValue(name, value)}
           onChange={(event) => onChange(event.target.value)}
@@ -469,7 +555,7 @@ function PrimitiveField({ name, customFields = {}, readOnly = false, relations, 
   }
 
   return (
-    <Field label={labelFromKey(name)}>
+    <Field name={fieldPath || name} label={labelFromKey(name)}>
       <Input
         type={fieldType(name, value)}
         value={normalizePrimitiveValue(name, value)}

@@ -1,0 +1,14 @@
+{
+  "mode": "Isolated API and WebSocket fixtures",
+  "checks": [
+    "bandeja-1440",
+    "bandeja-390",
+    "bandeja-oscuro-390",
+    "Batch read updates inbox and empty guidance",
+    "Announcement dialog preserves typing focus and keyboard navigation",
+    "agenda-1440",
+    "agenda-lista-390",
+    "agenda-lista-oscuro-390"
+  ],
+  "errors": []
+}

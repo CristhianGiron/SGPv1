@@ -1,4 +1,20 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          PracticeFormsPage.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Gestiona los formularios de entrevistas y observación asociados a las prácticas.
+ */
+
+import { DraftRecovery } from '../components/ui/DraftRecovery';
+import { useRecoverableDraft } from '../hooks/useRecoverableDraft';
+import { usePracticeRequest, usePracticeWorkspace } from '../contexts/PracticeWorkspaceContext';
+import { workflowCopy } from '../config/roleExperience';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ArrowDown,
   ArrowUp,
@@ -11,7 +27,7 @@ import {
   Send,
   Trash2,
 } from 'lucide-react';
-import { apiRequest, unwrapPage } from '../api/client';
+import { unwrapPage } from '../api/client';
 import { useAuth } from '../auth/AuthContext';
 import { Alert } from '../components/ui/Alert';
 import { ActionBar, DangerButton, PrimaryButton, SecondaryButton } from '../components/ui/ActionBar';
@@ -27,31 +43,31 @@ import { formatDateTime, formatEnum } from '../utils/format';
 
 const QUESTION_TYPES = [
   ['OPEN_TEXT', 'Respuesta abierta'],
-  ['SINGLE_CHOICE', 'Opcion unica'],
-  ['MULTIPLE_CHOICE', 'Seleccion multiple'],
-  ['YES_NO', 'Si / No'],
+  ['SINGLE_CHOICE', 'Opción única'],
+  ['MULTIPLE_CHOICE', 'Selección múltiple'],
+  ['YES_NO', 'Sí / No'],
   ['SCALE', 'Escala'],
-  ['NUMBER', 'Numero'],
+  ['NUMBER', 'Número'],
 ];
 
 const TARGET_ROLES = [
   ['INSTITUTIONAL_TUTOR', 'Tutor institucional'],
-  ['INSTITUTION_DIRECTOR', 'Directora de la institucion'],
+  ['INSTITUTION_DIRECTOR', 'Directora de la institución'],
   ['STUDENT_SELF', 'Estudiante'],
 ];
 
 const FORM_MODES = {
   interviews: {
-    eyebrow: 'Practicas',
+    eyebrow: 'Prácticas',
     title: 'Entrevistas',
-    description: 'Crea entrevistas para la institucion receptora, registra respuestas y guarda la interpretacion del estudiante.',
+    description: 'Crea entrevistas para la institución receptora, registra respuestas y guarda la interpretación del estudiante.',
     singular: 'entrevista',
     plural: 'entrevistas',
     mineTab: 'Mis entrevistas',
     createTab: 'Crear entrevista',
     createdTitle: 'Entrevistas creadas',
-    assignedTitle: 'Entrevistas por responder',
-    emptyText: 'Aun no hay entrevistas registradas.',
+    assignedTitle: 'Mis entrevistas asignadas',
+    emptyText: 'Aún no hay entrevistas registradas.',
     createEndpoint: '/api/practice-forms',
     listEndpoint: '/api/practice-forms/me',
     managedEndpoint: '/api/practice-forms/managed',
@@ -59,7 +75,7 @@ const FORM_MODES = {
     selfAnswered: false,
   },
   observations: {
-    eyebrow: 'Practicas',
+    eyebrow: 'Prácticas',
     title: 'Fichas de observación',
     description: 'Crea y responde fichas de observación para registrar información directamente desde tu práctica.',
     singular: 'ficha de observación',
@@ -68,7 +84,7 @@ const FORM_MODES = {
     createTab: 'Crear ficha',
     createdTitle: 'Fichas de observación creadas',
     assignedTitle: '',
-    emptyText: 'Aun no hay fichas de observación registradas.',
+    emptyText: 'Aún no hay fichas de observación registradas.',
     createEndpoint: '/api/practice-forms/observations',
     listEndpoint: '/api/practice-forms/observations/me',
     managedEndpoint: '/api/practice-forms/observations/managed',
@@ -91,7 +107,7 @@ function newQuestion(type = 'OPEN_TEXT') {
     required: true,
     scaleMin: 1,
     scaleMax: 5,
-    options: ['Opcion 1', 'Opcion 2'],
+    options: ['Opción 1', 'Opción 2'],
   };
 }
 
@@ -126,8 +142,11 @@ function formToDraft(form, mode = 'interviews') {
 }
 
 export function PracticeFormsPage({ mode = 'interviews' }) {
+  const apiRequest = usePracticeRequest();
+  const workspace = usePracticeWorkspace();
   const { token, roles } = useAuth();
   const confirm = useConfirm();
+  const operational = !workspace || (workspace.status === 'APPROVED' && !workspace.archived && workspace.courseActive !== false);
   const config = FORM_MODES[mode] || FORM_MODES.interviews;
   const isStudent = roles.includes('ROLE_ESTUDIANTE');
   const canResolveAssigned =
@@ -145,10 +164,14 @@ export function PracticeFormsPage({ mode = 'interviews' }) {
   const [managedForms, setManagedForms] = useState([]);
   const [enrollments, setEnrollments] = useState([]);
   const [selectedForm, setSelectedForm] = useState(null);
+  const detailSectionRef = useRef(null);
+  const shouldScrollToDetailRef = useRef(false);
   const [editingForm, setEditingForm] = useState(null);
   const [draft, setDraft] = useState(() => emptyDraft(mode));
+  const recovery = useRecoverableDraft(`practice-forms:${mode}:${workspace?.id || 'global'}:${editingForm?.id || 'new'}`, setDraft, activeView==='create');
   const [responseDraft, setResponseDraft] = useState({});
   const [interpretationDrafts, setInterpretationDrafts] = useState({});
+  const interpretationFormIdRef = useRef(null);
   const [detailView, setDetailView] = useState('view');
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -184,7 +207,7 @@ export function PracticeFormsPage({ mode = 'interviews' }) {
       setSelectedForm(payload);
       return payload;
     },
-    [token]
+    [token, apiRequest]
   );
 
   const loadData = useCallback(async () => {
@@ -218,35 +241,55 @@ export function PracticeFormsPage({ mode = 'interviews' }) {
     } finally {
       setLoading(false);
     }
-  }, [canResolveAssigned, canReviewManaged, config.listEndpoint, config.managedEndpoint, isStudent, token]);
+  }, [canResolveAssigned, canReviewManaged, config.listEndpoint, config.managedEndpoint, isStudent, token, apiRequest]);
 
   useEffect(() => {
     loadData();
   }, [loadData]);
 
   useEffect(() => {
-    const questions = selectedForm?.questions || [];
-    setInterpretationDrafts(
-      Object.fromEntries(
-        questions
-          .filter((question) => question.type === 'OPEN_TEXT')
-          .map((question) => [question.id, question.studentInterpretation || ''])
-      )
-    );
-    setResponseDraft(responseDraftFromQuestions(questions));
-    setDetailView('view');
+    if (shouldScrollToDetailRef.current && selectedForm) {
+      shouldScrollToDetailRef.current = false;
+      detailSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      detailSectionRef.current?.focus({ preventScroll: true });
+    }
   }, [selectedForm]);
 
-  const visibleForms = activeView === 'assigned' ? assignedForms : activeView === 'managed' ? managedForms : myForms;
+  useEffect(() => {
+    const questions = selectedForm?.questions || [];
+    const changedForm = interpretationFormIdRef.current !== selectedForm?.id;
+    const savedInterpretations = Object.fromEntries(
+      questions.map((question) => [question.id, question.studentInterpretation || ''])
+    );
+    setInterpretationDrafts(current => changedForm ? savedInterpretations : { ...savedInterpretations, ...current });
+    setResponseDraft(responseDraftFromQuestions(questions));
+    if (changedForm) setDetailView('view');
+    interpretationFormIdRef.current = selectedForm?.id;
+  }, [selectedForm]);
+
+  const [recipientView,setRecipientView]=useState('pending');
+  const recipientForms=assignedForms.filter(form=>recipientView==='pending'?form.status==='SENT':form.status==='ANSWERED');
+  const visibleForms = activeView === 'assigned' ? recipientForms : activeView === 'managed' ? managedForms : myForms;
   const selectedIsAssigned = assignedForms.some((form) => form.id === selectedForm?.id);
   const selectedIsManaged = managedForms.some((form) => form.id === selectedForm?.id);
   const selectedIsMine = myForms.some((form) => form.id === selectedForm?.id);
   const canRespondSelected =
-    selectedForm?.status === 'SENT' &&
+    operational && selectedForm?.status === 'SENT' &&
     ((canResolveAssigned && selectedIsAssigned) ||
       (config.selfAnswered && isStudent && selectedIsMine));
-  const canInterpretSelected = isStudent && selectedIsMine && selectedForm?.status === 'ANSWERED';
-  const canEditDraftSelected = isStudent && selectedIsMine && selectedForm?.status === 'DRAFT';
+  const canInterpretSelected = operational && isStudent && selectedIsMine && selectedForm?.status === 'ANSWERED';
+  const canEditDraftSelected = operational && isStudent && selectedIsMine && selectedForm?.status === 'DRAFT';
+
+  async function handleViewForm(id) {
+    shouldScrollToDetailRef.current = true;
+
+    try {
+      await loadFormDetail(id);
+    } catch (requestError) {
+      shouldScrollToDetailRef.current = false;
+      setError(requestError.message);
+    }
+  }
 
   const formColumns = [
     { key: 'title', header: config.singular[0].toUpperCase() + config.singular.slice(1) },
@@ -256,7 +299,9 @@ export function PracticeFormsPage({ mode = 'interviews' }) {
       : activeView === 'managed'
         ? { key: 'studentFullName', header: 'Estudiante', render: (row) => row.studentFullName || row.student || '-' }
       : config.selfAnswered
-        ? { key: 'target', header: 'Respondida por', render: () => 'Estudiante' }
+        ? activeView === 'mine'
+          ? null
+          : { key: 'target', header: 'Respondida por', render: () => 'Estudiante' }
         : { key: 'target', header: 'Asignado a', render: (row) => row.target || targetRoleLabel(row.targetRole) },
     {
       key: 'status',
@@ -273,10 +318,10 @@ export function PracticeFormsPage({ mode = 'interviews' }) {
       header: '',
       render: (row) => (
         <ActionBar>
-          <SecondaryButton icon={Eye} onClick={() => loadFormDetail(row.id)} type="button">
+          <SecondaryButton icon={Eye} onClick={() => handleViewForm(row.id)} type="button">
             Ver
           </SecondaryButton>
-          {isStudent && activeView === 'mine' && row.status === 'DRAFT' && (
+          {operational && isStudent && activeView === 'mine' && row.status === 'DRAFT' && (
             <SecondaryButton icon={Save} onClick={() => handleEditDraft(row)} type="button">
               Editar
             </SecondaryButton>
@@ -284,7 +329,7 @@ export function PracticeFormsPage({ mode = 'interviews' }) {
         </ActionBar>
       ),
     },
-  ];
+  ].filter(Boolean);
 
   async function persistDraft(nextDraft, asDraft) {
     const payload = {
@@ -321,7 +366,7 @@ export function PracticeFormsPage({ mode = 'interviews' }) {
 
     const accepted = await confirm({
       title: `Guardar borrador`,
-      description: `La ${config.singular} quedara privada y podras editarla antes de enviarla.`,
+      description: `La ${config.singular} quedará privada y podrás editarla antes de enviarla.`,
       details: draft.title || config.singular,
       confirmLabel: 'Guardar borrador',
       tone: 'warning',
@@ -340,6 +385,7 @@ export function PracticeFormsPage({ mode = 'interviews' }) {
 
       setMessage('Borrador guardado correctamente.');
       setEditingForm(saved);
+      recovery.markClean();
       setDraft(emptyDraft(mode));
       setActiveView('mine');
       await loadData();
@@ -357,8 +403,8 @@ export function PracticeFormsPage({ mode = 'interviews' }) {
     const accepted = await confirm({
       title: editingForm?.id ? `Enviar borrador` : `Crear y enviar ${config.singular}`,
       description: config.selfAnswered
-        ? 'La ficha quedara lista para registrar respuestas.'
-        : 'La entrevista quedara disponible para la persona asignada.',
+        ? 'La ficha quedará lista para registrar respuestas.'
+        : 'La entrevista quedará disponible para la persona asignada.',
       details: draft.title || config.singular,
       confirmLabel: 'Enviar',
       tone: 'warning',
@@ -377,6 +423,7 @@ export function PracticeFormsPage({ mode = 'interviews' }) {
 
       setMessage(config.selfAnswered ? 'Ficha enviada correctamente.' : 'Entrevista enviada correctamente.');
       setEditingForm(null);
+      recovery.markClean();
       setDraft(emptyDraft(mode));
       setActiveView('mine');
       await loadData();
@@ -572,7 +619,7 @@ export function PracticeFormsPage({ mode = 'interviews' }) {
         },
       });
 
-      setMessage('Interpretacion guardada.');
+      setMessage('Interpretación guardada.');
       await loadFormDetail(selectedForm.id);
     } catch (requestError) {
       setError(requestError.message);
@@ -581,17 +628,20 @@ export function PracticeFormsPage({ mode = 'interviews' }) {
     }
   }
 
+  const listActions = (
+          <SecondaryButton icon={RefreshCw} loading={loading} onClick={loadData} type="button">
+            Actualizar
+          </SecondaryButton>
+  );
+
   return (
     <>
       <PageHeader
         eyebrow={config.eyebrow}
         title={config.title}
-        description={config.description}
-        action={
-          <SecondaryButton icon={RefreshCw} loading={loading} onClick={loadData} type="button">
-            Actualizar
-          </SecondaryButton>
-        }
+        description={workflowCopy(mode === 'observations' ? 'observations' : 'forms', roles)}
+        helpText={workflowCopy(mode === 'observations' ? 'observations' : 'forms', roles)}
+        action={activeView === 'create' ? listActions : undefined}
       />
 
       {error && <Alert tone="error">{error}</Alert>}
@@ -601,9 +651,9 @@ export function PracticeFormsPage({ mode = 'interviews' }) {
         <ModuleTabs>
           {[
             isStudent && ['mine', config.mineTab],
-            canResolveAssigned && ['assigned', 'Por responder'],
+            canResolveAssigned && ['assigned', 'Mis entrevistas'],
             canReviewManaged && ['managed', 'Respondidas'],
-            isStudent && ['create', config.createTab],
+            isStudent && operational && ['create', config.createTab],
           ]
             .filter(Boolean)
             .map(([id, label]) => (
@@ -619,6 +669,7 @@ export function PracticeFormsPage({ mode = 'interviews' }) {
       </SectionCard>
 
       {activeView === 'create' ? (
+        <div className="space-y-4"><DraftRecovery draft={recovery} disabled={saving} />
           <PracticeFormBuilder
             draft={draft}
             editing={Boolean(editingForm)}
@@ -627,10 +678,11 @@ export function PracticeFormsPage({ mode = 'interviews' }) {
             loading={loading}
             saving={saving}
             setDraft={setDraft}
+            onDraftChange={recovery.change}
             config={config}
             onSaveDraft={handleSaveDraft}
             onSend={handleSendForm}
-          />
+          /></div>
       ) : (
         <div className="grid grid-cols-1 gap-5">
           <SectionCard
@@ -644,46 +696,56 @@ export function PracticeFormsPage({ mode = 'interviews' }) {
             }
             description={
               activeView === 'assigned'
-                ? `Selecciona una ${config.singular} para revisar sus preguntas y responder.`
+                ? `Consulta tus entrevistas pendientes o el historial de respuestas enviadas.`
                 : activeView === 'managed'
                   ? `Selecciona una ${config.singular} respondida para revisar sus respuestas.`
                 : `Selecciona una ${config.singular} para ver respuestas e interpretaciones.`
             }
           >
+            {activeView==='assigned'&&<div className="mb-4"><label className="text-sm text-body">Mostrar entrevistas<select aria-label="Estado de mis entrevistas" className="ml-3 rounded border border-line bg-panel p-2" value={recipientView} onChange={e=>setRecipientView(e.target.value)}><option value="pending">Pendientes de respuesta</option><option value="answered">Historial de respondidas</option></select></label></div>}
             <DataTable
+              toolbarActions={listActions}
               columns={formColumns}
+              ownRecords={activeView === 'mine'}
               emptyText={loading ? `Cargando ${config.plural}` : config.emptyText}
               loading={loading}
               rows={visibleForms}
             />
           </SectionCard>
 
-          <PracticeFormDetail
-            canInterpret={canInterpretSelected}
-            canRespond={canRespondSelected}
-            canDuplicate={isStudent && selectedIsMine}
-            canEditDraft={canEditDraftSelected}
-            canReview={selectedIsManaged}
-            config={config}
-            detailView={detailView}
-            form={selectedForm}
-            interpretationDrafts={interpretationDrafts}
-            responseDraft={responseDraft}
-            responding={responding}
-            savingResponseDraft={savingResponseDraft}
-            sendingDraft={sendingDraft}
-            savingInterpretationId={savingInterpretationId}
-            setInterpretationDrafts={setInterpretationDrafts}
-            setDetailView={setDetailView}
-            setResponseDraft={setResponseDraft}
-            onEditDraft={handleEditDraft}
-            onPrint={() => window.print()}
-            onDuplicate={handleDuplicate}
-            onSendDraft={handleSendSelectedDraft}
-            onSaveResponseDraft={handleSaveResponseDraft}
-            onSaveInterpretation={handleSaveInterpretation}
-            onSubmitAnswers={handleSubmitAnswers}
-          />
+          <div
+            className="scroll-mt-24"
+            ref={detailSectionRef}
+            tabIndex={-1}
+          >
+            <PracticeFormDetail
+              canInterpret={canInterpretSelected}
+              canRespond={canRespondSelected}
+              canDuplicate={operational && isStudent && selectedIsMine}
+              canEditDraft={canEditDraftSelected}
+              canReview={selectedIsManaged}
+              hideOwnIdentity={isStudent && selectedIsMine}
+              config={config}
+              detailView={detailView}
+              form={selectedForm}
+              interpretationDrafts={interpretationDrafts}
+              responseDraft={responseDraft}
+              responding={responding}
+              savingResponseDraft={savingResponseDraft}
+              sendingDraft={sendingDraft}
+              savingInterpretationId={savingInterpretationId}
+              setInterpretationDrafts={setInterpretationDrafts}
+              setDetailView={setDetailView}
+              setResponseDraft={setResponseDraft}
+              onEditDraft={handleEditDraft}
+              onPrint={() => window.print()}
+              onDuplicate={handleDuplicate}
+              onSendDraft={handleSendSelectedDraft}
+              onSaveResponseDraft={handleSaveResponseDraft}
+              onSaveInterpretation={handleSaveInterpretation}
+              onSubmitAnswers={handleSubmitAnswers}
+            />
+          </div>
         </div>
       )}
     </>
@@ -705,8 +767,10 @@ function PracticeFormBuilder({
   setDraft,
   onSaveDraft,
   onSend,
+  onDraftChange,
 }) {
   const confirm = useConfirm();
+  const workspace = usePracticeWorkspace();
   const selectedEnrollment = enrollments.find((enrollment) => String(enrollment.id) === String(draft.enrollmentId));
   const defaultEnrollment = useMemo(() => resolveDefaultEnrollment(enrollments), [enrollments]);
   const targetOptions = useMemo(
@@ -715,13 +779,12 @@ function PracticeFormBuilder({
   );
 
   useEffect(() => {
-    if (!defaultEnrollment) {
-      return;
-    }
+    if (!enrollments.length) return;
 
     setDraft((current) => {
       const selectedStillValid = enrollments.some((enrollment) => String(enrollment.id) === String(current.enrollmentId));
-      const nextEnrollmentId = selectedStillValid ? current.enrollmentId : String(defaultEnrollment.id);
+      const nextEnrollmentId = selectedStillValid ? current.enrollmentId : defaultEnrollment ? String(defaultEnrollment.id) : "";
+      if (!nextEnrollmentId) return current.enrollmentId ? { ...current, enrollmentId: "" } : current;
       const nextEnrollment = enrollments.find((enrollment) => String(enrollment.id) === String(nextEnrollmentId)) || defaultEnrollment;
       const options = mode === 'observations'
         ? [{ value: 'STUDENT_SELF', label: 'Estudiante', disabled: false }]
@@ -740,17 +803,19 @@ function PracticeFormBuilder({
         targetRole: nextTargetRole,
       };
     });
-  }, [defaultEnrollment, enrollments, mode, setDraft]);
+  }, [defaultEnrollment, enrollments, mode, setDraft, draft.enrollmentId]);
+
+  function changeDraft(update) { const next = typeof update === 'function' ? update(draft) : update;setDraft(next);onDraftChange?.(next); }
 
   function updateDraft(field, value) {
-    setDraft((current) => ({
+    changeDraft((current) => ({
       ...current,
       [field]: value,
     }));
   }
 
   function updateQuestion(index, patch) {
-    setDraft((current) => ({
+    changeDraft((current) => ({
       ...current,
       questions: current.questions.map((question, questionIndex) =>
         questionIndex === index ? normalizeQuestion({ ...question, ...patch }) : question
@@ -759,7 +824,7 @@ function PracticeFormBuilder({
   }
 
   function moveQuestion(index, direction) {
-    setDraft((current) => {
+    changeDraft((current) => {
       const nextIndex = index + direction;
 
       if (nextIndex < 0 || nextIndex >= current.questions.length) {
@@ -780,7 +845,7 @@ function PracticeFormBuilder({
   async function removeQuestion(index) {
     const accepted = await confirm({
       title: 'Quitar pregunta',
-      description: 'La pregunta se retirara de la entrevista en edicion.',
+      description: 'La pregunta se retirara de la entrevista en edición.',
       details: `Pregunta ${index + 1}`,
       confirmLabel: 'Quitar pregunta',
       tone: 'danger',
@@ -790,7 +855,7 @@ function PracticeFormBuilder({
       return;
     }
 
-    setDraft((current) => ({
+    changeDraft((current) => ({
       ...current,
       questions:
         current.questions.length > 1
@@ -800,13 +865,13 @@ function PracticeFormBuilder({
   }
 
   function addOption(questionIndex) {
-    setDraft((current) => ({
+    changeDraft((current) => ({
       ...current,
       questions: current.questions.map((question, index) =>
         index === questionIndex
           ? {
               ...question,
-              options: [...question.options, `Opcion ${question.options.length + 1}`],
+              options: [...question.options, `Opción ${question.options.length + 1}`],
             }
           : question
       ),
@@ -814,7 +879,7 @@ function PracticeFormBuilder({
   }
 
   function updateOption(questionIndex, optionIndex, value) {
-    setDraft((current) => ({
+    changeDraft((current) => ({
       ...current,
       questions: current.questions.map((question, index) =>
         index === questionIndex
@@ -831,10 +896,10 @@ function PracticeFormBuilder({
 
   async function removeOption(questionIndex, optionIndex) {
     const accepted = await confirm({
-      title: 'Quitar opcion',
-      description: 'La opcion se retirara de la pregunta en edicion.',
+      title: 'Quitar opción',
+      description: 'La opción se retirara de la pregunta en edición.',
       details: `Pregunta ${questionIndex + 1}`,
-      confirmLabel: 'Quitar opcion',
+      confirmLabel: 'Quitar opción',
       tone: 'danger',
     });
 
@@ -842,7 +907,7 @@ function PracticeFormBuilder({
       return;
     }
 
-    setDraft((current) => ({
+    changeDraft((current) => ({
       ...current,
       questions: current.questions.map((question, index) =>
         index === questionIndex
@@ -860,46 +925,25 @@ function PracticeFormBuilder({
 
   return (
     <form className="space-y-5" onSubmit={onSaveDraft}>
+      <fieldset disabled={saving || loading} className="min-w-0 space-y-5">
       <SectionCard
         title={`${editing ? 'Editar' : 'Datos de la'} ${config.singular}`}
-        description="La pertenencia academica y de practica se toma de tu inscripcion aprobada."
+        description="La pertenencia académica y de práctica se toma de tu inscripción aprobada."
       >
         <div className="grid gap-4 lg:grid-cols-2">
-          <Field label="Paralelo de practica aprobado">
-            <Input
-              disabled
-              value={
-                selectedEnrollment
-                  ? [selectedEnrollment.courseName, selectedEnrollment.educationalInstitutionName].filter(Boolean).join(' | ')
-                  : loading
-                    ? 'Cargando inscripcion aprobada'
-                    : 'No se encontro una inscripcion aprobada'
-              }
-            />
-          </Field>
+          {!workspace && enrollments.length > 1 && !editing && <Field label="Paralelo de práctica aprobado">
+            <Select value={draft.enrollmentId} required disabled={loading} onChange={event => updateDraft('enrollmentId', event.target.value)}>
+              <option value="">Selecciona la práctica que corresponde a este formulario</option>
+              {enrollments.map(enrollment => <option key={enrollment.id} value={enrollment.id}>{[enrollment.practiceName, enrollment.courseName, enrollment.educationalInstitutionName].filter(Boolean).join(' · ')}</option>)}
+            </Select>
+          </Field>}
+          {mode !== 'observations' && <Field label="Quién responderá">
+            {targetOptions.filter(option => !option.disabled).length > 1 ? <Select disabled={!selectedEnrollment} required value={draft.targetRole} onChange={event => updateDraft('targetRole', event.target.value)}>
+              {targetOptions.map(({ disabled, label, value }) => <option disabled={disabled} key={value} value={value}>{label}</option>)}
+            </Select> : <p className="py-2 text-sm text-body">{targetOptions.find(option => !option.disabled)?.label || 'No hay una persona asignada para responder.'}</p>}
+          </Field>}
 
-          {mode === 'observations' ? (
-            <Field label="Quien respondera">
-              <Input disabled value="Estudiante" />
-            </Field>
-          ) : (
-            <Field label="Quien respondera">
-              <Select
-                disabled={!selectedEnrollment}
-                required
-                value={draft.targetRole}
-                onChange={(event) => updateDraft('targetRole', event.target.value)}
-              >
-                {targetOptions.map(({ disabled, label, value }) => (
-                  <option disabled={disabled} key={value} value={value}>
-                    {label}
-                  </option>
-                ))}
-              </Select>
-            </Field>
-          )}
-
-          <Field className="lg:col-span-2" label="Titulo">
+          <Field className="lg:col-span-2" label="Título">
             <Input
               maxLength={160}
               required
@@ -908,7 +952,7 @@ function PracticeFormBuilder({
             />
           </Field>
 
-          <Field className="lg:col-span-2" label="Descripcion">
+          <Field className="lg:col-span-2" label="Descripción">
             <Textarea
               maxLength={2000}
               value={draft.description}
@@ -917,14 +961,14 @@ function PracticeFormBuilder({
           </Field>
         </div>
 
-        {selectedEnrollment && (
+        {!workspace && selectedEnrollment && (
           <div className="mt-4 grid gap-3 rounded-lg border border-line bg-panel-soft p-3 text-sm text-body dark:border-line dark:bg-surface-soft dark:text-body md:grid-cols-2">
             <InfoLine label="Paralelo" value={selectedEnrollment.courseName} />
-            <InfoLine label="Institucion" value={selectedEnrollment.educationalInstitutionName} />
+            <InfoLine label="Institución" value={selectedEnrollment.educationalInstitutionName} />
             <InfoLine label="Tutor institucional" value={selectedEnrollment.institutionalTutor} />
             <InfoLine
               fallback="Sin directora asignada"
-              label="Directora de institucion"
+              label="Directora de institución"
               value={selectedEnrollment.institutionDirector}
             />
             <InfoLine label="Estado" value={formatEnum(selectedEnrollment.status)} />
@@ -938,7 +982,7 @@ function PracticeFormBuilder({
           <SecondaryButton
             icon={Plus}
             onClick={() =>
-              setDraft((current) => ({
+              changeDraft((current) => ({
                 ...current,
                 questions: [...current.questions, newQuestion()],
               }))
@@ -1022,7 +1066,7 @@ function PracticeFormBuilder({
                     <div className="flex items-center justify-between gap-3">
                       <p className="mb-0 text-[0.82rem] font-semibold text-body dark:text-ink">Opciones</p>
                       <SecondaryButton icon={Plus} onClick={() => addOption(index)} type="button">
-                        Agregar opcion
+                        Agregar opción
                       </SecondaryButton>
                     </div>
                     <div className="grid gap-3 md:grid-cols-2">
@@ -1037,7 +1081,7 @@ function PracticeFormBuilder({
                             disabled={question.options.length <= 2}
                             icon={Trash2}
                             onClick={() => removeOption(index, optionIndex)}
-                            title="Quitar opcion"
+                            title="Quitar opción"
                             type="button"
                           />
                         </div>
@@ -1048,7 +1092,7 @@ function PracticeFormBuilder({
 
                 {question.type === 'SCALE' && (
                   <div className="grid gap-4 md:grid-cols-2 lg:col-span-2">
-                    <Field label="Minimo">
+                    <Field label="Mínimo">
                       <Input
                         max="100"
                         min="0"
@@ -1058,7 +1102,7 @@ function PracticeFormBuilder({
                         onChange={(event) => updateQuestion(index, { scaleMin: event.target.value })}
                       />
                     </Field>
-                    <Field label="Maximo">
+                    <Field label="Máximo">
                       <Input
                         max="100"
                         min="1"
@@ -1084,6 +1128,7 @@ function PracticeFormBuilder({
           Enviar
         </PrimaryButton>
       </ActionBar>
+    </fieldset>
     </form>
   );
 }
@@ -1093,6 +1138,7 @@ function PracticeFormDetail({
   canEditDraft,
   canInterpret,
   canRespond,
+  hideOwnIdentity,
   config,
   detailView,
   form,
@@ -1123,7 +1169,7 @@ function PracticeFormDetail({
 
   const questions = form.questions || [];
   const hasResponseDraft = Boolean(form.response && !form.response.submittedAt);
-  const hasInterpretationQuestions = questions.some((question) => question.type === 'OPEN_TEXT' && question.answer);
+  const hasInterpretationQuestions = questions.some((question) => question.answer);
   const availableViews = [
     ['view', 'Vista'],
     canRespond && ['respond', 'Responder'],
@@ -1202,13 +1248,17 @@ function PracticeFormDetail({
 
           <div className="practice-form-print-meta grid gap-3 rounded-lg border border-line bg-panel-soft p-3 text-sm dark:border-line dark:bg-surface-soft md:grid-cols-2 print:grid-cols-2 print:gap-0 print:rounded-none print:border-black print:bg-panel print:p-0">
             <InfoLine label="Paralelo" value={form.courseName} />
-            <InfoLine label="Estudiante" value={form.studentFullName || form.student} />
-            <InfoLine label="Institucion" value={form.educationalInstitutionName} />
-            <InfoLine label={config.selfAnswered ? 'Respondida por' : 'Asignado a'} value={form.target || targetRoleLabel(form.targetRole)} />
+            {!hideOwnIdentity && <InfoLine label="Estudiante" value={form.studentFullName || form.student} />}
+            <InfoLine label="Institución" value={form.educationalInstitutionName} />
+            {!(hideOwnIdentity && config.selfAnswered) && (
+              <InfoLine label={config.selfAnswered ? 'Respondida por' : 'Asignado a'} value={form.target || targetRoleLabel(form.targetRole)} />
+            )}
             <InfoLine label="Estado" value={formatEnum(form.status)} />
             <InfoLine label="Creado" value={formatDateTime(form.createdAt)} />
             <InfoLine label="Respondido" value={formatDateTime(form.answeredAt)} />
-            {form.response?.respondent && <InfoLine label="Respondido por" value={form.response.respondent} />}
+            {form.response?.respondent && !(hideOwnIdentity && config.selfAnswered) && (
+              <InfoLine label="Respondido por" value={form.response.respondent} />
+            )}
             {hasResponseDraft && <InfoLine label="Respuesta" value="Borrador guardado" />}
           </div>
 
@@ -1223,11 +1273,11 @@ function PracticeFormDetail({
           </div>
 
           {activeDetailView === 'interpretation' && !hasInterpretationQuestions ? (
-            <EmptyState text="No hay respuestas abiertas para interpretar." />
+            <EmptyState text="No hay respuestas registradas para interpretar." />
           ) : (
             <div className="space-y-4">
               {questions
-                .filter((question) => activeDetailView !== 'interpretation' || (question.type === 'OPEN_TEXT' && question.answer))
+                .filter((question) => activeDetailView !== 'interpretation' || question.answer)
                 .map((question) => (
                   <QuestionDetail
                     canInterpret={canInterpret && activeDetailView === 'interpretation'}
@@ -1241,7 +1291,7 @@ function PracticeFormDetail({
                     setInterpretationDrafts={setInterpretationDrafts}
                     showAnswer={activeDetailView !== 'respond'}
                     showInterpretation={activeDetailView === 'interpretation'}
-                    showTabulation={activeDetailView === 'view'}
+                    showTabulation={activeDetailView === 'view' || activeDetailView === 'interpretation'}
                     toggleOption={toggleOption}
                     onSaveInterpretation={onSaveInterpretation}
                   />
@@ -1314,10 +1364,10 @@ function QuestionDetail({
 
       {showTabulation && question.tabulable && question.tabulation && <Tabulation question={question} />}
 
-      {showInterpretation && question.type === 'OPEN_TEXT' && question.answer && (
+      {showInterpretation && question.answer && (
         <div className="practice-form-print-answer mt-4 rounded-lg border border-line bg-panel-soft p-3 dark:border-line dark:bg-surface-soft">
           <div className="mb-2 flex items-center justify-between gap-3">
-            <p className="mb-0 text-[0.82rem] font-semibold text-body dark:text-ink">Interpretacion del estudiante</p>
+            <p className="mb-0 text-[0.82rem] font-semibold text-body dark:text-ink">Interpretación del estudiante</p>
             {canInterpret && (
               <SecondaryButton
                 className="print:hidden"
@@ -1333,6 +1383,7 @@ function QuestionDetail({
           {canInterpret ? (
             <Textarea
               className="print:hidden"
+              aria-label={`Interpretación del estudiante de la pregunta ${question.order}`}
               maxLength={5000}
               value={interpretation}
               onChange={(event) =>
@@ -1344,12 +1395,12 @@ function QuestionDetail({
             />
           ) : (
             <p className="whitespace-pre-wrap text-sm leading-6 text-body dark:text-body">
-              {question.studentInterpretation || 'Sin interpretacion registrada'}
+              {question.studentInterpretation || 'Sin interpretación registrada'}
             </p>
           )}
           {canInterpret && (
             <p className="hidden whitespace-pre-wrap text-sm leading-6 text-body print:block">
-              {interpretation || 'Sin interpretacion registrada'}
+              {interpretation || 'Sin interpretación registrada'}
             </p>
           )}
         </div>
@@ -1416,7 +1467,7 @@ function ResponseInput({ question, value, setAnswer, toggleOption }) {
           onChange={(event) => setAnswer(question.id, { booleanAnswer: event.target.value })}
         >
           <option value="">Selecciona</option>
-          <option value="true">Si</option>
+          <option value="true">Sí</option>
           <option value="false">No</option>
         </Select>
       </Field>
@@ -1443,7 +1494,7 @@ function ResponseInput({ question, value, setAnswer, toggleOption }) {
   }
 
   return (
-    <Field label="Respuesta numerica">
+    <Field label="Respuesta numérica">
       <Input
         required={question.required}
         step="0.01"
@@ -1455,37 +1506,70 @@ function ResponseInput({ question, value, setAnswer, toggleOption }) {
   );
 }
 
-function Tabulation({ question }) {
+export function Tabulation({ question }) {
+  const [chartType, setChartType] = useState(() => ['SINGLE_CHOICE', 'YES_NO'].includes(question.type) ? 'pie' : 'bar');
   const counts = Object.entries(question.tabulation?.counts || {});
+  if (['SCALE', 'NUMBER'].includes(question.type)) counts.sort(([a], [b]) => Number(a) - Number(b));
+  const total = counts.length ? counts.reduce((sum, [, count]) => sum + (Number(count) || 0), 0) : question.tabulation?.numericCount || 0;
+  const multipleChoice = question.type === 'MULTIPLE_CHOICE';
+  const totalLabel = multipleChoice
+    ? total === 1 ? 'selección registrada' : 'selecciones registradas'
+    : total === 1 ? 'respuesta registrada' : 'respuestas registradas';
   const numericCount = question.tabulation?.numericCount || 0;
   const hasNumericStats = ['SCALE', 'NUMBER'].includes(question.type) && numericCount > 0;
+  const pieChart = chartType === 'pie';
 
   if (!counts.length && !hasNumericStats) {
     return null;
   }
 
   return (
-    <div className="mt-4 rounded-lg border border-line bg-panel p-3 dark:border-line dark:bg-surface">
-      <p className="mb-1.5 text-[0.82rem] font-semibold text-body dark:text-ink">Tabulacion</p>
+    <div className="mt-4 rounded-lg border border-line bg-panel p-3 dark:border-line dark:bg-surface" style={{ printColorAdjust: 'exact', WebkitPrintColorAdjust: 'exact' }}>
+      <div className="mb-3 flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <p className="text-sm font-semibold text-heading">Resumen cuantitativo</p>
+          <p className="mt-1 text-xs text-body">
+            {total} {totalLabel} en este formulario.
+            {multipleChoice && ' Los porcentajes se calculan sobre el total de selecciones.'}
+          </p>
+        </div>
+        {counts.length > 0 && (
+          <label className="flex items-center gap-2 text-sm text-body print:hidden">
+            Tipo de gráfico
+            <Select aria-label={`Tipo de gráfico de la pregunta ${question.order ?? question.id ?? ''}`} value={chartType} onChange={event => setChartType(event.target.value)}>
+              <option value="bar">Barras</option>
+              <option value="pie">Pastel</option>
+            </Select>
+          </label>
+        )}
+      </div>
       {counts.length > 0 && (
-        <div className="min-w-0 max-w-full overflow-hidden rounded-lg border border-line bg-panel shadow-card dark:border-line dark:bg-surface">
-          <div className="min-w-0 max-w-full overflow-x-auto overscroll-x-contain">
-            <table className="w-max min-w-full border-separate border-spacing-0 text-sm">
-              <thead className="bg-primary-soft text-left text-xs font-semibold uppercase text-body dark:bg-surface-soft dark:text-ink">
-                <tr>
-                  <th className="border-b border-line px-4 py-3 dark:border-line">Valor</th>
-                  <th className="border-b border-line px-4 py-3 dark:border-line">Frecuencia</th>
-                </tr>
-              </thead>
-              <tbody>
-                {counts.map(([label, count]) => (
-                  <tr className="even:bg-panel-soft hover:bg-primary-soft dark:even:bg-page/40 dark:hover:bg-info-soft" key={label}>
-                    <td className="border-b border-line-soft px-4 py-3 text-body dark:border-line dark:text-ink">{label}</td>
-                    <td className="border-b border-line-soft px-4 py-3 text-body dark:border-line dark:text-ink">{count}</td>
+        <div className="grid min-w-0 gap-4 rounded-lg border border-line bg-panel-soft p-4 dark:border-line dark:bg-surface-soft md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
+          <div className="flex flex-col items-center justify-center gap-4 sm:flex-row md:flex-col">
+            {pieChart ? <PieChart counts={counts} multipleChoice={multipleChoice} /> : <BarChart counts={counts} />}
+            <ChartLegend counts={counts} showPercentages={pieChart} />
+          </div>
+          <div className="min-w-0 max-w-full overflow-hidden rounded-lg border border-line bg-panel shadow-card dark:border-line dark:bg-surface">
+            <div className="min-w-0 max-w-full overflow-x-auto overscroll-x-contain">
+              <table className="w-max min-w-full border-separate border-spacing-0 text-sm">
+                <thead className="bg-primary-soft text-left text-xs font-semibold uppercase text-body dark:bg-surface-soft dark:text-ink">
+                  <tr>
+                    <th className="border-b border-line px-4 py-3 dark:border-line">Valor</th>
+                    <th className="border-b border-line px-4 py-3 dark:border-line">Frecuencia</th>
+                    <th className="border-b border-line px-4 py-3 dark:border-line">Porcentaje</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {counts.map(([label, count]) => (
+                    <tr className="even:bg-panel-soft hover:bg-primary-soft dark:even:bg-page/40 dark:hover:bg-info-soft" key={label}>
+                      <td className="border-b border-line-soft px-4 py-3 text-body dark:border-line dark:text-ink">{label}</td>
+                      <td className="border-b border-line-soft px-4 py-3 text-body dark:border-line dark:text-ink">{count}</td>
+                      <td className="border-b border-line-soft px-4 py-3 text-body dark:border-line dark:text-ink">{(total > 0 ? Number(count) / total * 100 : 0).toFixed(1)}%</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       )}
@@ -1493,10 +1577,131 @@ function Tabulation({ question }) {
         <div className="mt-3 grid gap-3 text-sm sm:grid-cols-4">
           <InfoLine label="Respuestas" value={numericCount} />
           <InfoLine label="Promedio" value={question.tabulation.numericAverage} />
-          <InfoLine label="Minimo" value={question.tabulation.numericMin} />
-          <InfoLine label="Maximo" value={question.tabulation.numericMax} />
+          <InfoLine label="Mínimo" value={question.tabulation.numericMin} />
+          <InfoLine label="Máximo" value={question.tabulation.numericMax} />
         </div>
       )}
+    </div>
+  );
+}
+
+const CHART_COLORS = ['#0e7490', '#16a34a', '#f59e0b', '#8b5cf6', '#ef4444', '#0891b2', '#db2777', '#65a30d'];
+
+function ChartLegend({ counts, showPercentages }) {
+  const total = counts.reduce((sum, [, count]) => sum + (Number(count) || 0), 0);
+
+  return (
+    <ul className="grid min-w-0 gap-2 text-sm">
+      {counts.map(([label, count], index) => {
+        const percentage = total > 0 ? ((Number(count) || 0) / total) * 100 : 0;
+
+        return (
+          <li className="flex min-w-0 items-center gap-2" key={label}>
+            <span
+              aria-hidden="true"
+              className="h-3 w-3 shrink-0 rounded-sm"
+              style={{ backgroundColor: CHART_COLORS[index % CHART_COLORS.length] }}
+            />
+            <span className="min-w-0 break-words text-body dark:text-ink">
+              {label}: <strong>{count}</strong>
+              {showPercentages && ` (${percentage.toFixed(1)}%)`}
+            </span>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+function PieChart({ counts, multipleChoice = false }) {
+  const slices = counts
+    .map(([label, value], index) => ({ label, value: Number(value) || 0, index }))
+    .filter((slice) => slice.value > 0);
+  const total = slices.reduce((sum, slice) => sum + slice.value, 0);
+  let startAngle = 0;
+
+  return (
+    <svg
+      aria-label={`Gráfico circular de distribución de respuestas, ${total} ${multipleChoice ? (total === 1 ? 'selección' : 'selecciones') : (total === 1 ? 'respuesta' : 'respuestas')}`}
+      className="h-40 w-40 shrink-0"
+      role="img"
+      viewBox="0 0 160 160"
+    >
+      {total === 0 ? (
+        <circle cx="80" cy="80" r="72" fill="#cbd5e1" />
+      ) : slices.length === 1 ? (
+        <circle cx="80" cy="80" r="72" fill={CHART_COLORS[slices[0].index % CHART_COLORS.length]} />
+      ) : (
+        slices.map((slice) => {
+          const endAngle = startAngle + (slice.value / total) * 360;
+          const path = pieSlicePath(startAngle, endAngle);
+          startAngle = endAngle;
+          return (
+            <path
+              d={path}
+              fill={CHART_COLORS[slice.index % CHART_COLORS.length]}
+              key={slice.label}
+              stroke="var(--color-surface)"
+              strokeWidth="2"
+            />
+          );
+        })
+      )}
+      {total === 0 && (
+        <text fill="#475569" fontSize="11" textAnchor="middle" x="80" y="84">
+          Sin respuestas
+        </text>
+      )}
+    </svg>
+  );
+}
+
+function pieSlicePath(startAngle, endAngle) {
+  const start = piePoint(startAngle);
+  const end = piePoint(endAngle);
+  const largeArc = endAngle - startAngle > 180 ? 1 : 0;
+  return `M 80 80 L ${start.x} ${start.y} A 72 72 0 ${largeArc} 1 ${end.x} ${end.y} Z`;
+}
+
+function piePoint(angle) {
+  const radians = ((angle - 90) * Math.PI) / 180;
+  return {
+    x: 80 + 72 * Math.cos(radians),
+    y: 80 + 72 * Math.sin(radians),
+  };
+}
+
+function BarChart({ counts }) {
+  const maxCount = Math.max(...counts.map(([, count]) => Number(count) || 0), 0);
+
+  return (
+    <div
+      aria-label="Gráfico de barras con la frecuencia de cada respuesta"
+      className="grid w-full min-w-0 gap-3"
+      role="img"
+    >
+      {counts.map(([label, value], index) => {
+        const count = Number(value) || 0;
+        const width = maxCount > 0 ? (count / maxCount) * 100 : 0;
+
+        return (
+          <div className="min-w-0" key={label}>
+            <div className="mb-1 flex items-center justify-between gap-3 text-xs">
+              <span className="min-w-0 break-words font-medium text-body dark:text-ink">{label}</span>
+              <strong className="shrink-0 text-heading dark:text-heading">{count}</strong>
+            </div>
+            <div aria-hidden="true" className="h-3 overflow-hidden rounded-full bg-page dark:bg-page">
+              <div
+                className="h-full rounded-full transition-[width]"
+                style={{
+                  backgroundColor: CHART_COLORS[index % CHART_COLORS.length],
+                  width: `${width}%`,
+                }}
+              />
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -1505,7 +1710,7 @@ function InfoLine({ fallback = '-', label, value }) {
   return (
     <div className="practice-form-print-info-line">
       <p className="text-xs font-semibold uppercase text-body">{label}</p>
-      <p className="mt-1 font-semibold text-heading dark:text-heading">{value || fallback}</p>
+      <p className="mt-1 font-semibold text-heading dark:text-heading">{value === 0 ? 0 : value || fallback}</p>
     </div>
   );
 }
@@ -1514,7 +1719,7 @@ function normalizeQuestion(question) {
   if (CHOICE_TYPES.has(question.type) && (!question.options || question.options.length < 2)) {
     return {
       ...question,
-      options: ['Opcion 1', 'Opcion 2'],
+      options: ['Opción 1', 'Opción 2'],
     };
   }
 
@@ -1531,18 +1736,18 @@ function normalizeQuestion(question) {
 
 function buildCreatePayload(draft, config = FORM_MODES.interviews) {
   if (!draft.enrollmentId) {
-    throw new Error(`No se encontro una inscripcion aprobada para crear la ${config.singular}.`);
+    throw new Error(`No se encontro una inscripción aprobada para crear la ${config.singular}.`);
   }
 
   if (!draft.title.trim()) {
-    throw new Error(`El titulo de la ${config.singular} es obligatorio.`);
+    throw new Error(`El título de la ${config.singular} es obligatorio.`);
   }
 
   const questions = draft.questions.map((question, index) => {
     const prompt = question.prompt.trim();
 
     if (!prompt) {
-      throw new Error(`La pregunta ${index + 1} no puede estar vacia.`);
+      throw new Error(`La pregunta ${index + 1} no puede estar vacía.`);
     }
 
     if (CHOICE_TYPES.has(question.type)) {
@@ -1598,9 +1803,7 @@ function buildCreatePayload(draft, config = FORM_MODES.interviews) {
 }
 
 function resolveDefaultEnrollment(enrollments) {
-  const ranked = [...(enrollments || [])].sort((left, right) => enrollmentScore(right) - enrollmentScore(left));
-
-  return ranked[0] || null;
+  return enrollments?.length === 1 ? enrollments[0] : null;
 }
 
 function isApprovedEnrollment(enrollment) {
@@ -1609,22 +1812,6 @@ function isApprovedEnrollment(enrollment) {
   return status === 'APPROVED' || status === 'APROBADA' || status === 'APROBADO';
 }
 
-function enrollmentScore(enrollment) {
-  if (!enrollment) {
-    return 0;
-  }
-
-  const completenessScore = [
-    enrollment.groupName,
-    enrollment.educationalInstitutionName,
-    enrollment.institutionalTutor,
-    enrollment.institutionDirector,
-    enrollment.practiceTutor,
-  ].filter(Boolean).length * 10;
-  const dateScore = enrollment.enrolledAt ? new Date(enrollment.enrolledAt).getTime() / 1000000000000 : 0;
-
-  return completenessScore + dateScore;
-}
 
 function targetOptionsForEnrollment(enrollment) {
   return [
@@ -1638,8 +1825,8 @@ function targetOptionsForEnrollment(enrollment) {
     {
       value: 'INSTITUTION_DIRECTOR',
       label: enrollment?.institutionDirector
-        ? `Directora de la institucion: ${enrollment.institutionDirector}`
-        : 'Directora de la institucion no asignada',
+        ? `Directora de la institución: ${enrollment.institutionDirector}`
+        : 'Directora de la institución no asignada',
       disabled: !enrollment?.institutionDirector,
     },
   ];
@@ -1732,7 +1919,7 @@ function formatAnswer(question) {
   }
 
   if (question.type === 'YES_NO') {
-    return answer.booleanAnswer ? 'Si' : 'No';
+    return answer.booleanAnswer ? 'Sí' : 'No';
   }
 
   if (question.type === 'SCALE' || question.type === 'NUMBER') {

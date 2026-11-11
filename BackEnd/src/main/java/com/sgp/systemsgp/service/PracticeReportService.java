@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          PracticeReportService.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa la lógica de aplicación de el informe de actividades cumplidas (L.1).
+ */
+
 package com.sgp.systemsgp.service;
 
 import com.sgp.systemsgp.dto.practicereport.CreatePracticeReportRequest;
@@ -37,6 +49,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -198,75 +211,60 @@ public class PracticeReportService {
         return mapToResponse(report);
     }
 
-    public byte[] exportApprovedPdf(
-            Long id,
-            String username) {
+    public byte[] exportApprovedPdf(Long id, String username) {
+        return renderPdf(id, username, true);
+    }
+
+    @Transactional
+    public byte[] previewPdf(Long id, String username) {
+        return PdfPreview.mark(renderPdf(id, username, false));
+    }
+
+    private byte[] renderPdf(Long id, String username, boolean requireApproved) {
 
         PracticeReportResponse report = getById(id, username);
-        validateApprovedForExport(report.getStatus());
+        if (requireApproved) validateApprovedForExport(report.getStatus());
 
-        return pdfExportService.createPdf(
-                "Informe de actividades cumplidas",
-                List.of(
-                        pdfExportService.section(
-                                "Datos generales",
-                                List.of(
-                                        pdfExportService.field("Estudiante", report.getStudentFullName()),
-                                        pdfExportService.field("Cedula", report.getStudentIdentification()),
-                                        pdfExportService.field("Ciclo", report.getCourseName()),
-                                        pdfExportService.field("Tutor Academico", firstPresent(
-                                                report.getReviewedByName(),
-                                                report.getReviewedBy())),
-                                        pdfExportService.field("Correo Electronico", report.getStudentEmail()),
-                                        pdfExportService.field("Nro. de telefono", report.getStudentPhone()),
-                                        pdfExportService.field("Institucion", report.getEducationalInstitutionName()),
-                                        pdfExportService.field("Codigo AMIE", report.getEducationalInstitutionCode()),
-                                        pdfExportService.field("Direccion", report.getEducationalInstitutionAddress())
-                                )),
-                        pdfExportService.section(
-                                "Presentacion y objetivos",
-                                List.of(
-                                        pdfExportService.field("Presentacion", report.getPresentation()),
-                                        pdfExportService.field("Objetivo general", report.getGeneralObjective()),
-                                        pdfExportService.field("Objetivo especifico 1", report.getSpecificObjective1()),
-                                        pdfExportService.field("Objetivo especifico 2", report.getSpecificObjective2()),
-                                        pdfExportService.field("Objetivo especifico 3", report.getSpecificObjective3())
-                                )),
-                        pdfExportService.section(
-                                "Metodologia y actividades",
-                                List.of(
-                                        pdfExportService.field("Metodologia", report.getMethodology())
-                                )),
-                        pdfExportService.sectionWithTables(
-                                "Actividades por semana",
-                                List.of(),
-                                List.of(activityWeeksTable(report.getActivityWeeks()))),
-                        pdfExportService.section(
-                                "Conclusiones",
-                                List.of(
-                                        pdfExportService.field("Conclusion 1", report.getConclusion1()),
-                                        pdfExportService.field("Conclusion 2", report.getConclusion2()),
-                                        pdfExportService.field("Conclusion 3", report.getConclusion3())
-                                )),
-                        pdfExportService.section(
-                                "Recomendaciones",
-                                List.of(
-                                        pdfExportService.field("Recomendacion 1", report.getRecommendation1()),
-                                        pdfExportService.field("Recomendacion 2", report.getRecommendation2()),
-                                        pdfExportService.field("Recomendacion 3", report.getRecommendation3())
-                                )),
-                        pdfExportService.section(
-                                "Elaboracion y aprobacion",
-                                List.of(
-                                        pdfExportService.field("Estudiante", report.getStudentFullName()),
-                                        pdfExportService.field("Tutor Academico", firstPresent(
-                                                report.getReviewedByName(),
-                                                report.getReviewedBy())),
-                                        pdfExportService.field(
-                                                "Rol",
-                                                "DOCENTE DE LA ASIGNATURA DE DISEÑO CURRICULAR EN INFORMÁTICA\nTUTOR ACADÉMICO")
-                                ))
-                ));
+        PracticeReport entity = getReport(id);
+        Course course = entity.getCourse();
+        List<PdfExportService.PdfField> general = new ArrayList<>();
+        general.add(pdfExportService.field("@subheading", "Datos del Estudiante"));
+        general.add(pdfExportService.field("Estudiante", report.getStudentFullName()));
+        general.add(pdfExportService.field("Cédula de Identidad", report.getStudentIdentification()));
+        general.add(pdfExportService.field("Correo Electrónico", report.getStudentEmail()));
+        general.add(pdfExportService.field("Nro. de teléfono", report.getStudentPhone()));
+        general.add(pdfExportService.field("Carrera", DocumentPdfData.career(course, entity.getStudent())));
+        general.add(pdfExportService.field("Titulación", DocumentPdfData.degree(course, entity.getStudent())));
+        general.add(pdfExportService.field("Ciclo", DocumentPdfData.cycle(course, entity.getStudent())));
+        general.add(pdfExportService.field("Periodo Academico", DocumentPdfData.period(course)));
+        general.add(pdfExportService.field("Tutor Academico", DocumentPdfData.name(course.getPracticeTutor())));
+        general.addAll(DocumentPdfData.institution(pdfExportService, entity.getEducationalInstitution(),
+                report.getEducationalInstitutionName(), report.getEducationalInstitutionCode(),
+                report.getEducationalInstitutionAddress(), DocumentPdfData.institutionalTutor(entity.getEnrollment()), false));
+        return pdfExportService.createPdf("Informe de actividades cumplidas", List.of(
+                pdfExportService.section("Información general", general),
+                pdfExportService.section("Presentación", List.of(pdfExportService.field("@paragraph", report.getPresentation()))),
+                pdfExportService.section("Objetivos", List.of(
+                        pdfExportService.field("Objetivo General", report.getGeneralObjective()),
+                        pdfExportService.field("@heading", "Objetivos Específicos"),
+                        pdfExportService.field("@bullet", report.getSpecificObjective1()),
+                        pdfExportService.field("@bullet", report.getSpecificObjective2()),
+                        pdfExportService.field("@bullet", report.getSpecificObjective3()))),
+                pdfExportService.section("Metodología", List.of(pdfExportService.field("@paragraph", report.getMethodology()))),
+                pdfExportService.sectionWithTables("Actividades desarrolladas", List.of(),
+                        List.of(activityWeeksTable(report.getActivityWeeks()))),
+                pdfExportService.section("Conclusiones", List.of(
+                        pdfExportService.field("@bullet", report.getConclusion1()),
+                        pdfExportService.field("@bullet", report.getConclusion2()),
+                        pdfExportService.field("@bullet", report.getConclusion3()))),
+                pdfExportService.section("Recomendaciones", List.of(
+                        pdfExportService.field("@bullet", report.getRecommendation1()),
+                        pdfExportService.field("@bullet", report.getRecommendation2()),
+                        pdfExportService.field("@bullet", report.getRecommendation3()))),
+                pdfExportService.section("Elaboracion y aprobacion", List.of(
+                        pdfExportService.field("Estudiante", report.getStudentFullName()),
+                        pdfExportService.field("Tutor Academico", DocumentPdfData.name(course.getPracticeTutor())),
+                        pdfExportService.field("Rol", DocumentPdfData.tutorRole(course) + "\nTUTOR ACADÉMICO")))));
     }
 
     @Transactional
@@ -336,6 +334,7 @@ public class PracticeReportService {
         Account tutor = getAccount(username);
 
         validateCanReview(report, tutor);
+        PracticeAccessService.requireOperationalEnrollment(report.getEnrollment());
 
         ReviewWorkflowStateMachine.ensureReviewable(
                 report.getStatus(),
@@ -378,15 +377,11 @@ public class PracticeReportService {
     }
 
     private Enrollment getDefaultEnrollment(Account student) {
-
-        return enrollmentRepository
-                .findByAccount_UsernameAndStatusAndCourse_ActiveTrueAndCourse_DeletedFalse(
-                        student.getUsername(),
-                        EnrollmentStatus.APPROVED)
-                .stream()
-                .findFirst()
-                .orElseThrow(() -> new BadRequestException(
-                        "No tienes ninguna inscripción aprobada para crear el informe de prácticas"));
+        var choices = enrollmentRepository.findByAccount_UsernameAndStatusAndCourse_ActiveTrueAndCourse_DeletedFalse(
+                student.getUsername(), EnrollmentStatus.APPROVED);
+        if (choices.isEmpty()) throw new BadRequestException("No tienes ninguna inscripción aprobada para crear el informe de prácticas");
+        if (choices.size() > 1) throw new BadRequestException("Tienes varias prácticas activas. Selecciona la práctica correspondiente antes de continuar.");
+        return choices.get(0);
     }
 
     private PracticeReport getReport(Long id) {
@@ -451,6 +446,8 @@ public class PracticeReportService {
             throw new BadRequestException(
                     "Solo se puede crear el informe de una inscripción aprobada");
         }
+        PracticeAccessService.requireOperationalEnrollment(enrollment);
+
 
         if (!isActiveCourseEnrollment(enrollment)) {
             throw new BadRequestException(
@@ -557,6 +554,7 @@ public class PracticeReportService {
     }
 
     private void validateEditable(PracticeReport report) {
+        PracticeAccessService.requireOperationalEnrollment(report.getEnrollment());
 
         ReviewWorkflowStateMachine.ensureEditable(
                 report.getStatus(),
@@ -899,8 +897,8 @@ public class PracticeReportService {
             PracticeReportActivityWeek week = PracticeReportActivityWeek.builder()
                     .report(report)
                     .weekNumber(weekRequest.getWeekNumber())
-                    .startDate(activityWeekStartDate(report.getCourse(), weekRequest.getWeekNumber(), weekRequest.getStartDate()))
-                    .endDate(activityWeekEndDate(report.getCourse(), weekRequest.getWeekNumber(), weekRequest.getEndDate()))
+                    .startDate(activityWeekStartDate(report.getEnrollment(), weekRequest.getWeekNumber(), weekRequest.getStartDate()))
+                    .endDate(activityWeekEndDate(report.getEnrollment(), weekRequest.getWeekNumber(), weekRequest.getEndDate()))
                     .activities(weekRequest.getActivities())
                     .build();
 
@@ -909,7 +907,7 @@ public class PracticeReportService {
     }
 
     private java.time.LocalDate activityWeekStartDate(
-            Course course,
+            Enrollment enrollment,
             Integer weekNumber,
             java.time.LocalDate providedDate) {
 
@@ -917,11 +915,11 @@ public class PracticeReportService {
             return providedDate;
         }
 
-        return defaultActivityWeekStartDate(course, weekNumber);
+        return defaultActivityWeekStartDate(enrollment, weekNumber);
     }
 
     private java.time.LocalDate activityWeekEndDate(
-            Course course,
+            Enrollment enrollment,
             Integer weekNumber,
             java.time.LocalDate providedDate) {
 
@@ -929,27 +927,27 @@ public class PracticeReportService {
             return providedDate;
         }
 
-        return defaultActivityWeekEndDate(course, weekNumber);
+        return defaultActivityWeekEndDate(enrollment, weekNumber);
     }
 
     private java.time.LocalDate defaultActivityWeekStartDate(
-            Course course,
+            Enrollment enrollment,
             Integer weekNumber) {
 
-        if (course == null || course.getStartDate() == null) {
+        if (enrollment == null || PracticePeriod.start(enrollment) == null) {
             return null;
         }
 
-        return course.getStartDate()
+        return PracticePeriod.start(enrollment)
                 .toLocalDate()
                 .plusDays((long) (weekNumber == null ? 0 : Math.max(weekNumber - 1, 0)) * 7L);
     }
 
     private java.time.LocalDate defaultActivityWeekEndDate(
-            Course course,
+            Enrollment enrollment,
             Integer weekNumber) {
 
-        java.time.LocalDate startDate = defaultActivityWeekStartDate(course, weekNumber);
+        java.time.LocalDate startDate = defaultActivityWeekStartDate(enrollment, weekNumber);
 
         if (startDate == null) {
             return null;
@@ -957,9 +955,9 @@ public class PracticeReportService {
 
         java.time.LocalDate endDate = startDate.plusDays(4);
 
-        return course.getEndDate() != null
-                && endDate.isAfter(course.getEndDate().toLocalDate())
-                        ? course.getEndDate().toLocalDate()
+        return PracticePeriod.end(enrollment) != null
+                && endDate.isAfter(PracticePeriod.end(enrollment).toLocalDate())
+                        ? PracticePeriod.end(enrollment).toLocalDate()
                         : endDate;
     }
 
@@ -1267,8 +1265,8 @@ public class PracticeReportService {
                 .map(week -> PracticeReportActivityWeekResponse.builder()
                         .id(week.getId())
                         .weekNumber(week.getWeekNumber())
-                        .startDate(activityWeekStartDate(report.getCourse(), week.getWeekNumber(), week.getStartDate()))
-                        .endDate(activityWeekEndDate(report.getCourse(), week.getWeekNumber(), week.getEndDate()))
+                        .startDate(activityWeekStartDate(report.getEnrollment(), week.getWeekNumber(), week.getStartDate()))
+                        .endDate(activityWeekEndDate(report.getEnrollment(), week.getWeekNumber(), week.getEndDate()))
                         .activities(week.getActivities())
                         .build())
                 .toList();

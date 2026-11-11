@@ -1,0 +1,40 @@
+{
+  "date": "2026-11-07",
+  "mode": "Real Tomcat HTTP; forced isolated H2; no real database",
+  "started": true,
+  "checks": [
+    {
+      "path": "/api/public/institutional-defaults",
+      "method": "GET",
+      "status": 200,
+      "expected": 200,
+      "contentType": "application/json;charset=UTF-8",
+      "pass": true,
+      "spanishPreserved": true
+    },
+    {
+      "path": "/api/account/me",
+      "method": "GET",
+      "status": 401,
+      "expected": 401,
+      "contentType": "application/json;charset=UTF-8",
+      "pass": true
+    },
+    {
+      "path": "/api/auth/login",
+      "method": "POST",
+      "status": 400,
+      "expected": 400,
+      "contentType": "application/json",
+      "pass": true
+    },
+    {
+      "path": "/api/auth/login",
+      "method": "POST",
+      "status": 401,
+      "expected": 401,
+      "contentType": "application/json",
+      "pass": true
+    }
+  ]
+}

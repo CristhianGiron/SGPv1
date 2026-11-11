@@ -1,0 +1,131 @@
+@startuml
+/'
+  @institucion   Universidad Nacional de Loja
+  @carrera       Pedagogía de las Ciencias Experimentales - Informática
+  @asignatura    Programación Web
+  @docente       Johnny H. Sánchez L.
+  @proyecto      Sistema de Gestión de Prácticas (SGP)
+  @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+  @file          diagrama-casos-de-uso.puml
+  @fecha         2026-11-09 11:08:16
+  @nota          Describe el diagrama de casos de uso del SGP mediante PlantUML.
+'/
+
+title SGPv1 — Casos de uso incluidos en el proyecto
+!pragma layout smetana
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+actor Estudiante as Estudiante
+actor "Tutor institucional" as TutorInstitucional
+actor "Directora de institución" as DirectoraInstitucion
+actor "Tutor de prácticas" as TutorPracticas
+actor "Director de prácticas" as DirectorPracticas
+actor Administrador as Administrador
+actor Visitante as Visitante
+
+rectangle "Sistema SGP" {
+  usecase "CU-001\nIniciar sesión" as CU001
+  usecase "CU-002\nRegistrar estudiante" as CU002
+  usecase "CU-003\nGestionar perfil" as CU003
+  usecase "CU-004\nAdministrar cuentas" as CU004
+  usecase "CU-005\nMantener ubicaciones y catálogos" as CU005
+  usecase "CU-006\nGestionar instituciones" as CU006
+  usecase "CU-007\nGestionar cursos y asignaciones" as CU007
+  usecase "CU-008\nGestionar inscripciones" as CU008
+  usecase "CU-009\nConsultar y archivar prácticas" as CU009
+  usecase "CU-010\nGestionar documentos de práctica" as CU010
+  usecase "CU-011\nRevisar documentos y registrar retroalimentación" as CU011
+  usecase "CU-012\nGestionar evaluaciones y seguimiento" as CU012
+  usecase "CU-013\nGestionar evidencias" as CU013
+  usecase "CU-014\nGestionar jornadas y asistencias" as CU014
+  usecase "CU-015\nGestionar entrevistas y fichas" as CU015
+  usecase "CU-016\nGestionar planificaciones didácticas" as CU016
+  usecase "CU-017\nConsultar panel y notificaciones" as CU017
+  usecase "CU-018\nEnviar anuncios" as CU018
+  usecase "CU-019\nConsultar reportes de coordinación" as CU019
+  usecase "CU-020\nDescargar documentos PDF" as CU020
+  usecase "CU-021\nGestionar imágenes de interfaz" as CU021
+}
+
+Visitante --> CU001
+Visitante --> CU002
+Visitante --> CU021
+
+Estudiante --> CU003
+Estudiante --> CU008
+Estudiante --> CU009
+Estudiante --> CU010
+Estudiante --> CU012
+Estudiante --> CU013
+Estudiante --> CU014
+Estudiante --> CU015
+Estudiante --> CU016
+Estudiante --> CU017
+Estudiante --> CU020
+
+TutorInstitucional --> CU003
+TutorInstitucional --> CU009
+TutorInstitucional --> CU010
+TutorInstitucional --> CU011
+TutorInstitucional --> CU014
+TutorInstitucional --> CU015
+TutorInstitucional --> CU016
+TutorInstitucional --> CU017
+TutorInstitucional --> CU020
+
+DirectoraInstitucion --> CU003
+DirectoraInstitucion --> CU014
+DirectoraInstitucion --> CU015
+DirectoraInstitucion --> CU017
+
+TutorPracticas --> CU003
+TutorPracticas --> CU007
+TutorPracticas --> CU009
+TutorPracticas --> CU010
+TutorPracticas --> CU011
+TutorPracticas --> CU012
+TutorPracticas --> CU013
+TutorPracticas --> CU014
+TutorPracticas --> CU015
+TutorPracticas --> CU016
+TutorPracticas --> CU017
+TutorPracticas --> CU020
+
+DirectorPracticas --> CU003
+DirectorPracticas --> CU005
+DirectorPracticas --> CU006
+DirectorPracticas --> CU007
+DirectorPracticas --> CU009
+DirectorPracticas --> CU010
+DirectorPracticas --> CU011
+DirectorPracticas --> CU012
+DirectorPracticas --> CU013
+DirectorPracticas --> CU014
+DirectorPracticas --> CU015
+DirectorPracticas --> CU016
+DirectorPracticas --> CU017
+DirectorPracticas --> CU019
+DirectorPracticas --> CU020
+
+Administrador --> CU003
+Administrador --> CU004
+Administrador --> CU005
+Administrador --> CU006
+Administrador --> CU007
+Administrador --> CU009
+Administrador --> CU010
+Administrador --> CU011
+Administrador --> CU012
+Administrador --> CU013
+Administrador --> CU014
+Administrador --> CU015
+Administrador --> CU016
+Administrador --> CU017
+Administrador --> CU018
+Administrador --> CU019
+Administrador --> CU020
+Administrador --> CU021
+
+@enduml

@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          EnrollmentService.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Gestiona la asignación administrativa de estudiantes y el ciclo de vida de sus prácticas.
+ */
+
 package com.sgp.systemsgp.service;
 
 import com.sgp.systemsgp.dto.enrollment.ArchivePracticeBatchRequest;
@@ -21,7 +33,8 @@ import com.sgp.systemsgp.repository.CourseRepository;
 import com.sgp.systemsgp.repository.EnrollmentRepository;
 import com.sgp.systemsgp.repository.SubjectRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.access.AccessDeniedException;
+import com.sgp.systemsgp.repository.PracticeOfferingRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,32 +68,44 @@ public class EnrollmentService {
     private final NotificationService notificationService;
     private final PracticeAuditService practiceAuditService;
     private final PracticeAccessService practiceAccessService;
+    private final PracticeCompletionService practiceCompletionService;
+    private final CourseMembershipService courseMembershipService;
+    private final PracticeOfferingRepository practiceOfferingRepository;
+
+    /** Compatibility guard for callers of the removed student workflow. */
+    public EnrollmentResponse enroll(String username, Long courseId) {
+        throw new AccessDeniedException("La inscripción corresponde al personal académico autorizado");
+    }
 
     @Transactional
-    public EnrollmentResponse enroll(
-            String username,
-            Long courseId) {
-
-        Account account = getAccount(username);
-        Course course = getCourse(courseId);
-
-        validateAccountCanEnroll(account);
+    public EnrollmentResponse assignStudent(String username, Long practiceId, Long studentId, Long groupId) {
+        var actor=getAccount(username);
+        var practice=practiceOfferingRepository.findForUpdate(practiceId).orElseThrow(() -> new NotFoundException("Práctica no encontrada"));
+        var course=courseRepository.findForUpdate(practice.getCourse().getId()).orElseThrow(() -> new NotFoundException("Paralelo no encontrado"));
+        if (!practiceAccessService.isAdmin(actor) && !practiceAccessService.isDirectorForCourse(course,actor)
+                && !practiceAccessService.isPracticeTutorForCourse(course,actor))
+            throw new AccessDeniedException("No puedes inscribir estudiantes en esta práctica");
+        if (actor.getId().equals(studentId)) throw new AccessDeniedException("No se permite la autoinscripción");
+        var student=accountRepository.findForMembershipUpdate(studentId).orElseThrow(() -> new NotFoundException("Estudiante no encontrado"));
+        validateAccountCanEnroll(student);
         validateCourseAvailable(course);
-        validateStudentAcademicCycle(account, course);
-        validateNotAlreadyEnrolled(account, course);
-        validateSingleActiveEnrollment(account, null);
-        validateAvailableCapacity(course);
-
-        Enrollment enrollment = Enrollment.builder()
-                .account(account)
-                .course(course)
-                .enrolledAt(LocalDateTime.now())
-                .status(EnrollmentStatus.PENDING)
-                .build();
-
-        enrollmentRepository.save(enrollment);
-        notificationService.notifyEnrollmentPending(enrollment);
-
+        if (course.isLocked() || !practice.isEnrollmentOpen()) throw new BadRequestException("El período de inscripciones está cerrado");
+        courseMembershipService.requireMembership(student,course);
+        if (enrollmentRepository.existsByAccount_IdAndPractice_Id(studentId,practiceId)) throw new BadRequestException("El estudiante ya está inscrito en esta práctica");
+        if (enrollmentRepository.countByPractice_IdAndStatus(practiceId,EnrollmentStatus.APPROVED)>=practice.getCapacity())
+            throw new BadRequestException("La práctica alcanzó el límite de cupos");
+        if (course.getPracticeTutor()==null) throw new BadRequestException("Asigna el tutor de prácticas antes de inscribir estudiantes");
+        var enrollment=Enrollment.builder().account(student).course(course).practice(practice).status(EnrollmentStatus.APPROVED).enrolledAt(LocalDateTime.now()).build();
+        if (groupId!=null) {
+            var group=courseGroupRepository.findById(groupId).orElseThrow(() -> new NotFoundException("Grupo no encontrado"));
+            if (!group.getCourse().getId().equals(course.getId())) throw new BadRequestException("El grupo debe pertenecer al paralelo de la práctica");
+            validateGroupAvailable(group);validateGroupCapacity(enrollment,group);enrollment.setGroup(group);
+        } else if (course.getInstitutionalTutor()==null) throw new BadRequestException("Selecciona un grupo con tutor institucional o asigna el tutor al paralelo");
+        validateAssignedTutor(course.getPracticeTutor(),RoleName.ROLE_TUTOR_PRACTICAS);
+        validateAssignedTutor(InstitutionalAssignmentResolver.institutionalTutor(enrollment),RoleName.ROLE_TUTOR_INSTITUCIONAL);
+        enrollmentRepository.saveAndFlush(enrollment);
+        practiceAuditService.logEnrollmentAction(enrollment,actor,"ASSIGN_STUDENT",null,EnrollmentStatus.APPROVED.name(),false,false,"Inscripción directa por personal autorizado");
+        notificationService.notifyEnrollmentApproved(enrollment);
         return mapToResponse(enrollment);
     }
 
@@ -93,7 +118,7 @@ public class EnrollmentService {
 
         validateCourseAvailable(enrollment.getCourse());
         requirePending(enrollment);
-        validateSingleActiveEnrollment(enrollment.getAccount(), enrollment.getId());
+        courseMembershipService.requireMembership(enrollment.getAccount(), enrollment.getCourse());
         validateAvailableCapacity(enrollment.getCourse());
 
         enrollment.setStatus(EnrollmentStatus.APPROVED);
@@ -131,6 +156,7 @@ public class EnrollmentService {
                     "Solo se pueden concluir practicas aprobadas");
         }
 
+        var completionSummary = practiceCompletionService.summarize(enrollment);
         EnrollmentStatus previousStatus = enrollment.getStatus();
         boolean previousArchived = enrollment.isArchived();
         enrollment.setStatus(EnrollmentStatus.COMPLETED);
@@ -145,7 +171,9 @@ public class EnrollmentService {
                 enrollment.getStatus().name(),
                 previousArchived,
                 enrollment.isArchived(),
-                null);
+                "Cierre manual. " + (completionSummary.warnings().isEmpty()
+                        ? "Sin advertencias documentales ni de horas."
+                        : String.join(" ", completionSummary.warnings())));
 
         return mapToResponse(enrollment);
     }
@@ -162,9 +190,25 @@ public class EnrollmentService {
                     "Solo se pueden reabrir practicas concluidas");
         }
 
+        if (enrollment.isArchived()) {
+            throw new BadRequestException(
+                    "Administración debe desarchivar la práctica antes de reabrirla");
+        }
+
+        validateAccountCanEnroll(enrollment.getAccount());
+        validateCourseAvailable(enrollment.getCourse());
+        courseRepository.findForUpdate(enrollment.getCourse().getId()).orElseThrow(() -> new NotFoundException("Paralelo no encontrado"));
+        if (enrollment.getPractice()==null) validateAvailableCapacity(enrollment.getCourse());
+        else if (enrollmentRepository.countByPractice_IdAndStatus(enrollment.getPractice().getId(), EnrollmentStatus.APPROVED)>=enrollment.getPractice().getCapacity())
+            throw new BadRequestException("La práctica alcanzó el límite de cupos");
+        CourseGroup group = enrollment.getGroup();
+        if (group != null) {
+            validateGroupAvailable(group);
+            validateGroupCapacity(enrollment,group);
+        }
+
         EnrollmentStatus previousStatus = enrollment.getStatus();
         boolean previousArchived = enrollment.isArchived();
-        validateSingleActiveEnrollment(enrollment.getAccount(), enrollment.getId());
         enrollment.setStatus(EnrollmentStatus.APPROVED);
         enrollment.setArchived(false);
         enrollment.setArchivedAt(null);
@@ -347,6 +391,7 @@ public class EnrollmentService {
 
         Account account = getAccount(username);
         Enrollment enrollment = getEnrollment(enrollmentId);
+        courseRepository.findForUpdate(enrollment.getCourse().getId()).orElseThrow(() -> new NotFoundException("Paralelo no encontrado"));
         CourseGroup group = getGroup(groupId);
 
         if (!enrollment.getCourse().getId().equals(group.getCourse().getId())) {
@@ -370,27 +415,8 @@ public class EnrollmentService {
         return mapToResponse(enrollment);
     }
 
-    @Transactional
-    public void cancel(
-            Long id,
-            String username) {
-
-        Enrollment enrollment = getEnrollment(id);
-
-        if (!enrollment.getAccount().getUsername().equals(username)) {
-            throw new BadRequestException(
-                    "No puedes cancelar esta inscripción");
-        }
-
-        requirePendingForCancellation(enrollment);
-
-        try {
-            enrollmentRepository.delete(enrollment);
-            enrollmentRepository.flush();
-        } catch (DataIntegrityViolationException exception) {
-            throw new BadRequestException(
-                    "No se puede cancelar esta inscripción porque ya tiene registros de práctica asociados");
-        }
+    public void cancel(Long id, String username) {
+        throw new AccessDeniedException("El estudiante no puede cancelar su asignación académica");
     }
 
     public List<EnrollmentResponse> getCourseEnrollments(
@@ -511,6 +537,11 @@ public class EnrollmentService {
                         "Grupo no encontrado"));
     }
 
+    private void validateAssignedTutor(Account tutor, RoleName role) {
+        if (tutor==null || !practiceAccessService.hasRole(tutor,role) || tutor.isDeleted() || !tutor.isEnabled() || tutor.isLocked())
+            throw new BadRequestException("Los tutores asignados deben tener su rol y su cuenta habilitados antes de inscribir estudiantes");
+    }
+
     private void validateAccountCanEnroll(Account account) {
 
         if (account.isDeleted()) {
@@ -541,54 +572,6 @@ public class EnrollmentService {
                     "El curso no está disponible");
         }
 
-        if (course.isLocked()) {
-            throw new BadRequestException(
-                    "El curso está bloqueado");
-        }
-    }
-
-    private void validateStudentAcademicCycle(
-            Account account,
-            Course course) {
-
-        if (!hasRole(account, RoleName.ROLE_ESTUDIANTE)) {
-            throw new BadRequestException(
-                    "Solo los estudiantes pueden matricularse en cursos");
-        }
-
-        AcademicCycle studentCycle = account.getAcademicCycle();
-
-        if (studentCycle == null) {
-            throw new BadRequestException(
-                    "El estudiante no tiene ciclo académico asignado");
-        }
-
-        AcademicCycle courseCycle = getCourseAcademicCycle(course);
-
-        if (courseCycle == null) {
-            throw new BadRequestException(
-                    "El curso no tiene ciclo académico asignado");
-        }
-
-        if (!studentCycle.getId().equals(courseCycle.getId())) {
-            throw new BadRequestException(
-                    "Solo puedes matricularte en cursos de tu ciclo académico");
-        }
-    }
-
-    private void validateNotAlreadyEnrolled(
-            Account account,
-            Course course) {
-
-        boolean alreadyExists = enrollmentRepository
-                .existsByAccount_IdAndCourse_Id(
-                        account.getId(),
-                        course.getId());
-
-        if (alreadyExists) {
-            throw new BadRequestException(
-                    "Ya estás inscrito en este curso");
-        }
     }
 
     private void validateAvailableCapacity(Course course) {
@@ -628,12 +611,13 @@ public class EnrollmentService {
         boolean sameGroup = enrollment.getGroup() != null
                 && enrollment.getGroup().getId().equals(group.getId());
 
-        if (sameGroup) {
+        if ((sameGroup && enrollment.getStatus()==EnrollmentStatus.APPROVED)
+                || enrollmentRepository.existsByGroup_IdAndAccount_IdAndStatus(group.getId(), enrollment.getAccount().getId(), EnrollmentStatus.APPROVED)) {
             return;
         }
 
         long approvedCount = enrollmentRepository
-                .countByGroup_IdAndStatus(
+                .countStudentsInGroup(
                         group.getId(),
                         EnrollmentStatus.APPROVED);
 
@@ -724,39 +708,11 @@ public class EnrollmentService {
         return practiceAccessService.canViewEnrollment(enrollment, account);
     }
 
-    private void validateSingleActiveEnrollment(
-            Account account,
-            Long currentEnrollmentId) {
-
-        List<Enrollment> activeEnrollments = enrollmentRepository
-                .findByAccount_IdAndStatusInAndCourse_ActiveTrueAndCourse_DeletedFalse(
-                        account.getId(),
-                        List.of(EnrollmentStatus.PENDING, EnrollmentStatus.APPROVED));
-
-        boolean hasAnotherActiveEnrollment = activeEnrollments != null
-                && activeEnrollments.stream()
-                .anyMatch(enrollment -> currentEnrollmentId == null
-                        || !enrollment.getId().equals(currentEnrollmentId));
-
-        if (hasAnotherActiveEnrollment) {
-            throw new BadRequestException(
-                    "Solo puedes tener una inscripcion en un curso activo");
-        }
-    }
-
     private void requirePending(Enrollment enrollment) {
 
         if (enrollment.getStatus() != EnrollmentStatus.PENDING) {
             throw new BadRequestException(
                     "Solo se pueden gestionar inscripciones pendientes");
-        }
-    }
-
-    private void requirePendingForCancellation(Enrollment enrollment) {
-
-        if (enrollment.getStatus() != EnrollmentStatus.PENDING) {
-            throw new BadRequestException(
-                    "Solo puedes cancelar inscripciones pendientes");
         }
     }
 
@@ -862,7 +818,7 @@ public class EnrollmentService {
     private EnrollmentResponse mapToResponse(Enrollment enrollment) {
         Account student = enrollment.getAccount();
         Course course = enrollment.getCourse();
-        CourseGroup group = resolveEnrollmentGroup(enrollment);
+        CourseGroup group = enrollment.getGroup();
         Subject subject = resolveCourseSubject(course);
         AcademicCycle academicCycle = getCourseAcademicCycle(course);
         Career career = academicCycle != null
@@ -873,6 +829,8 @@ public class EnrollmentService {
         Account institutionDirector = getInstitutionDirector(educationalInstitution);
 
         return EnrollmentResponse.builder()
+                .coverImageUrl(EntityImageService.coverUrl(course))
+                .institutionLogoUrl(EntityImageService.logoUrl(educationalInstitution))
                 .id(enrollment.getId())
                 .student(student.getUsername())
                 .studentFullName(
@@ -893,6 +851,8 @@ public class EnrollmentService {
                                 : null)
                 .courseId(course.getId())
                 .courseName(course.getName())
+                .practiceId(enrollment.getPractice()==null?null:enrollment.getPractice().getId())
+                .practiceName(enrollment.getPractice()==null?course.getName():enrollment.getPractice().getName())
                 .courseActive(course.isActive())
                 .groupId(
                         group != null
@@ -958,7 +918,7 @@ public class EnrollmentService {
                         educationalInstitution != null
                                 ? educationalInstitution.getEmail()
                                 : null)
-                .institutionalTutor(fullNameOrUsername(getEnrollmentInstitutionalTutor(enrollment)))
+                .institutionalTutor(fullNameOrUsername(InstitutionalAssignmentResolver.institutionalTutor(enrollment)))
                 .institutionDirector(fullNameOrUsername(institutionDirector))
                 .practiceTutor(fullNameOrUsername(course.getPracticeTutor()))
                 .studentAcademicCycle(
@@ -990,41 +950,8 @@ public class EnrollmentService {
                 .orElse(null);
     }
 
-    private Institution getCourseEducationalInstitution(Course course) {
-
-        if (course.getInstitutionalTutor() != null) {
-            Institution institution = getTutorInstitution(course.getInstitutionalTutor());
-            if (institution != null) {
-                return institution;
-            }
-        }
-
-        return null;
-    }
-
     private Institution getEnrollmentEducationalInstitution(Enrollment enrollment) {
-
-        Institution institution = getTutorInstitution(getEnrollmentInstitutionalTutor(enrollment));
-
-        if (institution != null) {
-            return institution;
-        }
-
-        return getCourseEducationalInstitution(enrollment.getCourse());
-    }
-
-    private Account getEnrollmentInstitutionalTutor(Enrollment enrollment) {
-
-        CourseGroup group = resolveEnrollmentGroup(enrollment);
-
-        if (group != null
-                && group.getInstitutionalTutor() != null) {
-            return group.getInstitutionalTutor();
-        }
-
-        return enrollment.getCourse() != null
-                ? enrollment.getCourse().getInstitutionalTutor()
-                : null;
+        return getTutorInstitution(InstitutionalAssignmentResolver.institutionalTutor(enrollment));
     }
 
     private Account getInstitutionDirector(Institution institution) {
@@ -1040,28 +967,6 @@ public class EnrollmentService {
                 .stream()
                 .min((left, right) -> left.getId().compareTo(right.getId()))
                 .orElse(null);
-    }
-
-    private CourseGroup resolveEnrollmentGroup(Enrollment enrollment) {
-
-        if (enrollment.getGroup() != null) {
-            return enrollment.getGroup();
-        }
-
-        if (enrollment.getCourse() == null
-                || enrollment.getCourse().getId() == null) {
-            return null;
-        }
-
-        List<CourseGroup> activeGroups = courseGroupRepository
-                .findByCourse_IdAndDeletedFalse(enrollment.getCourse().getId())
-                .stream()
-                .filter(CourseGroup::isActive)
-                .toList();
-
-        return activeGroups.size() == 1
-                ? activeGroups.get(0)
-                : null;
     }
 
     private Institution getTutorInstitution(Account tutor) {

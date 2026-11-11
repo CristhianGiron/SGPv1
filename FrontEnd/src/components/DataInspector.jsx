@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          DataInspector.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa el componente DataInspector de la interfaz del SGP.
+ */
+
 import { useState } from 'react';
 import { Clock3 } from 'lucide-react';
 import {
@@ -138,7 +150,7 @@ export function DocumentApprovalStatus({ data }) {
   return (
     <section className="sgp-color-card rounded-lg border border-line bg-panel p-3 dark:border-line dark:bg-surface">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h3 className="text-sm font-medium text-heading dark:text-heading">Estado de aprobacion</h3>
+        <h3 className="text-sm font-medium text-heading dark:text-heading">Estado de aprobación</h3>
         <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${approvalToneClass(documentApprovalTone(data))}`}>
           {formatValue(data.status || 'DRAFT', 'status')}
         </span>
@@ -172,7 +184,7 @@ export function DocumentApprovalStatus({ data }) {
 
       {data.approvedAt && (
         <p className="mt-3 text-xs font-medium text-accent-strong dark:text-accent-strong">
-          Aprobacion final: {formatValue(data.approvedAt, 'approvedAt')}
+          Aprobación final: {formatValue(data.approvedAt, 'approvedAt')}
         </p>
       )}
     </section>
@@ -183,7 +195,7 @@ export function ActivityPlanScheduleMatrix({ weeks = [] }) {
   const schedule = buildScheduleMatrix(weeks);
 
   if (!schedule.weekColumns.length || !schedule.rows.length) {
-    return <EmptyState text="Aun no hay informacion agregada en el cronograma." />;
+    return <EmptyState text="Aún no hay información agregada en el cronograma." />;
   }
 
   return (
@@ -202,7 +214,7 @@ export function ActivityPlanScheduleMatrix({ weeks = [] }) {
                 className="border border-table-border bg-table-header px-2 py-2 text-center font-serif text-[12px] font-medium uppercase text-table-ink dark:border-line dark:bg-table-header"
                 colSpan={schedule.weekColumns.length + 1}
               >
-                CRONOGRAMA DE ACTIVIDADES PRACTICAS PARA EL DESARROLLO DEL PIS
+                CRONOGRAMA DE ACTIVIDADES PRÁCTICAS PARA EL DESARROLLO DEL PIS
               </th>
             </tr>
             <tr>
@@ -270,7 +282,7 @@ export function ActivityWeeksAcademicTable({ weeks = [] }) {
   const rows = normalizeActivityWeeks(weeks);
 
   if (!rows.length) {
-    return <EmptyState text="Aun no hay actividades agregadas." />;
+    return <EmptyState text="Aún no hay actividades agregadas." />;
   }
 
   return (
@@ -322,7 +334,7 @@ export function ActivityWeeksAcademicTable({ weeks = [] }) {
 function SectionFeedbackThread({ entries }) {
   return (
     <div className="mt-4 rounded-lg border-l-[3px] border-accent bg-success-soft p-3 dark:border-accent dark:bg-accent-soft">
-      <h4 className="m-0 mb-2 text-xs font-semibold uppercase text-accent-strong dark:text-accent-strong">Retroalimentacion de la seccion</h4>
+      <h4 className="m-0 mb-2 text-xs font-semibold uppercase text-accent-strong dark:text-accent-strong">Retroalimentación de la seccion</h4>
       <ol className="grid list-none gap-2 p-0 m-0">
         {entries.map((entry) => (
           <li className="border-t border-success/15 pt-2 first:border-t-0 first:pt-0 dark:border-accent/20" key={entry.id}>
@@ -420,7 +432,7 @@ function buildApprovalReviews(data) {
 
   addApprovalReview(reviews, data, {
     key: 'practice',
-    label: 'Tutor de practicas',
+    label: 'Tutor de prácticas',
     approvedKey: 'practiceTutorApproved',
     authorKeys: ['practiceReviewedBy', 'reviewedBy'],
     atKeys: ['practiceReviewedAt', 'reviewedAt'],
@@ -434,7 +446,7 @@ function buildApprovalReviews(data) {
   });
   addApprovalReview(reviews, data, {
     key: 'director',
-    label: 'Director de practicas',
+    label: 'Director de prácticas',
     approvedKey: 'directorApproved',
     authorKeys: ['directorReviewedBy'],
     atKeys: ['directorReviewedAt'],
@@ -728,7 +740,7 @@ function buildDocumentTimeline(data, moduleId) {
     id: 'submitted',
     at: data.submittedAt,
     title: cycle > 1 ? `Ciclo ${cycle} reenviado` : 'Documento enviado',
-    description: 'El estudiante envio el documento para revision.',
+    description: 'El estudiante envío el documento para revisión.',
     meta: cycle > 0 ? `Ciclo: ${cycle}` : null,
     tone: 'submitted',
   });
@@ -793,7 +805,7 @@ function timelineFeedbackEvents(data) {
     const section = feedbackSectionLabel(feedback.sectionKey);
     const entryId = Number(feedback.entryId || 0);
     const title = entryId > 0
-      ? `Retroalimentación en ${section} (registro especifico)`
+      ? `Retroalimentación en ${section} (registro específico)`
       : `Retroalimentación en ${section}`;
 
     return {
@@ -818,7 +830,7 @@ function timelineReviewEvents(data) {
       id: 'practice-review',
       atKey: 'practiceReviewedAt',
       authorKey: 'practiceReviewedBy',
-      role: 'Tutor de practicas',
+      role: 'Tutor de prácticas',
     },
     {
       id: 'institutional-review',
@@ -830,18 +842,18 @@ function timelineReviewEvents(data) {
       id: 'tutor-review',
       atKey: 'reviewedAt',
       authorKey: 'reviewedBy',
-      role: 'Tutor de practicas',
+      role: 'Tutor de prácticas',
     },
     {
       id: 'director-review',
       atKey: 'directorReviewedAt',
       authorKey: 'directorReviewedBy',
-      role: 'Director de practicas',
+      role: 'Director de prácticas',
     },
   ].map((source) => ({
     id: source.id,
     at: data[source.atKey],
-    title: `Revision de ${source.role}`,
+    title: `Revisión de ${source.role}`,
     meta: timelineMeta({
       role: source.role,
       author: data[source.authorKey],
@@ -931,15 +943,15 @@ function feedbackSectionLabel(key) {
     accreditation: 'Acreditacion',
     activities: 'Actividades',
     activity: 'Actividad',
-    approval: 'Aprobacion',
+    approval: 'Aprobación',
     antecedents: 'Antecedentes',
     conclusions: 'Conclusiones',
     feedback: 'Actividad',
     generalInfo: 'Datos generales',
-    methodology: 'Metodologia',
+    methodology: 'Metodología',
     objective: 'Objetivo',
     objectives: 'Objetivos',
-    presentation: 'Presentacion',
+    presentation: 'Presentación',
     recommendations: 'Recomendaciones',
     resources: 'Recursos',
     schedule: 'Cronograma',
@@ -1155,15 +1167,15 @@ const DETAIL_SECTIONS = [
     matches: (key) => /^(code|name|studentFullName|studentIdentification|studentEmail|studentPhone|email|phone)$/i.test(key),
   },
   {
-    title: 'Paralelo y practica',
+    title: 'Paralelo y práctica',
     matches: (key) => /course|subject|academicPeriod|practiceType|developmentMode|curricularOrganizationUnit|integrativeKnowledgeProject|group/i.test(key),
   },
   {
-    title: 'Institucion',
+    title: 'Institución',
     matches: (key) => /institution|educationalInstitution|teacherCount|studentCount|mission|vision|values|province|canton|parish|address/i.test(key),
   },
   {
-    title: 'Retroalimentacion',
+    title: 'Retroalimentación',
     matches: (key) => isFeedbackKey(key),
   },
   {
@@ -1203,7 +1215,7 @@ const COMMON_GENERAL_FIELDS = [
 const FINAL_FEEDBACK_SOURCES = [
   {
     prefix: 'practice',
-    role: 'Tutor de practicas',
+    role: 'Tutor de prácticas',
     authorKey: 'practiceReviewedBy',
     atKey: 'practiceReviewedAt',
   },
@@ -1215,7 +1227,7 @@ const FINAL_FEEDBACK_SOURCES = [
   },
   {
     prefix: 'director',
-    role: 'Director de practicas',
+    role: 'Director de prácticas',
     authorKey: 'directorReviewedBy',
     atKey: 'directorReviewedAt',
   },
@@ -1234,22 +1246,22 @@ const MODULE_DETAIL_SECTIONS = {
       'vision',
       'institutionalValues',
     ], ['generalInfoFeedback']),
-    detailSection('Presentacion', ['presentation'], ['presentationFeedback']),
+    detailSection('Presentación', ['presentation'], ['presentationFeedback']),
     detailSection('Objetivos', ['generalObjective', 'specificObjective1', 'specificObjective2', 'specificObjective3'], ['objectivesFeedback']),
     detailSection('Actividades', [], ['activitiesFeedback'], ['activityWeeks']),
     detailSection('Cronograma', [], ['scheduleFeedback'], ['scheduleWeeks']),
     detailSection('Recursos', ['legalResources', 'humanResources', 'technologicalResources', 'physicalResources'], ['resourcesFeedback']),
-    detailSection('Aprobacion', [], ['approvalFeedback']),
+    detailSection('Aprobación', [], ['approvalFeedback']),
   ],
   'practice-reports': [
     detailSection('Datos generales', COMMON_GENERAL_FIELDS, ['generalInfoFeedback']),
-    detailSection('Presentacion', ['presentation'], ['presentationFeedback']),
+    detailSection('Presentación', ['presentation'], ['presentationFeedback']),
     detailSection('Objetivos', ['generalObjective', 'specificObjective1', 'specificObjective2', 'specificObjective3'], ['objectivesFeedback']),
-    detailSection('Metodologia', ['methodology'], ['methodologyFeedback']),
+    detailSection('Metodología', ['methodology'], ['methodologyFeedback']),
     detailSection('Actividades', [], ['activitiesFeedback'], ['activityWeeks']),
     detailSection('Conclusiones', ['conclusion1', 'conclusion2', 'conclusion3'], ['conclusionsFeedback']),
     detailSection('Recomendaciones', ['recommendation1', 'recommendation2', 'recommendation3'], ['recommendationsFeedback']),
-    detailSection('Aprobacion', [], ['approvalFeedback']),
+    detailSection('Aprobación', [], ['approvalFeedback']),
   ],
   'final-reports': [
     detailSection('Datos generales', COMMON_GENERAL_FIELDS, finalFeedbackKeys('GeneralInfo')),
@@ -1258,7 +1270,7 @@ const MODULE_DETAIL_SECTIONS = {
     detailSection('Actividades', [], finalFeedbackKeys('Activities'), ['activityWeeks']),
     detailSection('Conclusiones', ['conclusion1', 'conclusion2', 'conclusion3'], finalFeedbackKeys('Conclusions')),
     detailSection('Recomendaciones', ['recommendation1', 'recommendation2', 'recommendation3'], finalFeedbackKeys('Recommendations')),
-    detailSection('Aprobacion', [], finalFeedbackKeys('Approval')),
+    detailSection('Aprobación', [], finalFeedbackKeys('Approval')),
   ],
   'completed-records': [
     detailSection('Datos generales', [...COMMON_GENERAL_FIELDS, 'deliveryDate'], ['generalInfoFeedback']),
@@ -1296,10 +1308,10 @@ function feedbackLabel(key) {
   const source = finalFeedbackSource(key);
 
   if (source) {
-    return `Retroalimentacion - ${source.role}`;
+    return `Retroalimentación - ${source.role}`;
   }
 
-  return 'Retroalimentacion';
+  return 'Retroalimentación';
 }
 
 function finalFeedbackSource(key) {
@@ -1353,7 +1365,7 @@ function genericFeedbackSource(data) {
 
   if (isAfter(directorAt, tutorAt)) {
     return {
-      role: 'Director de practicas',
+      role: 'Director de prácticas',
       author: data.directorReviewedBy,
       sentAt: directorAt,
     };
@@ -1361,7 +1373,7 @@ function genericFeedbackSource(data) {
 
   if (data.reviewedBy || tutorAt) {
     return {
-      role: 'Tutor de practicas',
+      role: 'Tutor de prácticas',
       author: data.reviewedBy,
       sentAt: tutorAt,
     };
@@ -1369,7 +1381,7 @@ function genericFeedbackSource(data) {
 
   if (data.directorReviewedBy || directorAt) {
     return {
-      role: 'Director de practicas',
+      role: 'Director de prácticas',
       author: data.directorReviewedBy,
       sentAt: directorAt,
     };
@@ -1453,11 +1465,12 @@ function makeColumns(rows, parent, moduleId, token) {
   const feedbackKeys = orderedKeys.filter(isFeedbackKey);
   const regularKeys = orderedKeys.filter((key) => !isFeedbackKey(key));
   const regularLimit = feedbackKeys.length > 0 ? 5 : 6;
-  const visibleKeys = [...regularKeys.slice(0, regularLimit), ...feedbackKeys]
+  const visibleKeys = [...regularKeys, ...feedbackKeys]
     .filter((key, index, values) => values.indexOf(key) === index);
 
   return visibleKeys.map((key) => ({
     key,
+    secondary: !isFeedbackKey(key) && regularKeys.indexOf(key) >= regularLimit,
     header: isFeedbackKey(key) ? feedbackLabel(key, moduleId) : labelFromKey(key),
     render: (row) => renderTableValue(row, key, parent, moduleId, token),
   }));

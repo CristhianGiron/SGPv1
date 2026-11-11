@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          PracticePhotoServiceTest.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Comprueba el comportamiento de las evidencias fotográficas mediante pruebas de regresión.
+ */
+
 package com.sgp.systemsgp.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -57,7 +69,7 @@ class PracticePhotoServiceTest {
     }
 
     @Test
-    void studentUploadsPhotoForApprovedEnrollment() {
+    void studentUploadsPhotoForApprovedEnrollment() throws Exception {
 
         Account student = student();
         Enrollment enrollment = enrollment(
@@ -70,7 +82,7 @@ class PracticePhotoServiceTest {
                 "file",
                 "practica.jpg",
                 "image/jpeg",
-                new byte[] {1, 2, 3});
+                PracticeImageValidatorTest.image("jpeg"));
 
         when(accountRepository.findByUsernameAndDeletedFalse("student01"))
                 .thenReturn(Optional.of(student));
@@ -108,7 +120,7 @@ class PracticePhotoServiceTest {
                 .save(captor.capture());
 
         assertThat(captor.getValue().getData())
-                .containsExactly(1, 2, 3);
+                .containsExactly(file.getBytes());
     }
 
     @Test

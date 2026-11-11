@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          EvidenceViewerPage.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Presenta la consulta de evidencias y archivos relacionados con una práctica.
+ */
+
 import { useEffect, useMemo, useState } from 'react';
 import { apiBlob } from '../api/client';
 import { useAuth } from '../auth/AuthContext';
@@ -84,7 +96,7 @@ export function EvidenceViewerPage() {
           <div className="space-y-3">
             <div className="overflow-hidden rounded-lg border border-line bg-panel-soft dark:border-line dark:bg-surface-soft">
               <img
-                alt="Evidencia de practica"
+                alt="Evidencia de práctica"
                 className="max-h-[calc(100vh-15rem)] w-full object-contain"
                 src={imageUrl}
               />

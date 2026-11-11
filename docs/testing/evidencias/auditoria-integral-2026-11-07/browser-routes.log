@@ -1,0 +1,11 @@
+ROLE_ESTUDIANTE: 18 rutas
+ROLE_TUTOR_PRACTICAS: 19 rutas
+ROLE_TUTOR_INSTITUCIONAL: 12 rutas
+ROLE_DIRECTORA_INSTITUCION: 7 rutas
+ROLE_DIRECTOR_PRACTICAS: 26 rutas
+ROLE_ADMIN: 31 rutas
+{
+  "routes": 113,
+  "interactions": 3,
+  "errors": []
+}

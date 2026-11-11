@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          routes.js
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Proporciona las funciones de routes utilizadas por la interfaz del SGP.
+ */
+
 /**
  * ROUTES UTILS - Gestión de enrutamiento por hash
  * 
@@ -13,7 +25,7 @@
  *   / (por defecto va a #/dashboard)
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 /**
  * getHashRoute - Lee la ruta actual del hash en la URL
@@ -36,7 +48,12 @@ export function getHashRoute() {
  * Ejemplo:
  *   setHashRoute('courses')  // URL cambia a /#/courses
  */
+let approvedRoute = null;
+
 export function setHashRoute(route) {
+  if (getHashRoute() === String(route).replace(/^#\/?/, '')) return;
+  if (!window.dispatchEvent(new Event('sgp-before-navigate', { cancelable: true }))) return;
+  approvedRoute = String(route).replace(/^#\/?/, '');
   window.location.hash = route;
 }
 
@@ -70,11 +87,20 @@ export function getNestedRoute(route) {
  */
 export function useHashRoute() {
   const [route, setRoute] = useState(getHashRoute);
+  const previousRoute = useRef(route);
 
   // Escuchar cambios en el hash de la URL (navegación con browser back/forward)
   useEffect(() => {
     function handleHashChange() {
-      setRoute(getHashRoute());
+      const next = getHashRoute();
+      if (next === previousRoute.current) return;
+      if (approvedRoute !== next && !window.dispatchEvent(new Event('sgp-before-navigate', { cancelable: true }))) {
+        window.history.replaceState(null, '', `#/${previousRoute.current}`);
+        return;
+      }
+      approvedRoute = null;
+      previousRoute.current = next;
+      setRoute(next);
     }
 
     // Agregar listener para eventos de cambio de hash

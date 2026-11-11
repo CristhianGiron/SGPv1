@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          InstitutionService.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa la lógica de aplicación de las instituciones.
+ */
+
 package com.sgp.systemsgp.service;
 
 import com.sgp.systemsgp.dto.institution.*;
@@ -222,6 +234,18 @@ public class InstitutionService {
         /*
          * LISTAR
          */
+        public Page<InstitutionResponse> getAll(boolean includeInactive, Pageable pageable, Long universityId) {
+            if (universityId == null) return getAll(includeInactive, pageable);
+            return institutionRepository.findAll(InstitutionSpecification.search(null, null, null, null, true, null, null)
+                    .and(visibleInstitutions(universityId)), pageable).map(this::mapToResponse);
+        }
+
+        private org.springframework.data.jpa.domain.Specification<Institution> visibleInstitutions(Long universityId) {
+            return (root, query, cb) -> universityId == null ? cb.conjunction() : cb.or(
+                    root.get("type").in(InstitutionType.ESCUELA, InstitutionType.COLEGIO),
+                    cb.and(cb.equal(root.get("type"), InstitutionType.UNIVERSIDAD), cb.equal(root.get("id"), universityId)));
+        }
+
         public Page<InstitutionResponse> getAll(
                         boolean includeInactive,
                         Pageable pageable) {
@@ -295,6 +319,29 @@ public class InstitutionService {
 
                         Pageable pageable) {
 
+                return search(name, code, type, support, active, includeInactive, agreementActive, acceptsInterns, pageable, null);
+        }
+
+        public Page<InstitutionResponse> search(
+
+                        String name,
+
+                        String code,
+
+                        String type,
+
+                        String support,
+
+                        Boolean active,
+
+                        boolean includeInactive,
+
+                        Boolean agreementActive,
+
+                        Boolean acceptsInterns,
+
+                        Pageable pageable, Long universityId) {
+
                 Boolean effectiveActive = active;
 
                 if (!includeInactive) {
@@ -319,7 +366,7 @@ public class InstitutionService {
 
                                                                 agreementActive,
 
-                                                                acceptsInterns),
+                                                                acceptsInterns).and(visibleInstitutions(universityId)),
 
                                                 pageable)
 
@@ -692,6 +739,7 @@ private InstitutionResponse mapToResponse(
         Institution institution) {
 
     return InstitutionResponse.builder()
+            .logoImageUrl(EntityImageService.logoUrl(institution))
 
             .id(institution.getId())
 

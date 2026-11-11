@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          AcademicCycleService.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa la lógica de aplicación de los ciclos académicos.
+ */
+
 package com.sgp.systemsgp.service;
 
 import com.sgp.systemsgp.dto.academiccycle.*;
@@ -94,8 +106,20 @@ public class AcademicCycleService {
         return academicCycleRepository
                 .findByDeletedFalseAndActiveTrue()
                 .stream()
+                .filter(AcademicCycleService::availableForRegistration)
                 .map(this::mapToResponse)
                 .toList();
+    }
+
+    public static boolean availableForRegistration(AcademicCycle cycle) {
+        Career career = cycle != null ? cycle.getCareer() : null;
+        var faculty = career != null ? career.getFaculty() : null;
+        var university = faculty != null ? faculty.getInstitution() : null;
+        return cycle != null && cycle.isActive() && !cycle.isDeleted()
+                && career != null && career.isActive() && !career.isDeleted()
+                && faculty != null && faculty.isActive() && !faculty.isDeleted()
+                && university != null && university.isActive() && !university.isDeleted()
+                && university.getType() == com.sgp.systemsgp.enums.InstitutionType.UNIVERSIDAD;
     }
 
     /*

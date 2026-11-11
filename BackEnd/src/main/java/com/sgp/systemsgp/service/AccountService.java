@@ -1,9 +1,23 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          AccountService.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa la lógica de aplicación de las cuentas de usuario.
+ */
+
 package com.sgp.systemsgp.service;
 
 import com.sgp.systemsgp.dto.account.AccountResponse;
+import com.sgp.systemsgp.dto.account.AdminPasswordRecoveryRequest;
 import com.sgp.systemsgp.dto.account.ChangePasswordRequest;
 import com.sgp.systemsgp.dto.account.UpdateAccountRequest;
 
+import com.sgp.systemsgp.enums.RoleName;
 import com.sgp.systemsgp.exception.BadRequestException;
 import com.sgp.systemsgp.exception.NotFoundException;
 
@@ -17,6 +31,7 @@ import com.sgp.systemsgp.model.Grade;
 import com.sgp.systemsgp.model.GradeParallel;
 import com.sgp.systemsgp.model.Institution;
 import com.sgp.systemsgp.model.Person;
+import com.sgp.systemsgp.model.Role;
 
 import com.sgp.systemsgp.repository.AccountRepository;
 import com.sgp.systemsgp.repository.CourseGroupRepository;
@@ -34,6 +49,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.beans.factory.annotation.Value;
+
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -53,6 +70,12 @@ public class AccountService {
         private final CourseRepository courseRepository;
         private final CourseGroupRepository courseGroupRepository;
         private final PasswordEncoder passwordEncoder;
+
+        @Value("${app.admin-recovery.enabled:false}")
+        private boolean recoveryEnabled;
+
+        @Value("${app.admin-recovery.secret:}")
+        private String recoverySecret;
 
         /*
          * Buscar cuenta por username
@@ -362,7 +385,7 @@ public class AccountService {
                         String username,
                         ChangePasswordRequest request) {
 
-                Account account = getByUsername(username);
+                Account account = accountRepository.lockForSecurityUpdate(username).orElseThrow(()->new NotFoundException("Cuenta no encontrada"));
 
                 /*
                  * VALIDAR PASSWORD ACTUAL
@@ -409,7 +432,46 @@ public class AccountService {
                                                 request.getNewPassword()));
 
                 account.setPasswordChangeRequired(false);
+                account.setAuthVersion(account.getAuthVersion()+1);
 
+                accountRepository.save(account);
+        }
+
+        public void recoverAdminPassword(AdminPasswordRecoveryRequest request) {
+
+                if (!recoveryEnabled) {
+                        throw new BadRequestException(
+                                        "El endpoint de recuperación temporal está deshabilitado");
+                }
+
+                if (recoverySecret.isBlank() || !recoverySecret.equals(request.getRecoveryKey())) {
+                        throw new BadRequestException("La clave de recuperación es inválida");
+                }
+
+                Account account = accountRepository.lockForSecurityUpdate(request.getUsername())
+                                .orElseThrow(() -> new NotFoundException("Cuenta no encontrada"));
+
+                boolean isAdmin = account.getRoles().stream()
+                                .anyMatch(role -> RoleName.ROLE_ADMIN.name().equals(role.getName()));
+
+                if (!isAdmin) {
+                        throw new BadRequestException(
+                                        "Solo los usuarios con rol ADMIN pueden recuperarse con este endpoint");
+                }
+
+                if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+                        throw new BadRequestException("Las contraseñas no coinciden");
+                }
+
+                boolean samePassword = passwordEncoder.matches(request.getNewPassword(), account.getPassword());
+
+                if (samePassword) {
+                        throw new BadRequestException("La nueva contraseña no puede ser igual a la actual");
+                }
+
+                account.setPassword(passwordEncoder.encode(request.getNewPassword()));
+                account.setPasswordChangeRequired(false);
+                account.setAuthVersion(account.getAuthVersion()+1);
                 accountRepository.save(account);
         }
 
@@ -448,6 +510,29 @@ public class AccountService {
                                 .orElse(null);
         }
 
+        public Page<AccountResponse> searchForViewer(String viewer, String username, String email, String names, String lastNames,
+                        String cedula, String role, Boolean enabled, Pageable pageable) {
+            Account actor = accountRepository.findByUsernameAndDeletedFalse(viewer)
+                    .orElseThrow(() -> new NotFoundException("Cuenta no encontrada"));
+            boolean admin = actor.getRoles().stream().anyMatch(r -> r.getName().equals("ROLE_ADMIN"));
+            Long universityId = null;
+            if (!admin && actor.getRoles().stream().anyMatch(r -> r.getName().equals("ROLE_DIRECTOR_PRACTICAS"))) {
+                com.sgp.systemsgp.model.Institution university = actor.getCareer() != null && actor.getCareer().getFaculty() != null
+                        ? actor.getCareer().getFaculty().getInstitution() : null;
+                universityId = university != null ? university.getId() : -1L;
+            }
+            return accountRepository.search(username, email, names, lastNames, cedula, role, admin ? enabled : Boolean.TRUE, universityId, pageable)
+                    .map(account -> admin ? mapToResponse(account) : AccountResponse.builder()
+                            .id(account.getId()).username(account.getUsername())
+                            .names(account.getPerson() != null ? account.getPerson().getNames() : null)
+                            .lastNames(account.getPerson() != null ? account.getPerson().getLastNames() : null)
+                            .institutionId(account.getInstitution() != null ? account.getInstitution().getId() : null)
+                            .institution(account.getInstitution() != null ? account.getInstitution().getName() : null)
+                            .gradeId(account.getGrade() != null ? account.getGrade().getId() : null)
+                            .gradeParallelId(account.getGradeParallel() != null ? account.getGradeParallel().getId() : null)
+                            .enabled(account.isEnabled()).roles(account.getRoles().stream().map(com.sgp.systemsgp.model.Role::getName).collect(java.util.stream.Collectors.toSet())).build());
+        }
+
         public Page<AccountResponse> search(
 
                         String username,
@@ -475,6 +560,7 @@ public class AccountService {
                                                 cedula,
                                                 role,
                                                 enabled,
+                                                null,
                                                 pageable)
 
                                 .map(this::mapToResponse);

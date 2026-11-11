@@ -1,0 +1,62 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          AccountMenu.css
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Define los estilos de la interfaz del SGP para AccountMenu.
+ */
+
+.sgp-account-trigger { display:flex; flex:none; align-items:center; gap:10px; min-height:44px; max-width:15rem; padding:5px 7px; border:1px solid transparent; border-radius:10px; text-align:left; color:var(--color-heading); transition:background-color 140ms ease; }
+.sgp-account-trigger:hover { background:var(--color-panel-soft); }
+.sgp-account-trigger:focus-visible, .sgp-account-panel button:focus-visible { outline:2px solid var(--color-focus); outline-offset:2px; }
+.sgp-account-trigger-copy { display:grid; min-width:0; line-height:1.4; }
+.sgp-account-trigger-copy > span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:13px; font-weight:550; }
+.sgp-account-trigger-copy > span + span { color:var(--color-muted); font-size:12px; font-weight:400; }
+.sgp-account-chevron { flex:none; color:var(--color-muted); }
+.sgp-account-backdrop { position:fixed; inset:0; z-index:100004; background:rgb(15 30 50 / .16); }
+.sgp-account-dialog { position:fixed; inset:0; display:flex; align-items:flex-start; justify-content:flex-end; padding:calc(4.4rem + 8px) 16px 16px; outline:none; }
+.sgp-account-panel { display:flex; flex-direction:column; width:24rem; max-width:100%; max-height:calc(100dvh - 4.4rem - 24px); overflow:hidden; border:1px solid var(--color-line); border-radius:16px; background:var(--color-panel); color:var(--color-heading); box-shadow:0 16px 52px rgb(15 30 50 / .19); animation:sgpAccountIn 140ms ease-out; }
+.sgp-account-header { display:flex; flex:none; align-items:center; gap:12px; padding:18px 16px 10px; }
+.sgp-account-identity { flex:1; min-width:0; }
+.sgp-account-header .sgp-avatar { width:44px; height:44px; flex:none; }
+.sgp-account-name { font-size:.9375rem; line-height:1.45; font-weight:650; overflow-wrap:anywhere; }
+.sgp-account-email { margin-top:3px; color:var(--color-muted); font-size:.8125rem; overflow-wrap:anywhere; }
+.sgp-account-close { display:grid; place-items:center; flex:none; width:44px; height:44px; border:1px solid var(--color-line); border-radius:10px; color:var(--color-muted); }
+.sgp-account-close:hover { background:var(--color-panel-soft); color:var(--color-heading); }
+.sgp-account-roles { display:flex; flex:none; flex-wrap:wrap; gap:6px; padding:0 16px 14px; }
+.sgp-account-roles > span { padding:3px 8px; border:1px solid var(--color-line); border-radius:6px; background:var(--color-panel-soft); color:var(--color-body); font-size:.75rem; }
+.sgp-account-body { min-height:0; overflow-y:auto; overscroll-behavior:contain; padding:0 16px 16px; }
+.sgp-account-profile { display:flex; align-items:center; gap:12px; width:100%; min-height:62px; margin-bottom:16px; padding:10px; border:1px solid var(--color-line); border-radius:10px; text-align:left; }
+.sgp-account-profile:hover { background:var(--color-panel-soft); }
+.sgp-account-profile > svg { flex:none; color:var(--color-muted); }
+.sgp-account-profile > span { display:grid; min-width:0; flex:1; gap:2px; font-size:.875rem; font-weight:550; }
+.sgp-account-profile > span > span + span { color:var(--color-muted); font-size:.75rem; font-weight:400; }
+.sgp-appearance { border-top:1px solid var(--color-line); padding-top:16px; }
+.sgp-appearance h3 { margin:0 0 14px; font-size:.9375rem; font-weight:650; }
+.sgp-appearance fieldset { min-width:0; margin:0 0 16px; padding:0; border:0; }
+.sgp-appearance legend { margin-bottom:8px; font-size:.8125rem; color:var(--color-body); font-weight:550; }
+.sgp-appearance-modes, .sgp-appearance-palettes { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,5rem),1fr)); gap:8px; }
+.sgp-appearance label { position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:7px; min-width:0; min-height:66px; padding:9px 5px; border:1px solid var(--color-line); border-radius:10px; cursor:pointer; color:var(--color-body); font-size:.8125rem; text-align:center; overflow-wrap:anywhere; }
+.sgp-appearance label > input { position:absolute; width:1px; height:1px; clip:rect(0,0,0,0); clip-path:inset(50%); overflow:hidden; }
+.sgp-appearance label:has(input:focus-visible) { outline:2px solid var(--color-focus); outline-offset:2px; }
+.sgp-appearance label.is-selected { background:var(--color-primary-soft); border-color:var(--color-primary-strong); color:var(--color-primary-strong); }
+.sgp-appearance-caption, .sgp-appearance-storage { margin-top:8px; color:var(--color-muted); font-size:.75rem; line-height:1.6; }
+.sgp-appearance-storage { padding-top:8px; }
+.sgp-palette-preview { display:flex; width:100%; max-width:70px; height:17px; gap:2px; overflow:hidden; border:1px solid var(--color-line); border-radius:5px; }
+.sgp-palette-preview > span { flex:1; }
+.sgp-palette-preview > span:first-child { flex:2; }
+.sgp-palette-label { min-height:2.5em; display:flex; align-items:center; }
+.sgp-palette-check { position:absolute; top:3px; right:3px; }
+.sgp-account-footer { flex:none; padding:10px 16px; border-top:1px solid var(--color-line); background:var(--color-panel-soft); }
+.sgp-account-footer button { display:flex; align-items:center; gap:10px; width:100%; min-height:44px; padding:10px; border-radius:9px; text-align:left; font-size:.875rem; color:var(--color-danger-strong); }
+.sgp-account-footer button:hover { background:var(--color-danger-soft); }
+@keyframes sgpAccountIn { from { opacity:0; transform:translateY(-5px); } to { opacity:1; transform:none; } }
+@media (max-width:1023px) { .sgp-account-trigger { padding:5px; border-radius:50%; } .sgp-account-trigger-copy, .sgp-account-chevron { display:none; } }
+@media (max-width:480px) { .sgp-account-dialog { padding-inline:12px; } .sgp-account-header { padding:14px 12px 8px; gap:9px; } .sgp-account-body { padding-inline:12px; } .sgp-account-roles { padding-inline:12px; } }
+@media (max-height:600px) { .sgp-account-dialog { padding-top:12px; } .sgp-account-panel { max-height:calc(100dvh - 24px); } }
+@media (prefers-reduced-motion:reduce) { .sgp-account-panel { animation:none; } .sgp-account-trigger { transition:none; } }
+@media print { .sgp-account-dialog, .sgp-account-backdrop { display:none !important; } }

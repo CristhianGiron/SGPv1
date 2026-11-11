@@ -1,0 +1,1555 @@
+{
+  "date": "2026-11-07",
+  "mode": "Isolated API fixtures, not live backend authorization",
+  "routes": 103,
+  "interactions": 13,
+  "errors": [],
+  "toolbarChecks": [
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "practices/7/documents/practice-reports",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 566.953125,
+      "buttonBottoms": [
+        {
+          "label": "Limpiar",
+          "bottom": 566.953125
+        },
+        {
+          "label": "Por revisar",
+          "bottom": 566.953125
+        }
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "practices/7/documents/activity-plans",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 566.953125,
+      "buttonBottoms": [
+        {
+          "label": "Limpiar",
+          "bottom": 566.953125
+        },
+        {
+          "label": "Por revisar",
+          "bottom": 566.953125
+        }
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "practices/7/documents/final-reports",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 566.953125,
+      "buttonBottoms": [
+        {
+          "label": "Limpiar",
+          "bottom": 566.953125
+        },
+        {
+          "label": "Revisión del tutor",
+          "bottom": 566.953125
+        }
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "practices/7/documents/activity-evaluations",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 566.953125,
+      "buttonBottoms": [
+        {
+          "label": "Limpiar",
+          "bottom": 566.953125
+        },
+        {
+          "label": "Crear",
+          "bottom": 566.953125
+        },
+        {
+          "label": "Mis evaluaciones",
+          "bottom": 566.953125
+        }
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "practices/7/documents/follow-up",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 566.953125,
+      "buttonBottoms": [
+        {
+          "label": "Limpiar",
+          "bottom": 566.953125
+        },
+        {
+          "label": "Crear",
+          "bottom": 566.953125
+        },
+        {
+          "label": "Mis seguimientos",
+          "bottom": 566.953125
+        }
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "practices/7/documents/completed-records",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 566.953125,
+      "buttonBottoms": [
+        {
+          "label": "Limpiar",
+          "bottom": 566.953125
+        },
+        {
+          "label": "Por revisar",
+          "bottom": 566.953125
+        }
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "practices/7/photos",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 589.5625,
+      "buttonBottoms": [
+        {
+          "label": "Filtros",
+          "bottom": 589.5625
+        },
+        {
+          "label": "Limpiar",
+          "bottom": 589.5625
+        },
+        {
+          "label": "Actualizar",
+          "bottom": 589.5625
+        }
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "practices/7/schedules",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 689.75,
+      "buttonBottoms": [
+        {
+          "label": "Limpiar",
+          "bottom": 689.75
+        },
+        {
+          "label": "Revisión",
+          "bottom": 689.75
+        }
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "practices/7/photos",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 589.5625,
+      "buttonBottoms": [
+        {
+          "label": "Filtros",
+          "bottom": 589.5625
+        },
+        {
+          "label": "Limpiar",
+          "bottom": 589.5625
+        },
+        {
+          "label": "Actualizar",
+          "bottom": 589.5625
+        }
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "practices/8/photos",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 651.5625,
+      "buttonBottoms": [
+        {
+          "label": "Filtros",
+          "bottom": 651.5625
+        },
+        {
+          "label": "Limpiar",
+          "bottom": 651.5625
+        },
+        {
+          "label": "Actualizar",
+          "bottom": 651.5625
+        }
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_INSTITUCIONAL",
+      "route": "practices/7/documents/final-reports",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 566.953125,
+      "buttonBottoms": [
+        {
+          "label": "Limpiar",
+          "bottom": 566.953125
+        },
+        {
+          "label": "Revisión institucional",
+          "bottom": 566.953125
+        }
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_INSTITUCIONAL",
+      "route": "practices/7/photos",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 589.5625,
+      "buttonBottoms": [
+        {
+          "label": "Filtros",
+          "bottom": 589.5625
+        },
+        {
+          "label": "Limpiar",
+          "bottom": 589.5625
+        },
+        {
+          "label": "Actualizar",
+          "bottom": 589.5625
+        }
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_INSTITUCIONAL",
+      "route": "practices/7/schedules",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 689.75,
+      "buttonBottoms": [
+        {
+          "label": "Limpiar",
+          "bottom": 689.75
+        },
+        {
+          "label": "Crear",
+          "bottom": 689.75
+        },
+        {
+          "label": "Mis jornadas",
+          "bottom": 689.75
+        }
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_INSTITUCIONAL",
+      "route": "practices/7/photos",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 589.5625,
+      "buttonBottoms": [
+        {
+          "label": "Filtros",
+          "bottom": 589.5625
+        },
+        {
+          "label": "Limpiar",
+          "bottom": 589.5625
+        },
+        {
+          "label": "Actualizar",
+          "bottom": 589.5625
+        }
+      ]
+    },
+    {
+      "role": "ROLE_TUTOR_INSTITUCIONAL",
+      "route": "practices/8/photos",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 651.5625,
+      "buttonBottoms": [
+        {
+          "label": "Filtros",
+          "bottom": 651.5625
+        },
+        {
+          "label": "Limpiar",
+          "bottom": 651.5625
+        },
+        {
+          "label": "Actualizar",
+          "bottom": 651.5625
+        }
+      ]
+    },
+    {
+      "role": "ROLE_DIRECTORA_INSTITUCION",
+      "route": "institution-work/7/schedules",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 760.546875,
+      "buttonBottoms": [
+        {
+          "label": "Limpiar",
+          "bottom": 760.546875
+        },
+        {
+          "label": "Jornadas de mi institución",
+          "bottom": 760.546875
+        }
+      ]
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "practices/7/documents/practice-reports",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 566.953125,
+      "buttonBottoms": [
+        {
+          "label": "Limpiar",
+          "bottom": 566.953125
+        },
+        {
+          "label": "Enviados",
+          "bottom": 566.953125
+        }
+      ]
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "practices/7/documents/activity-plans",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 566.953125,
+      "buttonBottoms": [
+        {
+          "label": "Limpiar",
+          "bottom": 566.953125
+        },
+        {
+          "label": "Enviados",
+          "bottom": 566.953125
+        }
+      ]
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "practices/7/documents/final-reports",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 566.953125,
+      "buttonBottoms": [
+        {
+          "label": "Limpiar",
+          "bottom": 566.953125
+        },
+        {
+          "label": "Enviados",
+          "bottom": 566.953125
+        }
+      ]
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "practices/7/documents/completed-records",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 566.953125,
+      "buttonBottoms": [
+        {
+          "label": "Limpiar",
+          "bottom": 566.953125
+        },
+        {
+          "label": "Enviados",
+          "bottom": 566.953125
+        }
+      ]
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "practices/7/photos",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 565.5625,
+      "buttonBottoms": [
+        {
+          "label": "Filtros",
+          "bottom": 565.5625
+        },
+        {
+          "label": "Limpiar",
+          "bottom": 565.5625
+        },
+        {
+          "label": "Actualizar",
+          "bottom": 565.5625
+        }
+      ]
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "practices/7/schedules",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 689.75,
+      "buttonBottoms": [
+        {
+          "label": "Limpiar",
+          "bottom": 689.75
+        },
+        {
+          "label": "Revisión",
+          "bottom": 689.75
+        }
+      ]
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "practices/7/photos",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 565.5625,
+      "buttonBottoms": [
+        {
+          "label": "Filtros",
+          "bottom": 565.5625
+        },
+        {
+          "label": "Limpiar",
+          "bottom": 565.5625
+        },
+        {
+          "label": "Actualizar",
+          "bottom": 565.5625
+        }
+      ]
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "practices/8/photos",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 651.5625,
+      "buttonBottoms": [
+        {
+          "label": "Filtros",
+          "bottom": 651.5625
+        },
+        {
+          "label": "Limpiar",
+          "bottom": 651.5625
+        },
+        {
+          "label": "Actualizar",
+          "bottom": 651.5625
+        }
+      ]
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "universities?institutionId=1",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 430.875,
+      "buttonBottoms": [
+        {
+          "label": "Filtros",
+          "bottom": 430.875
+        },
+        {
+          "label": "Limpiar",
+          "bottom": 430.875
+        },
+        {
+          "label": "Actualizar",
+          "bottom": 430.875
+        }
+      ]
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "universities?institutionId=1&facultyId=10",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 430.875,
+      "buttonBottoms": [
+        {
+          "label": "Filtros",
+          "bottom": 430.875
+        },
+        {
+          "label": "Limpiar",
+          "bottom": 430.875
+        },
+        {
+          "label": "Actualizar",
+          "bottom": 430.875
+        }
+      ]
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "universities?institutionId=1&facultyId=10&careerId=100&view=cycles",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 455.375,
+      "buttonBottoms": [
+        {
+          "label": "Filtros",
+          "bottom": 455.375
+        },
+        {
+          "label": "Limpiar",
+          "bottom": 455.375
+        },
+        {
+          "label": "Actualizar",
+          "bottom": 455.375
+        }
+      ]
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "universities?institutionId=1&facultyId=10&careerId=100&academicCycleId=1000",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 455.375,
+      "buttonBottoms": [
+        {
+          "label": "Filtros",
+          "bottom": 455.375
+        },
+        {
+          "label": "Limpiar",
+          "bottom": 455.375
+        },
+        {
+          "label": "Actualizar",
+          "bottom": 455.375
+        }
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "practices/7/documents/practice-reports",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 566.953125,
+      "buttonBottoms": [
+        {
+          "label": "Limpiar",
+          "bottom": 566.953125
+        },
+        {
+          "label": "Enviados",
+          "bottom": 566.953125
+        }
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "practices/7/documents/activity-plans",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 566.953125,
+      "buttonBottoms": [
+        {
+          "label": "Limpiar",
+          "bottom": 566.953125
+        },
+        {
+          "label": "Enviados",
+          "bottom": 566.953125
+        }
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "practices/7/documents/final-reports",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 566.953125,
+      "buttonBottoms": [
+        {
+          "label": "Limpiar",
+          "bottom": 566.953125
+        },
+        {
+          "label": "Enviados",
+          "bottom": 566.953125
+        }
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "practices/7/documents/completed-records",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 566.953125,
+      "buttonBottoms": [
+        {
+          "label": "Limpiar",
+          "bottom": 566.953125
+        },
+        {
+          "label": "Enviados",
+          "bottom": 566.953125
+        }
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "practices/7/photos",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 565.5625,
+      "buttonBottoms": [
+        {
+          "label": "Filtros",
+          "bottom": 565.5625
+        },
+        {
+          "label": "Limpiar",
+          "bottom": 565.5625
+        },
+        {
+          "label": "Actualizar",
+          "bottom": 565.5625
+        }
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "practices/7/schedules",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 689.75,
+      "buttonBottoms": [
+        {
+          "label": "Limpiar",
+          "bottom": 689.75
+        },
+        {
+          "label": "Revisión",
+          "bottom": 689.75
+        }
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "practices/7/photos",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 565.5625,
+      "buttonBottoms": [
+        {
+          "label": "Filtros",
+          "bottom": 565.5625
+        },
+        {
+          "label": "Limpiar",
+          "bottom": 565.5625
+        },
+        {
+          "label": "Actualizar",
+          "bottom": 565.5625
+        }
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "practices/8/photos",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 651.5625,
+      "buttonBottoms": [
+        {
+          "label": "Filtros",
+          "bottom": 651.5625
+        },
+        {
+          "label": "Limpiar",
+          "bottom": 651.5625
+        },
+        {
+          "label": "Actualizar",
+          "bottom": 651.5625
+        }
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "universities?institutionId=1",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 430.875,
+      "buttonBottoms": [
+        {
+          "label": "Filtros",
+          "bottom": 430.875
+        },
+        {
+          "label": "Limpiar",
+          "bottom": 430.875
+        },
+        {
+          "label": "Agregar",
+          "bottom": 430.875
+        },
+        {
+          "label": "Actualizar",
+          "bottom": 430.875
+        }
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "universities?institutionId=1&facultyId=10",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 430.875,
+      "buttonBottoms": [
+        {
+          "label": "Filtros",
+          "bottom": 430.875
+        },
+        {
+          "label": "Limpiar",
+          "bottom": 430.875
+        },
+        {
+          "label": "Agregar",
+          "bottom": 430.875
+        },
+        {
+          "label": "Actualizar",
+          "bottom": 430.875
+        }
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "universities?institutionId=1&facultyId=10&careerId=100&view=cycles",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 455.375,
+      "buttonBottoms": [
+        {
+          "label": "Filtros",
+          "bottom": 455.375
+        },
+        {
+          "label": "Limpiar",
+          "bottom": 455.375
+        },
+        {
+          "label": "Agregar",
+          "bottom": 455.375
+        },
+        {
+          "label": "Actualizar",
+          "bottom": 455.375
+        }
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "universities?institutionId=1&facultyId=10&careerId=100&academicCycleId=1000",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 455.375,
+      "buttonBottoms": [
+        {
+          "label": "Filtros",
+          "bottom": 455.375
+        },
+        {
+          "label": "Limpiar",
+          "bottom": 455.375
+        },
+        {
+          "label": "Agregar",
+          "bottom": 455.375
+        },
+        {
+          "label": "Actualizar",
+          "bottom": 455.375
+        }
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "institutions?institutionId=2",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 430.875,
+      "buttonBottoms": [
+        {
+          "label": "Filtros",
+          "bottom": 430.875
+        },
+        {
+          "label": "Limpiar",
+          "bottom": 430.875
+        },
+        {
+          "label": "Agregar",
+          "bottom": 430.875
+        },
+        {
+          "label": "Actualizar",
+          "bottom": 430.875
+        }
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "institutions?institutionId=2&gradeId=20&view=parallels",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 430.875,
+      "buttonBottoms": [
+        {
+          "label": "Filtros",
+          "bottom": 430.875
+        },
+        {
+          "label": "Limpiar",
+          "bottom": 430.875
+        },
+        {
+          "label": "Agregar",
+          "bottom": 430.875
+        },
+        {
+          "label": "Actualizar",
+          "bottom": 430.875
+        }
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "institutions?institutionId=2&gradeId=20&gradeParallelId=200",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 455.375,
+      "buttonBottoms": [
+        {
+          "label": "Filtros",
+          "bottom": 455.375
+        },
+        {
+          "label": "Limpiar",
+          "bottom": 455.375
+        },
+        {
+          "label": "Agregar",
+          "bottom": 455.375
+        },
+        {
+          "label": "Actualizar",
+          "bottom": 455.375
+        }
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "documents/completed-records",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 468.25,
+      "buttonBottoms": [
+        {
+          "label": "Limpiar",
+          "bottom": 468.25
+        },
+        {
+          "label": "Enviados",
+          "bottom": 468.25
+        }
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "courses",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 531.0625,
+      "buttonBottoms": [
+        {
+          "label": "Filtros",
+          "bottom": 531.0625
+        },
+        {
+          "label": "Limpiar",
+          "bottom": 531.0625
+        },
+        {
+          "label": "Actualizar",
+          "bottom": 531.0625
+        }
+      ]
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "universities",
+      "viewport": 1440,
+      "searchWidth": 416,
+      "searchBottom": 316.0625,
+      "buttonBottoms": [
+        {
+          "label": "Filtros",
+          "bottom": 316.0625
+        },
+        {
+          "label": "Limpiar",
+          "bottom": 316.0625
+        },
+        {
+          "label": "Actualizar",
+          "bottom": 316.0625
+        },
+        {
+          "label": "Crear",
+          "bottom": 316.0625
+        }
+      ]
+    }
+  ],
+  "results": [
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "route": "dashboard",
+      "title": "Mis prácticas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "route": "practices/7/documents",
+      "title": "Prácticas de informática",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "route": "practices/7/documents/practice-reports",
+      "title": "Prácticas de informática",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "route": "practices/7/documents/activity-plans",
+      "title": "Prácticas de informática",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "route": "practices/7/documents/final-reports",
+      "title": "Prácticas de informática",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "route": "practices/7/documents/activity-evaluations",
+      "title": "Prácticas de informática",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "route": "practices/7/documents/follow-up",
+      "title": "Prácticas de informática",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "route": "practices/7/documents/completed-records",
+      "title": "Prácticas de informática",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "route": "practices/7/photos",
+      "title": "Prácticas de informática",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "route": "practices/7/forms",
+      "title": "Prácticas de informática",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "route": "practices/7/observation-forms",
+      "title": "Prácticas de informática",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "route": "practices/7/didactic-plans",
+      "title": "Prácticas de informática",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "route": "practices/7/schedules",
+      "title": "Prácticas de informática",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "route": "practices/7/photos",
+      "title": "Prácticas de informática",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "route": "practices/7",
+      "title": "Prácticas de informática",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "route": "practices/8/photos",
+      "title": "Práctica anterior",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "route": "practices/999",
+      "title": "Práctica no disponible",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "dashboard",
+      "title": "Tutoría de prácticas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "practices",
+      "title": "Paralelos y estudiantes",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "practices/7/documents",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "practices/7/documents/practice-reports",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "practices/7/documents/activity-plans",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "practices/7/documents/final-reports",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "practices/7/documents/activity-evaluations",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "practices/7/documents/follow-up",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "practices/7/documents/completed-records",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "practices/7/photos",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "practices/7/forms",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "practices/7/observation-forms",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "practices/7/didactic-plans",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "practices/7/schedules",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "practices/7/photos",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "practices/7",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "practices/8/photos",
+      "title": "Luis Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "practices/999",
+      "title": "Práctica no disponible",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_INSTITUCIONAL",
+      "route": "dashboard",
+      "title": "Tutoría institucional",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_INSTITUCIONAL",
+      "route": "practices",
+      "title": "Mis estudiantes asignados",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_INSTITUCIONAL",
+      "route": "practices/7/documents",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_INSTITUCIONAL",
+      "route": "practices/7/documents/final-reports",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_INSTITUCIONAL",
+      "route": "practices/7/photos",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_INSTITUCIONAL",
+      "route": "practices/7/forms",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_INSTITUCIONAL",
+      "route": "practices/7/didactic-plans",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_INSTITUCIONAL",
+      "route": "practices/7/schedules",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_INSTITUCIONAL",
+      "route": "practices/7/photos",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_INSTITUCIONAL",
+      "route": "practices/7",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_INSTITUCIONAL",
+      "route": "practices/8/photos",
+      "title": "Luis Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_INSTITUCIONAL",
+      "route": "practices/999",
+      "title": "Práctica no disponible",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTORA_INSTITUCION",
+      "route": "dashboard",
+      "title": "Mi institución",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTORA_INSTITUCION",
+      "route": "institution-work",
+      "title": "Mi institución",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTORA_INSTITUCION",
+      "route": "institution-work/7",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTORA_INSTITUCION",
+      "route": "institution-work/7/forms",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTORA_INSTITUCION",
+      "route": "institution-work/7/schedules",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "dashboard",
+      "title": "Coordinación de prácticas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "practices",
+      "title": "Paralelos y estudiantes",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "practices/7/documents",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "practices/7/documents/practice-reports",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "practices/7/documents/activity-plans",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "practices/7/documents/final-reports",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "practices/7/documents/completed-records",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "practices/7/photos",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "practices/7/forms",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "practices/7/observation-forms",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "practices/7/didactic-plans",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "practices/7/schedules",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "practices/7/photos",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "practices/7",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "practices/8/photos",
+      "title": "Luis Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "practices/999",
+      "title": "Práctica no disponible",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "universities?institutionId=1",
+      "title": "Universidad seleccionada",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "universities?institutionId=1&facultyId=10",
+      "title": "Facultad seleccionada",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "universities?institutionId=1&facultyId=10&careerId=100",
+      "title": "Carrera seleccionada",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "universities?institutionId=1&facultyId=10&careerId=100&view=cycles",
+      "title": "Carrera seleccionada",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "universities?institutionId=1&facultyId=10&careerId=100&academicCycleId=1000",
+      "title": "Ciclo seleccionado",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "institutions?institutionId=2",
+      "title": "Colegio seleccionado",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "dashboard",
+      "title": "Administración",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "practices",
+      "title": "Paralelos y estudiantes",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "practices/7/documents",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "practices/7/documents/practice-reports",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "practices/7/documents/activity-plans",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "practices/7/documents/final-reports",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "practices/7/documents/completed-records",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "practices/7/photos",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "practices/7/forms",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "practices/7/observation-forms",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "practices/7/didactic-plans",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "practices/7/schedules",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "practices/7/photos",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "practices/7",
+      "title": "Ana Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "practices/8/photos",
+      "title": "Luis Prueba",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "practices/999",
+      "title": "Práctica no disponible",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "universities?institutionId=1",
+      "title": "Universidad seleccionada",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "universities?institutionId=1&facultyId=10",
+      "title": "Facultad seleccionada",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "universities?institutionId=1&facultyId=10&careerId=100",
+      "title": "Carrera seleccionada",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "universities?institutionId=1&facultyId=10&careerId=100&view=cycles",
+      "title": "Carrera seleccionada",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "universities?institutionId=1&facultyId=10&careerId=100&academicCycleId=1000",
+      "title": "Ciclo seleccionado",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "institutions?institutionId=2",
+      "title": "Colegio seleccionado",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "institutions?institutionId=2&gradeId=20",
+      "title": "Grado seleccionado",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "institutions?institutionId=2&gradeId=20&view=parallels",
+      "title": "Grado seleccionado",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "institutions?institutionId=2&gradeId=20&gradeParallelId=200",
+      "title": "Paralelo seleccionado",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "accounts",
+      "title": "Gestionar usuarios",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "documents/completed-records",
+      "title": "L.6. Registro de Actividades Cumplidas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "courses",
+      "title": "Paralelos y prácticas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "universities",
+      "title": "Estructura académica",
+      "overflow": false
+    }
+  ]
+}

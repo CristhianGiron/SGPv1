@@ -1,8 +1,25 @@
-import { useMemo, useState } from 'react';
-import { CheckCircle2, SlidersHorizontal, XCircle } from 'lucide-react';
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          DataTable.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa el componente DataTable de la interfaz del SGP.
+ */
+
+import { useEffect, useMemo, useState } from 'react';
+import { SecondaryButton } from './ActionBar';
+import { FilterPanel } from './FilterPanel';
+import { ListToolbar } from './ListToolbar';
 import { EmptyState } from './EmptyState';
-import { Modal } from './Modal';
 import { formatValue } from '../../utils/format';
+import { Modal } from './Modal';
+import { usePracticeWorkspace } from '../../contexts/PracticeWorkspaceContext';
+import { relevantTableColumns, isSecondaryColumn } from '../../utils/tablePresentation';
+import { useCompactViewport } from '../../hooks/useCompactViewport';
 
 const tableShellClass =
   'sgp-table-shell min-w-0 max-w-full overflow-hidden rounded-lg border border-line bg-panel shadow-card dark:border-line dark:bg-surface';
@@ -20,25 +37,43 @@ const fieldLabelClass =
   'mb-1.5 block text-[0.82rem] font-medium text-body dark:text-ink';
 
 const fieldClass =
-  'min-h-[2.5rem] w-full rounded-lg border border-line bg-field px-3 py-2 text-sm text-heading outline-none transition-[background-color,border-color,box-shadow] placeholder:text-muted hover:border-line-strong focus:border-primary-strong focus:ring-4 focus:ring-focus-soft disabled:cursor-not-allowed disabled:bg-panel-soft disabled:text-muted dark:border-line dark:bg-page dark:text-heading dark:placeholder:text-muted dark:hover:border-line-strong dark:focus:border-info dark:focus:ring-focus-soft';
-
-const secondaryButtonClass =
-  'inline-flex min-h-[2.5rem] items-center justify-center rounded-lg border border-accent bg-accent-soft px-3 py-2 text-sm font-medium text-accent-strong transition-colors hover:border-accent-strong hover:bg-accent hover:text-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 disabled:cursor-not-allowed disabled:opacity-60 dark:border-accent/40 dark:bg-accent-soft dark:text-accent-strong dark:hover:border-accent dark:hover:bg-hover-soft';
+  'min-h-11 w-full rounded-lg border border-line bg-field px-3 py-2 text-sm text-heading outline-none transition-[background-color,border-color,box-shadow] placeholder:text-muted hover:border-line-strong focus:border-primary-strong focus:ring-4 focus:ring-focus-soft disabled:cursor-not-allowed disabled:bg-panel-soft disabled:text-muted dark:border-line dark:bg-page dark:text-heading dark:placeholder:text-muted dark:hover:border-line-strong dark:focus:border-info dark:focus:ring-focus-soft';
 
 export function DataTable({
   columns,
   rows,
-  emptyText = 'Aun no hay registros para mostrar.',
+  emptyText = 'Aún no hay registros para mostrar.',
   enableFilters = false,
   filterFields,
   keyField = 'id',
   loading = false,
+  toolbarActions,
+  ownRecords = false,
+  contextColumns = [],
 }) {
-  const visibleColumns = columns.filter((column) => column.key !== 'id' && column.header !== 'ID');
-  const actionColumn = visibleColumns.find((column) => column.key === 'actions');
-  const renderedColumns = actionColumn
-    ? [...visibleColumns.filter((column) => column.key !== 'actions'), actionColumn]
-    : visibleColumns;
+  const compact = useCompactViewport();
+  const practice = usePracticeWorkspace();
+  const visibleColumns = relevantTableColumns(columns, { practice, ownRecords, contextColumns });
+  const columnSignature = visibleColumns.map(column => `${column.key}:${isSecondaryColumn(column)}`).join('|');
+  const [hiddenColumns, setHiddenColumns] = useState(() => visibleColumns.filter(isSecondaryColumn).map(column => column.key));
+  useEffect(() => {
+    setHiddenColumns(visibleColumns.filter(isSecondaryColumn).map(column => column.key));
+    // Column definitions can be recreated while editing; reset only when their policy changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [columnSignature]);
+  const [detailRow, setDetailRow] = useState(null);
+  useEffect(() => { setDetailRow(null); }, [columnSignature, practice?.id]);
+  const selectedColumns = visibleColumns.filter(column => !hiddenColumns.includes(column.key));
+  const detailColumns = visibleColumns.filter(column => hiddenColumns.includes(column.key) && column.key !== 'actions');
+  const actionColumn = selectedColumns.find(column => column.key === 'actions');
+  const showDetails = row => <SecondaryButton onClick={() => setDetailRow(row)}>Más datos</SecondaryButton>;
+  const renderedColumns = [
+    ...selectedColumns.filter(column => column.key !== 'actions'),
+    ...(actionColumn || detailColumns.length ? [{
+      ...(actionColumn || { key: 'actions', header: 'Detalle' }),
+      render: row => <div className="flex flex-wrap items-center justify-end gap-2">{detailColumns.length > 0 && showDetails(row)}{actionColumn && (actionColumn.render ? actionColumn.render(row) : formatValue(row.actions, 'actions'))}</div>,
+    }] : []),
+  ];
   const availableFilterFields = useMemo(
     () => (filterFields || buildDefaultFilterFields(rows)).filter((field) => fieldHasOptions(rows, field)),
     [filterFields, rows]
@@ -53,15 +88,21 @@ export function DataTable({
   );
   const effectiveRows = enableFilters ? filteredRows : rows;
   const hasFilters = hasActiveFilters(filters);
-
-  if (loading && !effectiveRows?.length) {
-    return <TableSkeleton columns={visibleColumns} />;
-  }
+  const [page, setPage] = useState(1), [pageSize, setPageSize] = useState(10);
+  const count = effectiveRows?.length || 0;
+  const totalPages = Math.max(1, Math.ceil(count / pageSize));
+  const currentPage = Math.min(page, totalPages);
+  useEffect(() => { setPage(1); }, [filters, pageSize]);
+  const pageRows = (effectiveRows || []).slice((currentPage-1)*pageSize, currentPage*pageSize);
 
   return (
     <div className="min-w-0 max-w-full space-y-3">
       {enableFilters && (
         <TableFilters
+          columns={visibleColumns}
+          hiddenColumns={hiddenColumns}
+          onColumnsChange={setHiddenColumns}
+          action={toolbarActions}
           fields={availableFilterFields}
           filters={filters}
           rows={rows || []}
@@ -71,11 +112,15 @@ export function DataTable({
         />
       )}
 
-      {!effectiveRows?.length ? (
+      <Modal open={Boolean(detailRow)} onClose={() => setDetailRow(null)} title="Más datos del registro" description="Información complementaria del registro seleccionado." maxWidth="max-w-2xl">
+        {detailRow && <dl className="grid gap-4 sm:grid-cols-2">{[...selectedColumns.filter(column => column.key !== 'actions').slice(0, 1), ...detailColumns].map(column => <div className="min-w-0" key={column.key}><dt className="text-sm text-muted">{column.header}</dt><dd className="mt-1 break-words text-heading">{column.render ? column.render(detailRow) : formatValue(detailRow[column.key], column.key)}</dd></div>)}</dl>}
+      </Modal>
+      {!enableFilters && toolbarActions && <ListToolbar actions={toolbarActions} />}
+      {loading && !effectiveRows?.length ? <TableSkeleton columns={visibleColumns} /> : !effectiveRows?.length ? (
         <EmptyState text={hasFilters ? 'No se encontraron resultados con los filtros aplicados.' : emptyText} />
       ) : (
         <div className={tableShellClass} aria-busy={loading || undefined}>
-          <div className="min-w-0 max-w-full overflow-x-auto overscroll-x-contain">
+          {compact ? <MobileRecords columns={renderedColumns} rows={pageRows} keyField={keyField} /> : <div className="min-w-0 max-w-full overflow-x-auto overscroll-x-contain">
             <table className={tableClass}>
               <colgroup>
                 {renderedColumns.map((column) => (
@@ -96,7 +141,7 @@ export function DataTable({
                 </tr>
               </thead>
               <tbody>
-                {effectiveRows.map((row, rowIndex) => (
+                {pageRows.map((row, rowIndex) => (
                   <tr
                     className={`${rowIndex % 2 === 1 ? 'bg-panel-soft dark:bg-page/40' : 'bg-panel dark:bg-surface'} hover:bg-info-soft dark:hover:bg-info-soft`}
                     key={row[keyField] || `${keyField}-${rowIndex}`}
@@ -113,16 +158,36 @@ export function DataTable({
                 ))}
               </tbody>
             </table>
-          </div>
+          </div>}
+          {count>10 && <nav aria-label="Paginación de resultados" className="flex flex-wrap items-center justify-between gap-3 border-t border-line px-4 py-3 text-sm text-body">
+            <label className="flex items-center gap-2">Por página<select aria-label="Resultados por página" className="rounded-lg border border-line bg-field p-2 text-heading" value={pageSize} onChange={event => setPageSize(Number(event.target.value))}>{[10,25,50].map(size => <option key={size} value={size}>{size}</option>)}</select></label>
+            <span>{(currentPage-1)*pageSize+1}–{Math.min(currentPage*pageSize,count)} de {count}</span>
+            <div className="flex items-center gap-2"><SecondaryButton disabled={currentPage===1} onClick={() => setPage(currentPage-1)}>Anterior</SecondaryButton><span>Página {currentPage} de {totalPages}</span><SecondaryButton disabled={currentPage===totalPages} onClick={() => setPage(currentPage+1)}>Siguiente</SecondaryButton></div>
+          </nav>}
         </div>
       )}
     </div>
   );
 }
 
-function TableFilters({ fields, filters, rows, totalCount, visibleCount, onChange }) {
+function MobileRecords({ columns, rows, keyField }) {
+  const dataColumns = columns.filter(column => column.key !== 'actions');
+  const primary = dataColumns.find(column => ['name','title','studentFullName','courseName'].includes(column.key)) || dataColumns[0];
+  const status = dataColumns.find(column => ['status','enabled'].includes(column.key) && column !== primary);
+  const rest = dataColumns.filter(column => column !== primary && column !== status);
+  const actions = columns.find(column => column.key === 'actions');
+  const value = (column,row) => column.render ? column.render(row) : formatValue(row[column.key],column.key);
+  const fields = (selected,row) => <dl className="grid gap-2 text-sm">{selected.map(column => <div key={column.key} className="min-w-0"><dt className="text-muted">{column.header}</dt><dd className="mt-0.5 break-words [overflow-wrap:anywhere] text-heading">{value(column,row)}</dd></div>)}</dl>;
+  return <ul aria-label="Resultados del listado" className="divide-y divide-line">{rows.map((row,index) => <li key={row[keyField] || index} className="space-y-3 p-4">
+    <div className="flex items-start justify-between gap-3"><div className="min-w-0"><p className="text-sm text-muted">{primary?.header}</p><div className="mt-1 break-words font-semibold text-heading">{primary && value(primary,row)}</div></div>{status && <div className="flex-none">{value(status,row)}</div>}</div>
+    {fields(rest.slice(0,2),row)}
+    {rest.length > 2 && <details className="text-sm"><summary className="min-h-11 cursor-pointer py-2 font-medium text-primary">Más datos del registro</summary>{fields(rest.slice(2),row)}</details>}
+    {actions && <div className="flex flex-wrap items-center justify-end gap-2 border-t border-line pt-2">{value(actions,row)}</div>}
+  </li>)}</ul>;
+}
+
+function TableFilters({ columns, hiddenColumns, onColumnsChange, action, fields, filters, rows, totalCount, visibleCount, onChange }) {
   const hasFilters = hasActiveFilters(filters);
-  const [filtersOpen, setFiltersOpen] = useState(false);
   const selectedFieldCount = Object.values(filters.fields || {}).filter(Boolean).length;
 
   function setSearch(value) {
@@ -149,81 +214,12 @@ function TableFilters({ fields, filters, rows, totalCount, visibleCount, onChang
     });
   }
 
-  return (
-    <div className="rounded-lg border border-line bg-panel-soft p-3 dark:border-line dark:bg-surface">
-      <div className="grid gap-3 lg:grid-cols-[minmax(16rem,34rem)_auto] lg:items-end lg:justify-between">
-        <label className="block min-w-0 max-w-xl">
-          <span className={fieldLabelClass}>Buscar</span>
-          <input
-            className={fieldClass}
-            placeholder="Texto, paralelo o estudiante"
-            type="search"
-            value={filters.search}
-            onChange={(event) => setSearch(event.target.value)}
-          />
-        </label>
-        <div className="flex items-end gap-2">
-          {fields.length > 0 && (
-            <button className={secondaryButtonClass} onClick={() => setFiltersOpen(true)} type="button">
-              <span className="inline-flex items-center justify-center gap-2">
-                <SlidersHorizontal size={16} />
-                {selectedFieldCount ? `Filtros (${selectedFieldCount})` : 'Filtros'}
-              </span>
-            </button>
-          )}
-          <button className={secondaryButtonClass} disabled={!hasFilters} onClick={clearFilters} type="button">
-            <span className="inline-flex items-center justify-center gap-2">
-              <XCircle size={16} />
-              Limpiar
-            </span>
-          </button>
-        </div>
-      </div>
-      <p className="mt-3 text-xs font-medium text-body">
-        {visibleCount} de {totalCount} resultados
-      </p>
-      <Modal
-        maxWidth="max-w-3xl"
-        onClose={() => setFiltersOpen(false)}
-        open={filtersOpen}
-        title="Filtros"
-      >
-            <div className="grid gap-3 sm:grid-cols-2">
-              {fields.map((field) => (
-                <label className="block" key={field.key}>
-                  <span className={fieldLabelClass}>{field.label}</span>
-                  <select
-                    className={fieldClass}
-                    value={filters.fields?.[field.key] || ''}
-                    onChange={(event) => setFieldFilter(field.key, event.target.value)}
-                  >
-                    <option value="">Todos</option>
-                    {buildFilterOptions(rows, field).map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              ))}
-            </div>
-            <div className="mt-4 flex justify-end gap-2">
-              <button className={secondaryButtonClass} disabled={!hasFilters} onClick={clearFilters} type="button">
-                <span className="inline-flex items-center justify-center gap-2">
-                  <XCircle size={16} />
-                  Limpiar
-                </span>
-              </button>
-              <button className={secondaryButtonClass} onClick={() => setFiltersOpen(false)} type="button">
-                <span className="inline-flex items-center justify-center gap-2">
-                  <CheckCircle2 size={16} />
-                  Aplicar
-                </span>
-              </button>
-            </div>
-      </Modal>
-    </div>
-  );
+  return <FilterPanel viewKey={columns.map(column => column.key).join(",") + window.location.hash} savedValue={filters} onRestore={onChange} activeCount={selectedFieldCount} action={action} showFilters
+    hasActiveFilters={hasFilters} onClear={clearFilters} summary={`${visibleCount} de ${totalCount} resultados`}
+    search={<label className="block"><span className={fieldLabelClass}>Buscar</span><input className={fieldClass} placeholder="Buscar en el listado" type="search" value={filters.search} onChange={event => setSearch(event.target.value)} /></label>}>
+    <fieldset className="space-y-2 sm:col-span-2 lg:col-span-3"><legend className="mb-2 text-sm font-semibold text-heading">Columnas visibles</legend><div className="flex flex-wrap gap-4">{columns.filter(column => column.key!=='actions').map(column => <label className="flex items-center gap-2 text-sm text-body" key={column.key}><input type="checkbox" checked={!hiddenColumns.includes(column.key)} disabled={!hiddenColumns.includes(column.key) && columns.filter(item => item.key!=='actions' && !hiddenColumns.includes(item.key)).length===1} onChange={event => onColumnsChange(event.target.checked ? hiddenColumns.filter(key => key!==column.key) : [...hiddenColumns,column.key])} />{column.header}</label>)}</div></fieldset>
+    {fields.map(field => <label className="block" key={field.key}><span className={fieldLabelClass}>{field.label}</span><select className={fieldClass} value={filters.fields?.[field.key] || ''} onChange={event => setFieldFilter(field.key, event.target.value)}><option value="">Todos</option>{buildFilterOptions(rows, field).map(option => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>)}
+  </FilterPanel>;
 }
 
 function buildDefaultFilterFields(rows = []) {
@@ -258,7 +254,7 @@ function buildDefaultFilterFields(rows = []) {
 }
 
 function fieldHasOptions(rows, field) {
-  return buildFilterOptions(rows || [], field).length > 0;
+  return buildFilterOptions(rows || [], field).length > 1;
 }
 
 function buildFilterOptions(rows, field) {

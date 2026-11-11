@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          CourseController.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Expone las operaciones HTTP relacionadas con los paralelos académicos.
+ */
+
 package com.sgp.systemsgp.controller;
 
 import org.springframework.data.domain.Page;
@@ -35,7 +47,7 @@ public class CourseController {
 
     private final CourseService courseService;
 
-    @PostMapping
+    @PostMapping(consumes = "application/json")
     @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR_PRACTICAS')")
     public CourseResponse create(
             Authentication authentication,
@@ -210,7 +222,7 @@ public class CourseController {
 
     @PatchMapping("/{id}/lock")
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR_PRACTICAS')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR_PRACTICAS', 'TUTOR_PRACTICAS')")
 
     public void lock(
             Authentication authentication,
@@ -221,7 +233,7 @@ public class CourseController {
 
     @PatchMapping("/{id}/unlock")
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR_PRACTICAS')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR_PRACTICAS', 'TUTOR_PRACTICAS')")
 
     public void unlock(
             Authentication authentication,
@@ -263,7 +275,7 @@ public class CourseController {
     }
 
     @GetMapping("/search")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAnyRole('ADMIN','DIRECTOR_PRACTICAS','TUTOR_PRACTICAS','ESTUDIANTE')")
 
     public Page<CourseResponse> search(
 
@@ -283,7 +295,7 @@ public class CourseController {
 
         Boolean effectiveActive = canManageCourses(authentication)
                 ? active
-                : true;
+                : Boolean.TRUE;
         String effectivePracticeTutor = isPracticeTutorOnly(authentication)
                 ? authentication.getName()
                 : practiceTutor;

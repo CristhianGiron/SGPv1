@@ -1,0 +1,316 @@
+{
+  "date": "2026-11-09",
+  "backend": {
+    "totals": {
+      "tests": 213,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 2
+    },
+    "suites": [
+      {
+        "name": "com.sgp.systemsgp.SystemsgpApplicationTests",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.config.JwtServiceTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.config.SecurityConfigTest",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.controller.DocumentControllerFlowTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.AccountServiceRecoveryTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.ActivityEvaluationServiceTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.ActivityPlanServiceTest",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.CompletedActivityRecordServiceTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.CoordinationReportServiceTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.CourseMembershipWorkflowTest",
+        "tests": 19,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.CourseServiceTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.EnrollmentServiceTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.EntityImageIntegrationTest",
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.FacultyServiceTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.FinalReportServiceTest",
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.GradeServiceTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.InstitutionalDefaultsServiceTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.MigrationChainMariaDbTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 2
+      },
+      {
+        "name": "com.sgp.systemsgp.service.NotificationServiceTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.PdfExportServiceTest",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.PdfReferenceLayoutTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.PracticeAccessServiceTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.PracticeAttendanceConcurrencyTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.PracticeAuthorizationRegressionTest",
+        "tests": 12,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.PracticeFollowUpReportServiceTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.PracticeImageValidatorTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.PracticeLifecycleIntegrityTest",
+        "tests": 21,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.PracticePhotoServiceTest",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.PracticeReportServiceTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.PracticeScheduleServiceTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.PracticeWorkflowRegressionTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.QaUserWorkflowsTest",
+        "tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.sgp.systemsgp.service.RoleSeparationIntegrationTest",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ]
+  },
+  "frontend": {
+    "suites": 55,
+    "tests": 196,
+    "failures": 0
+  },
+  "build": "Compiled successfully",
+  "mariadb": {
+    "tests": 2,
+    "failures": 0,
+    "appliedMigrations": 23,
+    "isolated": true
+  },
+  "browser": {
+    "checks": 16,
+    "widths": [
+      390,
+      1440
+    ],
+    "errors": 0,
+    "syntheticApi": true
+  },
+  "sourceSha256": {
+    "BackEnd/src/main/java/com/sgp/systemsgp/model/PracticeOffering.java": "cbe954d5583651e873d1b3543c13d1dddae2a65b418b9797e1b786835d268889",
+    "BackEnd/src/main/java/com/sgp/systemsgp/model/Enrollment.java": "727044556a3fe0383ea297bf73f92246c108fb27663fa2b12dd383a6e75ca2d4",
+    "BackEnd/src/main/java/com/sgp/systemsgp/model/CourseStudentMembership.java": "8b6b1c04506d0e90b2c440e10b78000a62a3f1c52d35500d623f70d5f77d59ae",
+    "BackEnd/src/main/java/com/sgp/systemsgp/repository/PracticeOfferingRepository.java": "eb68828e18cf8d87880db5f52b44af2fd711e864d36ae1ff6458ca95c881e7db",
+    "BackEnd/src/main/java/com/sgp/systemsgp/repository/EnrollmentRepository.java": "550775de1612b0df5a27d3d3d984d81d02f393c9127a63738fdd4ba1fd2662a5",
+    "BackEnd/src/main/java/com/sgp/systemsgp/repository/AccountRepository.java": "420e7769f6239d68c364b7995d49c019b355347f49635219fb7525dc95c013cc",
+    "BackEnd/src/main/java/com/sgp/systemsgp/repository/CourseRepository.java": "24b785bcfcbfc5fee9c0089e51ecd5fd16cccbb1c3d4bca51426039e3c9577ea",
+    "BackEnd/src/main/java/com/sgp/systemsgp/repository/CourseStudentMembershipRepository.java": "1e06318bb102d88dc6ec722cf4f85b7ce27d139b591a3ad369bc22e0ad4cb74a",
+    "BackEnd/src/main/java/com/sgp/systemsgp/service/PracticeOfferingService.java": "251f2fbbf725afd20d2274b3dcfe4556e108605a9c9901126e6cfbcdb7a03008",
+    "BackEnd/src/main/java/com/sgp/systemsgp/service/EnrollmentService.java": "353e5c46a466b90ea930f5827d08aa021c33c05fd67ecad9c9ce330935731c14",
+    "BackEnd/src/main/java/com/sgp/systemsgp/service/CourseMembershipService.java": "98dfbcdd73bf6c1bdc0f87d3d1499b4e6c1929a452097a07b58f595ce2f9e5e7",
+    "BackEnd/src/main/java/com/sgp/systemsgp/service/PracticePeriod.java": "c711ea624859b73764933dc85554e81df16e6effe2f211dde899000c14d8fe37",
+    "BackEnd/src/main/java/com/sgp/systemsgp/service/PracticeCompletionService.java": "aff92eb6b7632409fa7d118d1bb66d3ebeba8a2fd13f30fff754116c1fc2cefb",
+    "BackEnd/src/main/java/com/sgp/systemsgp/service/ActivityPlanService.java": "3ec4a3c165d034d8b751464aa4576bc0d723fe4c787f0fb8a097ad1a9e0c28ae",
+    "BackEnd/src/main/java/com/sgp/systemsgp/service/PracticeReportService.java": "3360a78a75f2037fcac200a03095d967945309a9f9fafb364b2668bfa0cc2757",
+    "BackEnd/src/main/java/com/sgp/systemsgp/service/FinalReportService.java": "15620d2b2532c0d2609fb9ff612f1f97ec57459f20e5f9492910c479bc31ce83",
+    "BackEnd/src/main/java/com/sgp/systemsgp/service/NotificationService.java": "3da0f4fae901ae0934754e01d9a0cd819b0ec397ad688d17f8cbbf58b490583a",
+    "BackEnd/src/main/java/com/sgp/systemsgp/config/SecurityConfig.java": "c9d34be3db873ab71152cf41c9c66d7c79d7dc0de534c13a98b05783e1dbb7bc",
+    "BackEnd/src/main/java/com/sgp/systemsgp/controller/EnrollmentController.java": "73757ced9cf4f780e7df5964efe00599cac8116b252fe42dd351c72fdf4de6ad",
+    "BackEnd/src/main/java/com/sgp/systemsgp/controller/PracticeOfferingController.java": "342debcd1a32e09e2913d5f6fc2c2648471bf00c3415f0f1dc083da92973b0d4",
+    "BackEnd/src/main/java/com/sgp/systemsgp/dto/enrollment/EnrollmentResponse.java": "1f1e46cda3f1c7f56e07bf4f5ff047c156b276c471371717f8a766404da86d97",
+    "BackEnd/src/main/java/com/sgp/systemsgp/dto/enrollment/PracticeOfferingResponse.java": "25dcc0f45229b1dbc10c56e6ca95525a4373e33aed2bd05964c8b8724e630f75",
+    "BackEnd/src/main/java/com/sgp/systemsgp/dto/enrollment/CreatePracticeOfferingRequest.java": "8e04802b2849cfd421bf0c2b1c3e74bf985dc8205112404601911e1d73077e1a",
+    "BackEnd/src/main/java/com/sgp/systemsgp/dto/enrollment/AssignStudentRequest.java": "b90fb043623ac6f1ceba6b0cab78e413d1ceea5737d0d7618c8e0b8c47da8c6a",
+    "BackEnd/src/main/resources/db/migration/V22__staff_assigned_practice_offerings.sql": "1f9f33985a51379c1db8d9d83f5ce130d31b9a7b05b3be97d48b07694b657d20",
+    "BackEnd/src/main/resources/db/migration/V23__one_active_parallel_per_cycle.sql": "8810f75867195242ac1ac622164cca4ef78b6042212c6964e5822d6c7eff98e1",
+    "FrontEnd/src/pages/CoursesPage.jsx": "11cedb93b610029c444b2528f203f4eeb94bd5819f485f6c9cb5eed57858bbb0",
+    "FrontEnd/src/pages/PracticeWorkspacePage.jsx": "685c33044a88d2a87c3a8c306af8bcbfebc7b44e734b247f7aa6abe791a49033",
+    "FrontEnd/src/pages/PracticeArchivePage.jsx": "c22af1fc9d9ed2aaf05556feb5e90f6e40cecc61697ba189b44e7be0692d2a03",
+    "FrontEnd/src/pages/PracticeFormsPage.jsx": "6a35cdfe00d4d0485eb5108c229b9e32d765779ff9b5f6a8576ccc6469cf8348",
+    "FrontEnd/src/pages/DidacticPlansPage.jsx": "4a6bc9eedcdbea0e1631170aedf09574de9dfd27ae252f4353af2c2626698233",
+    "FrontEnd/src/pages/PhotosPage.jsx": "c92b33615c82548f994d4e1e529ead2c5fc57f563979f1b80e8a1e4c1ff5c1bf",
+    "FrontEnd/src/components/CourseRoster.jsx": "59fc8a3ec73f02081478c028c6be56276b8688c76e3bb2513691421ba065afaf",
+    "FrontEnd/src/components/PracticeOfferingsPanel.jsx": "8fc3a7dce686b2dc0f6c7ca9de6d8d02a4aadbce3141b07cbc8881a05a563796",
+    "FrontEnd/src/components/EndpointConsole.jsx": "ff02cdbb3ca7d43ae4d59776918ec84bcf6446812325077b50f2db808caaaa53",
+    "FrontEnd/src/components/ui/EntitySelect.jsx": "6ba179efa53050768e30a38950210e66e80046423799ddf233433191fccfff50",
+    "FrontEnd/src/config/navigation.js": "eada7dacacd76561431e2fbf4655eccba6830412f96eccabaeacb62331c1042a",
+    "FrontEnd/src/config/roleExperience.js": "a0a53e7a5e4088ae7c47ed46b55d417db8be2fb625b80e18a72e943660650056",
+    "FrontEnd/src/utils/practiceExperience.js": "d9c0c3ad81911022360ac8781a3ac7f8336868e1f29e8e5a34b861fe4e4a56d0",
+    "FrontEnd/src/components/PracticeOfferingsPanel.test.jsx": "faf05e0de979123f7625731d48d9dcd7c2b097d6aa070f892493e1ba5d0d864b",
+    "FrontEnd/src/pages/PracticeWorkspacePage.test.jsx": "c9670a6c603406b8e376ad536a5bdaafb89d24fb1df39c37d3b985cc60c9dd8b",
+    "BackEnd/src/test/java/com/sgp/systemsgp/service/CourseMembershipWorkflowTest.java": "1001a603599e2c4056b8ceacdd7f99a62324432a010b7c56c9cd6c79bef3d730",
+    "BackEnd/src/test/java/com/sgp/systemsgp/service/MigrationChainMariaDbTest.java": "0715bb79e3e65e72f763ddb7de797c9763b8cb9a80454e4e632cd92fafbdceaa",
+    "BackEnd/src/test/java/com/sgp/systemsgp/service/EnrollmentServiceTest.java": "a8eed4fdc9d09279ba282daf4568a7939b7b476d853ad369d2c252f739847094",
+    "BackEnd/src/test/java/com/sgp/systemsgp/service/PracticeLifecycleIntegrityTest.java": "8fe62a3bbe1d368919fefaca4f6a1c4ef7ac8da92256501ae504060bea5fa381",
+    "BackEnd/src/test/java/com/sgp/systemsgp/service/RoleSeparationIntegrationTest.java": "889d4810dfecbaca920e64723945038e9f0c63bfb9a29e850c542712b97b6119",
+    "BackEnd/src/test/java/com/sgp/systemsgp/service/QaUserWorkflowsTest.java": "5229456cde53405f9780d78e44982fa2d246125a2000e7773dc1876dd8f0e730",
+    "docs/testing/qa/browser-staff-practice-assignment.cjs": "9bda41de1bc780716f0986100c7979a854bd061eed75494ae3f9bae2d991aa26",
+    "docs/testing/datos/cargar_demostracion.py": "680c845f54c6be94ac7da5022a2aa68f3dd31178286ea5cd4c98dcc60595e5ad"
+  }
+}

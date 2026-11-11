@@ -1,9 +1,23 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          EnrollmentController.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Expone las consultas y transiciones de estado de las inscripciones y prácticas.
+ */
+
 package com.sgp.systemsgp.controller;
 
 import com.sgp.systemsgp.dto.enrollment.ArchivePracticeBatchRequest;
 import com.sgp.systemsgp.dto.enrollment.EnrollmentResponse;
 
 import com.sgp.systemsgp.service.EnrollmentService;
+import com.sgp.systemsgp.service.PracticeCompletionService;
+import com.sgp.systemsgp.dto.enrollment.PracticeCompletionSummary;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,25 +34,12 @@ import java.util.List;
 public class EnrollmentController {
 
         private final EnrollmentService enrollmentService;
+        private final PracticeCompletionService practiceCompletionService;
 
-        /*
-         * INSCRIBIRSE A CURSO
-         */
-        @PostMapping("/api/courses/{courseId}/enroll")
-
-        @PreAuthorize("hasRole('ESTUDIANTE')")
-
-        public EnrollmentResponse enroll(
-
-                        Authentication authentication,
-
-                        @PathVariable Long courseId) {
-
-                return enrollmentService.enroll(
-
-                                authentication.getName(),
-
-                                courseId);
+        @GetMapping("/api/enrollments/{id}/completion-summary")
+        @PreAuthorize("hasRole('DIRECTOR_PRACTICAS')")
+        public PracticeCompletionSummary completionSummary(Authentication authentication, @PathVariable Long id) {
+                return practiceCompletionService.summary(authentication.getName(), id);
         }
 
         /*
@@ -193,24 +194,6 @@ public class EnrollmentController {
                                 authentication.getName(),
                                 id,
                                 groupId);
-        }
-
-        /*
-         * CANCELAR MI INSCRIPCIÓN
-         */
-        @DeleteMapping("/api/enrollments/{id}")
-
-        @PreAuthorize("hasRole('ESTUDIANTE')")
-
-        public void cancel(
-
-                        Authentication authentication,
-
-                        @PathVariable Long id) {
-
-                enrollmentService.cancel(
-                                id,
-                                authentication.getName());
         }
 
         /*

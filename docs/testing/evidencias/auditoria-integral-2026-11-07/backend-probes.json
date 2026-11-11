@@ -1,0 +1,47 @@
+{
+  "date": "2026-11-07",
+  "purpose": "Diagnostic probes assert desired rejection; failures reproduce current defects",
+  "totals": {
+    "tests": 7,
+    "failures": 7,
+    "errors": 0,
+    "skipped": 0
+  },
+  "probes": [
+    {
+      "name": "flywayResolvesMigrationVersionsWithoutDuplicates",
+      "result": "migration-resolution-fails",
+      "message": "Unexpected exception thrown: org.flywaydb.core.api.FlywayException: Found more than one migration with version 2\nOffenders:\n-> /home/cristhian/Escritorio/SGP/SGPv1/BackEnd/target/classes/db/migration/V2__feedback_review_cycle.sql (SQL)\n-> /home/cristhian/Escritorio/SGP/SGPv1/BackEnd/target/classes/db/migration/V2__add_pk_to_institution_education_levels.sql (SQL)"
+    },
+    {
+      "name": "rejectsAttendanceForAnArchivedPractice",
+      "result": "desired-rejection-not-enforced",
+      "message": "Range for response status value 200 expected:<CLIENT_ERROR> but was:<SUCCESSFUL>"
+    },
+    {
+      "name": "rejectsDidacticPlanUpdatesAfterPracticeIsArchived",
+      "result": "desired-rejection-not-enforced",
+      "message": "Range for response status value 200 expected:<CLIENT_ERROR> but was:<SUCCESSFUL>"
+    },
+    {
+      "name": "rejectsTextUploadedAsAnEvidencePng",
+      "result": "desired-rejection-not-enforced",
+      "message": "Range for response status value 200 expected:<CLIENT_ERROR> but was:<SUCCESSFUL>"
+    },
+    {
+      "name": "rejectsDidacticPlanCreationForInactiveCourse",
+      "result": "desired-rejection-not-enforced",
+      "message": "Range for response status value 200 expected:<CLIENT_ERROR> but was:<SUCCESSFUL>"
+    },
+    {
+      "name": "rejectsAttendanceOutsideScheduleDateRange",
+      "result": "desired-rejection-not-enforced",
+      "message": "Range for response status value 200 expected:<CLIENT_ERROR> but was:<SUCCESSFUL>"
+    },
+    {
+      "name": "allowsClearingOptionalPeriodCount",
+      "result": "desired-rejection-not-enforced",
+      "message": "Expected no value at JSON path \"$.periods\" but found: 4"
+    }
+  ]
+}

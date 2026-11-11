@@ -1,3 +1,29 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          ProfilePage.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Presenta los datos de la cuenta y las opciones de actualización del perfil.
+ */
+
+import { SessionControls } from '../components/SessionControls';
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          ProfilePage.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Presenta los datos de la cuenta y las opciones de actualización del perfil.
+ */
+
+import { fetchAllPages } from '../utils/pagination';
 import { useEffect, useMemo, useState } from 'react';
 import { BookOpen, Building2, GraduationCap, KeyRound, Layers, Save, UsersRound } from 'lucide-react';
 import { apiRequest, toQuery, unwrapPage } from '../api/client';
@@ -9,7 +35,6 @@ import { Modal } from '../components/ui/Modal';
 import { ModuleTab, ModuleTabs } from '../components/ui/ModuleTabs';
 import { PageHeader } from '../components/ui/PageHeader';
 import { SectionCard } from '../components/ui/SectionCard';
-import { DataInspector } from '../components/DataInspector';
 import { Avatar } from '../components/Avatar';
 import { formatRole, joinText } from '../utils/format';
 
@@ -68,7 +93,7 @@ export function ProfilePage() {
         }
 
         if (isPracticeTutor) {
-          const payload = await apiRequest(`/api/courses/search${toQuery({
+          const payload = await fetchAllPages(apiRequest, `/api/courses/search${toQuery({
             active: true,
             practiceTutor: profile.username,
             size: 200,
@@ -182,7 +207,7 @@ export function ProfilePage() {
             ['summary', 'Resumen'],
             ['profile', 'Datos personales'],
             ['password', 'Contraseña'],
-            ['detail', 'Detalle'],
+            ['detail', 'Mi información'],
           ].map(([id, label]) => (
             <ModuleTab
               active={activeView === id}
@@ -222,7 +247,7 @@ export function ProfilePage() {
                 <ProfileMetric icon={Building2} index={0} label="Facultad" value={profile?.faculty} />
                 <ProfileMetric icon={GraduationCap} index={1} label="Carrera" value={profile?.career} />
                 <ProfileMetric icon={BookOpen} index={2} label={profile?.academicCycle ? 'Ciclo' : 'Grado'} value={profile?.academicCycle || profile?.grade} />
-                <ProfileMetric icon={Building2} index={3} label="Institucion" value={profile?.academicInstitution || profile?.institution} />
+                <ProfileMetric icon={Building2} index={3} label="Institución" value={profile?.academicInstitution || profile?.institution} />
               </div>
             </div>
           </SectionCard>
@@ -262,7 +287,7 @@ export function ProfilePage() {
                 }
               />
             </Field>
-            <Field label="Telefono">
+            <Field label="Teléfono">
               <Input
                 value={profileForm.phone}
                 onChange={(event) =>
@@ -270,7 +295,7 @@ export function ProfilePage() {
                 }
               />
             </Field>
-            <Field label="Direccion">
+            <Field label="Dirección">
               <Input
                 value={profileForm.address}
                 onChange={(event) =>
@@ -343,10 +368,13 @@ export function ProfilePage() {
       </Modal>
 
       {activeView === 'detail' && (
-        <SectionCard title="Detalle de cuenta">
-          <DataInspector data={profile} />
+        <SectionCard title="Información de mi cuenta">
+          <dl className="grid gap-4 sm:grid-cols-2">
+            {[['Usuario', profile?.username], ['Nombre', joinText(profile?.names, profile?.lastNames)], ['Correo institucional', profile?.institutionalEmail], ['Universidad', profile?.academicInstitution], ['Institución', profile?.institution], ['Carrera', profile?.career], ['Ciclo académico', profile?.academicCycle], ['Funciones', roles.map(formatRole).join(', ')]].filter(([, value]) => value).map(([label, value]) => <div key={label}><dt className="text-xs text-muted">{label}</dt><dd className="mt-1 break-words text-sm text-heading">{value}</dd></div>)}
+          </dl>
         </SectionCard>
       )}
+      <SessionControls />
     </>
   );
 }
@@ -389,17 +417,17 @@ function MembershipSummary({ courses, currentEnrollment, enrollments, error, pro
 
   if (isStudent) {
     return (
-      <SectionCard title="Mi pertenencia academica y de practica">
+      <SectionCard title="Mi pertenencia académica y de práctica">
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
           <ProfileInfo icon={GraduationCap} index={0} label="Facultad" value={profile?.faculty} />
           <ProfileInfo icon={GraduationCap} index={1} label="Carrera" value={profile?.career} />
           <ProfileInfo icon={BookOpen} index={2} label="Asignatura" value={currentEnrollment?.subjectName} />
           <ProfileInfo icon={BookOpen} index={3} label="Paralelo" value={currentEnrollment?.courseName} />
           <ProfileInfo icon={Layers} index={4} label="Grupo" value={currentEnrollment?.groupName} />
-          <ProfileInfo icon={Building2} index={0} label="Institucion de practica" value={currentEnrollment?.educationalInstitutionName} />
-          <ProfileInfo icon={UsersRound} index={1} label="Tutor de practicas" value={currentEnrollment?.practiceTutor} />
+          <ProfileInfo icon={Building2} index={0} label="Institución de práctica" value={currentEnrollment?.educationalInstitutionName} />
+          <ProfileInfo icon={UsersRound} index={1} label="Tutor de prácticas" value={currentEnrollment?.practiceTutor} />
           <ProfileInfo icon={UsersRound} index={2} label="Tutor institucional" value={currentEnrollment?.institutionalTutor} />
-          <ProfileInfo index={3} label="Estado de inscripcion" value={formatEnrollmentStatus(currentEnrollment?.status)} />
+          <ProfileInfo index={3} label="Estado de inscripción" value={formatEnrollmentStatus(currentEnrollment?.status)} />
         </div>
       </SectionCard>
     );
@@ -422,7 +450,7 @@ function MembershipSummary({ courses, currentEnrollment, enrollments, error, pro
             ))}
           </div>
         ) : (
-          <p className="text-sm font-semibold text-body">Aun no tienes paralelos asignados.</p>
+          <p className="text-sm font-semibold text-body">Aún no tienes paralelos asignados.</p>
         )}
       </SectionCard>
     );
@@ -430,9 +458,9 @@ function MembershipSummary({ courses, currentEnrollment, enrollments, error, pro
 
   if (isInstitutionalTutor || isInstitutionDirector || isPracticeDirector || isAdmin) {
     return (
-      <SectionCard title="Alcance de practica">
+      <SectionCard title="Alcance de práctica">
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-          <ProfileInfo icon={Building2} index={0} label="Institucion vinculada" value={profile?.institution} />
+          <ProfileInfo icon={Building2} index={0} label="Institución vinculada" value={profile?.institution} />
           <ProfileInfo icon={UsersRound} index={1} label="Estudiantes relacionados" value={enrollments.length || null} />
           <ProfileInfo icon={BookOpen} index={2} label="Paralelos relacionados" value={countUnique(enrollments, 'courseId') || null} />
           <ProfileInfo icon={Layers} index={3} label="Grupos relacionados" value={countUnique(enrollments, 'groupId') || null} />

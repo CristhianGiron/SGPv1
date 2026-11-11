@@ -1,0 +1,800 @@
+{
+  "date": "2026-11-01",
+  "mode": "Browser with isolated API fixtures; not live API authorization",
+  "routes": 113,
+  "interactions": 3,
+  "errors": [],
+  "results": [
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "route": "practices",
+      "label": "Prácticas",
+      "heading": "Mis prácticas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "route": "dashboard",
+      "label": "Inicio",
+      "heading": "Mis prácticas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "route": "notifications",
+      "label": "Notificaciones",
+      "heading": "Tus notificaciones",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "route": "profile",
+      "label": "Perfil",
+      "heading": "Usuario QA Pruebas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "route": "photos",
+      "label": "Evidencias",
+      "heading": "Evidencias fotograficas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "route": "forms",
+      "label": "Entrevistas",
+      "heading": "Entrevistas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "route": "observation-forms",
+      "label": "Fichas de observación",
+      "heading": "Fichas de observación",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "route": "courses",
+      "label": "Paralelos y prácticas",
+      "heading": "Paralelos disponibles y mis prácticas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "route": "practice-archive",
+      "label": "Archivo de prácticas",
+      "heading": "Archivo de prácticas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "route": "didactic-plans",
+      "label": "Planificaciones didácticas",
+      "heading": "Planificaciones didácticas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "route": "documents",
+      "label": "Documentos de práctica",
+      "heading": "Documentos y reportes",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "route": "documents/practice-reports",
+      "label": "L.1. Informe de Actividades Cumplidas",
+      "heading": "L.1. Informe de Actividades Cumplidas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "route": "documents/activity-plans",
+      "label": "L.2. Plan de Actividades",
+      "heading": "L.2. Plan de Actividades",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "route": "documents/final-reports",
+      "label": "L.3. Informe Tutor Institucional",
+      "heading": "L.3. Informe Tutor Institucional",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "route": "documents/activity-evaluations",
+      "label": "L.4. Evaluación de Actividades",
+      "heading": "L.4. Evaluación de Actividades",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "route": "documents/follow-up",
+      "label": "L.5. Reporte de Seguimiento",
+      "heading": "L.5. Reporte de Seguimiento",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "route": "documents/completed-records",
+      "label": "L.6. Registro de Actividades Cumplidas",
+      "heading": "L.6. Registro de Actividades Cumplidas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "route": "schedules",
+      "label": "Jornadas y asistencias",
+      "heading": "Mis jornadas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "practices",
+      "label": "Prácticas",
+      "heading": "Paralelos y estudiantes",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "overview",
+      "label": "Resumen de seguimiento",
+      "heading": "Hola, Usuario QA",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "dashboard",
+      "label": "Inicio",
+      "heading": "Tutoría de prácticas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "notifications",
+      "label": "Notificaciones",
+      "heading": "Tus notificaciones",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "profile",
+      "label": "Perfil",
+      "heading": "Usuario QA Pruebas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "photos",
+      "label": "Evidencias",
+      "heading": "Evidencias fotograficas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "forms",
+      "label": "Entrevistas",
+      "heading": "Entrevistas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "observation-forms",
+      "label": "Fichas de observación",
+      "heading": "Fichas de observación",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "courses",
+      "label": "Paralelos y prácticas",
+      "heading": "Paralelos y prácticas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "practice-archive",
+      "label": "Archivo de prácticas",
+      "heading": "Archivo de prácticas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "didactic-plans",
+      "label": "Planificaciones didácticas",
+      "heading": "Planificaciones didácticas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "documents",
+      "label": "Documentos de práctica",
+      "heading": "Documentos y reportes",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "documents/practice-reports",
+      "label": "L.1. Informe de Actividades Cumplidas",
+      "heading": "L.1. Informe de Actividades Cumplidas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "documents/activity-plans",
+      "label": "L.2. Plan de Actividades",
+      "heading": "L.2. Plan de Actividades",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "documents/final-reports",
+      "label": "L.3. Informe Tutor Institucional",
+      "heading": "L.3. Informe Tutor Institucional",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "documents/activity-evaluations",
+      "label": "L.4. Evaluación de Actividades",
+      "heading": "L.4. Evaluación de Actividades",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "documents/follow-up",
+      "label": "L.5. Reporte de Seguimiento",
+      "heading": "L.5. Reporte de Seguimiento",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "documents/completed-records",
+      "label": "L.6. Registro de Actividades Cumplidas",
+      "heading": "L.6. Registro de Actividades Cumplidas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "route": "schedules",
+      "label": "Jornadas y asistencias",
+      "heading": "Jornadas y asistencias",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_INSTITUCIONAL",
+      "route": "practices",
+      "label": "Prácticas",
+      "heading": "Mis estudiantes asignados",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_INSTITUCIONAL",
+      "route": "overview",
+      "label": "Resumen de seguimiento",
+      "heading": "Hola, Usuario QA",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_INSTITUCIONAL",
+      "route": "dashboard",
+      "label": "Inicio",
+      "heading": "Tutoría institucional",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_INSTITUCIONAL",
+      "route": "notifications",
+      "label": "Notificaciones",
+      "heading": "Tus notificaciones",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_INSTITUCIONAL",
+      "route": "profile",
+      "label": "Perfil",
+      "heading": "Usuario QA Pruebas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_INSTITUCIONAL",
+      "route": "photos",
+      "label": "Evidencias",
+      "heading": "Evidencias fotograficas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_INSTITUCIONAL",
+      "route": "forms",
+      "label": "Entrevistas",
+      "heading": "Entrevistas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_INSTITUCIONAL",
+      "route": "practice-archive",
+      "label": "Archivo de prácticas",
+      "heading": "Archivo de prácticas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_INSTITUCIONAL",
+      "route": "didactic-plans",
+      "label": "Planificaciones didácticas",
+      "heading": "Planificaciones didácticas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_INSTITUCIONAL",
+      "route": "documents",
+      "label": "Documentos de práctica",
+      "heading": "Documentos y reportes",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_INSTITUCIONAL",
+      "route": "documents/final-reports",
+      "label": "L.3. Informe Tutor Institucional",
+      "heading": "L.3. Informe Tutor Institucional",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_TUTOR_INSTITUCIONAL",
+      "route": "schedules",
+      "label": "Jornadas y asistencias",
+      "heading": "Jornadas y asistencias",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTORA_INSTITUCION",
+      "route": "institution-work",
+      "label": "Mis estudiantes institucionales",
+      "heading": "Mi institución",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTORA_INSTITUCION",
+      "route": "practices",
+      "label": "Prácticas",
+      "heading": "Mi institución",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTORA_INSTITUCION",
+      "route": "dashboard",
+      "label": "Inicio",
+      "heading": "Mi institución",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTORA_INSTITUCION",
+      "route": "notifications",
+      "label": "Notificaciones",
+      "heading": "Tus notificaciones",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTORA_INSTITUCION",
+      "route": "profile",
+      "label": "Perfil",
+      "heading": "Usuario QA Pruebas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTORA_INSTITUCION",
+      "route": "forms",
+      "label": "Entrevistas",
+      "heading": "Entrevistas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTORA_INSTITUCION",
+      "route": "schedules",
+      "label": "Jornadas y asistencias",
+      "heading": "Jornadas y asistencias",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "practices",
+      "label": "Prácticas",
+      "heading": "Paralelos y estudiantes",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "overview",
+      "label": "Resumen de seguimiento",
+      "heading": "Hola, Usuario QA",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "dashboard",
+      "label": "Inicio",
+      "heading": "Coordinación de prácticas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "notifications",
+      "label": "Notificaciones",
+      "heading": "Tus notificaciones",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "profile",
+      "label": "Perfil",
+      "heading": "Usuario QA Pruebas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "photos",
+      "label": "Evidencias",
+      "heading": "Evidencias fotograficas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "forms",
+      "label": "Entrevistas",
+      "heading": "Entrevistas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "observation-forms",
+      "label": "Fichas de observación",
+      "heading": "Fichas de observación",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "courses",
+      "label": "Paralelos y prácticas",
+      "heading": "Paralelos y prácticas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "practice-archive",
+      "label": "Archivo de prácticas",
+      "heading": "Archivo de prácticas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "didactic-plans",
+      "label": "Planificaciones didácticas",
+      "heading": "Planificaciones didácticas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "documents",
+      "label": "Documentos de práctica",
+      "heading": "Documentos y reportes",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "documents/practice-reports",
+      "label": "L.1. Informe de Actividades Cumplidas",
+      "heading": "L.1. Informe de Actividades Cumplidas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "documents/activity-plans",
+      "label": "L.2. Plan de Actividades",
+      "heading": "L.2. Plan de Actividades",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "documents/final-reports",
+      "label": "L.3. Informe Tutor Institucional",
+      "heading": "L.3. Informe Tutor Institucional",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "documents/completed-records",
+      "label": "L.6. Registro de Actividades Cumplidas",
+      "heading": "L.6. Registro de Actividades Cumplidas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "schedules",
+      "label": "Jornadas y asistencias",
+      "heading": "Jornadas y asistencias",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "institutions",
+      "label": "Instituciones de práctica",
+      "heading": "Centros de prácticas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "institutions/institutions",
+      "label": "Instituciones",
+      "heading": "Centros de prácticas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "universities",
+      "label": "Universidades",
+      "heading": "Estructura académica",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "universities/universities",
+      "label": "Universidades",
+      "heading": "Estructura académica",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "universities/faculties",
+      "label": "Facultades",
+      "heading": "Facultades",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "universities/careers",
+      "label": "Carreras",
+      "heading": "Carreras",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "universities/academic-cycles",
+      "label": "Ciclos académicos",
+      "heading": "Ciclos académicos",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "universities/university-subjects",
+      "label": "Asignaturas universitarias",
+      "heading": "Asignaturas universitarias",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_DIRECTOR_PRACTICAS",
+      "route": "reports",
+      "label": "Seguimiento",
+      "heading": "Seguimiento general",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "practices",
+      "label": "Prácticas",
+      "heading": "Paralelos y estudiantes",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "overview",
+      "label": "Resumen de seguimiento",
+      "heading": "Hola, Usuario QA",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "dashboard",
+      "label": "Inicio",
+      "heading": "Administración",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "notifications",
+      "label": "Notificaciones",
+      "heading": "Tus notificaciones",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "profile",
+      "label": "Perfil",
+      "heading": "Usuario QA Pruebas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "photos",
+      "label": "Evidencias",
+      "heading": "Evidencias fotograficas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "forms",
+      "label": "Entrevistas",
+      "heading": "Entrevistas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "observation-forms",
+      "label": "Fichas de observación",
+      "heading": "Fichas de observación",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "courses",
+      "label": "Paralelos y prácticas",
+      "heading": "Paralelos y prácticas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "practice-archive",
+      "label": "Archivo de prácticas",
+      "heading": "Archivo de prácticas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "didactic-plans",
+      "label": "Planificaciones didácticas",
+      "heading": "Planificaciones didácticas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "documents",
+      "label": "Documentos de práctica",
+      "heading": "Documentos y reportes",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "documents/practice-reports",
+      "label": "L.1. Informe de Actividades Cumplidas",
+      "heading": "L.1. Informe de Actividades Cumplidas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "documents/activity-plans",
+      "label": "L.2. Plan de Actividades",
+      "heading": "L.2. Plan de Actividades",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "documents/final-reports",
+      "label": "L.3. Informe Tutor Institucional",
+      "heading": "L.3. Informe Tutor Institucional",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "documents/completed-records",
+      "label": "L.6. Registro de Actividades Cumplidas",
+      "heading": "L.6. Registro de Actividades Cumplidas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "schedules",
+      "label": "Jornadas y asistencias",
+      "heading": "Jornadas y asistencias",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "institutions",
+      "label": "Instituciones de práctica",
+      "heading": "Centros de prácticas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "institutions/institutions",
+      "label": "Instituciones",
+      "heading": "Centros de prácticas",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "institutions/grades",
+      "label": "Grados",
+      "heading": "Grados",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "institutions/grade-parallels",
+      "label": "Paralelos",
+      "heading": "Paralelos",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "institutions/practice-subjects",
+      "label": "Asignaturas de práctica",
+      "heading": "Asignaturas de práctica",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "universities",
+      "label": "Universidades",
+      "heading": "Estructura académica",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "universities/universities",
+      "label": "Universidades",
+      "heading": "Estructura académica",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "universities/faculties",
+      "label": "Facultades",
+      "heading": "Facultades",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "universities/careers",
+      "label": "Carreras",
+      "heading": "Carreras",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "universities/academic-cycles",
+      "label": "Ciclos académicos",
+      "heading": "Ciclos académicos",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "universities/university-subjects",
+      "label": "Asignaturas universitarias",
+      "heading": "Asignaturas universitarias",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "reports",
+      "label": "Seguimiento",
+      "heading": "Seguimiento general",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "accounts",
+      "label": "Usuarios",
+      "heading": "Gestionar usuarios",
+      "overflow": false
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "route": "locations",
+      "label": "Territorio",
+      "heading": "Territorio",
+      "overflow": false
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "mode": "Chrome; API simulada",
+  "checks": [
+    {
+      "theme": "light",
+      "width": 390,
+      "serverTotal": 205,
+      "displayedBeforeSearch": "200 de 200 usuarios",
+      "expected": "Persona 205 debe encontrarse",
+      "observedMissing": true,
+      "overflow": false,
+      "body": "ADMINISTRACIÓN\n\nEstudiante\n\nAbre una cuenta para gestionar su acceso, o crea una cuenta del tipo seleccionado.\n\nAyuda\nVolver a tipos de usuario\nBuscar\nFiltros (1)\nLimpiar\nActualizar\nCrear usuario\n\n0 de 200 usuarios\n\nUsuarios\n\nAun no hay usuarios registrados.",
+      "found205": false
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "serverTotal": 205,
+      "displayedBeforeSearch": "200 de 200 usuarios",
+      "expected": "Persona 205 debe encontrarse",
+      "observedMissing": true,
+      "overflow": false,
+      "body": "ADMINISTRACIÓN\n\nEstudiante\n\nAbre una cuenta para gestionar su acceso, o crea una cuenta del tipo seleccionado.\n\nAyuda\nVolver a tipos de usuario\nBuscar\nFiltros (1)\nLimpiar\nActualizar\nCrear usuario\n\n0 de 200 usuarios\n\nUsuarios\n\nAun no hay usuarios registrados.",
+      "found205": false
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,17 @@
+{
+  "mode": "Isolated API fixtures",
+  "checks": [
+    "Student practice overview desktop",
+    "Student practice overview mobile",
+    "Partial API failure is explicit",
+    "Guided form local draft survives reload and recovery",
+    "Student weekly agenda",
+    "Student agenda retains attendance table",
+    "Tutor feedback remains editable inside accordion",
+    "Tutor split review desktop",
+    "Tutor split review mobile",
+    "Institutional tutor split review",
+    "Institution director agenda uses authorized source"
+  ],
+  "errors": []
+}

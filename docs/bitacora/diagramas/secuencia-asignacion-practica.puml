@@ -1,0 +1,36 @@
+@startuml
+/'
+  @institucion   Universidad Nacional de Loja
+  @carrera       Pedagogía de las Ciencias Experimentales - Informática
+  @asignatura    Programación Web
+  @docente       Johnny H. Sánchez L.
+  @proyecto      Sistema de Gestión de Prácticas (SGP)
+  @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+  @file          secuencia-asignacion-practica.puml
+  @fecha         2026-11-10 21:24:04
+  @nota          Describe el diagrama de casos de uso del SGP mediante PlantUML.
+'/
+
+title SGP — Asignación administrativa de una práctica (síntesis)
+hide footbox
+autonumber
+skinparam shadowing false
+skinparam maxMessageSize 55
+actor "Personal autorizado" as A
+boundary "Pantalla" as UI
+control "Servicio SGP" as S
+database "Base de datos" as DB
+A -> UI : Seleccionar práctica, estudiante y grupo
+UI -> S : Solicitar inscripción administrativa
+S -> DB : Cargar práctica, paralelo y estudiante
+DB --> S : Datos y pertenencia académica
+S -> S : Validar ámbito, cupos, apertura y tutores
+S -> DB : Guardar inscripción APPROVED e historial
+DB --> S : Inscripción persistida
+S -> S : Generar notificación al estudiante
+S --> UI : Práctica habilitada
+UI --> A : Mostrar asignación confirmada
+note over A, DB
+Intervienen administración, dirección o tutor de prácticas dentro de su ámbito. Si no se cumplen pertenencia, cupos, apertura o tutores habilitados, se rechaza la asignación; el estudiante no se autoinscribe.
+end note
+@enduml

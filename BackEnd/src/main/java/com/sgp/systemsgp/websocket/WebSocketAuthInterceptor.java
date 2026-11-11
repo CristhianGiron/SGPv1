@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          WebSocketAuthInterceptor.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa el componente WebSocketAuthInterceptor del backend del SGP.
+ */
+
 package com.sgp.systemsgp.websocket;
 
 import com.sgp.systemsgp.config.JwtService;
@@ -23,6 +35,7 @@ import java.util.Map;
 public class WebSocketAuthInterceptor implements HandshakeInterceptor {
 
     private final JwtService jwtService;
+    private final com.sgp.systemsgp.service.AuthSessionService authSessions;
     private final CustomUserDetailsService userDetailsService;
 
     @Override
@@ -36,11 +49,7 @@ public class WebSocketAuthInterceptor implements HandshakeInterceptor {
         String token = extractTokenFromQuery(query);
         var origin = request.getHeaders().getOrigin();
         var protocols = request.getHeaders().get("Sec-WebSocket-Protocol");
-        log.debug("WebSocket handshake origin={}, protocols={}, query={}, tokenPresent={}",
-                origin,
-                protocols,
-                query,
-                token != null && !token.isBlank());
+        log.debug("WebSocket handshake origin={}, tokenPresent={}",origin,token!=null&&!token.isBlank());
 
         if ((token == null || token.isBlank()) && request instanceof ServletServerHttpRequest servletRequest) {
             List<String> authHeaders = servletRequest.getServletRequest().getHeaders("Authorization") != null
@@ -73,12 +82,13 @@ public class WebSocketAuthInterceptor implements HandshakeInterceptor {
             }
 
             var userDetails = userDetailsService.loadUserByUsername(username);
-            if (!jwtService.isValid(token, userDetails)) {
+            if (!jwtService.isValid(token, userDetails) || !authSessions.isAccessAllowed(token)) {
                 log.warn("WebSocket handshake rejected because token validation failed for username={}", username);
                 return false;
             }
 
             attributes.put("username", username);
+            attributes.put("accessToken", token);
             log.info("WebSocket handshake accepted for username={}", username);
             return true;
         } catch (JwtException | IllegalArgumentException ex) {

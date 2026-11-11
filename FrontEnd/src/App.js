@@ -1,3 +1,18 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          App.js
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Compone la aplicación web y resuelve las rutas según la sesión y los permisos del usuario.
+ */
+
+import { StaffHomePage } from './pages/StaffHomePage';
+import { InstitutionWorkPage } from './pages/InstitutionWorkPage';
+import { PracticeWorkspacePage } from './pages/PracticeWorkspacePage';
 /**
  * APP.JS - Componente Raíz de la Aplicación
  * 
@@ -12,6 +27,7 @@
  * - Si no: muestra LoginPage o RegisterPage
  * - Si sí: muestra AppLayout con la página correspondiente
  */
+import { InstitutionalProvider } from "./contexts/InstitutionalContext";
 import { AuthProvider, useAuth } from "./auth/AuthContext";
 import { canAccess, NAV_ITEMS } from "./config/navigation";
 import { AppLayout } from "./layout/AppLayout";
@@ -40,6 +56,7 @@ import { SectionCard } from "./components/ui/SectionCard";
 import { Skeleton } from "./components/ui/Skeleton";
 import { getBaseRoute, getNestedRoute, useHashRoute } from "./utils/routes";
 import AccessibilityWidget from "./components/accessibility/AccessibilityWidget";
+import { useButtonTooltips } from "./hooks/useButtonTooltips";
 
 /**
  * Mapeo de rutas a componentes
@@ -48,7 +65,10 @@ import AccessibilityWidget from "./components/accessibility/AccessibilityWidget"
  * Ejemplo: #/dashboard → renderiza DashboardPage
  */
 const PAGES = {
-  dashboard: DashboardPage,
+  dashboard: StaffHomePage,
+  "institution-work": InstitutionWorkPage,
+  practices: PracticeWorkspacePage,
+  overview: DashboardPage,
   notifications: NotificationsPage,
   profile: ProfilePage,
   photos: PhotosPage,
@@ -128,7 +148,7 @@ function AppShell() {
           <Skeleton lines={5} />
         </SectionCard>
       ) : (
-        <Page activeModuleId={safeRouteChild} />
+        <Page key={safeRoute} route={route} activeModuleId={safeRouteChild} />
       )}
     </AppLayout>
   );
@@ -139,13 +159,17 @@ function AppShell() {
  * Envuelve todo con AuthProvider para proporcionar autenticación global
  */
 function App() {
+  useButtonTooltips();
+
   return (
+    <InstitutionalProvider>
     <AuthProvider>
       <ConfirmProvider>
         <AppShell />
         <AccessibilityWidget />
       </ConfirmProvider>
     </AuthProvider>
+    </InstitutionalProvider>
   );
 }
 

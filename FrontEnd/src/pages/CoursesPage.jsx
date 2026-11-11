@@ -1,3 +1,24 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          CoursesPage.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Permite gestionar los paralelos, sus prácticas, estudiantes, grupos y asignaciones autorizadas.
+ */
+
+import { PracticeOfferingsPanel } from '../components/PracticeOfferingsPanel';
+import { CourseRoster } from '../components/CourseRoster';
+import { practiceCompletionConfirmation } from '../utils/practiceCompletion';
+import { fetchAllPages } from '../utils/pagination';
+import { EntityImage, EntityImagePicker, entityImagePayload } from '../components/ui/EntityImage';
+import { workspaceRoute } from '../config/practiceWorkflow';
+import { setHashRoute } from '../utils/routes';
+import { useInstitutionalContext } from '../contexts/InstitutionalContext';
+import { workflowCopy } from '../config/roleExperience';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Ban,
@@ -32,17 +53,25 @@ import { booleanSelectValue, buildSelectOptions, matchesOpenSearch } from '../ut
 import { filterInactiveForNonAdmin } from '../utils/visibility';
 
 export function CoursesPage() {
+  const defaults = useInstitutionalContext();
   const { token, roles, profile } = useAuth();
   const confirm = useConfirm();
   const isAdmin = roles.includes('ROLE_ADMIN');
+  const canConclude = roles.includes('ROLE_DIRECTOR_PRACTICAS');
   const canManage = isAdmin || roles.includes('ROLE_DIRECTOR_PRACTICAS');
   const canPracticeTutor = roles.includes('ROLE_TUTOR_PRACTICAS');
   const canManageGroups = isAdmin || canPracticeTutor;
   const canUseCourse = canManage || canPracticeTutor;
-  const isStudent = roles.includes('ROLE_ESTUDIANTE');
+  const isStudent = roles.includes('ROLE_ESTUDIANTE') && !canUseCourse;
+  function defaultCourseForm() {
+    return { ...emptyCourseForm(), facultyId: isAdmin ? defaults.facultyId || '' : profile?.facultyId || '', careerId: isAdmin ? defaults.careerId || '' : profile?.careerId || '' };
+  }
+  const [coverFile, setCoverFile] = useState(null);
+  const [editCoverFile, setEditCoverFile] = useState(null);
   const [courses, setCourses] = useState([]);
   const [enrollments, setEnrollments] = useState([]);
   const [courseId, setCourseId] = useState('');
+  useEffect(() => { setEditCoverFile(null); }, [courseId]);
   const [accountId, setAccountId] = useState('');
   const [groups, setGroups] = useState([]);
   const [groupId, setGroupId] = useState('');
@@ -54,7 +83,7 @@ export function CoursesPage() {
     institutionalTutorId: '',
   });
   const [courseProfileForm, setCourseProfileForm] = useState(emptyCoursePracticeProfile());
-  const [form, setForm] = useState(() => emptyCourseForm());
+  const [form, setForm] = useState(() => defaultCourseForm());
   const [courseFilters, setCourseFilters] = useState({
     query: '',
     course: '',
@@ -70,28 +99,6 @@ export function CoursesPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [hashValue, setHashValue] = useState(() => window.location.hash);
-  const enrollmentByCourseId = useMemo(
-    () =>
-      new Map(
-        enrollments
-          .filter(isEnrollmentOperationallyActive)
-          .filter((enrollment) => enrollment.courseId !== undefined && enrollment.courseId !== null)
-          .map((enrollment) => [String(enrollment.courseId), enrollment])
-      ),
-    [enrollments]
-  );
-  const enrollmentByCourseName = useMemo(
-    () =>
-      new Map(
-        enrollments
-          .filter(isEnrollmentOperationallyActive)
-          .filter((enrollment) => enrollment.courseName)
-          .map((enrollment) => [normalizeCourseName(enrollment.courseName), enrollment])
-      ),
-    [enrollments]
-  );
-
-  // Calcular inscritos pendientes por paralelo
   const pendingEnrollmentsByCourse = useMemo(() => {
     const map = new Map();
     enrollments.forEach((enrollment) => {
@@ -108,6 +115,7 @@ export function CoursesPage() {
   );
 
   const loadData = useCallback(async () => {
+    if (!canUseCourse) return;
     setLoading(true);
     setError('');
 
@@ -120,7 +128,7 @@ export function CoursesPage() {
             size: 200,
           })}`;
 
-      const coursePayload = await apiRequest(
+      const coursePayload = await fetchAllPages(apiRequest,
         courseListPath,
         { token }
       );
@@ -130,15 +138,12 @@ export function CoursesPage() {
         : filterInactiveForNonAdmin(unwrapPage(coursePayload), roles);
       setCourses(canPracticeTutor && !canManage ? filterPracticeTutorCourses(loadedCourses, profile?.username) : loadedCourses);
 
-      if (isStudent) {
-        setEnrollments(filterInactiveForNonAdmin(await apiRequest('/api/enrollments/me', { token }), roles));
-      }
     } catch (requestError) {
       setError(requestError.message);
     } finally {
       setLoading(false);
     }
-  }, [token, roles, isAdmin, canManage, canPracticeTutor, isStudent, profile?.username]);
+  }, [token, roles, isAdmin, canManage, canPracticeTutor, canUseCourse, profile?.username]);
 
   useEffect(() => {
     loadData();
@@ -197,7 +202,7 @@ export function CoursesPage() {
     event.preventDefault();
 
     if (!form.academicCycleId) {
-      setError('Selecciona la carrera y el ciclo academico del paralelo');
+      setError('Selecciona la carrera y el ciclo académico del paralelo');
       setMessage('');
       return;
     }
@@ -210,11 +215,12 @@ export function CoursesPage() {
       await apiRequest('/api/courses', {
         method: 'POST',
         token,
-        body: cleanCoursePayload(form),
+        body: entityImagePayload(cleanCoursePayload(form), coverFile),
       });
-      setForm(emptyCourseForm());
+      setForm(defaultCourseForm());
       await loadData();
       setActiveView('courses');
+      setCoverFile(null);
       setMessage('Paralelo creado');
     } catch (requestError) {
       setError(requestError.message);
@@ -228,6 +234,12 @@ export function CoursesPage() {
   }
 
   async function runCourseAction(path, method = 'PATCH', confirmation = courseActionConfirmation()) {
+    try {
+      confirmation = await practiceCompletionConfirmation(path, confirmation, token);
+    } catch (requestError) {
+      setError(requestError.message);
+      return false;
+    }
     if (confirmation) {
       const accepted = await confirm(confirmation);
 
@@ -249,7 +261,7 @@ export function CoursesPage() {
           return;
         }
       }
-      setMessage('Accion ejecutada');
+      setMessage('Acción ejecutada');
       return true;
     } catch (requestError) {
       setError(requestError.message);
@@ -282,7 +294,7 @@ export function CoursesPage() {
 
     const accepted = await confirm(courseActionConfirmation({
       title: enrollment.groupId ? 'Cambiar grupo del estudiante' : 'Asignar estudiante a grupo',
-      description: 'Esta accion actualizara la organizacion del estudiante dentro del paralelo.',
+      description: 'Esta acción actualizara la organización del estudiante dentro del paralelo.',
       details: enrollment.student || enrollment.studentFullName || enrollment.courseName || '',
       confirmLabel: enrollment.groupId ? 'Cambiar grupo' : 'Asignar grupo',
       tone: 'warning',
@@ -311,6 +323,17 @@ export function CoursesPage() {
     } finally {
       setLoading(false);
     }
+  }
+
+  async function updateCover(remove = false) {
+    if (!courseId || (!remove && !editCoverFile)) return;
+    if (remove && !await confirm({ title: 'Quitar portada', description: 'Las prácticas usarán la imagen predeterminada.', confirmLabel: 'Quitar portada', tone: 'danger' })) return;
+    setLoading(true);setError('');
+    try {
+      const body = new FormData();if (editCoverFile) body.append('image', editCoverFile);
+      await apiRequest(`/api/courses/${courseId}/cover`, { method: remove ? 'DELETE' : 'PUT', token, ...(remove ? {} : { body }) });
+      setEditCoverFile(null);await loadData();setMessage(remove ? 'Portada retirada.' : 'Portada actualizada.');
+    } catch (error) { setError(error.message); } finally { setLoading(false); }
   }
 
   async function createCourseGroup(event) {
@@ -376,15 +399,12 @@ export function CoursesPage() {
     }
   }
 
-  const showActionsColumn = courses.some((row) => {
-    const studentAction = isStudent && !hasEnrollmentForCourse(row, enrollmentByCourseId, enrollmentByCourseName);
-    return studentAction || canUseCourse;
-  });
+  const showActionsColumn = courses.length > 0 && canUseCourse;
 
   const columns = [
-    { key: 'id', header: 'ID' },
-    { key: 'name', header: 'Paralelo' },
-    { key: 'code', header: 'Codigo' },
+    !isStudent && { key: 'id', header: 'ID' },
+    { key: 'name', header: 'Paralelo', render: row => <div className="flex items-center gap-3"><EntityImage path={row.coverImageUrl} className="h-12 w-20 shrink-0 rounded-lg" /><span>{row.name}</span></div> },
+    { key: 'code', header: 'Código' },
     { key: 'capacity', header: 'Cupos' },
     {
       key: 'state',
@@ -392,12 +412,12 @@ export function CoursesPage() {
       render: (row) => (
         <ActionBar>
           <StatusBadge status={row.active ? 'ACTIVE' : 'INACTIVE'} />
-          {row.locked && <StatusBadge status="LOCKED" />}
+          {row.locked && <span className="text-xs font-medium text-warning-strong">Inscripciones cerradas</span>}
         </ActionBar>
       ),
     },
-    { key: 'practiceTutor', header: 'Tutor de prácticas', render: (row) => row.practiceTutor || '-' },
-    {
+    !isStudent && !(canPracticeTutor && !canManage) && { key: 'practiceTutor', header: 'Tutor de prácticas', render: (row) => row.practiceTutor || '-' },
+    !isStudent && {
       key: 'pendingEnrollments',
       header: 'Pendientes',
       render: (row) => {
@@ -421,7 +441,7 @@ export function CoursesPage() {
         );
       },
     },
-  ];
+  ].filter(Boolean);
 
   if (showActionsColumn) {
     columns.push({
@@ -433,7 +453,7 @@ export function CoursesPage() {
         if (canUseCourse) {
           actions.push({
             key: 'use',
-            label: 'Abrir gestion',
+            label: 'Abrir gestión',
             icon: Eye,
             onClick: () => viewCourseAndEnrollments(row.id),
           });
@@ -460,46 +480,30 @@ export function CoursesPage() {
               ),
           });
 
+        }
+
+        if (canManage || canPracticeTutor) {
           actions.push({
             key: row.locked ? 'unlock' : 'lock',
-            label: row.locked ? 'Desbloquear' : 'Bloquear',
+            label: row.locked ? 'Abrir inscripciones' : 'Cerrar inscripciones',
             icon: row.locked ? Unlock : Lock,
             onClick: () =>
               runCourseAction(
                 `/api/courses/${row.id}/${row.locked ? 'unlock' : 'lock'}`,
                 'PATCH',
                 courseActionConfirmation({
-                  title: row.locked ? 'Desbloquear paralelo' : 'Bloquear paralelo',
+                  title: row.locked ? 'Abrir inscripciones' : 'Cerrar inscripciones',
                   description: row.locked
-                    ? 'El paralelo podra recibir cambios nuevamente.'
-                    : 'El paralelo quedara protegido contra cambios operativos.',
+                    ? 'El personal autorizado podrá asignar estudiantes a las prácticas de este paralelo.'
+                    : 'No se admitirán nuevas inscripciones. Las prácticas ya asignadas continuarán su desarrollo.',
                   details: row.name,
-                  confirmLabel: row.locked ? 'Desbloquear' : 'Bloquear',
+                  confirmLabel: row.locked ? 'Abrir inscripciones' : 'Cerrar inscripciones',
                   tone: row.locked ? 'warning' : 'danger',
                 })
               ),
           });
         }
 
-        if (isStudent && !hasEnrollmentForCourse(row, enrollmentByCourseId, enrollmentByCourseName)) {
-          actions.push({
-            key: 'enroll',
-            label: 'Inscribirme',
-            icon: UserPlus,
-            onClick: () =>
-              runCourseAction(
-                `/api/courses/${row.id}/enroll`,
-                'POST',
-                courseActionConfirmation({
-                  title: 'Confirmar inscripcion',
-                  description: 'Se enviara tu solicitud de inscripcion a este paralelo.',
-                  details: row.name,
-                  confirmLabel: 'Inscribirme',
-                  tone: 'warning',
-                })
-              ),
-          });
-        }
 
         return actions.length ? <ActionMenu actions={actions} /> : null;
       },
@@ -521,24 +525,26 @@ export function CoursesPage() {
 
   const showEnrollmentActionsColumn = enrollments.some(
     (row) =>
-      (row.status === 'PENDING' && (canManage || isStudent))
+      ['PENDING', 'APPROVED', 'COMPLETED'].includes(row.status)
+      || (row.status === 'PENDING' && (canManage || isStudent))
       || (canManageGroups && row.status === 'APPROVED')
-      || ((canManage || canPracticeTutor) && ['APPROVED', 'COMPLETED'].includes(row.status))
+      || (canConclude && ['APPROVED', 'COMPLETED'].includes(row.status))
   );
 
   const enrollmentColumns = [
     { key: 'id', header: 'ID' },
-    { key: 'student', header: 'Estudiante' },
+    !isStudent && { key: 'student', header: 'Estudiante' },
+    { key: 'practiceName', header: 'Práctica', render: row => row.practiceName || row.courseName || '-' },
     { key: 'courseName', header: 'Paralelo' },
     { key: 'groupName', header: 'Grupo', render: (row) => row.groupName || '-' },
     { key: 'status', header: 'Estado', render: (row) => <StatusBadge status={row.status} /> },
-  ];
+  ].filter(Boolean);
 
   const groupColumns = [
     { key: 'name', header: 'Grupo' },
     { key: 'capacity', header: 'Cupos', render: (row) => row.capacity || '-' },
     { key: 'institutionalTutor', header: 'Tutor institucional', render: (row) => row.institutionalTutor || '-' },
-    { key: 'educationalInstitutionName', header: 'Institucion', render: (row) => row.educationalInstitutionName || '-' },
+    { key: 'educationalInstitutionName', header: 'Institución', render: (row) => row.educationalInstitutionName || '-' },
     { key: 'active', header: 'Estado', render: (row) => <StatusBadge status={row.active ? 'ACTIVE' : 'INACTIVE'} /> },
   ];
 
@@ -587,7 +593,7 @@ export function CoursesPage() {
       key: 'actions',
       header: 'Acciones',
       render: (row) => {
-        const actions = [];
+        const actions = ['PENDING', 'APPROVED', 'COMPLETED'].includes(row.status) ? [{ key: 'workspace', label: 'Abrir práctica', onClick: () => setHashRoute(workspaceRoute(row.id)) }] : [];
 
         if (canManage && row.status === 'PENDING') {
           actions.push(
@@ -600,8 +606,8 @@ export function CoursesPage() {
                   `/api/enrollments/${row.id}/approve`,
                   'PATCH',
                   courseActionConfirmation({
-                    title: 'Aprobar inscripcion',
-                    description: 'El estudiante quedara aprobado en el paralelo seleccionado.',
+                    title: 'Aprobar inscripción',
+                    description: 'El estudiante quedará aprobado en el paralelo seleccionado.',
                     details: row.student || row.studentFullName || row.courseName,
                     confirmLabel: 'Aprobar',
                     tone: 'success',
@@ -617,8 +623,8 @@ export function CoursesPage() {
                   `/api/enrollments/${row.id}/reject`,
                   'PATCH',
                   courseActionConfirmation({
-                    title: 'Rechazar inscripcion',
-                    description: 'La solicitud del estudiante sera rechazada.',
+                    title: 'Rechazar inscripción',
+                    description: 'La solicitud del estudiante será rechazada.',
                     details: row.student || row.studentFullName || row.courseName,
                     confirmLabel: 'Rechazar',
                     tone: 'danger',
@@ -628,27 +634,7 @@ export function CoursesPage() {
           );
         }
 
-        if (isStudent && row.status === 'PENDING') {
-          actions.push({
-            key: 'cancel',
-            label: 'Cancelar',
-            icon: XCircle,
-            onClick: () =>
-              runCourseAction(
-                `/api/enrollments/${row.id}`,
-                'DELETE',
-                courseActionConfirmation({
-                  title: 'Cancelar inscripcion',
-                  description: 'Tu solicitud pendiente sera cancelada.',
-                  details: row.courseName,
-                  confirmLabel: 'Cancelar inscripcion',
-                  tone: 'danger',
-                })
-              ),
-          });
-        }
-
-        if ((canManage || canPracticeTutor) && row.status === 'APPROVED') {
+        if (canConclude && row.status === 'APPROVED') {
           actions.push({
             key: 'complete',
             label: 'Concluir práctica',
@@ -668,18 +654,20 @@ export function CoursesPage() {
           });
         }
 
-        if ((canManage || canPracticeTutor) && row.status === 'COMPLETED') {
+        if (canConclude && row.status === 'COMPLETED') {
           actions.push({
             key: 'reopen',
             label: 'Reabrir práctica',
             icon: RotateCcw,
+            disabled: row.archived || row.courseActive === false,
+            disabledReason: row.archived ? 'Administración debe desarchivar la práctica antes de reabrirla.' : row.courseActive === false ? 'Activa el paralelo antes de reabrir la práctica.' : '',
             onClick: () =>
               runCourseAction(
                 `/api/enrollments/${row.id}/reopen`,
                 'PATCH',
                 courseActionConfirmation({
                   title: 'Reabrir práctica',
-                  description: 'La práctica volverá a quedar como aprobada si el estudiante no tiene otra práctica activa.',
+                  description: 'La práctica volverá a estar aprobada si el paralelo y el grupo están disponibles y hay cupo. Puedes mantener prácticas en otros paralelos asignados.',
                   details: row.studentFullName || row.student || row.courseName,
                   confirmLabel: 'Reabrir',
                   tone: 'warning',
@@ -765,7 +753,7 @@ export function CoursesPage() {
 
   const needsCourse = {
     value: courseId,
-    message: 'Selecciona un paralelo antes de ejecutar esta accion',
+    message: 'Selecciona un paralelo antes de ejecutar esta acción',
   };
   const needsTutorAccount = {
     value: accountId,
@@ -776,70 +764,82 @@ export function CoursesPage() {
   const selectedCourseIsActive = selectedCourse?.active !== false;
   const selectedCourseIsLocked = selectedCourse?.locked === true;
   const selectedGroupIsActive = selectedGroup?.active !== false;
+  const showCourseFilters = activeView === 'courses' || activeView === 'create';
+  const courseTabs = (
+    <ModuleTabs>
+      {[
+        ['courses', isStudent ? 'Paralelos disponibles' : 'Paralelos'],
+        canManage && ['create', 'Crear paralelo'],
+        courseId && canUseCourse && ['manage', 'Gestión del paralelo'],
+        (isStudent || courseId) && ['enrollments', isStudent ? 'Mis prácticas' : 'Inscripciones'],
+      ]
+        .filter(Boolean)
+        .map(([id, label]) => (
+          <ModuleTab
+            active={activeView === id}
+            key={id}
+            onClick={() => {
+              if (id === 'create') setCoverFile(null);
+              if (id === 'create') setForm((current) => !current.facultyId && !current.careerId ? { ...current, facultyId: defaultCourseForm().facultyId, careerId: defaultCourseForm().careerId } : current);
+              setActiveView(id);
+              if (id === 'courses' || id === 'create') {
+                setCourseId('');
+                if (!isStudent) {
+                  setEnrollments([]);
+                }
+                setGroups([]);
+                setGroupId('');
+                setAssignmentGroupByEnrollmentId({});
+                setCourseProfileForm(emptyCoursePracticeProfile());
+              }
+            }}
+          >
+            {label}
+          </ModuleTab>
+        ))}
+    </ModuleTabs>
+  );
 
   return (
     <>
       <PageHeader
-        eyebrow="Practicas"
-        title="Paralelos y prácticas"
-        description="Busca paralelos, organiza grupos, asigna tutores y revisa el historial de prácticas."
-        action={
-          <SecondaryButton icon={RefreshCw} loading={loading} onClick={loadData} type="button">
-            Actualizar
-          </SecondaryButton>
-        }
+        eyebrow="Prácticas"
+        title={isStudent ? 'Paralelos disponibles y mis prácticas' : 'Paralelos y prácticas'}
+        description={workflowCopy('courses', roles)}
+        helpText={workflowCopy('courses', roles)}
       />
 
       {error && <Alert tone="error">{error}</Alert>}
       {message && <Alert tone="success">{message}</Alert>}
+      {isStudent && !loading && !error && !courses.length && <Alert tone="info">No hay prácticas abiertas para tus paralelos asignados. Si falta un paralelo que cursas, solicita a dirección que revise tu pertenencia académica.</Alert>}
 
-      <SectionCard>
-        <ModuleTabs>
-          {[
-            ['courses', 'Paralelos'],
-            canManage && ['create', 'Crear paralelo'],
-            // Mostrar 'Gestion' e 'Inscripciones' solo si se seleccionó un paralelo.
-            courseId && canUseCourse && ['manage', 'Gestion del paralelo'],
-            (isStudent || courseId) && ['enrollments', isStudent ? 'Mis prácticas' : 'Inscripciones'],
-          ]
-            .filter(Boolean)
-            .map(([id, label]) => (
-              <ModuleTab
-                active={activeView === id}
-                key={id}
-                onClick={() => {
-                  setActiveView(id);
-                  // Si volvemos a 'Paralelos' o 'Crear paralelo', limpiar la selección.
-                  if (id === 'courses' || id === 'create') {
-                    setCourseId('');
-                    if (!isStudent) {
-                      setEnrollments([]);
-                    }
-                    setGroups([]);
-                    setGroupId('');
-                    setAssignmentGroupByEnrollmentId({});
-                    setCourseProfileForm(emptyCoursePracticeProfile());
-                  }
-                }}
-              >
-                {label}
-              </ModuleTab>
-            ))}
-        </ModuleTabs>
-      </SectionCard>
+      {!showCourseFilters && (
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-line bg-panel-soft p-2.5 dark:bg-surface-soft">
+          {courseTabs}
+          <SecondaryButton className="!w-auto" icon={RefreshCw} loading={loading} onClick={loadData} type="button">
+            Actualizar
+          </SecondaryButton>
+        </div>
+      )}
 
       {/* Mostrar aviso para gestores cuando no hay paralelo seleccionado */}
       {!courseId && canUseCourse && (activeView === 'courses' || activeView === 'create') && (
         <SectionCard>
-          <Alert tone="info">Abre la gestion de un paralelo para ver sus grupos e inscripciones.</Alert>
+          <Alert tone="info">Abre la gestión de un paralelo para ver sus grupos e inscripciones.</Alert>
         </SectionCard>
       )}
 
-      {(activeView === 'courses' || activeView === 'create') && (
+      {showCourseFilters && (
         <>
           <FilterPanel
             activeCount={countActiveFilters(courseFilters, ['query'])}
+            action={
+              <SecondaryButton className="!w-auto" icon={RefreshCw} loading={loading} onClick={loadData} type="button">
+                Actualizar
+              </SecondaryButton>
+            }
             hasActiveFilters={countActiveFilters(courseFilters) > 0}
+            leading={courseTabs}
             onClear={() => setCourseFilters({
               query: '',
               course: '',
@@ -852,15 +852,19 @@ export function CoursesPage() {
             search={(
               <Field label="Buscar">
                 <Input
-                  placeholder="Paralelo, codigo, tutor o asignatura"
+                  placeholder={isStudent ? 'Paralelo, código o asignatura' : 'Paralelo, código, tutor o asignatura'}
                   type="search"
                   value={courseFilters.query}
                   onChange={(event) => setCourseFilters((current) => ({ ...current, query: event.target.value }))}
                 />
               </Field>
             )}
-            summary={`${filteredCourses.length} de ${courses.length} paralelos`}
-            title="Filtrar paralelos"
+            summary={
+              isStudent
+                ? `${filteredCourses.length} paralelos disponibles`
+                : `${filteredCourses.length} de ${courses.length} paralelos`
+            }
+            title={isStudent ? 'Buscar paralelos disponibles' : 'Filtrar paralelos'}
           >
               <Field label="Paralelo">
                 <Select
@@ -889,7 +893,7 @@ export function CoursesPage() {
                 </Select>
               </Field>
               {canManage && (
-                <Field label="Tutor de practicas">
+                <Field label="Tutor de prácticas">
                   <Select
                     value={courseFilters.practiceTutor}
                     onChange={(event) => setCourseFilters((current) => ({ ...current, practiceTutor: event.target.value }))}
@@ -918,7 +922,7 @@ export function CoursesPage() {
                   </Select>
                 </Field>
               )}
-              <Field label="Estado">
+              {!isStudent && <Field label="Estado">
                 <Select
                   disabled={!isAdmin}
                   value={!isAdmin ? 'true' : courseFilters.active}
@@ -928,29 +932,29 @@ export function CoursesPage() {
                   <option value="true">Activos</option>
                   {isAdmin && <option value="false">Inactivos</option>}
                 </Select>
-              </Field>
+              </Field>}
               {canManage && (
-                <Field label="Bloqueo">
+                <Field label="Inscripciones">
                   <Select
                     value={courseFilters.locked}
                     onChange={(event) => setCourseFilters((current) => ({ ...current, locked: event.target.value }))}
                   >
                     <option value="">Todos</option>
-                    <option value="true">Bloqueados</option>
-                    <option value="false">Desbloqueados</option>
+                    <option value="true">Cerradas</option>
+                    <option value="false">Abiertas</option>
                   </Select>
                 </Field>
               )}
           </FilterPanel>
 
-          <SectionCard title="Paralelos">
+          <SectionCard title={isStudent ? 'Paralelos disponibles' : 'Paralelos'}>
             <DataTable columns={columns} loading={loading} rows={filteredCourses} />
           </SectionCard>
         </>
       )}
 
       <Modal
-        description="Completa la informacion basica del paralelo sin salir del listado."
+        description="Completa la información básica del paralelo sin salir del listado."
         maxWidth="max-w-5xl"
         onClose={() => setActiveView('courses')}
         open={activeView === 'create' && canManage}
@@ -990,7 +994,7 @@ export function CoursesPage() {
                 onChange={(value) => setCourseFormField('careerId', value)}
               />
             </Field>
-            <Field label="Ciclo academico">
+            <Field label="Ciclo académico">
               <EntitySelect
                 disabled={!form.careerId}
                 path={ENTITY_RELATIONS.academicCycleId.path}
@@ -1014,13 +1018,14 @@ export function CoursesPage() {
                 onChange={(event) => setCourseFormField('endDate', event.target.value)}
               />
             </Field>
-            <Field className="md:col-span-3" label="Descripcion">
+            <Field className="md:col-span-3" label="Descripción">
               <Textarea
                 value={form.description}
                 onChange={(event) => setCourseFormField('description', event.target.value)}
                 required
               />
             </Field>
+            <div className="md:col-span-3"><EntityImagePicker file={coverFile} onChange={setCoverFile} /></div>
             <div className="md:col-span-3">
             <PrimaryButton icon={Plus} loading={loading} type="submit">Crear paralelo</PrimaryButton>
             </div>
@@ -1028,7 +1033,8 @@ export function CoursesPage() {
       </Modal>
 
       {activeView === 'manage' && canUseCourse && (
-        <SectionCard title="Gestion del paralelo">
+        <SectionCard title="Gestión del paralelo">
+          {canManage && <div className="mb-5 space-y-3"><EntityImagePicker key={courseId} file={editCoverFile} onChange={setEditCoverFile} currentPath={selectedCourse?.coverImageUrl} /><div className="flex flex-wrap gap-2"><SecondaryButton disabled={!editCoverFile || loading} onClick={() => updateCover()}>Guardar portada</SecondaryButton>{selectedCourse?.coverImageUrl && <SecondaryButton intent="danger" disabled={loading} onClick={() => updateCover(true)}>Quitar portada</SecondaryButton>}</div></div>}
           <div className="grid gap-4 md:grid-cols-2">
             <Field label="Paralelo">
               <EntitySelect
@@ -1037,6 +1043,7 @@ export function CoursesPage() {
                 value={courseId}
                 onChange={(value) => {
                   const course = courses.find((item) => String(item.id) === String(value));
+                  setCoverFile(null);
                   setCourseId(value);
                   setCourseProfileForm(profileFromCourse(course));
                   setGroupId('');
@@ -1050,10 +1057,10 @@ export function CoursesPage() {
               />
             </Field>
             {canManage && (
-              <Field label="Tutor de practicas">
+              <Field label="Tutor de prácticas">
                 <EntitySelect
                   path="/api/account/search?role=ROLE_TUTOR_PRACTICAS&page=0&size=100"
-                  placeholder="Seleccionar tutor de practicas"
+                  placeholder="Seleccionar tutor de prácticas"
                   value={accountId}
                   onChange={setAccountId}
                 />
@@ -1084,6 +1091,28 @@ export function CoursesPage() {
           </div>
           <div className="mt-4">
             <ActionBar>
+              {(canManage || canPracticeTutor) && (
+	                  <SecondaryButton
+	                    disabled={loading || !courseId}
+	                    icon={selectedCourseIsLocked ? Unlock : Lock}
+	                    onClick={() =>
+	                      runQuickCourseAction(`/api/courses/${courseId}/${selectedCourseIsLocked ? 'unlock' : 'lock'}`, [
+	                        needsCourse,
+	                      ], courseActionConfirmation({
+                          title: selectedCourseIsLocked ? 'Abrir inscripciones' : 'Cerrar inscripciones',
+                          description: selectedCourseIsLocked
+                            ? 'El personal autorizado podrá asignar estudiantes a las prácticas de este paralelo.'
+                            : 'No se admitirán nuevas inscripciones. Las prácticas ya asignadas continuarán su desarrollo.',
+                          details: selectedCourse?.name,
+                          confirmLabel: selectedCourseIsLocked ? 'Abrir inscripciones' : 'Cerrar inscripciones',
+                          tone: selectedCourseIsLocked ? 'warning' : 'danger',
+                        }))
+	                    }
+	                    type="button"
+	                  >
+	                    {selectedCourseIsLocked ? 'Abrir inscripciones' : 'Cerrar inscripciones'}
+	                  </SecondaryButton>
+              )}
               {canManage && (
 	                <>
 	                  <SecondaryButton
@@ -1106,26 +1135,6 @@ export function CoursesPage() {
 	                  >
 	                    {selectedCourseIsActive ? 'Desactivar' : 'Activar'}
 	                  </SecondaryButton>
-	                  <SecondaryButton
-	                    disabled={loading || !courseId}
-	                    icon={selectedCourseIsLocked ? Unlock : Lock}
-	                    onClick={() =>
-	                      runQuickCourseAction(`/api/courses/${courseId}/${selectedCourseIsLocked ? 'unlock' : 'lock'}`, [
-	                        needsCourse,
-	                      ], courseActionConfirmation({
-                          title: selectedCourseIsLocked ? 'Desbloquear paralelo' : 'Bloquear paralelo',
-                          description: selectedCourseIsLocked
-                            ? 'El paralelo podra recibir cambios nuevamente.'
-                            : 'El paralelo quedara protegido contra cambios operativos.',
-                          details: selectedCourse?.name,
-                          confirmLabel: selectedCourseIsLocked ? 'Desbloquear' : 'Bloquear',
-                          tone: selectedCourseIsLocked ? 'warning' : 'danger',
-                        }))
-	                    }
-	                    type="button"
-	                  >
-	                    {selectedCourseIsLocked ? 'Desbloquear' : 'Bloquear'}
-	                  </SecondaryButton>
                   <SecondaryButton
                     disabled={loading || !courseId || !accountId}
                     icon={UserPlus}
@@ -1134,8 +1143,8 @@ export function CoursesPage() {
                         needsCourse,
                         needsTutorAccount,
                       ], courseActionConfirmation({
-                        title: 'Asignar tutor de practicas',
-                        description: 'El paralelo quedara asociado al tutor de practicas seleccionado.',
+                        title: 'Asignar tutor de prácticas',
+                        description: 'El paralelo quedará asociado al tutor de prácticas seleccionado.',
                         details: selectedCourse?.name,
                         confirmLabel: 'Asignar tutor',
                         tone: 'warning',
@@ -1143,7 +1152,7 @@ export function CoursesPage() {
                     }
                     type="button"
                   >
-                    Tutor practicas
+                    Tutor prácticas
                   </SecondaryButton>
                 </>
               )}
@@ -1158,7 +1167,7 @@ export function CoursesPage() {
                         { value: groupForm.institutionalTutorId, message: 'Selecciona el tutor institucional del grupo' },
                       ], courseActionConfirmation({
                         title: 'Asignar tutor institucional',
-                        description: 'El grupo quedara asociado al tutor institucional seleccionado.',
+                        description: 'El grupo quedará asociado al tutor institucional seleccionado.',
                         details: selectedGroup?.name,
                         confirmLabel: 'Asignar tutor',
                         tone: 'warning',
@@ -1229,7 +1238,7 @@ export function CoursesPage() {
         title="Datos comunes del paralelo"
       >
         <form className="grid gap-4 md:grid-cols-2" onSubmit={updatePracticeProfile}>
-          <Field label="Unidad de organizacion curricular">
+          <Field label="Unidad de organización curricular">
             <Input
               value={courseProfileForm.curricularOrganizationUnit}
               onChange={(event) =>
@@ -1237,14 +1246,14 @@ export function CoursesPage() {
               }
             />
           </Field>
-          <Field label="Tipo de practica">
+          <Field label="Tipo de práctica">
             <Select
               value={courseProfileForm.practiceType}
               onChange={(event) => setCourseProfileForm((current) => ({ ...current, practiceType: event.target.value }))}
             >
               <option value="">Seleccionar tipo</option>
-              <option value="OBSERVACION">Observacion</option>
-              <option value="ELABORACION">Elaboracion</option>
+              <option value="OBSERVACION">Observación</option>
+              <option value="ELABORACION">Elaboración</option>
               <option value="DOCENTE">Docente</option>
             </Select>
           </Field>
@@ -1262,19 +1271,19 @@ export function CoursesPage() {
               onChange={(event) => setCourseProfileForm((current) => ({ ...current, generalObjective: event.target.value }))}
             />
           </Field>
-          <Field label="Objetivo especifico 1">
+          <Field label="Objetivo específico 1">
             <Textarea
               value={courseProfileForm.specificObjective1}
               onChange={(event) => setCourseProfileForm((current) => ({ ...current, specificObjective1: event.target.value }))}
             />
           </Field>
-          <Field label="Objetivo especifico 2">
+          <Field label="Objetivo específico 2">
             <Textarea
               value={courseProfileForm.specificObjective2}
               onChange={(event) => setCourseProfileForm((current) => ({ ...current, specificObjective2: event.target.value }))}
             />
           </Field>
-          <Field className="md:col-span-2" label="Objetivo especifico 3">
+          <Field className="md:col-span-2" label="Objetivo específico 3">
             <Textarea
               value={courseProfileForm.specificObjective3}
               onChange={(event) => setCourseProfileForm((current) => ({ ...current, specificObjective3: event.target.value }))}
@@ -1317,7 +1326,7 @@ export function CoursesPage() {
               onChange={(event) => setGroupForm((current) => ({ ...current, capacity: event.target.value }))}
             />
           </Field>
-          <Field className="md:col-span-2" label="Descripcion">
+          <Field className="md:col-span-2" label="Descripción">
             <Input
               value={groupForm.description}
               onChange={(event) => setGroupForm((current) => ({ ...current, description: event.target.value }))}
@@ -1331,9 +1340,13 @@ export function CoursesPage() {
         </form>
       </Modal>
 
+      {activeView === 'manage' && canUseCourse && courseId && <PracticeOfferingsPanel key={`practices-${courseId}`} courseId={courseId} canCreate={canManage} onAssigned={() => refreshCourseManagement(courseId)} />}
+
+      {activeView === 'manage' && canManage && courseId && <CourseRoster key={courseId} courseId={courseId} courseName={selectedCourse?.name} />}
+
       {activeView === 'enrollments' && (
-      <SectionCard title={isStudent ? 'Mis inscripciones' : 'Inscripciones'}>
-        <DataTable columns={enrollmentColumns} enableFilters={!isStudent} loading={loading} rows={enrollments} />
+      <SectionCard title={isStudent ? 'Mis inscripciones' : selectedCourse ? `Inscripciones de ${selectedCourse.name}` : 'Inscripciones'}>
+        <DataTable columns={enrollmentColumns} contextColumns={!isStudent && courseId && selectedCourse ? ['courseName'] : []} ownRecords={isStudent} enableFilters={!isStudent} loading={loading} rows={enrollments} />
       </SectionCard>
       )}
     </>
@@ -1342,8 +1355,8 @@ export function CoursesPage() {
 
 function courseActionConfirmation(options = {}) {
   return {
-    title: 'Confirmar accion',
-    description: 'Esta accion modificara informacion importante del paralelo o de una inscripcion.',
+    title: 'Confirmar acción',
+    description: 'Esta acción modificara información importante del paralelo o de una inscripción.',
     confirmLabel: 'Confirmar',
     tone: 'warning',
     ...options,
@@ -1534,20 +1547,4 @@ function getGroupOptionsForEnrollment(enrollment, groups, assignableGroups) {
 function getHashParams(hashValue = window.location.hash) {
   const query = String(hashValue || '').split('?')[1] || '';
   return new URLSearchParams(query);
-}
-
-function hasEnrollmentForCourse(course, enrollmentByCourseId, enrollmentByCourseName) {
-  if (enrollmentByCourseId.has(String(course.id))) {
-    return true;
-  }
-
-  return enrollmentByCourseName.has(normalizeCourseName(course.name));
-}
-
-function isEnrollmentOperationallyActive(enrollment) {
-  return ['PENDING', 'APPROVED'].includes(String(enrollment?.status || '').toUpperCase());
-}
-
-function normalizeCourseName(name) {
-  return String(name || '').trim().toLowerCase();
 }

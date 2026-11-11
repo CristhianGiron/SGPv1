@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          PracticeScheduleServiceTest.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Comprueba el comportamiento de las jornadas de prácticas mediante pruebas de regresión.
+ */
+
 package com.sgp.systemsgp.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -151,7 +163,7 @@ class PracticeScheduleServiceTest {
         when(accountRepository.findByUsernameAndDeletedFalse("tutor.institucional"))
                 .thenReturn(Optional.of(tutor));
 
-        when(practiceScheduleRepository.findByIdAndDeletedFalse(1L))
+        when(practiceScheduleRepository.findForAttendanceUpdate(1L))
                 .thenReturn(Optional.of(schedule));
 
         PracticeAttendanceResponse response =
@@ -179,6 +191,20 @@ class PracticeScheduleServiceTest {
     }
 
     @Test
+    void attendanceCannotInflateMinutesBeyondRegisteredTimes() {
+        Account tutor = institutionalTutor(school());
+        PracticeSchedule schedule = schedule(student(), tutor, practiceTutor());
+        when(accountRepository.findByUsernameAndDeletedFalse("tutor.institucional")).thenReturn(Optional.of(tutor));
+        when(practiceScheduleRepository.findForAttendanceUpdate(1L)).thenReturn(Optional.of(schedule));
+        PracticeAttendanceRequest request = attendanceRequest(LocalDate.of(2026, 5, 18), PracticeAttendanceStatus.PRESENT);
+        request.setTotalMinutes(1000);
+        assertThatThrownBy(() -> practiceScheduleService.registerAttendance(1L, "tutor.institucional", request))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage("El total de minutos debe coincidir con la hora de inicio y de fin");
+        verify(practiceScheduleRepository, never()).save(any(PracticeSchedule.class));
+    }
+
+    @Test
     void attendanceDateMustMatchSelectedPeriodDay() {
 
         Institution institution = school();
@@ -191,7 +217,7 @@ class PracticeScheduleServiceTest {
         when(accountRepository.findByUsernameAndDeletedFalse("tutor.institucional"))
                 .thenReturn(Optional.of(tutor));
 
-        when(practiceScheduleRepository.findByIdAndDeletedFalse(1L))
+        when(practiceScheduleRepository.findForAttendanceUpdate(1L))
                 .thenReturn(Optional.of(schedule));
 
         assertThatThrownBy(() -> practiceScheduleService.registerAttendance(

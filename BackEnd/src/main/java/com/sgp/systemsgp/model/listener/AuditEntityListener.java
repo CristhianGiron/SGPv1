@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          AuditEntityListener.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Representa los datos persistentes de el módulo Audit Entity Listener.
+ */
+
 package com.sgp.systemsgp.model.listener;
 
 import jakarta.persistence.PrePersist;

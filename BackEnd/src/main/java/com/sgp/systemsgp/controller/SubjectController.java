@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          SubjectController.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Expone las operaciones HTTP relacionadas con las asignaturas.
+ */
+
 package com.sgp.systemsgp.controller;
 
 import java.util.List;
@@ -13,6 +25,8 @@ import com.sgp.systemsgp.service.SubjectService;
 import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import com.sgp.systemsgp.service.AcademicCatalogAccess;
 
 @RestController
 @RequestMapping("/api/subjects")
@@ -21,11 +35,13 @@ import lombok.RequiredArgsConstructor;
 public class SubjectController {
 
     private final SubjectService subjectService;
+    private final AcademicCatalogAccess catalogAccess;
 
     /*
      * CREAR
      */
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public SubjectResponse create(
 
             @Valid
@@ -41,9 +57,10 @@ public class SubjectController {
      * LISTAR
      */
     @GetMapping
-    public List<SubjectResponse> getAll() {
+    public List<SubjectResponse> getAll(Authentication authentication) {
 
-        return subjectService.getAll();
+        var scope = catalogAccess.scope(authentication.getName());
+        return subjectService.getAll().stream().filter(row -> scope.career(row.getCareerId())).toList();
     }
 
     /*
@@ -51,15 +68,20 @@ public class SubjectController {
      */
     @GetMapping("/{id}")
     public SubjectResponse getById(
+            Authentication authentication,
             @PathVariable Long id) {
 
-        return subjectService.getById(id);
+        var row = subjectService.getById(id);
+        var scope = catalogAccess.scope(authentication.getName());
+        scope.require(scope.career(row.getCareerId()));
+        return row;
     }
 
     /*
      * ACTUALIZAR
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public SubjectResponse update(
 
             @PathVariable Long id,
@@ -74,6 +96,7 @@ public class SubjectController {
      * ELIMINAR
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public void delete(
             @PathVariable Long id) {
 

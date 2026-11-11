@@ -1,0 +1,122 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -------------------------< com.sgp:systemsgp >--------------------------
+[INFO] Building  0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ systemsgp ---
+[INFO] Copying 3 resources from src/main/resources to target/classes
+[INFO] Copying 29 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ systemsgp ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 350 source files with javac [debug parameters release 17] to target/classes
+[WARNING] /tmp/sgp-continuity-backend/src/main/java/com/sgp/systemsgp/dto/didacticplan/DidacticPlanWeekResponse.java:[21,1] Ambiguous: Jackson2 and Jackson3 exist; define which variant(s) you want in 'lombok.config'. See https://projectlombok.org/features/experimental/Jacksonized
+[WARNING] /tmp/sgp-continuity-backend/src/main/java/com/sgp/systemsgp/dto/didacticplan/DidacticPlanResponse.java:[25,1] Ambiguous: Jackson2 and Jackson3 exist; define which variant(s) you want in 'lombok.config'. See https://projectlombok.org/features/experimental/Jacksonized
+[INFO] /tmp/sgp-continuity-backend/src/main/java/com/sgp/systemsgp/service/PracticeArchiveExportService.java: /tmp/sgp-continuity-backend/src/main/java/com/sgp/systemsgp/service/PracticeArchiveExportService.java uses or overrides a deprecated API.
+[INFO] /tmp/sgp-continuity-backend/src/main/java/com/sgp/systemsgp/service/PracticeArchiveExportService.java: Recompile with -Xlint:deprecation for details.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ systemsgp ---
+[INFO] Copying 1 resource from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (default-testCompile) @ systemsgp ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 35 source files with javac [debug parameters release 17] to target/test-classes
+[INFO] 
+[INFO] --- surefire:3.5.5:test (default-test) @ systemsgp ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.sgp.systemsgp.service.ContinuityWorkflowTest
+21:31:09.615 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.sgp.systemsgp.service.ContinuityWorkflowTest]: ContinuityWorkflowTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+21:31:09.830 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.sgp.systemsgp.SystemsgpApplication for test class com.sgp.systemsgp.service.ContinuityWorkflowTest
+21:31:09.931 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.sgp.systemsgp.service.ContinuityWorkflowTest]: ContinuityWorkflowTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+21:31:09.933 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.sgp.systemsgp.SystemsgpApplication for test class com.sgp.systemsgp.service.ContinuityWorkflowTest
+21:31:10.032 [main] INFO org.springframework.boot.devtools.restart.RestartApplicationListener -- Restart disabled due to context in which it is running
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.6)
+
+2026-11-10T21:31:10.369-05:00  INFO 234 --- [           main] c.s.s.service.ContinuityWorkflowTest     : Starting ContinuityWorkflowTest using Java 21.0.13.0.3 with PID 234 (started by cristhian in /tmp/sgp-continuity-backend)
+2026-11-10T21:31:10.371-05:00  INFO 234 --- [           main] c.s.s.service.ContinuityWorkflowTest     : The following 1 profile is active: "test"
+2026-11-10T21:31:11.699-05:00  INFO 234 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-10T21:31:11.892-05:00  INFO 234 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 184 ms. Found 37 JPA repository interfaces.
+2026-11-10T21:31:12.904-05:00  INFO 234 --- [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-11-10T21:31:12.984-05:00  INFO 234 --- [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.12.Final
+2026-11-10T21:31:13.676-05:00  INFO 234 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-10T21:31:13.708-05:00  INFO 234 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-11-10T21:31:13.988-05:00  INFO 234 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:sgp_test user=SA
+2026-11-10T21:31:13.993-05:00  INFO 234 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-11-10T21:31:14.091-05:00  INFO 234 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:sgp_test]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: sgp_test/public
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-10T21:31:16.896-05:00  INFO 234 --- [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-10T21:31:17.199-05:00  INFO 234 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-10T21:31:17.332-05:00  INFO 234 --- [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-11-10T21:31:19.712-05:00  INFO 234 --- [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2026-11-10T21:31:21.105-05:00  INFO 234 --- [           main] c.s.s.w.NotificationWebSocketConfig      : Registering WebSocket handler at /ws/notifications
+2026-11-10T21:31:21.777-05:00  INFO 234 --- [           main] c.s.s.service.ContinuityWorkflowTest     : Started ContinuityWorkflowTest in 11.76 seconds (process running for 13.246)
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+2026-11-10T21:31:22.202-05:00  INFO 234 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-10T21:31:22.203-05:00  INFO 234 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-10T21:31:22.205-05:00  INFO 234 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2026-11-10T21:31:22.657-05:00  INFO 234 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-10T21:31:22.658-05:00  INFO 234 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-10T21:31:22.661-05:00  INFO 234 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 3 ms
+2026-11-10T21:31:23.090-05:00  INFO 234 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-10T21:31:23.090-05:00  INFO 234 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-10T21:31:23.092-05:00  INFO 234 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2026-11-10T21:31:23.402-05:00  INFO 234 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-10T21:31:23.402-05:00  INFO 234 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-10T21:31:23.404-05:00  INFO 234 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2026-11-10T21:31:23.816-05:00  INFO 234 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-10T21:31:23.817-05:00  INFO 234 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-10T21:31:23.819-05:00  INFO 234 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2026-11-10T21:31:23.930-05:00  INFO 234 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-10T21:31:23.930-05:00  INFO 234 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-10T21:31:23.932-05:00  INFO 234 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2026-11-10T21:31:24.019-05:00  INFO 234 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-10T21:31:24.019-05:00  INFO 234 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-10T21:31:24.021-05:00  INFO 234 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2026-11-10T21:31:24.117-05:00  INFO 234 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-10T21:31:24.117-05:00  INFO 234 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-10T21:31:24.119-05:00  INFO 234 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2026-11-10T21:31:24.181-05:00  INFO 234 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-10T21:31:24.181-05:00  INFO 234 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-10T21:31:24.183-05:00  INFO 234 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2026-11-10T21:31:24.704-05:00  INFO 234 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-10T21:31:24.704-05:00  INFO 234 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-10T21:31:24.705-05:00  INFO 234 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-11-10T21:31:24.794-05:00  INFO 234 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-10T21:31:24.794-05:00  INFO 234 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-10T21:31:24.796-05:00  INFO 234 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+[INFO] Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 15.48 s -- in com.sgp.systemsgp.service.ContinuityWorkflowTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 11, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  34.156 s
+[INFO] Finished at: 2026-11-10T21:31:24-05:00
+[INFO] ------------------------------------------------------------------------

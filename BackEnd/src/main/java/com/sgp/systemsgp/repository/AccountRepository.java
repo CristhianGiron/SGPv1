@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          AccountRepository.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Define las consultas de persistencia para las cuentas de usuario.
+ */
+
 package com.sgp.systemsgp.repository;
 
 import com.sgp.systemsgp.model.Account;
@@ -15,6 +27,10 @@ import java.util.Optional;
 public interface AccountRepository
                 extends JpaRepository<Account, Long> {
 
+        @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
+        @Query("select a from Account a where a.username = :username and a.deleted = false")
+        Optional<Account> lockDraftOwner(@Param("username") String username);
+
         @Query("""
                             SELECT CASE WHEN COUNT(a) > 0 THEN true ELSE false END
                             FROM Account a
@@ -22,6 +38,23 @@ public interface AccountRepository
                             WHERE r.name = :roleName
                         """)
         boolean existsByRoleName(@Param("roleName") String roleName);
+
+        @Query("""
+                select distinct a from Account a join a.roles r
+                left join a.academicCycle cycle
+                where a.deleted=false and a.enabled=true and a.locked=false
+                and r.name='ROLE_ESTUDIANTE'
+                and (cycle.career.id=:careerId or (a.academicCycle is null and a.career.id=:careerId))
+                """)
+        Page<Account> findRosterCandidates(@Param("careerId") Long careerId, Pageable pageable);
+
+        @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
+        @Query("select a from Account a where a.id = :id and a.deleted = false")
+        Optional<Account> findForMembershipUpdate(@Param("id") Long id);
+
+        @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
+        @Query("select a from Account a where a.username=:username and a.deleted=false")
+        Optional<Account> lockForSecurityUpdate(@Param("username") String username);
 
         boolean existsByUsername(String username);
 
@@ -68,6 +101,7 @@ public interface AccountRepository
                             FROM Account a
                             LEFT JOIN a.roles r
                             LEFT JOIN a.person p
+                            LEFT JOIN a.institution i
                             WHERE
 
                                 (:username IS NULL OR
@@ -110,6 +144,8 @@ public interface AccountRepository
                             AND
 
                                 a.deleted = false
+                            AND (:universityId IS NULL OR i.id = :universityId)
+                            AND (:enabled IS NULL OR a.locked = false)
                         """)
         Page<Account> search(
 
@@ -126,7 +162,7 @@ public interface AccountRepository
                         String role,
 
                         Boolean enabled,
-
+                        Long universityId,
                         Pageable pageable);
 
 }

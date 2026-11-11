@@ -1,4 +1,17 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          FinalReport.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Representa los datos persistentes de el informe del tutor institucional (L.3).
+ */
+
 package com.sgp.systemsgp.model;
+import java.time.LocalDate;
 
 import com.sgp.systemsgp.enums.FinalReportStatus;
 import com.sgp.systemsgp.model.listener.AuditEntityListener;
@@ -58,6 +71,14 @@ public class FinalReport {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "educational_institution_id", nullable = false)
     private Institution educationalInstitution;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "letterhead_image_id", unique = true)
+    private EntityImage letterheadImage;
+
+    private Integer completedPracticeMinutes;
+
+    private LocalDate reportDate;
 
     private String educationalInstitutionName;
 

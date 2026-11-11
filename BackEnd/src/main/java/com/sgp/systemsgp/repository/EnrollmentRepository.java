@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          EnrollmentRepository.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Define las consultas de persistencia para las inscripciones y prácticas asignadas.
+ */
+
 package com.sgp.systemsgp.repository;
 
 import com.sgp.systemsgp.enums.EnrollmentStatus;
@@ -10,6 +22,13 @@ import java.util.List;
 
 public interface EnrollmentRepository
                 extends JpaRepository<Enrollment, Long> {
+
+    boolean existsByGroup_IdAndAccount_IdAndStatus(Long groupId, Long accountId, EnrollmentStatus status);
+    @org.springframework.data.jpa.repository.Query("select count(distinct e.account.id) from Enrollment e where e.group.id=:groupId and e.status=:status")
+    long countStudentsInGroup(@org.springframework.data.repository.query.Param("groupId") Long groupId,
+        @org.springframework.data.repository.query.Param("status") EnrollmentStatus status);
+    boolean existsByAccount_IdAndPractice_Id(Long accountId, Long practiceId);
+    long countByPractice_IdAndStatus(Long practiceId, EnrollmentStatus status);
 
         /*
          * VERIFICAR INSCRIPCIÓN DUPLICADA

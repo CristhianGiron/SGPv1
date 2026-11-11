@@ -1,7 +1,18 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          DashboardPage.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Presenta el panel de entrada y la información disponible según el rol del usuario.
+ */
+
+import { summarizeAttendances, pendingReviewCount } from '../utils/practiceIndicators';
 import { useEffect, useState } from 'react';
 import {
-  Activity,
-  Building2,
   CalendarClock,
   CheckCircle2,
   ClipboardCheck,
@@ -12,9 +23,7 @@ import {
   Image,
   ImagePlus,
   Palette,
-  Sparkles,
   Trash2,
-  UsersRound,
 } from 'lucide-react';
 import { apiRequest, apiUrl, unwrapPage } from '../api/client';
 import { useAuth } from '../auth/AuthContext';
@@ -26,43 +35,13 @@ import { SectionCard } from '../components/ui/SectionCard';
 import { Skeleton } from '../components/ui/Skeleton';
 import { StatusBadge } from '../components/ui/StatusBadge';
 import { DOCUMENT_MODULES } from '../config/endpointModules';
-import { NAV_ITEMS, canAccess } from '../config/navigation';
 import { formatValue } from '../utils/format';
 import { setHashRoute } from '../utils/routes';
-
-const visualCardClasses = [
-  {
-    shell: 'border-card-a/45 bg-card-a-soft text-card-a-strong hover:border-card-a',
-    icon: 'border-card-a bg-card-a text-inverse',
-    button: 'border-card-a bg-card-a text-inverse hover:bg-card-a-strong',
-  },
-  {
-    shell: 'border-card-b/45 bg-card-b-soft text-card-b-strong hover:border-card-b',
-    icon: 'border-card-b bg-card-b text-inverse',
-    button: 'border-card-b bg-card-b text-inverse hover:bg-card-b-strong',
-  },
-  {
-    shell: 'border-card-c/45 bg-card-c-soft text-card-c-strong hover:border-card-c',
-    icon: 'border-card-c bg-card-c text-inverse',
-    button: 'border-card-c bg-card-c text-inverse hover:bg-card-c-strong',
-  },
-  {
-    shell: 'border-card-d/45 bg-card-d-soft text-card-d-strong hover:border-card-d',
-    icon: 'border-card-d bg-card-d text-inverse',
-    button: 'border-card-d bg-card-d text-inverse hover:bg-card-d-strong',
-  },
-  {
-    shell: 'border-card-e/45 bg-card-e-soft text-card-e-strong hover:border-card-e',
-    icon: 'border-card-e bg-card-e text-inverse',
-    button: 'border-card-e bg-card-e text-inverse hover:bg-card-e-strong',
-  },
-];
 
 export function DashboardPage() {
   const { token, roles, profile } = useAuth();
   const isStudent = roles.includes('ROLE_ESTUDIANTE');
   const isAdmin = roles.includes('ROLE_ADMIN');
-  const quickActions = buildQuickActions(roles);
   const [stats, setStats] = useState([]);
   const [interfaceImages, setInterfaceImages] = useState([]);
   const [adminImages, setAdminImages] = useState([]);
@@ -70,6 +49,7 @@ export function DashboardPage() {
   const [studentDocuments, setStudentDocuments] = useState([]);
   const [roleTasks, setRoleTasks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [availability, setAvailability] = useState({ overview: true, documents: true, tasks: true });
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -121,17 +101,17 @@ export function DashboardPage() {
           requests.push(
             apiRequest('/api/activity-plans/review/summary', { token }).then((data) => ({
               label: 'Planes por revisar',
-              value: data.length,
+              value: pendingReviewCount(unwrapPage(data)),
             })),
             apiRequest('/api/practice-reports/review/summary', { token }).then((data) => ({
               label: 'Informes por revisar',
-              value: data.length,
+              value: pendingReviewCount(unwrapPage(data)),
             }))
           );
         }
 
-        if (requests.length === 0) {
-          requests.push(Promise.resolve({ label: 'Sesion', value: 'activa' }));
+        if (roles.some((role) => ['ROLE_TUTOR_INSTITUCIONAL', 'ROLE_DIRECTORA_INSTITUCION'].includes(role))) {
+          requests.push(apiRequest('/api/practice-forms/assigned', { token }).then((payload) => ({ label: 'Entrevistas por responder', value: unwrapPage(payload).filter((form) => form.status === 'SENT').length })));
         }
 
         const [statResults, overviewResult, documentResult, roleTaskResult] = await Promise.all([
@@ -159,11 +139,16 @@ export function DashboardPage() {
           roleTaskResult.status === 'rejected';
 
         if (active) {
+          setAvailability({ overview: overviewResult.status === 'fulfilled', documents: documentResult.status === 'fulfilled', tasks: roleTaskResult.status === 'fulfilled' });
           setStats(nextStats);
           setStudentOverview(nextStudentOverview);
           setStudentDocuments(nextStudentDocuments);
           setRoleTasks(nextRoleTasks);
-          setError(hasPartialError ? 'No se pudo cargar todo el resumen. Los accesos principales siguen disponibles.' : '');
+          setError(
+            hasPartialError
+              ? 'No se pudo cargar todo el resumen. Puedes usar el menú para navegar por la plataforma.'
+              : ''
+          );
         }
       } catch (requestError) {
         if (active) {
@@ -223,16 +208,40 @@ export function DashboardPage() {
   }, [isAdmin, token]);
 
   return (
-    <>
+    <div className="dashboard-page grid gap-4">
       <PageHeader
         eyebrow="Inicio"
         title={`Hola, ${profile?.names || profile?.username || 'usuario'}`}
-        description="Tus accesos principales y tareas pendientes en un solo lugar."
+        description="Resumen de actividad y tareas pendientes."
       />
 
-      {error && <Alert tone="error">{error}</Alert>}
+      {error && <p role="alert" className="rounded-lg border border-warning bg-warning-soft p-4 text-sm text-warning-strong">{error}</p>}
 
-      <DashboardVisualStrip images={interfaceImages} quickActions={quickActions} />
+      {loading ? (
+        <SectionCard>
+          <Skeleton lines={5} />
+        </SectionCard>
+      ) : (
+        <div className="dashboard-stats">
+          {stats.map((item) => (
+            <StatCard item={item} key={item.label} />
+          ))}
+        </div>
+      )}
+
+      {isStudent && !loading && (
+        <>
+          {availability.overview && availability.documents
+            ? <StudentPracticeFilePanel documents={studentDocuments} overview={studentOverview} />
+            : <SectionCard title="Tu práctica actual"><p className="text-sm text-body">Resumen no disponible. No se pudieron consultar todos los registros.</p></SectionCard>}
+          {availability.documents ? <StudentDocumentsPanel documents={studentDocuments} />
+            : <SectionCard title="Mis documentos"><p className="text-sm text-body">No se pudo consultar el estado de tus documentos.</p></SectionCard>}
+        </>
+      )}
+      {!isStudent && !loading && (availability.tasks ? <RoleTasksPanel tasks={roleTasks} roles={roles} />
+        : <SectionCard title="Tareas pendientes"><p className="text-sm text-body">No se pudieron consultar las tareas. Abre el módulo correspondiente para comprobar tus pendientes.</p></SectionCard>)}
+
+      <DashboardVisualStrip images={interfaceImages} />
 
       {isAdmin && (
         <DashboardVisualAdminPanel
@@ -241,112 +250,35 @@ export function DashboardPage() {
           onChanged={loadInterfaceImages}
         />
       )}
-
-      {loading ? (
-        <SectionCard>
-          <Skeleton lines={5} />
-        </SectionCard>
-      ) : (
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {stats.map((item, index) => (
-            <StatCard index={index} item={item} key={item.label} />
-          ))}
-        </div>
-      )}
-
-      <QuickActionsPanel actions={quickActions} />
-
-      {isStudent && !loading && (
-        <>
-          <StudentPracticeFilePanel documents={studentDocuments} overview={studentOverview} />
-          <StudentDocumentsPanel documents={studentDocuments} />
-        </>
-      )}
-      {!isStudent && !loading && <RoleTasksPanel tasks={roleTasks} />}
-    </>
+    </div>
   );
 }
 
-function StatCard({ index, item }) {
-  const Icon = STAT_ICONS[item.label] || Activity;
-  const visual = visualCardClasses[index % visualCardClasses.length];
-
+function StatCard({ item }) {
   return (
-    <section
-      className={`group relative min-h-32 overflow-hidden rounded-lg border p-4 shadow-card transition-[border-color,box-shadow,transform] hover:-translate-y-1 hover:shadow-soft ${visual.shell}`}
-      style={{ animationDelay: `${index * 55}ms` }}
-    >
-      <span aria-hidden="true" className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-inverse/20 transition-transform duration-300 group-hover:scale-110" />
-      <span aria-hidden="true" className="absolute -bottom-10 left-10 h-20 w-20 rounded-full bg-inverse/10" />
-      <div className="flex items-start justify-between gap-3">
-        <div className="relative">
-          <p className="text-xs font-medium uppercase tracking-normal">{item.label}</p>
-          <p className="mt-3 text-3xl font-medium leading-none text-heading dark:text-heading">{item.value}</p>
-        </div>
-        <span className={`relative grid h-11 w-11 flex-none place-items-center rounded-full border-4 border-panel shadow-card transition-transform duration-300 group-hover:rotate-3 group-hover:scale-105 ${visual.icon}`}>
-          <Icon aria-hidden="true" size={20} />
-        </span>
-      </div>
+    <section className="dashboard-stat">
+      <p className="text-xs text-muted">{item.label}</p>
+      <p className="mt-1.5 text-3xl font-semibold tracking-tight text-heading">{item.value}</p>
     </section>
   );
 }
 
-function DashboardVisualStrip({ images, quickActions }) {
-  const visualItems = images.length
-    ? images.slice(0, 5)
-    : buildFallbackVisualItems(quickActions);
+function DashboardVisualStrip({ images }) {
+  const visualItems = images.filter((image) => image.contentUrl).slice(0, 1);
 
   if (!visualItems.length) {
     return null;
   }
 
   return (
-    <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-      {visualItems.map((item, index) => {
-        const visual = visualCardClasses[index % visualCardClasses.length];
-        const Icon = item.Icon || Sparkles;
-        const hasImage = Boolean(item.contentUrl);
-
+    <section className="grid gap-3">
+      {visualItems.map((item) => {
         return (
-          <article
-            className={`group relative min-h-[8.5rem] overflow-hidden rounded-lg border p-3 shadow-card transition-[border-color,box-shadow,transform] hover:-translate-y-1 hover:shadow-soft ${visual.shell}`}
-            key={item.id || item.title}
-            style={{ animationDelay: `${index * 70}ms` }}
-          >
-            <span aria-hidden="true" className="absolute -right-10 -top-10 h-28 w-28 rounded-full bg-inverse/20 transition-transform duration-300 group-hover:scale-110" />
-            <div className="relative flex h-full flex-col justify-between gap-3">
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <h2 className="line-clamp-2 text-base font-medium leading-tight text-heading dark:text-heading">
-                    {item.title}
-                  </h2>
-                  {item.description && (
-                    <p className="mt-1 line-clamp-3 text-sm leading-5 text-body dark:text-ink">
-                      {item.description}
-                    </p>
-                  )}
-                </div>
-                <span className={`grid h-14 w-14 flex-none place-items-center overflow-hidden rounded-full border-4 border-panel shadow-card ${visual.icon}`}>
-                  {hasImage ? (
-                    <img
-                      alt=""
-                      className="h-full w-full object-cover"
-                      src={apiUrl(item.contentUrl)}
-                    />
-                  ) : (
-                    <Icon aria-hidden="true" size={23} />
-                  )}
-                </span>
-              </div>
-              {item.route && (
-                <button
-                  className={`inline-flex min-h-9 w-fit items-center justify-center rounded-full border px-4 py-2 text-sm font-medium transition-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-soft ${visual.button}`}
-                  onClick={() => setHashRoute(item.route)}
-                  type="button"
-                >
-                  Acceder
-                </button>
-              )}
+          <article className="flex items-center gap-4 rounded-lg border border-line bg-panel p-4" key={item.id || item.title}>
+            <img alt="" className="h-16 w-24 flex-none rounded-md object-cover" src={apiUrl(item.contentUrl)} />
+            <div className="min-w-0">
+              <h2 className="text-sm font-semibold text-heading">{item.title}</h2>
+              {item.description && <p className="mt-1 text-sm text-body">{item.description}</p>}
             </div>
           </article>
         );
@@ -359,6 +291,7 @@ function DashboardVisualAdminPanel({ images, token, onChanged }) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [displayOrder, setDisplayOrder] = useState('0');
+  const [placement, setPlacement] = useState('PAGE_HEADER');
   const [file, setFile] = useState(null);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
@@ -366,6 +299,7 @@ function DashboardVisualAdminPanel({ images, token, onChanged }) {
 
   async function uploadImage(event) {
     event.preventDefault();
+    const form = event.currentTarget;
 
     if (!file) {
       setError('Selecciona una imagen decorativa.');
@@ -379,7 +313,7 @@ function DashboardVisualAdminPanel({ images, token, onChanged }) {
     try {
       const formData = new FormData();
       formData.append('title', title.trim());
-      formData.append('placement', 'DASHBOARD');
+      formData.append('placement', placement || 'PAGE_HEADER');
       formData.append('displayOrder', displayOrder || '0');
       formData.append('active', 'true');
       formData.append('file', file);
@@ -397,9 +331,10 @@ function DashboardVisualAdminPanel({ images, token, onChanged }) {
       setTitle('');
       setDescription('');
       setDisplayOrder('0');
+      setPlacement('PAGE_HEADER');
       setFile(null);
-      event.currentTarget.reset();
-      setMessage('Imagen agregada al inicio.');
+      form.reset();
+      setMessage('Banner agregado con éxito.');
       await onChanged();
     } catch (requestError) {
       setError(requestError.message);
@@ -419,7 +354,7 @@ function DashboardVisualAdminPanel({ images, token, onChanged }) {
     const params = new URLSearchParams({
       title: overrides.title ?? image.title ?? 'Imagen',
       description: overrides.description ?? image.description ?? '',
-      placement: 'DASHBOARD',
+      placement: overrides.placement ?? image.placement ?? 'PAGE_HEADER',
       displayOrder: String(overrides.displayOrder ?? image.displayOrder ?? 0),
       active: String(overrides.active ?? image.active),
     });
@@ -455,6 +390,8 @@ function DashboardVisualAdminPanel({ images, token, onChanged }) {
   return (
     <SectionCard
       description="Sube imágenes ligeras para dar más vida visual al inicio de la plataforma."
+      collapsible
+      defaultCollapsed
       title="Personalización visual del inicio"
     >
       <div className="grid gap-4 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
@@ -469,6 +406,17 @@ function DashboardVisualAdminPanel({ images, token, onChanged }) {
               <Input min="0" type="number" value={displayOrder} onChange={(event) => setDisplayOrder(event.target.value)} />
             </Field>
           </div>
+          <Field label="Ubicación del banner">
+            <select
+              className="min-h-[2.5rem] w-full rounded-lg border border-line bg-field px-3 py-2 text-sm text-heading outline-none transition-[background-color,border-color,box-shadow] placeholder:text-muted hover:border-line-strong focus:border-primary-strong focus:ring-4 focus:ring-focus-soft dark:border-line dark:bg-page dark:text-heading dark:placeholder:text-muted dark:hover:border-line-strong dark:focus:border-info dark:focus:ring-focus-soft"
+              onChange={(event) => setPlacement(event.target.value)}
+              value={placement}
+            >
+              <option value="PAGE_HEADER">Cabecera de página</option>
+              <option value="SECTION_HEADER">Cabecera de sección</option>
+              <option value="DASHBOARD">Inicio</option>
+            </select>
+          </Field>
           <Field label="Descripción corta">
             <Textarea value={description} onChange={(event) => setDescription(event.target.value)} />
           </Field>
@@ -489,21 +437,28 @@ function DashboardVisualAdminPanel({ images, token, onChanged }) {
             </div>
           ) : (
             images.map((image) => (
-              <article className="sgp-color-card grid gap-3 rounded-lg border border-line bg-panel p-3 shadow-card dark:border-line dark:bg-surface sm:grid-cols-[4.5rem_minmax(0,1fr)_auto] sm:items-center" key={image.id}>
-                <img alt="" className="h-16 w-16 rounded-lg object-cover" src={apiUrl(image.contentUrl)} />
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-heading dark:text-heading">{image.title}</p>
-                  <p className="mt-1 line-clamp-2 text-xs leading-5 text-body dark:text-ink">{image.description || image.originalFilename}</p>
-                  <p className="mt-1 text-xs text-body">Orden {image.displayOrder ?? 0} · {image.active ? 'Visible' : 'Oculta'}</p>
+              <article className="sgp-color-card overflow-hidden rounded-xl border border-line bg-panel p-3 shadow-card dark:border-line dark:bg-surface" key={image.id}>
+                <div className="relative overflow-hidden rounded-lg border border-line bg-panel-soft dark:border-line dark:bg-surface-soft">
+                  <img alt="" className="h-28 w-full object-cover" src={apiUrl(image.contentUrl)} />
+                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(14,18,26,0.08),rgba(14,18,26,0.75))]" />
+                  <div className="absolute inset-x-0 bottom-0 p-3">
+                    <p className="text-sm font-semibold text-white">{image.title}</p>
+                    <p className="mt-1 line-clamp-2 text-xs leading-5 text-white/85">{image.description || image.originalFilename}</p>
+                  </div>
                 </div>
-                <ActionBar>
-                  <SecondaryButton icon={Palette} onClick={() => toggleImage(image)}>
-                    {image.active ? 'Ocultar' : 'Mostrar'}
-                  </SecondaryButton>
-                  <DangerButton icon={Trash2} onClick={() => deleteImage(image)}>
-                    Eliminar
-                  </DangerButton>
-                </ActionBar>
+                <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="min-w-0">
+                    <p className="text-xs text-body">Ubicación: {image.placement || 'PAGE_HEADER'} · Orden {image.displayOrder ?? 0} · {image.active ? 'Visible' : 'Oculta'}</p>
+                  </div>
+                  <ActionBar>
+                    <SecondaryButton icon={Palette} onClick={() => toggleImage(image)}>
+                      {image.active ? 'Ocultar' : 'Mostrar'}
+                    </SecondaryButton>
+                    <DangerButton icon={Trash2} onClick={() => deleteImage(image)}>
+                      Eliminar
+                    </DangerButton>
+                  </ActionBar>
+                </div>
               </article>
             ))
           )}
@@ -513,65 +468,23 @@ function DashboardVisualAdminPanel({ images, token, onChanged }) {
   );
 }
 
-function QuickActionsPanel({ actions }) {
-  if (!actions.length) {
-    return null;
-  }
-
-  return (
-    <SectionCard title="Accesos principales">
-      <div className="grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(12rem,1fr))]">
-        {actions.map((action, index) => {
-          const Icon = action.Icon || Activity;
-
-          return (
-            <button
-              className={`group flex min-h-[4.4rem] w-full items-center gap-3 rounded-lg border p-3 text-left shadow-card transition-[border-color,box-shadow,transform] hover:-translate-y-1 hover:shadow-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-soft ${visualCardClasses[index % visualCardClasses.length].shell}`}
-              key={action.id}
-              onClick={() => {
-                setHashRoute(action.id);
-              }}
-              type="button"
-            >
-              <span className={`grid h-10 w-10 flex-none place-items-center rounded-full border-4 border-panel shadow-card transition-transform duration-300 group-hover:rotate-3 group-hover:scale-105 ${visualCardClasses[index % visualCardClasses.length].icon}`}>
-                <Icon aria-hidden="true" size={19} />
-              </span>
-              <span className="min-w-0 text-sm font-medium leading-tight text-heading dark:text-heading">{action.label}</span>
-            </button>
-          );
-        })}
-      </div>
-    </SectionCard>
-  );
-}
-
-function buildFallbackVisualItems(actions) {
-  return actions.slice(0, 4).map((action) => ({
-    id: `fallback-${action.id}`,
-    title: action.label,
-    description: 'Acceso rápido para continuar el trabajo de prácticas.',
-    route: action.id,
-    Icon: action.Icon,
-  }));
-}
-
 function StudentDocumentsPanel({ documents }) {
   const summary = buildStudentDocumentSummary(documents);
 
   return (
     <SectionCard
-      description="Revisa el estado de tus documentos y la siguiente accion pendiente."
+      description="Revisa el estado de tus documentos y la siguiente acción pendiente."
       title="Mis documentos"
     >
       {documents.length === 0 ? (
-        <Alert dismissible={false} tone="info">Aun no tienes documentos creados para tu practica.</Alert>
+        <p className="py-3 text-sm text-muted">Aún no tienes documentos creados. Abre Documentos de práctica en el menú para comenzar.</p>
       ) : (
         <div className="space-y-4">
-          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="dashboard-document-summary">
             {summary.map((item) => (
-              <div className="sgp-color-card rounded-lg border border-line bg-panel-soft p-3 dark:border-line dark:bg-surface-soft" key={item.label}>
-                <p className="text-xs font-semibold uppercase text-body">{item.label}</p>
-                <p className="mt-2 text-2xl font-semibold text-heading dark:text-heading">{item.value}</p>
+              <div key={item.label}>
+                <p className="text-xs text-muted">{item.label}</p>
+                <p className="text-sm font-semibold text-heading">{item.value}</p>
               </div>
             ))}
           </div>
@@ -594,25 +507,22 @@ function StudentPracticeFilePanel({ documents, overview }) {
 
   return (
     <SectionCard
-      description="Vista rapida de tu pertenencia, avances y registros principales."
-      title="Expediente de practica"
+      description="Tu institución, tus tutores y tus registros de práctica."
+      title="Tu práctica actual"
     >
       <div className="grid gap-4 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,1.8fr)]">
-        <div className="sgp-color-card rounded-lg border border-line bg-panel-soft p-4 dark:border-line dark:bg-surface-soft">
-          <p className="text-xs font-semibold uppercase text-body">Pertenencia actual</p>
-          <h3 className="mt-2 text-lg font-semibold leading-tight text-heading dark:text-heading">
-            {enrollment?.studentFullName || enrollment?.student || 'Estudiante'}
-          </h3>
-          <div className="mt-3 grid gap-2 text-sm font-semibold text-body dark:text-body">
+        <div className="dashboard-practice-details">
+          <p className="text-xs font-semibold uppercase text-body">Información de la práctica</p>
+          <div className="mt-3 grid gap-3 text-sm text-body">
             <PracticeFileLine label="Paralelo" value={enrollment?.courseName} />
             <PracticeFileLine label="Grupo" value={enrollment?.groupName} />
-            <PracticeFileLine label="Institucion" value={enrollment?.educationalInstitutionName} />
-            <PracticeFileLine label="Tutor de practicas" value={enrollment?.practiceTutor} />
+            <PracticeFileLine label="Institución" value={enrollment?.educationalInstitutionName} />
+            <PracticeFileLine label="Tutor de prácticas" value={enrollment?.practiceTutor} />
             <PracticeFileLine label="Tutor institucional" value={enrollment?.institutionalTutor} />
           </div>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="dashboard-shortcuts">
           <PracticeFileMetric
             Icon={FileText}
             label="Documentos"
@@ -650,7 +560,7 @@ function StudentPracticeFilePanel({ documents, overview }) {
 function PracticeFileLine({ label, value }) {
   return (
     <div className="grid gap-1 sm:grid-cols-[8rem_minmax(0,1fr)]">
-      <span className="text-xs font-semibold uppercase text-body">{label}</span>
+      <span className="text-xs text-muted">{label}</span>
       <span className="min-w-0 break-words">{value || '-'}</span>
     </div>
   );
@@ -659,11 +569,11 @@ function PracticeFileLine({ label, value }) {
 function PracticeFileMetric({ Icon, detail, label, route, value }) {
   return (
     <button
-      className="sgp-color-card group flex min-h-[6.2rem] items-start gap-3 rounded-lg border border-line bg-panel p-4 text-left shadow-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:bg-surface"
+      className="dashboard-shortcut group flex items-start gap-3 rounded-md text-left hover:bg-panel-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
       onClick={() => setHashRoute(route)}
       type="button"
     >
-      <span className="sgp-color-card-accent grid h-10 w-10 flex-none place-items-center rounded-full border-4 border-panel shadow-card">
+      <span className="grid h-8 w-8 flex-none place-items-center rounded-md bg-panel-soft text-muted">
         <Icon aria-hidden="true" size={20} />
       </span>
       <span className="min-w-0">
@@ -675,18 +585,17 @@ function PracticeFileMetric({ Icon, detail, label, route, value }) {
   );
 }
 
-function RoleTasksPanel({ tasks }) {
+function RoleTasksPanel({ tasks, roles }) {
   const importantTasks = tasks.filter((task) => task.count > 0);
 
   return (
     <SectionCard
-      description="Atiende revisiones y seguimientos desde el documento o modulo correspondiente."
-      title="Tareas pendientes"
+      description={roles.includes('ROLE_ADMIN') ? 'Consulta los envíos que todavía esperan revisión.' : roles.includes('ROLE_DIRECTORA_INSTITUCION') ? 'Consulta las entrevistas pendientes de tu respuesta.' : 'Abre tus registros asignados para responder o revisar sus apartados.'}
+      title={roles.includes('ROLE_ADMIN') ? 'Seguimiento de envíos' : 'Pendientes asignados'}
     >
+      {roles.includes('ROLE_DIRECTORA_INSTITUCION') && <p className="mb-4 text-sm text-body">Responde tus entrevistas asignadas y consulta las jornadas de tu institución desde el menú.</p>}
       {importantTasks.length === 0 ? (
-        <Alert dismissible={false} tone="success">
-          No tienes revisiones pendientes en este momento.
-        </Alert>
+        <p className="py-3 text-sm text-muted">No hay pendientes en las bandejas consultadas.</p>
       ) : (
         <div className="grid gap-3 lg:grid-cols-2">
           {importantTasks.map((task) => (
@@ -704,11 +613,11 @@ function RoleTaskCard({ task }) {
   return (
     <button
       className="sgp-color-card group grid min-h-[6rem] gap-3 rounded-lg border border-line bg-panel p-4 text-left shadow-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:bg-surface"
-      onClick={() => setHashRoute(`documents/${task.moduleId}`)}
+      onClick={() => setHashRoute(task.route || `documents/${task.moduleId}`)}
       type="button"
     >
       <div className="flex items-start justify-between gap-3">
-        <span className="sgp-color-card-accent grid h-10 w-10 flex-none place-items-center rounded-full border-4 border-panel shadow-card">
+        <span className="grid h-8 w-8 flex-none place-items-center rounded-md bg-panel-soft text-muted">
           <Icon aria-hidden="true" size={20} />
         </span>
         <span className="rounded-full border border-accent/30 bg-accent-soft px-2.5 py-1 text-xs font-semibold text-accent-strong dark:border-accent/35 dark:bg-accent-soft dark:text-accent-strong">
@@ -723,42 +632,25 @@ function RoleTaskCard({ task }) {
   );
 }
 
-function buildQuickActions(roles) {
-  return NAV_ITEMS
-    .filter((item) => !['dashboard', 'notifications', 'profile'].includes(item.id))
-    .filter((item) => canAccess(item, roles))
-    .map((item) => {
-      const firstChild = (item.children || []).find((child) => canAccess(child, roles));
-
-      return {
-        id: firstChild?.id || item.id,
-        baseId: item.id,
-        label: item.label,
-        Icon: item.Icon,
-      };
-    })
-    .slice(0, 6);
-}
-
 function StudentDocumentRow({ document }) {
   return (
     <div className="grid gap-3 border-b border-line p-3 last:border-b-0 dark:border-line lg:grid-cols-[minmax(0,1.2fr)_auto_minmax(0,1.2fr)_auto] lg:items-center">
       <div>
         <p className="text-sm font-semibold text-heading dark:text-heading">{document.title}</p>
-        <p className="mt-1 text-xs font-semibold text-body">{document.context}</p>
+        <p className="mt-1 text-xs text-muted">{document.context}</p>
       </div>
 
       <StatusBadge status={document.status} />
 
       <div>
-        <p className="text-sm font-semibold text-body dark:text-body">{document.nextStep}</p>
-        <p className="mt-1 text-xs font-semibold text-body">
+        <p className="text-sm text-body">{document.nextStep}</p>
+        <p className="mt-1 text-xs text-muted">
           Actualizado: {formatValue(document.updatedAt, 'updatedAt')}
         </p>
       </div>
 
       <button
-        className="inline-flex min-h-[2.55rem] items-center justify-center rounded-lg border border-accent bg-transparent px-4 py-2 text-sm font-semibold text-primary transition-colors hover:border-primary hover:bg-primary hover:text-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:bg-surface dark:text-ink dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong"
+        className="inline-flex min-h-10 items-center justify-center rounded-md px-3 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus dark:text-info-strong"
         onClick={() => {
           setHashRoute(`documents/${document.moduleId}`);
         }}
@@ -777,12 +669,8 @@ async function loadStudentDocuments(token) {
   const requests = DOCUMENT_MODULES
     .filter((module) => REVIEWABLE_STUDENT_DOCUMENT_IDS.has(module.id))
     .map(async (module) => {
-      try {
-        const response = await apiRequest(module.listPath, { token });
-        return unwrapPage(response).map((row, index) => mapStudentDocument(module, row, index));
-      } catch {
-        return [];
-      }
+      const response = await apiRequest(module.listPath, { token });
+      return unwrapPage(response).map((row, index) => mapStudentDocument(module, row, index));
     });
 
   const documents = (await Promise.all(requests)).flat();
@@ -807,36 +695,35 @@ async function loadStudentPracticeOverview(token) {
 }
 
 async function loadOptionalList(path, token) {
-  try {
-    return unwrapPage(await apiRequest(path, { token }));
-  } catch {
-    return [];
-  }
+  return unwrapPage(await apiRequest(path, { token }));
 }
 
 async function loadRoleTasks(token, roles) {
-  const requests = DOCUMENT_MODULES.flatMap((module) =>
+  const requests = DOCUMENT_MODULES.filter((module) => REVIEWABLE_STUDENT_DOCUMENT_IDS.has(module.id)).flatMap((module) =>
     (module.altLists || [])
       .filter((list) => list.roles?.some((role) => roles.includes(role)))
       .map(async (list) => {
-        try {
           const response = await apiRequest(list.path, { token });
           const rows = unwrapPage(response);
 
           return {
-            count: rows.length,
+            count: pendingReviewCount(rows, list.path.includes('institutional-review') ? 'institutional'
+              : list.path.includes('/submitted') ? (roles.includes('ROLE_DIRECTOR_PRACTICAS') ? 'director' : 'all') : 'practice'),
             Icon: DOCUMENT_TASK_ICONS[module.id] || FileText,
             label: list.label,
             moduleId: module.id,
             path: list.path,
             title: module.title,
           };
-        } catch {
-          return null;
-        }
       })
   );
 
+  if (roles.some((role) => ['ROLE_TUTOR_INSTITUCIONAL', 'ROLE_DIRECTORA_INSTITUCION'].includes(role))) {
+    requests.push(apiRequest('/api/practice-forms/assigned', { token }).then((payload) => ({
+      count: unwrapPage(payload).filter((form) => form.status === 'SENT').length,
+      Icon: FileQuestion, title: 'Entrevistas asignadas', label: 'Por responder', moduleId: 'interviews', route: 'forms', path: '/api/practice-forms/assigned',
+    })));
+  }
   const tasks = (await Promise.all(requests)).filter(Boolean);
 
   return tasks.sort(compareRoleTasks);
@@ -863,7 +750,7 @@ function studentDocumentContext(row) {
     row?.courseName,
     row?.educationalInstitutionName,
     row?.academicPeriod,
-  ].filter(Boolean).join(' | ') || 'Documento de practica';
+  ].filter(Boolean).join(' | ') || 'Documento de práctica';
 }
 
 function currentEnrollment(enrollments) {
@@ -873,20 +760,7 @@ function currentEnrollment(enrollments) {
 }
 
 function summarizeStudentAttendances(schedules) {
-  return schedules.reduce(
-    (summary, schedule) => {
-      (schedule.attendances || []).forEach((attendance) => {
-        summary.total += 1;
-
-        if (['PRESENT', 'LATE', 'JUSTIFIED'].includes(attendance.status)) {
-          summary.assistedMinutes += Number(attendance.totalMinutes || 0);
-        }
-      });
-
-      return summary;
-    },
-    { assistedMinutes: 0, total: 0 },
-  );
+  return summarizeAttendances(schedules.flatMap((schedule) => schedule.attendances || []));
 }
 
 function formatMinutes(totalMinutes) {
@@ -909,14 +783,14 @@ function nextStepForDocument(status, feedbackCount) {
   }
 
   if (status === 'SUBMITTED') {
-    return 'Espera la revision del responsable.';
+    return 'Espera la revisión del responsable.';
   }
 
   if (status === 'APPROVED') {
     return 'Documento aprobado.';
   }
 
-  return 'Completa el documento y envialo a revision.';
+  return 'Completa el documento y envialo a revisión.';
 }
 
 function feedbackCountLabel(count) {
@@ -948,7 +822,7 @@ function countActiveFeedback(row) {
 function buildStudentDocumentSummary(documents) {
   return [
     { label: 'Borradores', value: countByStatus(documents, 'DRAFT') },
-    { label: 'En revision', value: countByStatus(documents, 'SUBMITTED') },
+    { label: 'En revisión', value: countByStatus(documents, 'SUBMITTED') },
     { label: 'Con correcciones', value: countByStatus(documents, 'NEEDS_CORRECTION') },
     { label: 'Aprobados', value: countByStatus(documents, 'APPROVED') },
   ];
@@ -1004,13 +878,3 @@ function compareRoleTasks(first, second) {
 
   return first.title.localeCompare(second.title, 'es');
 }
-
-const STAT_ICONS = {
-  Inscripciones: ClipboardCheck,
-  Fotos: Image,
-  Usuarios: UsersRound,
-  Evidencias: Image,
-  Facultades: Building2,
-  'Planes por revisar': CheckCircle2,
-  'Informes por revisar': FileText,
-};

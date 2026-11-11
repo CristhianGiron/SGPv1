@@ -1,7 +1,20 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          NotificationService.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa la lógica de aplicación de las notificaciones.
+ */
+
 package com.sgp.systemsgp.service;
 
 import com.sgp.systemsgp.dto.notification.CreateAnnouncementRequest;
 import com.sgp.systemsgp.dto.notification.NotificationResponse;
+import com.sgp.systemsgp.enums.RoleName;
 import com.sgp.systemsgp.exception.NotFoundException;
 import com.sgp.systemsgp.model.Account;
 import com.sgp.systemsgp.model.ActivityPlan;
@@ -39,6 +52,7 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final AccountRepository accountRepository;
     private final NotificationWebSocketHandler notificationWebSocketHandler;
+    private final PracticeAccessService practiceAccessService;
 
     public List<NotificationResponse> getMyNotifications(String username) {
         return notificationRepository
@@ -162,7 +176,8 @@ public class NotificationService {
                 report.getCourse(),
                 "informe final",
                 documentLink("final-reports", report.getId()),
-                "FINAL_REPORT_SUBMITTED");
+                "FINAL_REPORT_SUBMITTED",
+                InstitutionalAssignmentResolver.institutionalTutor(report.getEnrollment()));
     }
 
     @Transactional
@@ -186,13 +201,20 @@ public class NotificationService {
             Course course,
             String documentName,
             String link,
-            String type) {
+            String type,
+            Account... additionalRecipients) {
 
         if (course == null) {
             return;
         }
 
-        List<Account> recipients = getDocumentSubmissionRecipients(course);
+        Map<String, Account> recipients = new LinkedHashMap<>();
+        getDocumentSubmissionRecipients(course).forEach(recipient -> addRecipient(recipients, recipient));
+        for (Account recipient : additionalRecipients) {
+            if (practiceAccessService.hasRole(recipient, RoleName.ROLE_TUTOR_INSTITUCIONAL)) {
+                addRecipient(recipients, recipient);
+            }
+        }
         if (recipients.isEmpty()) {
             return;
         }
@@ -210,7 +232,7 @@ public class NotificationService {
                 documentName,
                 courseName);
 
-        recipients.forEach(recipient -> createNotification(
+        recipients.values().forEach(recipient -> createNotification(
                 recipient,
                 title,
                 message,
@@ -754,7 +776,7 @@ public class NotificationService {
                 enrollment.getAccount(),
                 title,
                 String.format(messageTemplate, courseLabel(enrollment.getCourse())),
-                enrollmentStudentLink(enrollment.getCourse().getId()),
+                enrollmentStudentLink(enrollment.getId()),
                 type);
     }
 
@@ -777,6 +799,9 @@ public class NotificationService {
 
         accountRepository
                 .findActiveAnnouncementRecipientsByRoleNames(DOCUMENT_MANAGER_ROLES)
+                .stream()
+                .filter(recipient -> practiceAccessService.isAdmin(recipient)
+                        || practiceAccessService.isDirectorForCourse(course, recipient))
                 .forEach(recipient -> addRecipient(recipients, recipient));
 
         return new ArrayList<>(recipients.values());
@@ -819,12 +844,8 @@ public class NotificationService {
         return "#/courses?courseId=" + courseId + "&view=enrollments";
     }
 
-    private String enrollmentStudentLink(Long courseId) {
-        if (courseId == null) {
-            return "#/courses";
-        }
-
-        return "#/courses?courseId=" + courseId + "&view=enrollments";
+    private String enrollmentStudentLink(Long enrollmentId) {
+        return enrollmentId == null ? "#/practices" : "#/practices/" + enrollmentId;
     }
 
     private String dualApprovalStatusLabel(

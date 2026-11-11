@@ -1,0 +1,99 @@
+{
+  "checks": [
+    {
+      "width": 320,
+      "mode": "light",
+      "overflow": false,
+      "logo": true,
+      "card": 284,
+      "clipped": [],
+      "internalScroll": false,
+      "unnamed": [],
+      "heading": "Crear cuenta de estudiante"
+    },
+    {
+      "width": 320,
+      "mode": "dark",
+      "overflow": false,
+      "logo": true,
+      "card": 284,
+      "clipped": [],
+      "internalScroll": false,
+      "unnamed": [],
+      "heading": "Crear cuenta de estudiante"
+    },
+    {
+      "width": 390,
+      "mode": "light",
+      "overflow": false,
+      "logo": true,
+      "card": 354,
+      "clipped": [],
+      "internalScroll": false,
+      "unnamed": [],
+      "heading": "Crear cuenta de estudiante"
+    },
+    {
+      "interaction": "Registration, inline error with preserved data, help and return to login",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "mode": "dark",
+      "overflow": false,
+      "logo": true,
+      "card": 354,
+      "clipped": [],
+      "internalScroll": false,
+      "unnamed": [],
+      "heading": "Crear cuenta de estudiante"
+    },
+    {
+      "width": 768,
+      "mode": "light",
+      "overflow": false,
+      "logo": true,
+      "card": 420,
+      "clipped": [],
+      "internalScroll": false,
+      "unnamed": [],
+      "heading": "Crear cuenta de estudiante"
+    },
+    {
+      "width": 768,
+      "mode": "dark",
+      "overflow": false,
+      "logo": true,
+      "card": 420,
+      "clipped": [],
+      "internalScroll": false,
+      "unnamed": [],
+      "heading": "Crear cuenta de estudiante"
+    },
+    {
+      "width": 1440,
+      "mode": "light",
+      "overflow": false,
+      "logo": true,
+      "card": 420,
+      "clipped": [],
+      "internalScroll": false,
+      "unnamed": [],
+      "heading": "Crear cuenta de estudiante"
+    },
+    {
+      "width": 1440,
+      "mode": "dark",
+      "overflow": false,
+      "logo": true,
+      "card": 420,
+      "clipped": [],
+      "internalScroll": false,
+      "unnamed": [],
+      "heading": "Crear cuenta de estudiante"
+    }
+  ],
+  "errors": [],
+  "submissions": 1,
+  "mode": "Chrome; isolated fixtures"
+}

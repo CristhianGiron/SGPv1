@@ -1,3 +1,32 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          DidacticPlansPage.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Gestiona las planificaciones didácticas y sus recomendaciones dentro del alcance del usuario.
+ */
+
+import { DidacticPlanContinuity } from '../components/DidacticPlanContinuity';
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          DidacticPlansPage.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Gestiona las planificaciones didácticas y sus recomendaciones dentro del alcance del usuario.
+ */
+
+import { DraftRecovery } from '../components/ui/DraftRecovery';
+import { useRecoverableDraft } from '../hooks/useRecoverableDraft';
+import { usePracticeRequest, usePracticeWorkspace } from '../contexts/PracticeWorkspaceContext';
+import { workflowCopy } from '../config/roleExperience';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Download,
@@ -8,7 +37,7 @@ import {
   Send,
   Trash2,
 } from 'lucide-react';
-import { apiBlob, apiRequest } from '../api/client';
+import { apiBlob } from '../api/client';
 import { useAuth } from '../auth/AuthContext';
 import { Alert } from '../components/ui/Alert';
 import { ActionBar, DangerButton, PrimaryButton, SecondaryButton } from '../components/ui/ActionBar';
@@ -54,19 +83,22 @@ const EMPTY_DRAFT = {
 };
 
 export function DidacticPlansPage() {
+  const apiRequest = usePracticeRequest();
+  const workspace = usePracticeWorkspace();
   const { token, roles, profile } = useAuth();
   const confirm = useConfirm();
   const isStudent = roles.includes('ROLE_ESTUDIANTE');
   const isInstitutionalTutor = roles.includes('ROLE_TUTOR_INSTITUCIONAL');
-  const canCreate = isStudent || isInstitutionalTutor;
-  const canRecommend = roles.some((role) =>
+  const operational = !workspace || (workspace.status === 'APPROVED' && !workspace.archived && workspace.courseActive !== false);
+  const canCreate = operational && (isStudent || isInstitutionalTutor);
+  const canRecommend = operational && roles.some((role) =>
     ['ROLE_TUTOR_INSTITUCIONAL', 'ROLE_TUTOR_PRACTICAS', 'ROLE_DIRECTOR_PRACTICAS', 'ROLE_ADMIN'].includes(role),
   );
 
   const [plans, setPlans] = useState([]);
   const [enrollments, setEnrollments] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
-  const [draft, setDraft] = useState(EMPTY_DRAFT);
+  const [draft, setDraft] = useState(() => ({ ...EMPTY_DRAFT, enrollmentId: workspace?.id || '' }));
   const [recommendations, setRecommendations] = useState('');
   const [pdfFile, setPdfFile] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -74,6 +106,8 @@ export function DidacticPlansPage() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState('list');
+  const recovery = useRecoverableDraft(`didactic-plans:${workspace?.id || 'global'}:${selectedId || 'new'}`, setDraft, activeTab==='form');
+  function changeDraft(update) { const next = typeof update==='function' ? update(draft) : update;setDraft(next);recovery.change(next); }
 
   const selectedPlan = useMemo(
     () => plans.find((plan) => String(plan.id) === String(selectedId)) || null,
@@ -83,7 +117,7 @@ export function DidacticPlansPage() {
     ? String(selectedPlan.authorId) === String(profile.id)
     : false;
   const canEditSelected = selectedPlan
-    ? selectedAuthorIsMe && selectedPlan.status !== 'SUBMITTED'
+    ? operational && selectedAuthorIsMe && selectedPlan.status !== 'SUBMITTED'
     : canCreate;
   const tutorPlans = useMemo(
     () => plans.filter((plan) => plan.authorType === 'INSTITUTIONAL_TUTOR' && plan.status !== 'DRAFT'),
@@ -92,8 +126,9 @@ export function DidacticPlansPage() {
   const planColumns = useMemo(
     () => [
       { key: 'title', header: 'Planificación', render: (row) => row.title || row.planningUnitTitle || 'Planificación' },
-      { key: 'authorName', header: 'Autor' },
-      { key: 'studentName', header: 'Estudiante' },
+      { key: 'courseName', header: 'Paralelo' },
+      { key: 'authorName', header: 'Autor', secondary: isStudent },
+      !isStudent && { key: 'studentName', header: 'Estudiante' },
       { key: 'status', header: 'Estado', render: (row) => <StatusBadge status={row.status} /> },
       {
         key: 'actions',
@@ -107,8 +142,8 @@ export function DidacticPlansPage() {
           </SecondaryButton>
         ),
       },
-    ],
-    [],
+    ].filter(Boolean),
+    [isStudent],
   );
 
   const loadData = useCallback(async () => {
@@ -129,7 +164,7 @@ export function DidacticPlansPage() {
     } finally {
       setLoading(false);
     }
-  }, [isStudent, token]);
+  }, [isStudent, token, apiRequest]);
 
   useEffect(() => {
     loadData();
@@ -142,9 +177,15 @@ export function DidacticPlansPage() {
     }
   }, [selectedPlan]);
 
+  useEffect(() => {
+    if (activeTab !== 'form' || selectedId) return;
+    const fixedId = workspace?.id ?? (enrollments.length === 1 ? enrollments[0].id : null);
+    if (fixedId != null) setDraft(current => String(current.enrollmentId) === String(fixedId) ? current : { ...current, enrollmentId: fixedId });
+  }, [activeTab, selectedId, workspace?.id, enrollments]);
+
   function startNewPlan() {
     setSelectedId(null);
-    setDraft(EMPTY_DRAFT);
+    setDraft({ ...EMPTY_DRAFT, enrollmentId: workspace?.id || (enrollments.length === 1 ? enrollments[0].id : '') });
     setRecommendations('');
     setPdfFile(null);
     setMessage('');
@@ -153,11 +194,11 @@ export function DidacticPlansPage() {
   }
 
   function updateDraft(field, value) {
-    setDraft((current) => ({ ...current, [field]: value }));
+    changeDraft((current) => ({ ...current, [field]: value }));
   }
 
   function updateWeek(index, field, value) {
-    setDraft((current) => ({
+    changeDraft((current) => ({
       ...current,
       weekPlans: current.weekPlans.map((week, weekIndex) =>
         weekIndex === index ? { ...week, [field]: value } : week,
@@ -166,7 +207,7 @@ export function DidacticPlansPage() {
   }
 
   function addWeek() {
-    setDraft((current) => ({
+    changeDraft((current) => ({
       ...current,
       weekPlans: [
         ...current.weekPlans,
@@ -176,7 +217,7 @@ export function DidacticPlansPage() {
   }
 
   function removeWeek(index) {
-    setDraft((current) => ({
+    changeDraft((current) => ({
       ...current,
       weekPlans: current.weekPlans.filter((_, weekIndex) => weekIndex !== index),
     }));
@@ -199,6 +240,10 @@ export function DidacticPlansPage() {
         },
       );
 
+      recovery.markClean();
+      setPlans((current) => [...current.filter((plan) => String(plan.id) !== String(saved.id)), saved]);
+      setSelectedId(saved.id);
+
       if (pdfFile) {
         const formData = new FormData();
         formData.append('file', pdfFile);
@@ -216,6 +261,7 @@ export function DidacticPlansPage() {
         });
       }
 
+      recovery.markClean();
       setMessage(asDraft ? 'Borrador guardado.' : 'Planificación enviada.');
       setSelectedId(saved.id);
       setPdfFile(null);
@@ -228,28 +274,7 @@ export function DidacticPlansPage() {
   }
 
   async function submitSelected() {
-    if (!selectedPlan || pdfFile) {
-      await savePlan(false);
-      return;
-    }
-
-    setSaving(true);
-    setError('');
-    setMessage('');
-
-    try {
-      const submitted = await apiRequest(`/api/didactic-plans/${selectedPlan.id}/submit`, {
-        method: 'PATCH',
-        token,
-      });
-      setMessage('Planificación enviada.');
-      setSelectedId(submitted.id);
-      await loadData();
-    } catch (requestError) {
-      setError(requestError.message || 'No se pudo enviar la planificación.');
-    } finally {
-      setSaving(false);
-    }
+    await savePlan(false);
   }
 
   async function deleteSelected() {
@@ -316,13 +341,7 @@ export function DidacticPlansPage() {
     }
   }
 
-  return (
-    <div className="space-y-6">
-      <PageHeader
-        eyebrow="Planificación didáctica"
-        title="Planificaciones didácticas"
-        description="Crea, adapta y revisa planificaciones de unidad didáctica para la práctica institucional."
-        action={
+  const listActions = (
           <ActionBar>
             <SecondaryButton icon={RefreshCw} loading={loading} onClick={loadData}>
               Actualizar
@@ -333,27 +352,33 @@ export function DidacticPlansPage() {
               </PrimaryButton>
             )}
           </ActionBar>
-        }
+  );
+
+  return (
+    <div className="space-y-6">
+      <PageHeader
+        eyebrow="Planificación didáctica"
+        title="Planificaciones didácticas"
+        description={workflowCopy('plans', roles)}
+        helpText={workflowCopy('plans', roles)}
+        action={activeTab !== 'list' ? listActions : undefined}
       />
 
       {message && <Alert tone="success">{message}</Alert>}
       {error && <Alert tone="error">{error}</Alert>}
 
       <ModuleTabs>
-        <ModuleTab active={activeTab === 'form'} onClick={() => setActiveTab('form')}>
-          Formulario
-        </ModuleTab>
+        {canCreate && <ModuleTab active={activeTab === 'form'} onClick={() => setActiveTab('form')}>Formulario</ModuleTab>}
         <ModuleTab active={activeTab === 'list'} onClick={() => setActiveTab('list')}>
           Tabla de planificaciones
         </ModuleTab>
-        <ModuleTab active={activeTab === 'view'} onClick={() => setActiveTab('view')}>
-          Vista de planificación
-        </ModuleTab>
+        {selectedPlan && <ModuleTab active={activeTab === 'view'} onClick={() => setActiveTab('view')}>Vista de planificación</ModuleTab>}
       </ModuleTabs>
 
       {activeTab === 'list' && (
         <SectionCard title="Planificaciones" description={`${plans.length} registro(s)`}>
           <DataTable
+            toolbarActions={listActions}
             columns={planColumns}
             emptyText="Aún no hay planificaciones registradas."
             loading={loading}
@@ -362,13 +387,19 @@ export function DidacticPlansPage() {
         </SectionCard>
       )}
 
-      {activeTab === 'form' && (
+      {canCreate && activeTab === 'form' && (
         <SectionCard
           title={selectedPlan ? selectedPlan.title || 'Planificación' : 'Nueva planificación'}
-          description={selectedPlan ? `${selectedPlan.authorName} | ${selectedPlan.studentName}` : 'Basada en el formato del Plan de Unidad Didáctica'}
+          description={selectedPlan
+            ? isStudent
+              ? selectedAuthorIsMe ? 'Tu planificación' : 'Planificación de tu práctica'
+              : `${selectedPlan.authorName} | ${selectedPlan.studentName}`
+            : 'Basada en el formato del Plan de Unidad Didáctica'}
           action={selectedPlan && <StatusBadge status={selectedPlan.status} />}
         >
           <div className="space-y-4">
+            <DraftRecovery draft={recovery} disabled={saving} />
+            <p className="text-xs text-body">La copia local conserva los campos de texto; los archivos PDF deben seleccionarse de nuevo al recuperar un borrador.</p>
             {selectedPlan?.recommendations && (
               <Alert tone="warning">
                 Recomendaciones de {selectedPlan.recommendedByName || 'revisor'}: {selectedPlan.recommendations}
@@ -376,31 +407,31 @@ export function DidacticPlansPage() {
             )}
 
             <div className="grid gap-3 lg:grid-cols-2 xl:grid-cols-3">
-              <Field label="Inscripción">
+              {!workspace && !(enrollments.length === 1 && String(draft.enrollmentId) === String(enrollments[0].id)) && <Field label="Inscripción">
                 <Select
-                  disabled={!canEditSelected}
+                  disabled={saving || !canEditSelected}
                   value={draft.enrollmentId}
                   onChange={(event) => updateDraft('enrollmentId', event.target.value)}
                 >
                   <option value="">Selecciona una inscripción</option>
                   {enrollments.map((enrollment) => (
                     <option key={enrollment.id} value={enrollment.id}>
-                      {[enrollment.studentFullName, enrollment.courseName, enrollment.educationalInstitutionName]
+                      {[enrollment.studentFullName, enrollment.practiceName, enrollment.courseName, enrollment.educationalInstitutionName]
                         .filter(Boolean)
                         .join(' | ')}
                     </option>
                   ))}
                 </Select>
-              </Field>
+              </Field>}
 
               {isStudent && (
                 <Field label="Planificación base de la tutora">
                   <Select
-                    disabled={!canEditSelected}
+                    disabled={saving || !canEditSelected}
                     value={draft.sourcePlanId}
                     onChange={(event) => {
                       const source = tutorPlans.find((plan) => String(plan.id) === event.target.value);
-                      setDraft(source ? planToDraft({ ...source, sourcePlanId: source.id }) : { ...draft, sourcePlanId: '' });
+                      changeDraft(source ? planToDraft({ ...source, sourcePlanId: source.id }) : { ...draft, sourcePlanId: '' });
                     }}
                   >
                     <option value="">Sin planificación base</option>
@@ -414,48 +445,48 @@ export function DidacticPlansPage() {
               )}
 
               <Field label="Título">
-                <Input disabled={!canEditSelected} value={draft.title} onChange={(event) => updateDraft('title', event.target.value)} />
+                <Input disabled={saving || !canEditSelected} value={draft.title} onChange={(event) => updateDraft('title', event.target.value)} />
               </Field>
               <Field label="Docente">
-                <Input disabled={!canEditSelected} value={draft.teacherName} onChange={(event) => updateDraft('teacherName', event.target.value)} />
+                <Input disabled={saving || !canEditSelected} value={draft.teacherName} onChange={(event) => updateDraft('teacherName', event.target.value)} />
               </Field>
               <Field label="Área/asignatura">
-                <Input disabled={!canEditSelected} value={draft.areaSubject} onChange={(event) => updateDraft('areaSubject', event.target.value)} />
+                <Input disabled={saving || !canEditSelected} value={draft.areaSubject} onChange={(event) => updateDraft('areaSubject', event.target.value)} />
               </Field>
-              <Field label="Periodos">
-                <Input disabled={!canEditSelected} type="number" min="0" value={draft.periods} onChange={(event) => updateDraft('periods', event.target.value)} />
+              <Field label="Períodos">
+                <Input disabled={saving || !canEditSelected} type="number" min="0" value={draft.periods} onChange={(event) => updateDraft('periods', event.target.value)} />
               </Field>
               <Field label="Semanas">
-                <Input disabled={!canEditSelected} type="number" min="0" value={draft.weeks} onChange={(event) => updateDraft('weeks', event.target.value)} />
+                <Input disabled={saving || !canEditSelected} type="number" min="0" value={draft.weeks} onChange={(event) => updateDraft('weeks', event.target.value)} />
               </Field>
               <Field label="Semana de inicio">
-                <Input disabled={!canEditSelected} type="date" value={draft.startWeek} onChange={(event) => updateDraft('startWeek', event.target.value)} />
+                <Input disabled={saving || !canEditSelected} type="date" value={draft.startWeek} onChange={(event) => updateDraft('startWeek', event.target.value)} />
               </Field>
               <Field label="Semana de culminación">
-                <Input disabled={!canEditSelected} type="date" value={draft.endWeek} onChange={(event) => updateDraft('endWeek', event.target.value)} />
+                <Input disabled={saving || !canEditSelected} type="date" value={draft.endWeek} onChange={(event) => updateDraft('endWeek', event.target.value)} />
               </Field>
               <Field label="Curso/grado">
-                <Input disabled={!canEditSelected} value={draft.gradeCourse} onChange={(event) => updateDraft('gradeCourse', event.target.value)} />
+                <Input disabled={saving || !canEditSelected} value={draft.gradeCourse} onChange={(event) => updateDraft('gradeCourse', event.target.value)} />
               </Field>
               <Field label="Paralelo">
-                <Input disabled={!canEditSelected} value={draft.parallel} onChange={(event) => updateDraft('parallel', event.target.value)} />
+                <Input disabled={saving || !canEditSelected} value={draft.parallel} onChange={(event) => updateDraft('parallel', event.target.value)} />
               </Field>
             </div>
 
             <Field label="Título y número de unidad de planificación">
-              <Input disabled={!canEditSelected} value={draft.planningUnitTitle} onChange={(event) => updateDraft('planningUnitTitle', event.target.value)} />
+              <Input disabled={saving || !canEditSelected} value={draft.planningUnitTitle} onChange={(event) => updateDraft('planningUnitTitle', event.target.value)} />
             </Field>
             <Field label="Inserciones curriculares">
-              <Textarea disabled={!canEditSelected} value={draft.curricularInsertions} onChange={(event) => updateDraft('curricularInsertions', event.target.value)} />
+              <Textarea disabled={saving || !canEditSelected} value={draft.curricularInsertions} onChange={(event) => updateDraft('curricularInsertions', event.target.value)} />
             </Field>
             <Field label="Objetivos de aprendizaje">
-              <Textarea disabled={!canEditSelected} value={draft.learningObjectives} onChange={(event) => updateDraft('learningObjectives', event.target.value)} />
+              <Textarea disabled={saving || !canEditSelected} value={draft.learningObjectives} onChange={(event) => updateDraft('learningObjectives', event.target.value)} />
             </Field>
             <Field label="Criterios de evaluación">
-              <Textarea disabled={!canEditSelected} value={draft.evaluationCriteria} onChange={(event) => updateDraft('evaluationCriteria', event.target.value)} />
+              <Textarea disabled={saving || !canEditSelected} value={draft.evaluationCriteria} onChange={(event) => updateDraft('evaluationCriteria', event.target.value)} />
             </Field>
             <Field label="Principios del Diseño Universal de Aprendizaje - DUA">
-              <Textarea disabled={!canEditSelected} value={draft.duaPrinciples} onChange={(event) => updateDraft('duaPrinciples', event.target.value)} />
+              <Textarea disabled={saving || !canEditSelected} value={draft.duaPrinciples} onChange={(event) => updateDraft('duaPrinciples', event.target.value)} />
             </Field>
 
             <div className="space-y-3">
@@ -479,33 +510,33 @@ export function DidacticPlansPage() {
                   </div>
                   <div className="grid gap-3 lg:grid-cols-3">
                     <Field label="Número">
-                      <Input disabled={!canEditSelected} type="number" value={week.weekNumber || ''} onChange={(event) => updateWeek(index, 'weekNumber', event.target.value)} />
+                      <Input disabled={saving || !canEditSelected} type="number" value={week.weekNumber || ''} onChange={(event) => updateWeek(index, 'weekNumber', event.target.value)} />
                     </Field>
                     <Field label="Desde">
-                      <Input disabled={!canEditSelected} type="date" value={week.startDate || ''} onChange={(event) => updateWeek(index, 'startDate', event.target.value)} />
+                      <Input disabled={saving || !canEditSelected} type="date" value={week.startDate || ''} onChange={(event) => updateWeek(index, 'startDate', event.target.value)} />
                     </Field>
                     <Field label="Hasta">
-                      <Input disabled={!canEditSelected} type="date" value={week.endDate || ''} onChange={(event) => updateWeek(index, 'endDate', event.target.value)} />
+                      <Input disabled={saving || !canEditSelected} type="date" value={week.endDate || ''} onChange={(event) => updateWeek(index, 'endDate', event.target.value)} />
                     </Field>
                   </div>
                   <div className="mt-3 grid gap-3 lg:grid-cols-2">
                     <Field label="Contenidos, habilidades o temas">
-                      <Textarea disabled={!canEditSelected} value={week.contents || ''} onChange={(event) => updateWeek(index, 'contents', event.target.value)} />
+                      <Textarea disabled={saving || !canEditSelected} value={week.contents || ''} onChange={(event) => updateWeek(index, 'contents', event.target.value)} />
                     </Field>
                     <Field label="Destreza">
-                      <Textarea disabled={!canEditSelected} value={week.skill || ''} onChange={(event) => updateWeek(index, 'skill', event.target.value)} />
+                      <Textarea disabled={saving || !canEditSelected} value={week.skill || ''} onChange={(event) => updateWeek(index, 'skill', event.target.value)} />
                     </Field>
                     <Field label="Actividades con estrategias metodológicas diversificadas con DUA">
-                      <Textarea disabled={!canEditSelected} value={week.methodologyActivities || ''} onChange={(event) => updateWeek(index, 'methodologyActivities', event.target.value)} />
+                      <Textarea disabled={saving || !canEditSelected} value={week.methodologyActivities || ''} onChange={(event) => updateWeek(index, 'methodologyActivities', event.target.value)} />
                     </Field>
                     <Field label="Recursos">
-                      <Textarea disabled={!canEditSelected} value={week.resources || ''} onChange={(event) => updateWeek(index, 'resources', event.target.value)} />
+                      <Textarea disabled={saving || !canEditSelected} value={week.resources || ''} onChange={(event) => updateWeek(index, 'resources', event.target.value)} />
                     </Field>
                     <Field label="Indicadores de logro">
-                      <Textarea disabled={!canEditSelected} value={week.evaluationIndicators || ''} onChange={(event) => updateWeek(index, 'evaluationIndicators', event.target.value)} />
+                      <Textarea disabled={saving || !canEditSelected} value={week.evaluationIndicators || ''} onChange={(event) => updateWeek(index, 'evaluationIndicators', event.target.value)} />
                     </Field>
                     <Field label="Actividades evaluativas">
-                      <Textarea disabled={!canEditSelected} value={week.evaluationActivities || ''} onChange={(event) => updateWeek(index, 'evaluationActivities', event.target.value)} />
+                      <Textarea disabled={saving || !canEditSelected} value={week.evaluationActivities || ''} onChange={(event) => updateWeek(index, 'evaluationActivities', event.target.value)} />
                     </Field>
                   </div>
                 </div>
@@ -515,7 +546,7 @@ export function DidacticPlansPage() {
             <div className="sgp-color-card rounded-lg border border-line bg-panel-soft p-3 dark:border-line dark:bg-surface-soft">
               <div className="grid gap-3 lg:grid-cols-[1fr_auto] lg:items-end">
                 <Field label="Subir PDF de planificación">
-                  <FileInput disabled={!canEditSelected} accept="application/pdf" onChange={(event) => setPdfFile(event.target.files?.[0] || null)} />
+                  <FileInput disabled={saving || !canEditSelected} accept="application/pdf" onChange={(event) => setPdfFile(event.target.files?.[0] || null)} />
                 </Field>
                 <SecondaryButton disabled={!selectedPlan?.hasUploadedPdf} icon={Download} onClick={downloadPdf}>
                   Descargar PDF
@@ -553,13 +584,22 @@ export function DidacticPlansPage() {
       {activeTab === 'view' && (
         <SectionCard
           title={selectedPlan ? selectedPlan.title || 'Planificación' : 'Vista de planificación'}
-          description={selectedPlan ? `${selectedPlan.authorName} | ${selectedPlan.studentName}` : 'Selecciona una planificación desde la tabla.'}
+          description={selectedPlan
+            ? isStudent
+              ? selectedAuthorIsMe ? 'Tu planificación' : 'Planificación de tu práctica'
+              : `${selectedPlan.authorName} | ${selectedPlan.studentName}`
+            : 'Selecciona una planificación desde la tabla.'}
           action={selectedPlan && <StatusBadge status={selectedPlan.status} />}
         >
           {selectedPlan ? (
             <div className="space-y-4">
-              <PlanDetail plan={selectedPlan} />
+              <PlanDetail
+                hideAuthor={isStudent && selectedAuthorIsMe}
+                hideStudent={isStudent}
+                plan={selectedPlan}
+              />
 
+              <DidacticPlanContinuity plan={selectedPlan} operational={operational} onChanged={loadData} renderSnapshot={historical=><PlanDetail plan={historical} hideAuthor={false} hideStudent={false} />} />
               <ActionBar>
                 {selectedPlan.hasUploadedPdf && (
                   <SecondaryButton icon={Download} onClick={downloadPdf}>
@@ -605,8 +645,8 @@ function planToDraft(plan) {
     title: plan.title || 'Plan de Unidad Didáctica',
     teacherName: plan.teacherName || '',
     areaSubject: plan.areaSubject || '',
-    periods: plan.periods || '',
-    weeks: plan.weeks || '',
+    periods: plan.periods ?? '',
+    weeks: plan.weeks ?? '',
     startWeek: plan.startWeek || '',
     endWeek: plan.endWeek || '',
     gradeCourse: plan.gradeCourse || '',
@@ -635,7 +675,7 @@ function buildPayload(draft, asDraft) {
   };
 }
 
-function PlanDetail({ plan }) {
+function PlanDetail({ plan, hideAuthor = false, hideStudent = false }) {
   return (
     <div className="space-y-5">
       {plan.recommendations && (
@@ -645,13 +685,13 @@ function PlanDetail({ plan }) {
       )}
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <DetailValue label="Autor" value={plan.authorName} />
-        <DetailValue label="Estudiante" value={plan.studentName} />
+        {!hideAuthor && <DetailValue label="Autor" value={plan.authorName} />}
+        {!hideStudent && <DetailValue label="Estudiante" value={plan.studentName} />}
         <DetailValue label="Paralelo" value={plan.courseName} />
         <DetailValue label="Institución" value={plan.educationalInstitutionName} />
         <DetailValue label="Docente" value={plan.teacherName} />
         <DetailValue label="Área/asignatura" value={plan.areaSubject} />
-        <DetailValue label="Periodos" value={plan.periods} />
+        <DetailValue label="Períodos" value={plan.periods} />
         <DetailValue label="Semanas" value={plan.weeks} />
         <DetailValue label="Inicio" value={plan.startWeek} />
         <DetailValue label="Culminación" value={plan.endWeek} />

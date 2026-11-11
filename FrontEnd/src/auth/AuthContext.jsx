@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          AuthContext.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Gestiona el estado y la integración de AuthContext en la interfaz React.
+ */
+
 /**
  * AUTH CONTEXT - Gestión Global de Autenticación
  * 
@@ -10,7 +22,7 @@
  * Se usa en toda la aplicación mediante el hook useAuth()
  * Todos los datos se persisten en localStorage para mantener sesión
  */
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { apiRequest } from '../api/client';
 import { clearStoredAuth, getStoredAuth, storeAuth } from './storage';
 
@@ -30,6 +42,13 @@ export function AuthProvider({ children }) {
   const [loadingProfile, setLoadingProfile] = useState(false);
   // Errores al cargar el perfil
   const [profileError, setProfileError] = useState('');
+  const [sessionNotice, setSessionNotice] = useState('');
+  const profileRequest = useRef(0);
+  useEffect(() => {
+    const sync = () => setAuth(getStoredAuth());
+    window.addEventListener('storage',sync);window.addEventListener('sgp-auth-changed',sync);
+    return () => {window.removeEventListener('storage',sync);window.removeEventListener('sgp-auth-changed',sync);};
+  }, []);
 
   // Extraer el token del estado de autenticación
   const token = auth?.accessToken || '';
@@ -42,6 +61,8 @@ export function AuthProvider({ children }) {
    * El backend obtiene los datos del token JWT
    */
   const refreshProfile = useCallback(async () => {
+    const requestId = ++profileRequest.current;
+    const owner = getStoredAuth()?.username;
     // Si no hay token, no hay usuario autenticado
     if (!token) {
       setProfile(null);
@@ -54,10 +75,12 @@ export function AuthProvider({ children }) {
     try {
       // Llamada al backend para obtener datos del usuario
       const account = await apiRequest('/api/account/me', { token });
+      if(requestId !== profileRequest.current || getStoredAuth()?.username !== owner) return null;
       setProfile(account);
       return account;
     } catch (error) {
-      if (error.status === 401 || error.status === 403) {
+      if(requestId !== profileRequest.current || getStoredAuth()?.username !== owner) return null;
+      if ((error.status === 401 || error.status === 403) && getStoredAuth()?.accessToken === token) {
         clearStoredAuth();
         setAuth(null);
         setProfile(null);
@@ -66,7 +89,7 @@ export function AuthProvider({ children }) {
       setProfileError(error.message);
       return null;
     } finally {
-      setLoadingProfile(false);
+      if(requestId === profileRequest.current) setLoadingProfile(false);
     }
   }, [token]);
 
@@ -81,6 +104,7 @@ export function AuthProvider({ children }) {
    * @returns {Object} Datos de autenticación con tokens
    */
   async function login(credentials) {
+    setSessionNotice('');
     // Enviar credenciales al backend
     const response = await apiRequest('/api/auth/login', {
       method: 'POST',
@@ -145,12 +169,20 @@ export function AuthProvider({ children }) {
    * logout - Cierra la sesión del usuario
    * Limpia todos los datos de autenticación y perfil
    */
-  function logout() {
-    clearStoredAuth();  // Eliminar tokens de localStorage
-    setAuth(null);      // Limpiar estado
-    setProfile(null);   // Limpiar perfil
-    setProfileError(''); // Limpiar errores
-  }
+  const clearLocalSession = useCallback(() => {
+    clearStoredAuth();setAuth(null);setProfile(null);setProfileError('');
+  }, []);
+  const logout = useCallback(async () => {
+    setSessionNotice('');
+    try { const saved=getStoredAuth();if(saved?.accessToken) await apiRequest('/api/auth/logout',{token:saved.accessToken,method:'POST'}); }
+    catch(error) { if(![401,403].includes(error.status)) setSessionNotice('Se cerró el acceso en este navegador, pero no se pudo confirmar el cierre en el servidor.'); }
+    finally { clearLocalSession(); }
+  }, [clearLocalSession]);
+  const logoutAll = useCallback(async () => {
+    const saved=getStoredAuth();
+    await apiRequest('/api/auth/logout-all',{token:saved?.accessToken,method:'POST'});
+    setSessionNotice('');clearLocalSession();
+  }, [clearLocalSession]);
 
 /**
  * Preparar el objeto value que se proporciona a través del contexto
@@ -166,12 +198,14 @@ const value = useMemo(
     profileError,                   // Errores al cargar perfil
     login,                          // Función para login
     registerStudent,                // Función para registro
+    logoutAll,
+    sessionNotice,
     logout,                         // Función para logout
     refreshProfile,                 // Función para recargar perfil
     // Helper: verifica si el usuario tiene al menos uno de los roles
     hasRole: (...allowedRoles) => allowedRoles.some((role) => roles.includes(role)),
   }),
-  [auth, token, profile, roles, loadingProfile, profileError, refreshProfile]
+  [auth, token, profile, roles, loadingProfile, profileError, sessionNotice, refreshProfile, logout, logoutAll]
 );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -1,0 +1,505 @@
+{
+  "date": "2026-11-07",
+  "mode": "Chrome mouse/touch; isolated API",
+  "checks": [
+    {
+      "mode": "light",
+      "width": 320,
+      "input": "touch",
+      "label": "Default launcher avoids sticky document actions",
+      "pass": true
+    },
+    {
+      "mode": "light",
+      "width": 320,
+      "input": "touch",
+      "label": "Ordinary click or tap still opens tools",
+      "pass": true
+    },
+    {
+      "mode": "light",
+      "width": 320,
+      "input": "touch",
+      "label": "Drag does not open tools and saves position",
+      "pass": true
+    },
+    {
+      "mode": "light",
+      "width": 320,
+      "input": "touch",
+      "label": "Moved launcher stays round and within screen",
+      "pass": true
+    },
+    {
+      "mode": "light",
+      "width": 320,
+      "input": "touch",
+      "label": "Click opens panel safely in the chosen corner",
+      "pass": true
+    },
+    {
+      "mode": "light",
+      "width": 320,
+      "input": "touch",
+      "label": "Closing restores focus to moved launcher",
+      "pass": true
+    },
+    {
+      "mode": "light",
+      "width": 320,
+      "input": "touch",
+      "label": "Arrow keys move without opening",
+      "pass": true
+    },
+    {
+      "mode": "light",
+      "width": 320,
+      "label": "Position survives reload",
+      "pass": true
+    },
+    {
+      "mode": "light",
+      "width": 320,
+      "input": "touch",
+      "label": "Resize keeps launcher reachable",
+      "pass": true
+    },
+    {
+      "mode": "light",
+      "width": 320,
+      "input": "touch",
+      "label": "Dragging against edges remains bounded",
+      "pass": true
+    },
+    {
+      "mode": "light",
+      "width": 320,
+      "input": "touch",
+      "label": "Reset position retains other preferences",
+      "pass": true
+    },
+    {
+      "mode": "light",
+      "width": 320,
+      "input": "touch",
+      "label": "Default placement restored after reset",
+      "pass": true
+    },
+    {
+      "mode": "light",
+      "width": 390,
+      "input": "touch",
+      "label": "Default launcher avoids sticky document actions",
+      "pass": true
+    },
+    {
+      "mode": "light",
+      "width": 390,
+      "input": "touch",
+      "label": "Ordinary click or tap still opens tools",
+      "pass": true
+    },
+    {
+      "mode": "light",
+      "width": 390,
+      "input": "touch",
+      "label": "Drag does not open tools and saves position",
+      "pass": true
+    },
+    {
+      "mode": "light",
+      "width": 390,
+      "input": "touch",
+      "label": "Moved launcher stays round and within screen",
+      "pass": true
+    },
+    {
+      "mode": "light",
+      "width": 390,
+      "input": "touch",
+      "label": "Click opens panel safely in the chosen corner",
+      "pass": true
+    },
+    {
+      "mode": "light",
+      "width": 390,
+      "input": "touch",
+      "label": "Closing restores focus to moved launcher",
+      "pass": true
+    },
+    {
+      "mode": "light",
+      "width": 390,
+      "input": "touch",
+      "label": "Arrow keys move without opening",
+      "pass": true
+    },
+    {
+      "mode": "light",
+      "width": 390,
+      "label": "Position survives reload",
+      "pass": true
+    },
+    {
+      "mode": "light",
+      "width": 390,
+      "input": "touch",
+      "label": "Resize keeps launcher reachable",
+      "pass": true
+    },
+    {
+      "mode": "light",
+      "width": 390,
+      "input": "touch",
+      "label": "Dragging against edges remains bounded",
+      "pass": true
+    },
+    {
+      "mode": "light",
+      "width": 390,
+      "input": "touch",
+      "label": "Reset position retains other preferences",
+      "pass": true
+    },
+    {
+      "mode": "light",
+      "width": 390,
+      "input": "touch",
+      "label": "Default placement restored after reset",
+      "pass": true
+    },
+    {
+      "mode": "light",
+      "width": 1440,
+      "input": "mouse",
+      "label": "Default launcher avoids sticky document actions",
+      "pass": true
+    },
+    {
+      "mode": "light",
+      "width": 1440,
+      "input": "mouse",
+      "label": "Ordinary click or tap still opens tools",
+      "pass": true
+    },
+    {
+      "mode": "light",
+      "width": 1440,
+      "input": "mouse",
+      "label": "Drag does not open tools and saves position",
+      "pass": true
+    },
+    {
+      "mode": "light",
+      "width": 1440,
+      "input": "mouse",
+      "label": "Moved launcher stays round and within screen",
+      "pass": true
+    },
+    {
+      "mode": "light",
+      "width": 1440,
+      "input": "mouse",
+      "label": "Click opens panel safely in the chosen corner",
+      "pass": true
+    },
+    {
+      "mode": "light",
+      "width": 1440,
+      "input": "mouse",
+      "label": "Closing restores focus to moved launcher",
+      "pass": true
+    },
+    {
+      "mode": "light",
+      "width": 1440,
+      "input": "mouse",
+      "label": "Arrow keys move without opening",
+      "pass": true
+    },
+    {
+      "mode": "light",
+      "width": 1440,
+      "label": "Position survives reload",
+      "pass": true
+    },
+    {
+      "mode": "light",
+      "width": 1440,
+      "input": "mouse",
+      "label": "Resize keeps launcher reachable",
+      "pass": true
+    },
+    {
+      "mode": "light",
+      "width": 1440,
+      "input": "mouse",
+      "label": "Dragging against edges remains bounded",
+      "pass": true
+    },
+    {
+      "mode": "light",
+      "width": 1440,
+      "input": "mouse",
+      "label": "Reset position retains other preferences",
+      "pass": true
+    },
+    {
+      "mode": "light",
+      "width": 1440,
+      "input": "mouse",
+      "label": "Default placement restored after reset",
+      "pass": true
+    },
+    {
+      "mode": "dark",
+      "width": 320,
+      "input": "touch",
+      "label": "Default launcher avoids sticky document actions",
+      "pass": true
+    },
+    {
+      "mode": "dark",
+      "width": 320,
+      "input": "touch",
+      "label": "Ordinary click or tap still opens tools",
+      "pass": true
+    },
+    {
+      "mode": "dark",
+      "width": 320,
+      "input": "touch",
+      "label": "Drag does not open tools and saves position",
+      "pass": true
+    },
+    {
+      "mode": "dark",
+      "width": 320,
+      "input": "touch",
+      "label": "Moved launcher stays round and within screen",
+      "pass": true
+    },
+    {
+      "mode": "dark",
+      "width": 320,
+      "input": "touch",
+      "label": "Click opens panel safely in the chosen corner",
+      "pass": true
+    },
+    {
+      "mode": "dark",
+      "width": 320,
+      "input": "touch",
+      "label": "Closing restores focus to moved launcher",
+      "pass": true
+    },
+    {
+      "mode": "dark",
+      "width": 320,
+      "input": "touch",
+      "label": "Arrow keys move without opening",
+      "pass": true
+    },
+    {
+      "mode": "dark",
+      "width": 320,
+      "label": "Position survives reload",
+      "pass": true
+    },
+    {
+      "mode": "dark",
+      "width": 320,
+      "input": "touch",
+      "label": "Resize keeps launcher reachable",
+      "pass": true
+    },
+    {
+      "mode": "dark",
+      "width": 320,
+      "input": "touch",
+      "label": "Dragging against edges remains bounded",
+      "pass": true
+    },
+    {
+      "mode": "dark",
+      "width": 320,
+      "input": "touch",
+      "label": "Reset position retains other preferences",
+      "pass": true
+    },
+    {
+      "mode": "dark",
+      "width": 320,
+      "input": "touch",
+      "label": "Default placement restored after reset",
+      "pass": true
+    },
+    {
+      "mode": "dark",
+      "width": 390,
+      "input": "touch",
+      "label": "Default launcher avoids sticky document actions",
+      "pass": true
+    },
+    {
+      "mode": "dark",
+      "width": 390,
+      "input": "touch",
+      "label": "Ordinary click or tap still opens tools",
+      "pass": true
+    },
+    {
+      "mode": "dark",
+      "width": 390,
+      "input": "touch",
+      "label": "Drag does not open tools and saves position",
+      "pass": true
+    },
+    {
+      "mode": "dark",
+      "width": 390,
+      "input": "touch",
+      "label": "Moved launcher stays round and within screen",
+      "pass": true
+    },
+    {
+      "mode": "dark",
+      "width": 390,
+      "input": "touch",
+      "label": "Click opens panel safely in the chosen corner",
+      "pass": true
+    },
+    {
+      "mode": "dark",
+      "width": 390,
+      "input": "touch",
+      "label": "Closing restores focus to moved launcher",
+      "pass": true
+    },
+    {
+      "mode": "dark",
+      "width": 390,
+      "input": "touch",
+      "label": "Arrow keys move without opening",
+      "pass": true
+    },
+    {
+      "mode": "dark",
+      "width": 390,
+      "label": "Position survives reload",
+      "pass": true
+    },
+    {
+      "mode": "dark",
+      "width": 390,
+      "input": "touch",
+      "label": "Resize keeps launcher reachable",
+      "pass": true
+    },
+    {
+      "mode": "dark",
+      "width": 390,
+      "input": "touch",
+      "label": "Dragging against edges remains bounded",
+      "pass": true
+    },
+    {
+      "mode": "dark",
+      "width": 390,
+      "input": "touch",
+      "label": "Reset position retains other preferences",
+      "pass": true
+    },
+    {
+      "mode": "dark",
+      "width": 390,
+      "input": "touch",
+      "label": "Default placement restored after reset",
+      "pass": true
+    },
+    {
+      "mode": "dark",
+      "width": 1440,
+      "input": "mouse",
+      "label": "Default launcher avoids sticky document actions",
+      "pass": true
+    },
+    {
+      "mode": "dark",
+      "width": 1440,
+      "input": "mouse",
+      "label": "Ordinary click or tap still opens tools",
+      "pass": true
+    },
+    {
+      "mode": "dark",
+      "width": 1440,
+      "input": "mouse",
+      "label": "Drag does not open tools and saves position",
+      "pass": true
+    },
+    {
+      "mode": "dark",
+      "width": 1440,
+      "input": "mouse",
+      "label": "Moved launcher stays round and within screen",
+      "pass": true
+    },
+    {
+      "mode": "dark",
+      "width": 1440,
+      "input": "mouse",
+      "label": "Click opens panel safely in the chosen corner",
+      "pass": true
+    },
+    {
+      "mode": "dark",
+      "width": 1440,
+      "input": "mouse",
+      "label": "Closing restores focus to moved launcher",
+      "pass": true
+    },
+    {
+      "mode": "dark",
+      "width": 1440,
+      "input": "mouse",
+      "label": "Arrow keys move without opening",
+      "pass": true
+    },
+    {
+      "mode": "dark",
+      "width": 1440,
+      "label": "Position survives reload",
+      "pass": true
+    },
+    {
+      "mode": "dark",
+      "width": 1440,
+      "input": "mouse",
+      "label": "Resize keeps launcher reachable",
+      "pass": true
+    },
+    {
+      "mode": "dark",
+      "width": 1440,
+      "input": "mouse",
+      "label": "Dragging against edges remains bounded",
+      "pass": true
+    },
+    {
+      "mode": "dark",
+      "width": 1440,
+      "input": "mouse",
+      "label": "Reset position retains other preferences",
+      "pass": true
+    },
+    {
+      "mode": "dark",
+      "width": 1440,
+      "input": "mouse",
+      "label": "Default placement restored after reset",
+      "pass": true
+    }
+  ],
+  "errors": []
+}

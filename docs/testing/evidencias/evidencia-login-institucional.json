@@ -1,0 +1,202 @@
+{
+  "mode": "Isolated API fixtures",
+  "views": 10,
+  "checks": [
+    {
+      "width": 1440,
+      "height": 1000,
+      "mode": "light",
+      "overflow": false,
+      "logoLoaded": true,
+      "inputs": [
+        {
+          "width": 370,
+          "height": 46
+        },
+        {
+          "width": 370,
+          "height": 46
+        }
+      ],
+      "submit": 370
+    },
+    {
+      "width": 1440,
+      "height": 1000,
+      "mode": "dark",
+      "overflow": false,
+      "logoLoaded": true,
+      "inputs": [
+        {
+          "width": 370,
+          "height": 46
+        },
+        {
+          "width": 370,
+          "height": 46
+        }
+      ],
+      "submit": 370
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "mode": "light",
+      "overflow": false,
+      "logoLoaded": true,
+      "inputs": [
+        {
+          "width": 370,
+          "height": 46
+        },
+        {
+          "width": 370,
+          "height": 46
+        }
+      ],
+      "submit": 370
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "mode": "dark",
+      "overflow": false,
+      "logoLoaded": true,
+      "inputs": [
+        {
+          "width": 370,
+          "height": 46
+        },
+        {
+          "width": 370,
+          "height": 46
+        }
+      ],
+      "submit": 370
+    },
+    {
+      "width": 1024,
+      "height": 600,
+      "mode": "light",
+      "overflow": false,
+      "logoLoaded": true,
+      "inputs": [
+        {
+          "width": 370,
+          "height": 46
+        },
+        {
+          "width": 370,
+          "height": 46
+        }
+      ],
+      "submit": 370
+    },
+    {
+      "width": 1024,
+      "height": 600,
+      "mode": "dark",
+      "overflow": false,
+      "logoLoaded": true,
+      "inputs": [
+        {
+          "width": 370,
+          "height": 46
+        },
+        {
+          "width": 370,
+          "height": 46
+        }
+      ],
+      "submit": 370
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "mode": "light",
+      "overflow": false,
+      "logoLoaded": true,
+      "inputs": [
+        {
+          "width": 304,
+          "height": 46
+        },
+        {
+          "width": 304,
+          "height": 46
+        }
+      ],
+      "submit": 304
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "mode": "dark",
+      "overflow": false,
+      "logoLoaded": true,
+      "inputs": [
+        {
+          "width": 304,
+          "height": 46
+        },
+        {
+          "width": 304,
+          "height": 46
+        }
+      ],
+      "submit": 304
+    },
+    {
+      "width": 320,
+      "height": 640,
+      "mode": "light",
+      "overflow": false,
+      "logoLoaded": true,
+      "inputs": [
+        {
+          "width": 234,
+          "height": 46
+        },
+        {
+          "width": 234,
+          "height": 46
+        }
+      ],
+      "submit": 234
+    },
+    {
+      "width": 320,
+      "height": 640,
+      "mode": "dark",
+      "overflow": false,
+      "logoLoaded": true,
+      "inputs": [
+        {
+          "width": 234,
+          "height": 46
+        },
+        {
+          "width": 234,
+          "height": 46
+        }
+      ],
+      "submit": 234
+    },
+    {
+      "interaction": "Enter submits once from #login-username"
+    },
+    {
+      "interaction": "Enter submits once from #login-password"
+    },
+    {
+      "interaction": "Password visibility, help, inline authentication failure and successful retry"
+    },
+    {
+      "interaction": "Existing registration route"
+    },
+    {
+      "interaction": "Configurable university identity"
+    }
+  ],
+  "errors": []
+}

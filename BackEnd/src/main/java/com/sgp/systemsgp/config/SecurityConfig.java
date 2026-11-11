@@ -1,9 +1,22 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          SecurityConfig.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Configura la autenticación y las reglas de autorización de las rutas de la API.
+ */
+
 package com.sgp.systemsgp.config;
 
 import lombok.RequiredArgsConstructor;
 
 import jakarta.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -52,8 +65,8 @@ public class SecurityConfig {
 
         @Bean
         public SecurityFilterChain securityFilterChain(
-                        HttpSecurity http) throws Exception {
-                http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
+                        HttpSecurity http, CorsConfigurationSource corsConfigurationSource) throws Exception {
+                http.cors(cors -> cors.configurationSource(corsConfigurationSource));
 
                 http
                                 .csrf(csrf -> csrf.disable())
@@ -69,9 +82,12 @@ public class SecurityConfig {
                                                 /*
                                                  * Endpoints públicos
                                                  */
+                                                .requestMatchers(HttpMethod.POST, "/api/auth/refresh").permitAll()
+                                                .requestMatchers(HttpMethod.POST, "/api/auth/logout", "/api/auth/logout-all").authenticated()
                                                 .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                                                 .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
                                                 .requestMatchers(HttpMethod.POST, "/api/bootstrap/admin").permitAll()
+                                                .requestMatchers(HttpMethod.POST, "/api/admin/recovery/password").permitAll()
                                                 .requestMatchers(HttpMethod.GET, "/api/public/**").permitAll()
                                                 .requestMatchers(HttpMethod.GET, "/api/locations/**").permitAll()
 
@@ -110,8 +126,11 @@ public class SecurityConfig {
                                                 /*
                                                  * Gestión de prácticas
                                                  */
+                                                .requestMatchers(HttpMethod.GET, "/api/courses/*/cover", "/api/institutions/*/logo").authenticated()
                                                 .requestMatchers(HttpMethod.DELETE, "/api/courses/*/force").hasRole("ADMIN")
-                                                .requestMatchers("/api/courses/*/enroll").hasRole("ESTUDIANTE")
+                                                .requestMatchers("/api/courses/*/enroll").denyAll()
+                                                .requestMatchers("/api/courses/*/practice-offerings", "/api/courses/*/practice-roster", "/api/practice-offerings/**")
+                                                .hasAnyRole("ADMIN", "DIRECTOR_PRACTICAS", "TUTOR_PRACTICAS")
                                                 .requestMatchers(HttpMethod.GET, "/api/courses/*/enrollments")
                                                 .hasAnyRole("ADMIN", "DIRECTOR_PRACTICAS", "TUTOR_PRACTICAS")
                                                 .requestMatchers(HttpMethod.GET, "/api/courses/*/groups")
@@ -123,18 +142,22 @@ public class SecurityConfig {
                                                 .hasAnyRole("ADMIN", "TUTOR_PRACTICAS")
                                                 .requestMatchers(HttpMethod.PATCH, "/api/courses/*/practice-profile")
                                                 .hasRole("TUTOR_PRACTICAS")
-                                                .requestMatchers(HttpMethod.GET, "/api/courses/search").authenticated()
+                                                .requestMatchers(HttpMethod.GET, "/api/courses/search").hasAnyRole("ADMIN", "DIRECTOR_PRACTICAS", "TUTOR_PRACTICAS")
+                                                .requestMatchers(HttpMethod.PATCH, "/api/courses/*/lock", "/api/courses/*/unlock")
+                                                .hasAnyRole("ADMIN", "DIRECTOR_PRACTICAS", "TUTOR_PRACTICAS")
                                                 .requestMatchers("/api/courses", "/api/courses/**")
                                                 .hasAnyRole("ADMIN", "DIRECTOR_PRACTICAS")
+                                                .requestMatchers(HttpMethod.GET, "/api/enrollments/*/history").authenticated()
                                                 .requestMatchers("/api/enrollments/me").hasRole("ESTUDIANTE")
                                                 .requestMatchers(HttpMethod.GET, "/api/enrollments/practices")
                                                 .hasAnyRole("ESTUDIANTE", "ADMIN", "DIRECTOR_PRACTICAS",
                                                                 "TUTOR_PRACTICAS", "TUTOR_INSTITUCIONAL")
-                                                .requestMatchers(HttpMethod.DELETE, "/api/enrollments/*")
-                                                .hasRole("ESTUDIANTE")
+                                                .requestMatchers(HttpMethod.DELETE, "/api/enrollments/*").denyAll()
                                                 .requestMatchers(HttpMethod.PATCH, "/api/enrollments/*/group/*")
                                                 .hasAnyRole("ADMIN", "TUTOR_PRACTICAS")
                                                 .requestMatchers(HttpMethod.PATCH, "/api/enrollments/*/complete")
+                                                .hasRole("DIRECTOR_PRACTICAS")
+                                                .requestMatchers(HttpMethod.GET, "/api/enrollments/*/completion-summary")
                                                 .hasRole("DIRECTOR_PRACTICAS")
                                                 .requestMatchers(HttpMethod.PATCH, "/api/enrollments/*/reopen")
                                                 .hasRole("DIRECTOR_PRACTICAS")
@@ -146,10 +169,20 @@ public class SecurityConfig {
                                                 .hasRole("ADMIN")
                                                 .requestMatchers(HttpMethod.PATCH, "/api/enrollments/archive-batch")
                                                 .hasRole("ADMIN")
+                                                .requestMatchers(HttpMethod.GET, "/api/enrollments/*/archive.zip")
+                                                .hasAnyRole("ESTUDIANTE", "TUTOR_PRACTICAS", "TUTOR_INSTITUCIONAL", "DIRECTOR_PRACTICAS", "ADMIN")
                                                 .requestMatchers("/api/enrollments/**")
                                                 .hasAnyRole("ADMIN", "DIRECTOR_PRACTICAS", "TUTOR_PRACTICAS",
                                                                 "TUTOR_INSTITUCIONAL")
 
+                                                .requestMatchers(HttpMethod.GET, "/api/drafts/*").authenticated()
+                                                .requestMatchers(HttpMethod.PUT, "/api/drafts/*").authenticated()
+                                                .requestMatchers(HttpMethod.GET, "/api/final-reports/*/pdf/preview")
+                                                .hasAnyRole("ESTUDIANTE", "TUTOR_PRACTICAS", "TUTOR_INSTITUCIONAL", "DIRECTOR_PRACTICAS", "ADMIN")
+                                                .requestMatchers(HttpMethod.GET, "/api/activity-plans/*/pdf/preview",
+                                                                "/api/practice-reports/*/pdf/preview", "/api/completed-activity-records/*/pdf/preview",
+                                                                "/api/activity-evaluations/*/pdf/preview", "/api/practice-follow-up-reports/*/pdf/preview")
+                                                .hasAnyRole("ESTUDIANTE", "TUTOR_PRACTICAS", "DIRECTOR_PRACTICAS", "ADMIN")
                                                 .requestMatchers(HttpMethod.POST, "/api/activity-plans")
                                                 .hasRole("ESTUDIANTE")
                                                 .requestMatchers(HttpMethod.GET, "/api/activity-plans/me")
@@ -204,6 +237,11 @@ public class SecurityConfig {
                                                 .hasAnyRole("ESTUDIANTE", "TUTOR_PRACTICAS", "DIRECTOR_PRACTICAS",
                                                                 "ADMIN")
 
+                                                .requestMatchers(HttpMethod.GET, "/api/final-reports/*/letterhead")
+                                                .hasAnyRole("ESTUDIANTE", "TUTOR_PRACTICAS", "TUTOR_INSTITUCIONAL",
+                                                                "DIRECTOR_PRACTICAS", "ADMIN")
+                                                .requestMatchers(HttpMethod.PUT, "/api/final-reports/*/letterhead")
+                                                .hasRole("TUTOR_INSTITUCIONAL")
                                                 .requestMatchers(HttpMethod.POST, "/api/final-reports")
                                                 .hasRole("ESTUDIANTE")
                                                 .requestMatchers(HttpMethod.GET, "/api/final-reports/me")
@@ -338,6 +376,10 @@ public class SecurityConfig {
                                                                 "DIRECTORA_INSTITUCION", "DIRECTOR_PRACTICAS",
                                                                 "ADMIN")
 
+                                                .requestMatchers(HttpMethod.PATCH, "/api/didactic-plans/*/return")
+                                                .hasAnyRole("TUTOR_PRACTICAS", "DIRECTOR_PRACTICAS")
+                                                .requestMatchers(HttpMethod.GET, "/api/didactic-plans/*/revisions", "/api/didactic-plans/*/revisions/**")
+                                                .hasAnyRole("ESTUDIANTE", "TUTOR_INSTITUCIONAL", "TUTOR_PRACTICAS", "DIRECTOR_PRACTICAS", "ADMIN")
                                                 .requestMatchers(HttpMethod.POST, "/api/didactic-plans")
                                                 .hasAnyRole("ESTUDIANTE", "TUTOR_INSTITUCIONAL")
                                                 .requestMatchers(HttpMethod.GET, "/api/didactic-plans/me")
@@ -430,10 +472,15 @@ public class SecurityConfig {
         }
 
         @Bean
-        public CorsConfigurationSource corsConfigurationSource() {
+        public CorsConfigurationSource corsConfigurationSource(
+                        @Value("${app.network.host:localhost}") String networkHost,
+                        @Value("${app.network.frontend-port:3000}") String frontendPort) {
                 CorsConfiguration config = new CorsConfiguration();
-                // Permitimos el dominio del frontend desplegado en Netlify
-                config.setAllowedOrigins(List.of("https://sgpv1.netlify.app"));
+                config.setAllowedOrigins(List.of(
+                                "http://localhost:" + frontendPort,
+                                "http://127.0.0.1:" + frontendPort,
+                                "http://" + networkHost + ":" + frontendPort,
+                                "https://sgpv1.netlify.app"));
                 config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
                 config.setAllowedHeaders(List.of("*"));
                 config.setAllowCredentials(true);

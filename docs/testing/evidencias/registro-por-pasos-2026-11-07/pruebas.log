@@ -1,0 +1,12 @@
+
+> front@0.1.0 test
+> react-scripts test --watchAll=false --runInBand src/pages/RegisterPublic.test.jsx src/pages/LoginPage.test.jsx
+
+PASS src/pages/RegisterPublic.test.jsx
+PASS src/pages/LoginPage.test.jsx
+
+Test Suites: 2 passed, 2 total
+Tests:       8 passed, 8 total
+Snapshots:   0 total
+Time:        3.292 s
+Ran all test suites matching /src\/pages\/RegisterPublic.test.jsx|src\/pages\/LoginPage.test.jsx/i.

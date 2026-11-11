@@ -1,4 +1,17 @@
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          ConfirmDialog.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa el componente ConfirmDialog de la interfaz del SGP.
+ */
+
+import { useDialogFocus } from '../../hooks/useDialogFocus';
+import { createContext, useCallback, useContext, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { AlertTriangle, CheckCircle2, X } from 'lucide-react';
 import { getPortalRoot } from '../../utils/portal';
@@ -36,9 +49,9 @@ export function ConfirmProvider({ children }) {
       setRequest({
         cancelLabel: 'Cancelar',
         confirmLabel: 'Confirmar',
-        description: 'Esta accion modificara informacion de la plataforma.',
+        description: 'Esta acción modificara información de la plataforma.',
         tone: 'warning',
-        title: 'Confirmar accion',
+        title: 'Confirmar acción',
         ...options,
       });
     });
@@ -50,21 +63,6 @@ export function ConfirmProvider({ children }) {
     setRequest(null);
     resolver?.(accepted);
   }, []);
-
-  useEffect(() => {
-    if (!request) {
-      return undefined;
-    }
-
-    function handleKeyDown(event) {
-      if (event.key === 'Escape') {
-        close(false);
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [request, close]);
 
   return (
     <ConfirmContext.Provider value={confirm}>
@@ -90,6 +88,8 @@ export function useConfirm() {
 }
 
 function ConfirmModal({ request, onClose }) {
+  const dialogRef = useRef(null);
+  useDialogFocus(true, dialogRef, () => onClose(false));
   const tone = toneStyles[request.tone] || toneStyles.warning;
   const Icon = request.tone === 'success' ? CheckCircle2 : AlertTriangle;
 
@@ -106,6 +106,8 @@ function ConfirmModal({ request, onClose }) {
         aria-modal="true"
         className="fixed inset-0 flex items-center justify-center px-4 py-6"
         data-confirm-dialog="true"
+        ref={dialogRef}
+        tabIndex={-1}
         role="dialog"
         style={{ zIndex: 100003 }}
       >
@@ -152,8 +154,10 @@ function ConfirmModal({ request, onClose }) {
             <button
               className={cx(
                 'inline-flex min-h-[2.55rem] items-center justify-center rounded-lg border px-4 py-2 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35',
-                tone.confirm
+                tone.confirm,
+                'sgp-action sgp-action-solid'
               )}
+              data-intent={request.tone || 'warning'}
               onClick={() => onClose(true)}
               type="button"
             >

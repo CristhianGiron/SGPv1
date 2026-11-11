@@ -1,0 +1,348 @@
+{
+  "mode": "Chrome; isolated API and simulated speech",
+  "checks": [
+    {
+      "theme": "light",
+      "width": 320,
+      "label": "Circular launcher above document actions",
+      "launcher": {
+        "width": 50,
+        "height": 50,
+        "radius": "50%",
+        "overlap": false
+      }
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "label": "Default panel",
+      "errors": []
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "label": "Combined color filters",
+      "errors": []
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "label": "Text scale 200%",
+      "errors": []
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "label": "Keyboard, speech controls, parent dialog and reset",
+      "effects": {
+        "exclusive": true,
+        "mainFilter": "none",
+        "overlay": "none"
+      }
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "label": "Escape closes accessibility before mobile navigation"
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "label": "Circular launcher above document actions",
+      "launcher": {
+        "width": 50,
+        "height": 50,
+        "radius": "50%",
+        "overlap": false
+      }
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "label": "Default panel",
+      "errors": []
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "label": "Combined color filters",
+      "errors": []
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "label": "Text scale 200%",
+      "errors": []
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "label": "Keyboard, speech controls, parent dialog and reset",
+      "effects": {
+        "exclusive": true,
+        "mainFilter": "none",
+        "overlay": "none"
+      }
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "label": "Escape closes accessibility before mobile navigation"
+    },
+    {
+      "theme": "light",
+      "width": 768,
+      "label": "Circular launcher above document actions",
+      "launcher": {
+        "width": 50,
+        "height": 50,
+        "radius": "50%",
+        "overlap": false
+      }
+    },
+    {
+      "theme": "light",
+      "width": 768,
+      "label": "Default panel",
+      "errors": []
+    },
+    {
+      "theme": "light",
+      "width": 768,
+      "label": "Combined color filters",
+      "errors": []
+    },
+    {
+      "theme": "light",
+      "width": 768,
+      "label": "Text scale 200%",
+      "errors": []
+    },
+    {
+      "theme": "light",
+      "width": 768,
+      "label": "Keyboard, speech controls, parent dialog and reset",
+      "effects": {
+        "exclusive": true,
+        "mainFilter": "none",
+        "overlay": "none"
+      }
+    },
+    {
+      "theme": "light",
+      "width": 768,
+      "label": "Escape closes accessibility before mobile navigation"
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "Circular launcher above document actions",
+      "launcher": {
+        "width": 50,
+        "height": 50,
+        "radius": "50%",
+        "overlap": false
+      }
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "Default panel",
+      "errors": []
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "Combined color filters",
+      "errors": []
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "Text scale 200%",
+      "errors": []
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "label": "Keyboard, speech controls, parent dialog and reset",
+      "effects": {
+        "exclusive": true,
+        "mainFilter": "none",
+        "overlay": "none"
+      }
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "label": "Circular launcher above document actions",
+      "launcher": {
+        "width": 50,
+        "height": 50,
+        "radius": "50%",
+        "overlap": false
+      }
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "label": "Default panel",
+      "errors": []
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "label": "Combined color filters",
+      "errors": []
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "label": "Text scale 200%",
+      "errors": []
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "label": "Keyboard, speech controls, parent dialog and reset",
+      "effects": {
+        "exclusive": true,
+        "mainFilter": "none",
+        "overlay": "none"
+      }
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "label": "Escape closes accessibility before mobile navigation"
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "label": "Circular launcher above document actions",
+      "launcher": {
+        "width": 50,
+        "height": 50,
+        "radius": "50%",
+        "overlap": false
+      }
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "label": "Default panel",
+      "errors": []
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "label": "Combined color filters",
+      "errors": []
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "label": "Text scale 200%",
+      "errors": []
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "label": "Keyboard, speech controls, parent dialog and reset",
+      "effects": {
+        "exclusive": true,
+        "mainFilter": "none",
+        "overlay": "none"
+      }
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "label": "Escape closes accessibility before mobile navigation"
+    },
+    {
+      "theme": "dark",
+      "width": 768,
+      "label": "Circular launcher above document actions",
+      "launcher": {
+        "width": 50,
+        "height": 50,
+        "radius": "50%",
+        "overlap": false
+      }
+    },
+    {
+      "theme": "dark",
+      "width": 768,
+      "label": "Default panel",
+      "errors": []
+    },
+    {
+      "theme": "dark",
+      "width": 768,
+      "label": "Combined color filters",
+      "errors": []
+    },
+    {
+      "theme": "dark",
+      "width": 768,
+      "label": "Text scale 200%",
+      "errors": []
+    },
+    {
+      "theme": "dark",
+      "width": 768,
+      "label": "Keyboard, speech controls, parent dialog and reset",
+      "effects": {
+        "exclusive": true,
+        "mainFilter": "none",
+        "overlay": "none"
+      }
+    },
+    {
+      "theme": "dark",
+      "width": 768,
+      "label": "Escape closes accessibility before mobile navigation"
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "label": "Circular launcher above document actions",
+      "launcher": {
+        "width": 50,
+        "height": 50,
+        "radius": "50%",
+        "overlap": false
+      }
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "label": "Default panel",
+      "errors": []
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "label": "Combined color filters",
+      "errors": []
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "label": "Text scale 200%",
+      "errors": []
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "label": "Keyboard, speech controls, parent dialog and reset",
+      "effects": {
+        "exclusive": true,
+        "mainFilter": "none",
+        "overlay": "none"
+      }
+    }
+  ],
+  "errors": []
+}

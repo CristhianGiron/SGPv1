@@ -1,3 +1,16 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          ResourceCrud.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa el componente ResourceCrud de la interfaz del SGP.
+ */
+
+import { fetchAllPages } from '../utils/pagination';
 /**
  * RESOURCE CRUD - Componente genérico para CRUD de cualquier recurso
  * 
@@ -22,6 +35,7 @@
  * - Botones de acciones adicionales
  * - Manejo de errores y mensajes de éxito
  */
+import { useInstitutionalContext } from '../contexts/InstitutionalContext';
 import { useEffect, useState } from 'react';
 import { Pencil, Plus, RefreshCw, Save, Trash2, Zap } from 'lucide-react';
 import { apiRequest, unwrapPage } from '../api/client';
@@ -41,6 +55,8 @@ import { filterInactiveForNonAdmin } from '../utils/visibility';
 export function ResourceCrud({ resource }) {
   const { roles, token } = useAuth();
   const confirm = useConfirm();
+  const defaults = useInstitutionalContext();
+  const canManage = (resource.manageRoles || ['ROLE_ADMIN']).some((role) => roles.includes(role));
   const canFilterRows = !roles.includes('ROLE_ESTUDIANTE');
   // Array de registros cargados del servidor
   const [rows, setRows] = useState([]);
@@ -69,7 +85,7 @@ export function ResourceCrud({ resource }) {
 
     try {
       // Llamar al endpoint de listado definido en resource.listPath
-      const payload = await apiRequest(resource.listPath, { token });
+      const payload = await fetchAllPages(apiRequest, resource.listPath, { token });
       // unwrapPage maneja respuestas paginadas o arrays directos
       const visibleRows = filterInactiveForNonAdmin(unwrapPage(payload), roles);
       setRows(resource.rowFilter ? visibleRows.filter(resource.rowFilter) : visibleRows);
@@ -90,6 +106,7 @@ export function ResourceCrud({ resource }) {
    * setField - Actualiza un campo específico del formulario
    */
   function setField(name, value) {
+    if (Object.prototype.hasOwnProperty.call(resource.fixedValues || {}, name)) return;
     setForm((current) => applyFieldChange(resource, current, name, value));
   }
 
@@ -98,7 +115,7 @@ export function ResourceCrud({ resource }) {
    */
   function startEdit(row) {
     setSelectedId(row.id);
-    setForm(fromRow(resource.fields, row));
+    setForm({ ...fromRow(resource.fields, row), ...resource.fixedValues });
     setActiveView('form');
   }
 
@@ -115,7 +132,7 @@ export function ResourceCrud({ resource }) {
    */
   function resetForm() {
     setSelectedId('');
-    setForm(initialForm(resource.fields));
+    setForm({ ...initialForm(resource.fields), ...Object.fromEntries(resource.fields.filter((field) => ['faculties', 'careers', 'academic-cycles', 'university-subjects'].includes(resource.id) && ['institutionId', 'facultyId', 'careerId'].includes(field.name)).map((field) => [field.name, defaults[field.name === 'institutionId' ? 'universityId' : field.name] || ''])), ...resource.fixedValues });
   }
 
   /**
@@ -158,13 +175,14 @@ export function ResourceCrud({ resource }) {
    */
   async function handleSubmit(event) {
     event.preventDefault();
+    if (!canManage) return;
     setSaving(true);
     setError('');
     setMessage('');
 
     try {
       // Limpiar el payload (remover campos vacíos, etc)
-      const body = cleanPayload(resource.fields, form);
+      const body = cleanPayload(resource.fields, { ...form, ...resource.fixedValues });
       // Determinar si es crear o actualizar
       await apiRequest(selectedId ? resource.updatePath(selectedId) : resource.createPath, {
         method: selectedId ? resource.updateMethod || 'PUT' : 'POST',
@@ -194,7 +212,7 @@ export function ResourceCrud({ resource }) {
 
     const accepted = await confirm({
       title: `Eliminar ${resource.title.toLowerCase()}`,
-      description: 'Esta accion eliminara el registro seleccionado. Revisa antes de continuar.',
+      description: 'Esta acción eliminara el registro seleccionado. Revisa antes de continuar.',
       confirmLabel: 'Eliminar',
       tone: 'danger',
     });
@@ -231,7 +249,8 @@ export function ResourceCrud({ resource }) {
           ? (row) => <StatusBadge status={row[column.key]} />
           : column.render,
     })),
-    {
+    ...(resource.openRecord ? [{ key: 'open', header: 'Explorar', render: row => <SecondaryButton onClick={() => resource.openRecord(row)}>Abrir {row.name}</SecondaryButton> }] : []),
+    ...(canManage ? [{
       key: 'actions',
       header: 'Acciones',
       render: (row) => (
@@ -255,30 +274,28 @@ export function ResourceCrud({ resource }) {
           ]}
         />
       ),
-    },
+    }] : []),
   ];
 
   return (
     <div className="space-y-5">
       <SectionCard
         title={resource.title}
-        action={
-          <ActionBar>
-            <PrimaryButton icon={Plus} onClick={startCreate} type="button">
-              Agregar
-            </PrimaryButton>
-            <SecondaryButton icon={RefreshCw} loading={loading} onClick={loadRows} type="button">
-              Actualizar
-            </SecondaryButton>
-          </ActionBar>
-        }
       >
         <div className="space-y-3">
           {error && activeView !== 'form' && <Alert tone="error">{error}</Alert>}
           {message && <Alert tone="success">{message}</Alert>}
           <DataTable
+            toolbarActions={(
+          <ActionBar>
+            {canManage && <PrimaryButton icon={Plus} onClick={startCreate} type="button">Agregar</PrimaryButton>}
+            <SecondaryButton icon={RefreshCw} loading={loading} onClick={loadRows} type="button">
+              Actualizar
+            </SecondaryButton>
+          </ActionBar>
+            )}
             columns={columns}
-            emptyText={`Aun no hay ${resource.title.toLowerCase()} para mostrar.`}
+            emptyText={`Aún no hay ${resource.title.toLowerCase()} para mostrar.`}
             enableFilters={canFilterRows}
             loading={loading}
             rows={rows}
@@ -287,16 +304,16 @@ export function ResourceCrud({ resource }) {
       </SectionCard>
 
       <Modal
-        description="Completa solo los campos necesarios y guarda para volver al listado."
+        description={resource.fixedValues ? `Se guardará dentro de: ${resource.fields.filter(field => field.name in resource.fixedValues).map(field => field.fixedLabel).filter(Boolean).join(' · ')}.` : 'Completa solo los campos necesarios y guarda para volver al listado.'}
         maxWidth="max-w-3xl"
         onClose={() => setActiveView('list')}
-        open={activeView === 'form'}
+        open={canManage && activeView === 'form'}
         title={selectedId ? `Editar ${resource.title.toLowerCase()}` : `Agregar ${resource.title.toLowerCase()}`}
       >
         <form className="space-y-4" onSubmit={handleSubmit}>
           {error && <Alert tone="error">{error}</Alert>}
-          {resource.fields.map((field) => (
-            <Field key={field.name} label={field.label}>
+          {resource.fields.filter(field => !(field.name in (resource.fixedValues || {}))).map((field) => (
+            <Field key={field.name} label={field.label} name={field.name}>
               <ResourceInput
                 disabled={isFieldDisabled(resource, form, field)}
                 field={field}
@@ -336,17 +353,21 @@ function resourceActionConfirmation(resource, action, row) {
 
   return {
     title: `${label} registro`,
-    description: action.confirmDescription || 'Esta accion modificara el estado o la disponibilidad del registro seleccionado.',
+    description: action.confirmDescription || 'Esta acción modificara el estado o la disponibilidad del registro seleccionado.',
     details: row?.name || row?.title || row?.code || resource.title,
     confirmLabel: label,
     tone: destructive ? 'danger' : 'warning',
   };
 }
 
-function ResourceInput({ disabled = false, field, form, required = false, value, setField }) {
+function ResourceInput({ disabled = false, field, form, required = false, value, setField, id, name,
+  'aria-labelledby': labelledBy, 'aria-describedby': describedBy, 'aria-invalid': invalid }) {
+  const association = { id, name, 'aria-labelledby': labelledBy, 'aria-describedby': describedBy, 'aria-invalid': invalid };
+  if (Object.prototype.hasOwnProperty.call(field, 'fixedLabel')) return <Input {...association} aria-label={labelledBy ? undefined : field.label} readOnly value={field.fixedLabel} />;
   if (field.relation) {
     return (
       <EntitySelect
+        {...association}
         path={field.relation.path}
         placeholder={disabled && field.disabledPlaceholder ? field.disabledPlaceholder : field.relation.placeholder}
         required={required}
@@ -359,6 +380,8 @@ function ResourceInput({ disabled = false, field, form, required = false, value,
   }
 
   const common = {
+    ...association,
+    'aria-label': labelledBy ? undefined : field.label,
     value: value ?? '',
     onChange: (event) => setField(field.name, readValue(field, event.target.value)),
     required,
@@ -385,6 +408,8 @@ function ResourceInput({ disabled = false, field, form, required = false, value,
   if (field.type === 'checkbox') {
     return (
       <input
+        {...association}
+        aria-label={labelledBy ? undefined : field.label}
         checked={Boolean(value)}
         className="h-5 w-5 rounded border-line text-accent-strong dark:border-line dark:text-accent"
         disabled={disabled}
@@ -396,6 +421,8 @@ function ResourceInput({ disabled = false, field, form, required = false, value,
 
   return <Input type={field.type || 'text'} {...common} />;
 }
+
+ResourceInput.fieldControl = true;
 
 function applyFieldChange(resource, current, name, value) {
   const field = resource.fields.find((item) => item.name === name);

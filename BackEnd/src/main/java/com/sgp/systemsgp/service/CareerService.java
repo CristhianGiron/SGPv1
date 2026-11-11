@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          CareerService.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa la lógica de aplicación de las carreras universitarias.
+ */
+
 package com.sgp.systemsgp.service;
 
 import com.sgp.systemsgp.dto.career.CreateCareerRequest;
@@ -69,6 +81,8 @@ public class CareerService {
                 .name(name)
 
                 .code(code)
+
+                .degreeTitle(request.getDegreeTitle())
 
                 .description(request.getDescription())
 
@@ -161,6 +175,8 @@ public class CareerService {
 
             career.setCode(code);
         }
+
+        if (request.getDegreeTitle() != null) career.setDegreeTitle(request.getDegreeTitle().trim());
 
         if (request.getDescription() != null) {
 
@@ -296,6 +312,7 @@ public class CareerService {
                 .id(career.getId())
 
                 .name(career.getName())
+                .degreeTitle(career.getDegreeTitle())
 
                 .code(career.getCode())
 

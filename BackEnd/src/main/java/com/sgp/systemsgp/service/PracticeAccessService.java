@@ -1,6 +1,20 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          PracticeAccessService.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Centraliza las comprobaciones de acceso y del estado operativo de las prácticas.
+ */
+
 package com.sgp.systemsgp.service;
 
 import com.sgp.systemsgp.enums.RoleName;
+import com.sgp.systemsgp.enums.EnrollmentStatus;
+import com.sgp.systemsgp.exception.BadRequestException;
 import com.sgp.systemsgp.model.AcademicCycle;
 import com.sgp.systemsgp.model.Account;
 import com.sgp.systemsgp.model.Career;
@@ -15,6 +29,17 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class PracticeAccessService {
+
+    /** Mutations share the same rule; historical records remain readable. */
+    public static void requireOperationalEnrollment(Enrollment enrollment) {
+        if (enrollment == null || enrollment.getStatus() != EnrollmentStatus.APPROVED || enrollment.isArchived()) {
+            throw new BadRequestException("Esta práctica está disponible para consulta. No permite nuevos registros ni cambios.");
+        }
+        Course course = enrollment.getCourse();
+        if (course == null || !course.isActive() || course.isDeleted()) {
+            throw new BadRequestException("El paralelo de la práctica no está activo. Solo se permite consultar sus registros.");
+        }
+    }
 
     public boolean hasRole(Account account, RoleName roleName) {
 

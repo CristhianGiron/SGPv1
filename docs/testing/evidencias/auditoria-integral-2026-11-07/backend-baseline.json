@@ -1,0 +1,220 @@
+{
+  "date": "2026-11-07",
+  "scope": "Maven baseline; H2 test profile",
+  "totals": {
+    "tests": 142,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "suites": [
+    {
+      "name": "com.sgp.systemsgp.service.PdfExportServiceTest",
+      "tests": "7",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.201"
+    },
+    {
+      "name": "com.sgp.systemsgp.service.GradeServiceTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.136"
+    },
+    {
+      "name": "com.sgp.systemsgp.service.PracticePhotoServiceTest",
+      "tests": "7",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.601"
+    },
+    {
+      "name": "com.sgp.systemsgp.service.EnrollmentServiceTest",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.111"
+    },
+    {
+      "name": "com.sgp.systemsgp.service.QaUserWorkflowsTest",
+      "tests": "17",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "3.529"
+    },
+    {
+      "name": "com.sgp.systemsgp.service.RoleSeparationIntegrationTest",
+      "tests": "7",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.681"
+    },
+    {
+      "name": "com.sgp.systemsgp.service.CoordinationReportServiceTest",
+      "tests": "6",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.365"
+    },
+    {
+      "name": "com.sgp.systemsgp.service.CourseServiceTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.394"
+    },
+    {
+      "name": "com.sgp.systemsgp.service.InstitutionalDefaultsServiceTest",
+      "tests": "8",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.235"
+    },
+    {
+      "name": "com.sgp.systemsgp.service.ActivityEvaluationServiceTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.17"
+    },
+    {
+      "name": "com.sgp.systemsgp.service.PracticeAccessServiceTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.217"
+    },
+    {
+      "name": "com.sgp.systemsgp.service.FacultyServiceTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.167"
+    },
+    {
+      "name": "com.sgp.systemsgp.service.NotificationServiceTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.271"
+    },
+    {
+      "name": "com.sgp.systemsgp.SystemsgpApplicationTests",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.042"
+    },
+    {
+      "name": "com.sgp.systemsgp.service.PracticeScheduleServiceTest",
+      "tests": "8",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.14"
+    },
+    {
+      "name": "com.sgp.systemsgp.service.EntityImageIntegrationTest",
+      "tests": "10",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "13.337"
+    },
+    {
+      "name": "com.sgp.systemsgp.service.CompletedActivityRecordServiceTest",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.432"
+    },
+    {
+      "name": "com.sgp.systemsgp.service.FinalReportServiceTest",
+      "tests": "11",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.089"
+    },
+    {
+      "name": "com.sgp.systemsgp.service.PracticeReportServiceTest",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.038"
+    },
+    {
+      "name": "com.sgp.systemsgp.service.PdfReferenceLayoutTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.683"
+    },
+    {
+      "name": "com.sgp.systemsgp.service.AccountServiceRecoveryTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.095"
+    },
+    {
+      "name": "com.sgp.systemsgp.service.PracticeFollowUpReportServiceTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.867"
+    },
+    {
+      "name": "com.sgp.systemsgp.config.SecurityConfigTest",
+      "tests": "7",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.863"
+    },
+    {
+      "name": "com.sgp.systemsgp.service.ActivityPlanServiceTest",
+      "tests": "7",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.059"
+    },
+    {
+      "name": "com.sgp.systemsgp.controller.DocumentControllerFlowTest",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.025"
+    },
+    {
+      "name": "com.sgp.systemsgp.config.JwtServiceTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.013"
+    }
+  ]
+}

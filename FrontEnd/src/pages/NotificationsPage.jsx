@@ -1,5 +1,17 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          NotificationsPage.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Presenta las notificaciones de la cuenta y permite consultar sus eventos relacionados.
+ */
+
 import { useMemo, useState } from 'react';
-import { CheckCheck, ChevronDown, Send } from 'lucide-react';
+import { Bell, CheckCheck, RefreshCw, Send } from 'lucide-react';
 import { apiRequest } from '../api/client';
 import { useAuth } from '../auth/AuthContext';
 import { PageHeader } from '../components/ui/PageHeader';
@@ -13,7 +25,10 @@ import { NotificationItem } from '../components/notifications/NotificationItem';
 import { ROLES } from '../config/resources';
 import { formatRole } from '../utils/format';
 import { hasNotificationLink, openNotificationLink } from '../utils/notificationLinks';
-import { splitNotificationsForArchive } from '../utils/notificationArchive';
+import { groupInboxByDate, inboxNotifications } from '../utils/notificationInbox';
+import { EmptyState } from '../components/ui/EmptyState';
+import { ListToolbar } from '../components/ui/ListToolbar';
+import { ModuleTab, ModuleTabs } from '../components/ui/ModuleTabs';
 
 const EMPTY_ANNOUNCEMENT = {
   title: '',
@@ -27,9 +42,6 @@ const roleOptionClass =
 
 const roleCheckboxClass = 'h-4 w-4 accent-accent dark:accent-accent';
 
-const refreshButtonClass =
-  'inline-flex min-h-9 items-center justify-center rounded-lg border border-accent bg-transparent px-3 py-2 text-sm font-medium text-primary transition-colors hover:border-primary-strong hover:bg-primary-strong hover:text-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:bg-surface-soft dark:text-ink dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong';
-
 const skeletonClass =
   'min-h-[4.5rem] rounded-lg border border-line bg-panel-soft dark:border-line dark:bg-surface-soft';
 
@@ -42,13 +54,31 @@ export function NotificationsPage() {
   const [announcementError, setAnnouncementError] = useState('');
   const [announcementMessage, setAnnouncementMessage] = useState('');
   const [announcementOpen, setAnnouncementOpen] = useState(false);
-  const [archivedOpen, setArchivedOpen] = useState(false);
+  const [view, setView] = useState('unread');
+  const [search, setSearch] = useState('');
+  const [limit, setLimit] = useState(20);
+  const [markingAll, setMarkingAll] = useState(false);
   const isAdmin = roles.includes('ROLE_ADMIN');
-  const { recentNotifications, archivedNotifications } = useMemo(
-    () => splitNotificationsForArchive(notifications),
-    [notifications],
-  );
-  const hasArchivedNotifications = archivedNotifications.length > 0;
+  const filtered = useMemo(() => inboxNotifications(notifications, view, search), [notifications, view, search]);
+  const groups = groupInboxByDate(filtered.slice(0, limit));
+  const readCount = notifications.filter(item => item.read).length;
+
+  async function openNotification(item) {
+    if (!item.read) {
+      const updated = await markAsRead(item.id);
+      if (!updated) return false;
+    }
+    if (hasNotificationLink(item.link)) openNotificationLink(item.link);
+    return true;
+  }
+
+  async function markAll() {
+    if (markingAll || loading || !unreadCount) return;
+    const accepted = await confirm({title:'Marcar notificaciones como leídas', description:'Todas tus notificaciones pendientes quedarán marcadas como leídas.', confirmLabel:'Marcar como leídas', tone:'warning'});
+    if (!accepted) return;
+    setMarkingAll(true);
+    try { await markAllAsRead(); } finally { setMarkingAll(false); }
+  }
 
   function updateAnnouncementField(field, value) {
     setAnnouncement((current) => ({
@@ -80,13 +110,13 @@ export function NotificationsPage() {
     setAnnouncementMessage('');
 
     if (!announcement.title.trim() || !announcement.message.trim()) {
-      setAnnouncementError('Completa el titulo y el mensaje del aviso.');
+      setAnnouncementError('Completa el título y el mensaje del aviso.');
       return;
     }
 
     const accepted = await confirm({
       title: 'Enviar aviso',
-      description: 'El aviso se enviara a los destinatarios seleccionados. Revisa el mensaje antes de continuar.',
+      description: 'El aviso se enviará a los destinatarios seleccionados. Revisa el mensaje antes de continuar.',
       details: announcement.roles.length ? `${announcement.roles.length} rol(es) seleccionado(s)` : 'Todos los usuarios',
       confirmLabel: 'Enviar aviso',
       tone: 'warning',
@@ -135,24 +165,7 @@ export function NotificationsPage() {
                 Enviar aviso
               </PrimaryButton>
             )}
-            <SecondaryButton
-              type="button"
-              onClick={async () => {
-                const accepted = await confirm({
-                  title: 'Marcar notificaciones como leidas',
-                  description: 'Todas tus notificaciones pendientes quedaran marcadas como leidas.',
-                  confirmLabel: 'Marcar como leidas',
-                  tone: 'warning',
-                });
 
-                if (accepted) {
-                  markAllAsRead();
-                }
-              }}
-              icon={CheckCheck}
-            >
-              Marcar todas como leídas
-            </SecondaryButton>
           </ActionBar>
         }
       />
@@ -164,12 +177,12 @@ export function NotificationsPage() {
         open={isAdmin && announcementOpen}
         title="Enviar aviso"
       >
-          <form className="space-y-4" onSubmit={sendAnnouncement}>
-            {announcementError && <Alert tone="error">{announcementError}</Alert>}
+          <form className="space-y-4" onSubmit={sendAnnouncement}><fieldset disabled={sendingAnnouncement} className="min-w-0 space-y-4">
+            {announcementError && <p role="alert" className="rounded-lg bg-danger-soft p-3 text-sm text-danger-strong">{announcementError}</p>}
             {announcementMessage && <Alert tone="success">{announcementMessage}</Alert>}
 
             <div className="grid gap-4 lg:grid-cols-2">
-              <Field label="Titulo">
+              <Field label="Título">
                 <Input
                   maxLength={120}
                   onChange={(event) => updateAnnouncementField('title', event.target.value)}
@@ -234,141 +247,26 @@ export function NotificationsPage() {
                 Enviar aviso
               </PrimaryButton>
             </div>
-          </form>
+          </fieldset></form>
       </Modal>
 
-      <div className="rounded-lg border border-line bg-panel p-4 shadow-card dark:border-line dark:bg-surface dark:shadow-soft">
-        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-sm font-medium leading-tight text-heading dark:text-heading">Notificaciones recientes</p>
-            <p className="mt-0.5 text-xs font-medium leading-tight text-body">Tienes {unreadCount} notificaciones sin leer.</p>
-          </div>
-          <button
-            type="button"
-            onClick={refresh}
-            className={refreshButtonClass}
-          >
-            Actualizar
-          </button>
+      {announcementMessage && <Alert tone="success">{announcementMessage}</Alert>}
+      <section className="overflow-hidden rounded-xl border border-line bg-panel shadow-card" aria-label="Bandeja de notificaciones">
+        <div className="border-b border-line bg-panel-soft p-5 md:p-6">
+          <div className="flex items-start gap-3"><span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-info-soft text-info-strong"><Bell size={22} aria-hidden="true" /></span><div><h2 className="text-lg font-semibold text-heading">{loading ? 'Actualizando tu bandeja' : error ? 'No se pudo actualizar la bandeja' : unreadCount ? 'Tienes novedades por revisar' : 'Tu bandeja está al día'}</h2><p className="mt-1 text-sm text-body">{loading || error ? 'Actualiza la bandeja para comprobar tus avisos.' : `${unreadCount} sin leer · ${readCount} leídas`}</p></div></div>
         </div>
-
-        {loading ? (
-          <div className="grid gap-3">
-            <div className={skeletonClass} />
-            <div className={skeletonClass} />
-          </div>
-        ) : error ? (
-          <div className="rounded-lg border border-danger bg-danger-soft p-3 text-sm leading-6 text-danger-strong dark:border-danger/40 dark:bg-danger-soft dark:text-danger-strong">{error}</div>
-        ) : notifications.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-line bg-panel-soft p-4 text-center text-sm leading-6 text-body dark:border-line dark:bg-surface-soft dark:text-ink">
-            Todavía no tienes notificaciones.
-          </div>
-        ) : recentNotifications.length === 0 ? (
-          <div className="grid gap-3">
-            <div className="rounded-lg border border-dashed border-line bg-panel-soft p-4 text-center text-sm leading-6 text-body dark:border-line dark:bg-surface-soft dark:text-ink">
-              No tienes notificaciones recientes.
-            </div>
-
-            {hasArchivedNotifications && (
-              <section className="mt-1 overflow-hidden rounded-lg border border-line bg-panel-soft dark:border-line dark:bg-surface-soft">
-                <button
-                  type="button"
-                  className="flex min-h-12 w-full items-center justify-between gap-3 px-4 py-3 text-left text-sm font-medium text-heading transition-colors hover:bg-hover-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:text-heading"
-                  aria-expanded={archivedOpen}
-                  onClick={() => setArchivedOpen((current) => !current)}
-                >
-                  <span className="min-w-0 truncate">
-                    Notificaciones archivadas ({archivedNotifications.length})
-                  </span>
-                  <ChevronDown
-                    aria-hidden="true"
-                    className={`flex-none text-body transition-transform ${archivedOpen ? 'rotate-180' : ''}`}
-                    size={18}
-                  />
-                </button>
-
-                {archivedOpen && (
-                  <div className="grid gap-3 border-t border-line p-3 dark:border-line">
-                    {archivedNotifications.map((notification) => (
-                      <NotificationItem
-                        key={notification.id}
-                        notification={notification}
-                        onClick={async (item) => {
-                          if (!item.read) {
-                            await markAsRead(item.id);
-                          }
-
-                          if (hasNotificationLink(item.link)) {
-                            openNotificationLink(item.link);
-                          }
-                        }}
-                      />
-                    ))}
-                  </div>
-                )}
-              </section>
-            )}
-          </div>
-        ) : (
-          <div className="grid gap-3">
-            {recentNotifications.map((notification) => (
-              <NotificationItem
-                key={notification.id}
-                notification={notification}
-                onClick={async (item) => {
-                  if (!item.read) {
-                    await markAsRead(item.id);
-                  }
-
-                  if (hasNotificationLink(item.link)) {
-                    openNotificationLink(item.link);
-                  }
-                }}
-              />
-            ))}
-
-            {hasArchivedNotifications && (
-              <section className="mt-1 overflow-hidden rounded-lg border border-line bg-panel-soft dark:border-line dark:bg-surface-soft">
-                <button
-                  type="button"
-                  className="flex min-h-12 w-full items-center justify-between gap-3 px-4 py-3 text-left text-sm font-medium text-heading transition-colors hover:bg-hover-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:text-heading"
-                  aria-expanded={archivedOpen}
-                  onClick={() => setArchivedOpen((current) => !current)}
-                >
-                  <span className="min-w-0 truncate">
-                    Notificaciones archivadas ({archivedNotifications.length})
-                  </span>
-                  <ChevronDown
-                    aria-hidden="true"
-                    className={`flex-none text-body transition-transform ${archivedOpen ? 'rotate-180' : ''}`}
-                    size={18}
-                  />
-                </button>
-
-                {archivedOpen && (
-                  <div className="grid gap-3 border-t border-line p-3 dark:border-line">
-                    {archivedNotifications.map((notification) => (
-                      <NotificationItem
-                        key={notification.id}
-                        notification={notification}
-                        onClick={async (item) => {
-                          if (!item.read) {
-                            await markAsRead(item.id);
-                          }
-
-                          if (hasNotificationLink(item.link)) {
-                            openNotificationLink(item.link);
-                          }
-                        }}
-                      />
-                    ))}
-                  </div>
-                )}
-              </section>
-            )}
-          </div>
-        )}
-      </div>
+        <div className="space-y-5 p-4 md:p-6">
+          <ModuleTabs>{[['unread','Sin leer'],['all','Todas'],['read','Leídas']].map(([id,label]) => <ModuleTab key={id} active={view===id} onClick={() => {setView(id);setLimit(20);}}>{label} ({id==='unread' ? notifications.filter(item=>!item.read).length : id==='read' ? readCount : notifications.length})</ModuleTab>)}</ModuleTabs>
+          <ListToolbar search={<Field label="Buscar notificaciones"><Input type="search" placeholder="Título o contenido del aviso" value={search} onChange={event => {setSearch(event.target.value);setLimit(20);}} /></Field>}
+            actions={<><SecondaryButton icon={RefreshCw} loading={loading} onClick={refresh}>Actualizar</SecondaryButton><SecondaryButton icon={CheckCheck} disabled={loading || markingAll || !unreadCount} loading={markingAll} onClick={markAll}>Marcar todas como leídas</SecondaryButton></>}
+            summary={loading ? 'Actualizando notificaciones…' : `${filtered.length} resultado(s)`} />
+          {error && <p role="alert" className="rounded-lg border border-danger/30 bg-danger-soft p-3 text-sm text-danger-strong">{error}</p>}
+          {loading && !notifications.length ? <div className="grid gap-3" role="status" aria-label="Cargando notificaciones"><div className={skeletonClass} /><div className={skeletonClass} /></div>
+            : !filtered.length ? (error ? null : <EmptyState icon={Bell} title={search ? 'No encontramos ese aviso' : view==='unread' ? 'No tienes notificaciones sin leer' : 'Todavía no hay avisos en esta vista'} text={search ? 'Prueba con otra palabra o elimina la búsqueda.' : view==='unread' ? 'Puedes consultar las comunicaciones anteriores en Leídas o Todas.' : 'Las comunicaciones para tu cuenta aparecerán aquí.'} action={search ? <SecondaryButton onClick={() => setSearch('')}>Limpiar búsqueda</SecondaryButton> : view==='unread' && readCount>0 ? <SecondaryButton onClick={() => {setView('read');setLimit(20);}}>Ver leídas</SecondaryButton> : null} />)
+            : <div className="space-y-6">{groups.map(group => <section key={group.key} aria-label={group.label}><h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted">{group.label}</h3><div className="grid gap-2">{group.items.map(notification => <NotificationItem key={notification.id} notification={notification} onClick={openNotification} />)}</div></section>)}</div>}
+          {filtered.length>limit && <div className="flex justify-center"><SecondaryButton onClick={() => setLimit(value=>value+20)}>Mostrar más ({filtered.length-limit} restantes)</SecondaryButton></div>}
+        </div>
+      </section>
     </div>
   );
 }

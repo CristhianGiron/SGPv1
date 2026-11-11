@@ -1,4 +1,19 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          FinalReportService.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa la lógica de aplicación de el informe del tutor institucional (L.3).
+ */
+
 package com.sgp.systemsgp.service;
+import com.sgp.systemsgp.repository.CompletedActivityRecordRepository;
+import com.sgp.systemsgp.model.CompletedActivityRecord;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sgp.systemsgp.dto.finalreport.CreateFinalReportRequest;
 import com.sgp.systemsgp.dto.finalreport.FinalReportActivityWeekRequest;
@@ -58,6 +73,65 @@ public class FinalReportService {
     private final NotificationService notificationService;
     private final FeedbackCommentService feedbackCommentService;
     private final PdfExportService pdfExportService;
+    private final CompletedActivityRecordRepository completedActivityRecordRepository;
+
+    @Transactional
+    public FinalReportResponse create(String username, CreateFinalReportRequest request,
+            MultipartFile image) {
+        var validatedImage = image == null ? null : EntityImageService.decode(image);
+        FinalReportResponse created = create(username, request);
+        FinalReport report = getReport(created.getId());
+        report.setLetterheadImage(validatedImage);
+        return mapToResponse(report);
+    }
+
+    @Transactional
+    public FinalReportResponse update(Long id, String username, UpdateFinalReportRequest request,
+            MultipartFile image) {
+        var validatedImage = image == null ? null : EntityImageService.decode(image);
+        update(id, username, request);
+        FinalReport report = getReport(id);
+        if (validatedImage != null) report.setLetterheadImage(validatedImage);
+        return mapToResponse(report);
+    }
+
+    @Transactional
+    public FinalReportResponse updateInstitutionalSection(Long id, String username,
+            UpdateFinalReportInstitutionalSectionRequest request,
+            MultipartFile image) {
+        var validatedImage = image == null ? null : EntityImageService.decode(image);
+        updateInstitutionalSection(id, username, request);
+        FinalReport report = getReport(id);
+        if (validatedImage != null) report.setLetterheadImage(validatedImage);
+        return mapToResponse(report);
+    }
+
+    @Transactional
+    public FinalReportResponse attachLegacyLetterhead(Long id, String username,
+            MultipartFile image) {
+        FinalReport report = getReport(id);
+        validateInstitutionalTutorCanWork(report, getAccount(username));
+        if (report.getStatus() != FinalReportStatus.APPROVED || report.getLetterheadImage() != null)
+            throw new BadRequestException("Esta opción solo permite completar el membrete faltante de un L.3 ya aprobado");
+        report.setLetterheadImage(EntityImageService.decode(image));
+        finalReportRepository.save(report);
+        return mapToResponse(report);
+    }
+
+    public EntityImageService.ImageFile letterhead(Long id, String username) {
+        FinalReport report = getReport(id);
+        validateCanView(report, getAccount(username));
+        if (report.getLetterheadImage() == null) throw new NotFoundException("El L.3 todavía no tiene membrete");
+        return new EntityImageService.ImageFile(report.getLetterheadImage().getContentType(), report.getLetterheadImage().getData());
+    }
+
+    private Integer completedPracticeMinutes(FinalReport report) {
+        if (report.getCompletedPracticeMinutes() != null) return report.getCompletedPracticeMinutes();
+        if (report.getEnrollment() == null || report.getEnrollment().getId() == null) return null;
+        return completedActivityRecordRepository.findByEnrollment_IdAndDeletedFalse(report.getEnrollment().getId())
+                .map(CompletedActivityRecord::getTotalMinutes).orElse(null);
+    }
+
 
     @Transactional
     public FinalReportResponse create(
@@ -138,6 +212,7 @@ public class FinalReportService {
 
     public List<FinalReportResponse> institutionalReviewQueue(String username) {
 
+        Account account = getAccount(username);
         List<FinalReport> reports = new ArrayList<>();
         reports.addAll(finalReportRepository
                 .findByEnrollment_Group_InstitutionalTutor_UsernameAndDeletedFalse(username));
@@ -150,6 +225,7 @@ public class FinalReportService {
         List<FinalReport> visibleReports = uniqueReports
                 .values()
                 .stream()
+                .filter(report -> isAssignedInstitutionalTutor(report, account))
                 .filter(report -> isVisibleToReviewers(report.getStatus()))
                 .toList();
 
@@ -158,6 +234,7 @@ public class FinalReportService {
 
     public List<ReviewableDocumentSummaryResponse> institutionalReviewQueueSummaries(String username) {
 
+        Account account = getAccount(username);
         List<FinalReport> reports = new ArrayList<>();
         reports.addAll(finalReportRepository
                 .findByEnrollment_Group_InstitutionalTutor_UsernameAndDeletedFalse(username));
@@ -170,6 +247,7 @@ public class FinalReportService {
         List<FinalReport> visibleReports = uniqueReports
                 .values()
                 .stream()
+                .filter(report -> isAssignedInstitutionalTutor(report, account))
                 .filter(report -> isVisibleToReviewers(report.getStatus()))
                 .toList();
 
@@ -243,62 +321,56 @@ public class FinalReportService {
         return mapToResponse(report);
     }
 
-    public byte[] exportApprovedPdf(
-            Long id,
-            String username) {
+    public byte[] exportApprovedPdf(Long id, String username) {
+        return renderPdf(id, username, true);
+    }
+
+    @Transactional
+    public byte[] previewPdf(Long id, String username) {
+        return PdfPreview.mark(renderPdf(id, username, false));
+    }
+
+    private byte[] renderPdf(Long id, String username, boolean requireApproved) {
 
         FinalReportResponse report = getById(id, username);
-        validateApprovedForExport(report.getStatus());
+        if (requireApproved) validateApprovedForExport(report.getStatus());
 
-        return pdfExportService.createPdf(
-                "Informe final de prácticas preprofesionales",
-                List.of(
-                        pdfExportService.section(
-                                "Datos generales",
-                                List.of(
-                                        pdfExportService.field("Estudiante", report.getStudentFullName()),
-                                        pdfExportService.field("Cedula", report.getStudentIdentification()),
-                                        pdfExportService.field("Ciclo", report.getCourseName()),
-                                        pdfExportService.field("Tutor Institucional", firstPresent(
-                                                report.getInstitutionalReviewedByName(),
-                                                report.getInstitutionalReviewedBy())),
-                                        pdfExportService.field("Institucion", report.getEducationalInstitutionName()),
-                                        pdfExportService.field("Codigo AMIE", report.getEducationalInstitutionCode()),
-                                        pdfExportService.field("Direccion", report.getEducationalInstitutionAddress())
-                                )),
-                        pdfExportService.section(
-                                "Antecedentes y objetivo",
-                                List.of(
-                                        pdfExportService.field("Antecedentes", report.getAntecedents()),
-                                        pdfExportService.field("Objetivo", report.getObjective())
-                                )),
-                        pdfExportService.sectionWithTables(
-                                "Actividades por semana",
-                                List.of(),
-                                List.of(activityWeeksTable(report.getActivityWeeks()))),
-                        pdfExportService.section(
-                                "Conclusiones",
-                                List.of(
-                                        pdfExportService.field("Conclusion 1", report.getConclusion1()),
-                                        pdfExportService.field("Conclusion 2", report.getConclusion2()),
-                                        pdfExportService.field("Conclusion 3", report.getConclusion3())
-                                )),
-                        pdfExportService.section(
-                                "Recomendaciones",
-                                List.of(
-                                        pdfExportService.field("Recomendacion 1", report.getRecommendation1()),
-                                        pdfExportService.field("Recomendacion 2", report.getRecommendation2()),
-                                        pdfExportService.field("Recomendacion 3", report.getRecommendation3())
-                                )),
-                        pdfExportService.section(
-                                "Firma tutor institucional",
-                                List.of(
-                                        pdfExportService.field("Tutor Institucional", firstPresent(
-                                                report.getInstitutionalReviewedByName(),
-                                                report.getInstitutionalReviewedBy())),
-                                        pdfExportService.field("Rol", "TUTOR INSTITUCIONAL")
-                                ))
-                ));
+        FinalReport entity = getReport(id);
+        if (requireApproved && entity.getLetterheadImage() == null)
+            throw new BadRequestException("El L.3 requiere un membrete institucional adjuntado en su formulario");
+        Course course = entity.getCourse();
+        List<PdfExportService.PdfField> general = new ArrayList<>(DocumentPdfData.institution(
+                pdfExportService, entity.getEducationalInstitution(), report.getEducationalInstitutionName(),
+                report.getEducationalInstitutionCode(), report.getEducationalInstitutionAddress(),
+                DocumentPdfData.institutionalTutor(entity.getEnrollment()), false));
+        general.add(pdfExportService.field("@subheading", "Datos del Estudiante"));
+        general.add(pdfExportService.field("Estudiante", report.getStudentFullName()));
+        general.add(pdfExportService.field("Cédula de Identidad", report.getStudentIdentification()));
+        general.add(pdfExportService.field("Carrera", DocumentPdfData.career(course, entity.getStudent())));
+        general.add(pdfExportService.field("Titulación", DocumentPdfData.degree(course, entity.getStudent())));
+        general.add(pdfExportService.field("Ciclo", DocumentPdfData.cycle(course, entity.getStudent())));
+        Integer minutes = completedPracticeMinutes(entity);
+        general.add(pdfExportService.field("Número de horas realizadas", minutes == null ? null
+                : String.format("%dh:%02d", minutes / 60, minutes % 60)));
+        LocalDate date = entity.getReportDate() != null ? entity.getReportDate()
+                : entity.getApprovedAt() == null ? null : entity.getApprovedAt().toLocalDate();
+        return pdfExportService.createPdf("Informe final de prácticas preprofesionales", List.of(
+                pdfExportService.section("Información general", general),
+                pdfExportService.section("Antecedentes", List.of(pdfExportService.field("@paragraph", report.getAntecedents()))),
+                pdfExportService.section("Objetivo", List.of(pdfExportService.field("@paragraph", report.getObjective()))),
+                pdfExportService.sectionWithTables("Actividades", List.of(), List.of(activityWeeksTable(report.getActivityWeeks()))),
+                pdfExportService.section("Conclusiones", List.of(
+                        pdfExportService.field("@bullet", report.getConclusion1()),
+                        pdfExportService.field("@bullet", report.getConclusion2()),
+                        pdfExportService.field("@bullet", report.getConclusion3()))),
+                pdfExportService.section("Recomendaciones", List.of(
+                        pdfExportService.field("@bullet", report.getRecommendation1()),
+                        pdfExportService.field("@bullet", report.getRecommendation2()),
+                        pdfExportService.field("@bullet", report.getRecommendation3()))),
+                pdfExportService.section("Firma tutor institucional", List.of(
+                        pdfExportService.field("Fecha", date == null ? null : date.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"))),
+                        pdfExportService.field("Tutor Institucional", DocumentPdfData.name(DocumentPdfData.institutionalTutor(entity.getEnrollment()))),
+                        pdfExportService.field("Rol", "TUTOR INSTITUCIONAL")))), entity.getLetterheadImage() == null ? null : entity.getLetterheadImage().getData());
     }
 
     @Transactional
@@ -369,6 +441,15 @@ public class FinalReportService {
         validateInstitutionalTutorCanWork(report, tutor);
         validateInstitutionalSectionEditable(report);
 
+        if (request.getCompletedHours() != null || request.getCompletedMinutes() != null) {
+            Integer previous = completedPracticeMinutes(report);
+            int hours = request.getCompletedHours() != null ? request.getCompletedHours() : previous == null ? 0 : previous / 60;
+            int minutes = request.getCompletedMinutes() != null ? request.getCompletedMinutes() : previous == null ? 0 : previous % 60;
+            if (hours < 0 || hours > 10000 || minutes < 0 || minutes > 59)
+                throw new BadRequestException("Revisa las horas y minutos de práctica realizados");
+            report.setCompletedPracticeMinutes(hours * 60 + minutes);
+        }
+        if (request.getReportDate() != null) report.setReportDate(request.getReportDate());
         setIfNotNull(request.getConclusion1(), report::setConclusion1);
         setIfNotNull(request.getConclusion2(), report::setConclusion2);
         setIfNotNull(request.getConclusion3(), report::setConclusion3);
@@ -514,15 +595,11 @@ public class FinalReportService {
     }
 
     private Enrollment getDefaultEnrollment(Account student) {
-
-        return enrollmentRepository
-                .findByAccount_UsernameAndStatusAndCourse_ActiveTrueAndCourse_DeletedFalse(
-                        student.getUsername(),
-                        EnrollmentStatus.APPROVED)
-                .stream()
-                .findFirst()
-                .orElseThrow(() -> new BadRequestException(
-                        "No tienes ninguna inscripcion aprobada para crear el informe final"));
+        var choices = enrollmentRepository.findByAccount_UsernameAndStatusAndCourse_ActiveTrueAndCourse_DeletedFalse(
+                student.getUsername(), EnrollmentStatus.APPROVED);
+        if (choices.isEmpty()) throw new BadRequestException("No tienes ninguna inscripcion aprobada para crear el informe final");
+        if (choices.size() > 1) throw new BadRequestException("Tienes varias prácticas activas. Selecciona la práctica correspondiente antes de continuar.");
+        return choices.get(0);
     }
 
     private FinalReport getReport(Long id) {
@@ -567,6 +644,8 @@ public class FinalReportService {
             throw new BadRequestException(
                     "Solo se puede crear el informe final de una inscripcion aprobada");
         }
+        PracticeAccessService.requireOperationalEnrollment(enrollment);
+
 
         if (!isActiveCourseEnrollment(enrollment)) {
             throw new BadRequestException(
@@ -713,6 +792,7 @@ public class FinalReportService {
     }
 
     private void validateEditable(FinalReport report) {
+        PracticeAccessService.requireOperationalEnrollment(report.getEnrollment());
 
         ReviewWorkflowStateMachine.ensureEditable(
                 report.getStatus(),
@@ -732,6 +812,7 @@ public class FinalReportService {
     }
 
     private void validateInstitutionalSectionEditable(FinalReport report) {
+        PracticeAccessService.requireOperationalEnrollment(report.getEnrollment());
 
         ReviewWorkflowStateMachine.ensureEditable(
                 report.getStatus(),
@@ -743,6 +824,7 @@ public class FinalReportService {
     }
 
     private void validateReviewable(FinalReport report) {
+        PracticeAccessService.requireOperationalEnrollment(report.getEnrollment());
 
         ReviewWorkflowStateMachine.ensureReviewable(
                 report.getStatus(),
@@ -904,8 +986,8 @@ public class FinalReportService {
             FinalReportActivityWeek week = FinalReportActivityWeek.builder()
                     .report(report)
                     .weekNumber(weekRequest.getWeekNumber())
-                    .startDate(activityWeekStartDate(report.getCourse(), weekRequest.getWeekNumber(), weekRequest.getStartDate()))
-                    .endDate(activityWeekEndDate(report.getCourse(), weekRequest.getWeekNumber(), weekRequest.getEndDate()))
+                    .startDate(activityWeekStartDate(report.getEnrollment(), weekRequest.getWeekNumber(), weekRequest.getStartDate()))
+                    .endDate(activityWeekEndDate(report.getEnrollment(), weekRequest.getWeekNumber(), weekRequest.getEndDate()))
                     .activities(weekRequest.getActivities())
                     .build();
 
@@ -914,7 +996,7 @@ public class FinalReportService {
     }
 
     private LocalDate activityWeekStartDate(
-            Course course,
+            Enrollment enrollment,
             Integer weekNumber,
             LocalDate providedDate) {
 
@@ -922,11 +1004,11 @@ public class FinalReportService {
             return providedDate;
         }
 
-        return defaultActivityWeekStartDate(course, weekNumber);
+        return defaultActivityWeekStartDate(enrollment, weekNumber);
     }
 
     private LocalDate activityWeekEndDate(
-            Course course,
+            Enrollment enrollment,
             Integer weekNumber,
             LocalDate providedDate) {
 
@@ -934,27 +1016,27 @@ public class FinalReportService {
             return providedDate;
         }
 
-        return defaultActivityWeekEndDate(course, weekNumber);
+        return defaultActivityWeekEndDate(enrollment, weekNumber);
     }
 
     private LocalDate defaultActivityWeekStartDate(
-            Course course,
+            Enrollment enrollment,
             Integer weekNumber) {
 
-        if (course == null || course.getStartDate() == null) {
+        if (enrollment == null || PracticePeriod.start(enrollment) == null) {
             return null;
         }
 
-        return course.getStartDate()
+        return PracticePeriod.start(enrollment)
                 .toLocalDate()
                 .plusDays((long) (weekNumber == null ? 0 : Math.max(weekNumber - 1, 0)) * 7L);
     }
 
     private LocalDate defaultActivityWeekEndDate(
-            Course course,
+            Enrollment enrollment,
             Integer weekNumber) {
 
-        LocalDate startDate = defaultActivityWeekStartDate(course, weekNumber);
+        LocalDate startDate = defaultActivityWeekStartDate(enrollment, weekNumber);
 
         if (startDate == null) {
             return null;
@@ -962,9 +1044,9 @@ public class FinalReportService {
 
         LocalDate endDate = startDate.plusDays(4);
 
-        return course.getEndDate() != null
-                && endDate.isAfter(course.getEndDate().toLocalDate())
-                        ? course.getEndDate().toLocalDate()
+        return PracticePeriod.end(enrollment) != null
+                && endDate.isAfter(PracticePeriod.end(enrollment).toLocalDate())
+                        ? PracticePeriod.end(enrollment).toLocalDate()
                         : endDate;
     }
 
@@ -1002,6 +1084,12 @@ public class FinalReportService {
     }
 
     private void validateInstitutionalSectionComplete(FinalReport report) {
+        if (report.getLetterheadImage() == null)
+            throw new BadRequestException("Adjunta el membrete institucional como imagen en el formulario L.3 antes de aprobar");
+        if (completedPracticeMinutes(report) == null)
+            throw new BadRequestException("Registra las horas y minutos realizados en el formulario L.3 o completa el registro L.6");
+        if (report.getCompletedPracticeMinutes() == null) report.setCompletedPracticeMinutes(completedPracticeMinutes(report));
+
 
         requireText(report.getConclusion1(),
                 "La conclusion 1 es obligatoria");
@@ -1407,7 +1495,12 @@ public class FinalReportService {
             Map<Long, List<FeedbackCommentResponse>> feedbackByDocumentId,
             Map<Long, List<FeedbackHistoryResponse>> historyByDocumentId) {
 
+        Integer minutes = completedPracticeMinutes(report);
         return FinalReportResponse.builder()
+                .letterheadImageUrl(report.getLetterheadImage() == null ? null : "/api/final-reports/" + report.getId() + "/letterhead")
+                .completedHours(minutes == null ? null : minutes / 60)
+                .completedMinutes(minutes == null ? null : minutes % 60)
+                .reportDate(report.getReportDate())
                 .id(report.getId())
                 .enrollmentId(report.getEnrollment().getId())
                 .courseId(report.getCourse().getId())
@@ -1526,8 +1619,8 @@ public class FinalReportService {
                 .map(week -> FinalReportActivityWeekResponse.builder()
                         .id(week.getId())
                         .weekNumber(week.getWeekNumber())
-                        .startDate(activityWeekStartDate(report.getCourse(), week.getWeekNumber(), week.getStartDate()))
-                        .endDate(activityWeekEndDate(report.getCourse(), week.getWeekNumber(), week.getEndDate()))
+                        .startDate(activityWeekStartDate(report.getEnrollment(), week.getWeekNumber(), week.getStartDate()))
+                        .endDate(activityWeekEndDate(report.getEnrollment(), week.getWeekNumber(), week.getEndDate()))
                         .activities(week.getActivities())
                         .build())
                 .toList();

@@ -1,0 +1,235 @@
+{
+  "date": "2026-11-07",
+  "mode": "Chrome with isolated API fixtures",
+  "checks": [
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "width": 390,
+      "label": "One practice needs no selector or count",
+      "pass": true
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "width": 390,
+      "label": "Global evidence keeps multiple practice choices",
+      "pass": true
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "width": 390,
+      "label": "Selected practice removes evidence selector",
+      "pass": true
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "width": 390,
+      "label": "Selected practice removes didactic enrollment",
+      "pass": true
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "width": 390,
+      "label": "Hidden didactic practice retained in payload",
+      "pass": true
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "width": 390,
+      "label": "Document resolves workspace without enrollment chooser",
+      "pass": true
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "width": 390,
+      "label": "Multiple practices remain selectable for new global document",
+      "pass": true
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "width": 390,
+      "label": "Choosing a global practice unlocks the document form",
+      "pass": true
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "width": 390,
+      "label": "No page overflow",
+      "pass": true
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 390,
+      "label": "Reviewer sees students and practices",
+      "pass": true
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 390,
+      "label": "Workspace table keeps identity state and actions without repetition",
+      "pass": true
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 390,
+      "label": "Supplementary fields remain accessible without clipping",
+      "pass": true
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 390,
+      "label": "Details restores focus and scroll",
+      "pass": true
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 390,
+      "label": "No page overflow",
+      "pass": true
+    },
+    {
+      "role": "ROLE_TUTOR_INSTITUCIONAL",
+      "width": 390,
+      "label": "Tutor creates within selected practice without enrollment chooser",
+      "pass": true
+    },
+    {
+      "role": "ROLE_TUTOR_INSTITUCIONAL",
+      "width": 390,
+      "label": "No page overflow",
+      "pass": true
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "label": "Catalog removes fixed parent column",
+      "pass": true
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "label": "Catalog form describes context without asking again",
+      "pass": true
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 390,
+      "label": "No page overflow",
+      "pass": true
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "width": 1440,
+      "label": "One practice needs no selector or count",
+      "pass": true
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "width": 1440,
+      "label": "Global evidence keeps multiple practice choices",
+      "pass": true
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "width": 1440,
+      "label": "Selected practice removes evidence selector",
+      "pass": true
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "width": 1440,
+      "label": "Selected practice removes didactic enrollment",
+      "pass": true
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "width": 1440,
+      "label": "Hidden didactic practice retained in payload",
+      "pass": true
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "width": 1440,
+      "label": "Document resolves workspace without enrollment chooser",
+      "pass": true
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "width": 1440,
+      "label": "Multiple practices remain selectable for new global document",
+      "pass": true
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "width": 1440,
+      "label": "Choosing a global practice unlocks the document form",
+      "pass": true
+    },
+    {
+      "role": "ROLE_ESTUDIANTE",
+      "width": 1440,
+      "label": "No page overflow",
+      "pass": true
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 1440,
+      "label": "Reviewer sees students and practices",
+      "pass": true
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 1440,
+      "label": "Workspace table keeps identity state and actions without repetition",
+      "pass": true
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 1440,
+      "label": "Supplementary fields remain accessible without clipping",
+      "pass": true
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 1440,
+      "label": "Details restores focus and scroll",
+      "pass": true
+    },
+    {
+      "role": "ROLE_TUTOR_PRACTICAS",
+      "width": 1440,
+      "label": "No page overflow",
+      "pass": true
+    },
+    {
+      "role": "ROLE_TUTOR_INSTITUCIONAL",
+      "width": 1440,
+      "label": "Tutor creates within selected practice without enrollment chooser",
+      "pass": true
+    },
+    {
+      "role": "ROLE_TUTOR_INSTITUCIONAL",
+      "width": 1440,
+      "label": "No page overflow",
+      "pass": true
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "label": "Catalog removes fixed parent column",
+      "pass": true
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "label": "Catalog form describes context without asking again",
+      "pass": true
+    },
+    {
+      "role": "ROLE_ADMIN",
+      "width": 1440,
+      "label": "No page overflow",
+      "pass": true
+    }
+  ],
+  "errors": []
+}

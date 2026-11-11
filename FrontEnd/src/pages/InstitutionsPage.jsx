@@ -1,3 +1,17 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          InstitutionsPage.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Presenta la gestión y consulta de las instituciones del sistema.
+ */
+
+import { fetchAllPages } from '../utils/pagination';
+import { EntityImage, EntityImagePicker, entityImagePayload } from '../components/ui/EntityImage';
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Ban, CheckCircle2, Pencil, Plus, RefreshCw, Save } from "lucide-react";
 import { apiRequest, toQuery, unwrapPage } from "../api/client";
@@ -76,11 +90,12 @@ function buildInitialForm(type = "ESCUELA") {
   };
 }
 
-export function InstitutionsPage({ scope = "practice", embedded = false } = {}) {
+export function InstitutionsPage({ scope = "practice", embedded = false, onOpen } = {}) {
   const { token, roles } = useAuth();
   const confirm = useConfirm();
   const isAdmin = roles.includes("ROLE_ADMIN");
   const isUniversityScope = scope === "universities";
+  const canManage = isAdmin || !isUniversityScope;
   const allowedTypes = useMemo(
     () => (isUniversityScope ? UNIVERSITY_INSTITUTION_TYPES : PRACTICE_INSTITUTION_TYPES),
     [isUniversityScope]
@@ -90,18 +105,19 @@ export function InstitutionsPage({ scope = "practice", embedded = false } = {}) 
       ? {
         eyebrow: "Universidades",
         title: "Universidades",
-        description: "Administra las universidades vinculadas al proceso de practicas.",
+        description: "Administra las universidades vinculadas al proceso de prácticas.",
         listLabel: "Universidades",
         formNoun: "universidad",
       }
     : {
         eyebrow: "Instituciones",
-        title: "Instituciones de practica",
-        description: "Administra los centros donde los estudiantes realizaran sus practicas.",
-        listLabel: "Instituciones de practica",
+        title: "Instituciones de práctica",
+        description: "Administra los centros donde los estudiantes realizaran sus prácticas.",
+        listLabel: "Instituciones de práctica",
         formNoun: "institucion",
       };
   const [rows, setRows] = useState([]);
+  const [logoFile, setLogoFile] = useState(null);
   const [form, setForm] = useState(() => buildInitialForm(defaultType));
   const [filters, setFilters] = useState(INITIAL_FILTERS);
   const [editingId, setEditingId] = useState("");
@@ -115,7 +131,7 @@ export function InstitutionsPage({ scope = "practice", embedded = false } = {}) 
     setError("");
 
     try {
-      const payload = await apiRequest(
+      const payload = await fetchAllPages(apiRequest,
         `/api/institutions/search${toQuery({ active: !isAdmin ? true : undefined, page: 0, size: 200 })}`,
         { token },
       );
@@ -148,6 +164,7 @@ export function InstitutionsPage({ scope = "practice", embedded = false } = {}) 
   }
 
   function edit(row) {
+    setLogoFile(null);
     setEditingId(row.id);
     setActiveView("form");
     setForm({
@@ -161,6 +178,7 @@ export function InstitutionsPage({ scope = "practice", embedded = false } = {}) 
   }
 
   function reset() {
+    setLogoFile(null);
     setEditingId("");
     setForm(buildInitialForm(defaultType));
     setActiveView("form");
@@ -178,13 +196,13 @@ export function InstitutionsPage({ scope = "practice", embedded = false } = {}) 
         {
           method: editingId ? "PATCH" : "POST",
           token,
-          body: cleanInstitutionPayload(form, Boolean(editingId)),
+          body: entityImagePayload(cleanInstitutionPayload(form, Boolean(editingId)), logoFile),
         },
       );
       reset();
       await loadRows();
       setActiveView("list");
-      setMessage(editingId ? "Institucion actualizada" : "Institucion creada");
+      setMessage(editingId ? "Institución actualizada" : "Institución creada");
     } catch (requestError) {
       setError(requestError.message);
     } finally {
@@ -194,8 +212,8 @@ export function InstitutionsPage({ scope = "practice", embedded = false } = {}) 
 
   async function action(path, method = "PATCH", confirmation) {
     const accepted = await confirm(confirmation || {
-      title: "Confirmar accion",
-      description: "Esta accion modificara el estado de la institucion seleccionada.",
+      title: "Confirmar acción",
+      description: "Esta acción modificara el estado de la institución seleccionada.",
       confirmLabel: "Confirmar",
       tone: "warning",
     });
@@ -211,7 +229,7 @@ export function InstitutionsPage({ scope = "practice", embedded = false } = {}) 
     try {
       await apiRequest(path, { method, token });
       await loadRows();
-      setMessage("Accion ejecutada");
+      setMessage("Acción ejecutada");
     } catch (requestError) {
       setError(requestError.message);
     } finally {
@@ -220,15 +238,17 @@ export function InstitutionsPage({ scope = "practice", embedded = false } = {}) 
   }
 
   const columns = [
+    ...(onOpen ? [{ key: "open", header: "Explorar", render: row => <SecondaryButton onClick={() => onOpen(row)}>Abrir {row.name}</SecondaryButton> }] : []),
     { key: "id", header: "ID" },
-    { key: "code", header: "Codigo" },
-    { key: "name", header: "Nombre" },
-    { key: "type", header: "Tipo" },
+    { key: "code", header: "Código" },
+    { key: "name", header: "Nombre", render: row => <div className="flex items-center gap-3"><EntityImage path={row.logoImageUrl} logo className="h-12 w-12 shrink-0 rounded-lg border border-line bg-panel p-1" /><span>{row.name}</span></div> },
+    ...(!isUniversityScope ? [{ key: "type", header: "Tipo" }] : []),
     ...(isUniversityScope
       ? []
       : [
           {
             key: "schoolProfile",
+            secondary: true,
             header: "Comunidad",
             render: (row) =>
               isSchoolOrCollege(row.type)
@@ -241,12 +261,13 @@ export function InstitutionsPage({ scope = "practice", embedded = false } = {}) 
       header: "Estado",
       render: (row) => <StatusBadge status={row.active} />,
     },
-    {
+    ...(canManage ? [{
       key: "actions",
       header: "Acciones",
       render: (row) => (
         <ActionMenu
           actions={[
+            ...(row.logoImageUrl ? [{ key: "remove-logo", label: "Quitar logotipo", onClick: () => action(`/api/institutions/${row.id}/logo`, "DELETE", { title: "Quitar logotipo", description: "La institución usará su identificación predeterminada.", confirmLabel: "Quitar", tone: "danger" }) }] : []),
             {
               key: "edit",
               label: "Editar",
@@ -259,10 +280,10 @@ export function InstitutionsPage({ scope = "practice", embedded = false } = {}) 
               icon: row.active ? Ban : CheckCircle2,
               onClick: () =>
                 action(`/api/institutions/${row.id}/${row.active ? "disable" : "enable"}`, "PATCH", {
-                  title: row.active ? "Desactivar institucion" : "Activar institucion",
+                  title: row.active ? "Desactivar institución" : "Activar institución",
                   description: row.active
-                    ? "La institucion dejara de estar disponible para nuevos procesos."
-                    : "La institucion volvera a estar disponible.",
+                    ? "La institución dejara de estar disponible para nuevos procesos."
+                    : "La institución volvera a estar disponible.",
                   details: row.name,
                   confirmLabel: row.active ? "Desactivar" : "Activar",
                   tone: row.active ? "danger" : "warning",
@@ -271,7 +292,7 @@ export function InstitutionsPage({ scope = "practice", embedded = false } = {}) 
           ]}
         />
       ),
-    },
+    }] : []),
   ];
   const showSchoolProfileFields = isSchoolOrCollege(form.type);
   const filterOptions = useMemo(
@@ -297,16 +318,6 @@ export function InstitutionsPage({ scope = "practice", embedded = false } = {}) 
           eyebrow={pageCopy.eyebrow}
           title={pageCopy.title}
           description={pageCopy.description}
-          action={
-            <SecondaryButton
-              icon={RefreshCw}
-              loading={loading}
-              onClick={loadRows}
-              type="button"
-            >
-              Actualizar
-            </SecondaryButton>
-          }
         />
       )}
 
@@ -316,12 +327,32 @@ export function InstitutionsPage({ scope = "practice", embedded = false } = {}) 
       <>
           <FilterPanel
             activeCount={countActiveFilters(filters, ["query"])}
+            action={
+              <div className="flex flex-wrap items-center gap-2">
+                <SecondaryButton className="!w-auto" icon={RefreshCw} loading={loading} onClick={loadRows} type="button">
+                  Actualizar
+                </SecondaryButton>
+                {canManage && <PrimaryButton
+                  className="!w-auto"
+                  icon={Plus}
+                  onClick={() => {
+                    setLogoFile(null);
+                    setEditingId("");
+                    setForm(buildInitialForm(defaultType));
+                    setActiveView("form");
+                  }}
+                  type="button"
+                >
+                  Crear
+                </PrimaryButton>}
+              </div>
+            }
             hasActiveFilters={countActiveFilters(filters) > 0}
             onClear={() => setFilters(INITIAL_FILTERS)}
             search={(
               <Field label="Buscar">
                 <Input
-                  placeholder="Nombre, codigo, correo o ubicacion"
+                  placeholder="Nombre, código, correo o ubicación"
                   type="search"
                   value={filters.query}
                   onChange={(event) =>
@@ -438,7 +469,7 @@ export function InstitutionsPage({ scope = "practice", embedded = false } = {}) 
                   ))}
                 </Select>
               </Field>
-              <Field label="Canton">
+              <Field label="Cantón">
                 <Select
                   value={filters.canton}
                   onChange={(event) =>
@@ -498,40 +529,26 @@ export function InstitutionsPage({ scope = "practice", embedded = false } = {}) 
               )}
           </FilterPanel>
 
-          <SectionCard
-            title={pageCopy.listLabel}
-            action={
-              <PrimaryButton
-                icon={Plus}
-                onClick={() => {
-                  setEditingId("");
-                  setForm(buildInitialForm(defaultType));
-                  setActiveView("form");
-                }}
-                type="button"
-              >
-                Crear
-              </PrimaryButton>
-            }
-          >
+          <SectionCard title={pageCopy.listLabel}>
             <DataTable columns={columns} loading={loading} rows={filteredRows} />
           </SectionCard>
         </>
 
       <Modal
-        description="Edita la informacion en una ventana enfocada y regresa al listado al guardar."
+        description="Edita la información en una ventana enfocada y regresa al listado al guardar."
         maxWidth="max-w-5xl"
         onClose={() => setActiveView("list")}
-        open={activeView === "form"}
+        open={canManage && activeView === "form"}
         title={editingId ? `Editar ${pageCopy.formNoun}` : `Crear ${pageCopy.formNoun}`}
       >
           <form className="space-y-4" onSubmit={submit}>
+            <EntityImagePicker key={editingId || "new"} label="Logotipo institucional opcional" file={logoFile} onChange={setLogoFile} currentPath={form.logoImageUrl} logo />
             <div className="grid lg:grid-cols-2 gap-4">
               {[
-                ["code", "Codigo"],
+                ["code", "Código"],
                 ["name", "Nombre"],
-                ["address", "Direccion"],
-                ["phone", "Telefono"],
+                ["address", "Dirección"],
+                ["phone", "Teléfono"],
                 ["email", "Correo"],
                 ["website", "Sitio web"],
                 ["educationLevels", "Niveles, separados por coma"],
@@ -593,7 +610,7 @@ export function InstitutionsPage({ scope = "practice", embedded = false } = {}) 
                   }
                 />
               </Field>
-              <Field label="Canton">
+              <Field label="Cantón">
                 <EntitySelect
                   disabled={!form.provinceId}
                   path={
@@ -603,7 +620,7 @@ export function InstitutionsPage({ scope = "practice", embedded = false } = {}) 
                   }
                   placeholder={
                     form.provinceId
-                      ? "Seleccionar canton"
+                      ? "Seleccionar cantón"
                       : "Selecciona primero una provincia"
                   }
                   value={form.cantonId}
@@ -627,7 +644,7 @@ export function InstitutionsPage({ scope = "practice", embedded = false } = {}) 
                   placeholder={
                     form.cantonId
                       ? "Seleccionar parroquia"
-                      : "Selecciona primero un canton"
+                      : "Selecciona primero un cantón"
                   }
                   value={form.parishId}
                   onChange={(value) => setField("parishId", value)}

@@ -1,4 +1,17 @@
-import { useEffect, useMemo, useState } from 'react';
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          EntitySelect.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa el componente EntitySelect de la interfaz del SGP.
+ */
+
+import { fetchAllPages } from '../../utils/pagination';
+import { useEffect, useId, useMemo, useState } from 'react';
 import { apiRequest, isAccessDeniedError, unwrapPage } from '../../api/client';
 import { useAuth } from '../../auth/AuthContext';
 import { joinText } from '../../utils/format';
@@ -19,8 +32,15 @@ export function EntitySelect({
   required = false,
   emptyText = 'No hay opciones disponibles',
   rowFilter,
+  id,
+  name,
+  'aria-labelledby': labelledBy,
+  'aria-describedby': describedBy,
+  'aria-invalid': invalid,
 }) {
   const { token, roles } = useAuth();
+  const generatedId = useId();
+  const controlId = id || `sgp-entity-${generatedId}`;
   const [loadedRows, setLoadedRows] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -47,7 +67,7 @@ export function EntitySelect({
       setError('');
 
       try {
-        const payload = await apiRequest(path, { token });
+        const payload = await fetchAllPages(apiRequest, path, { token });
 
         if (active) {
           setLoadedRows(unwrapPage(payload));
@@ -83,17 +103,33 @@ export function EntitySelect({
     );
   }, [getOptionLabel, query, visibleRows]);
 
+  useEffect(() => {
+    if (required && !disabled && !loading && !error && visibleRows.length === 1 && (value === '' || value == null)) onChange(visibleRows[0].id);
+  }, [required, disabled, loading, error, visibleRows, value, onChange]);
+
+  if (required && !loading && !error && visibleRows.length === 1 && String(value) === String(visibleRows[0].id)) {
+    return <input id={controlId} name={name} className={fieldClass} readOnly aria-readonly="true" aria-labelledby={labelledBy} aria-label={labelledBy ? undefined : placeholder} aria-describedby={describedBy} aria-invalid={invalid} value={getOptionLabel(visibleRows[0])} />;
+  }
+
   return (
     <div className="grid gap-2">
-      <input
+      {(visibleRows.length > 6 || query) && <input
+        aria-label={labelledBy ? undefined : searchPlaceholder}
+        aria-labelledby={labelledBy ? `${controlId}-search-label ${labelledBy}` : undefined}
         className={`${fieldClass} min-h-10 py-2`}
         disabled={disabled || loading || Boolean(error)}
         onChange={(event) => setQuery(event.target.value)}
         placeholder={loading ? 'Cargando registros...' : searchPlaceholder}
         type="search"
         value={query}
-      />
+      />}
       <select
+        id={controlId}
+        name={name}
+        aria-label={labelledBy ? undefined : placeholder}
+        aria-labelledby={labelledBy}
+        aria-describedby={describedBy}
+        aria-invalid={invalid}
         className={fieldClass}
         disabled={disabled || loading || Boolean(error)}
         onChange={(event) => onChange(event.target.value ? Number(event.target.value) : '')}
@@ -107,6 +143,7 @@ export function EntitySelect({
           </option>
         ))}
       </select>
+      <span id={`${controlId}-search-label`} className="sr-only">Buscar</span>
       {!loading && !error && visibleRows.length === 0 && (
         <p className="text-xs text-body">{emptyText}</p>
       )}
@@ -116,6 +153,8 @@ export function EntitySelect({
     </div>
   );
 }
+
+EntitySelect.fieldControl = true;
 
 export function defaultOptionLabel(row) {
   if (!row) {
@@ -128,7 +167,7 @@ export function defaultOptionLabel(row) {
   const base =
     row.name ||
     row.title ||
-    row.courseName ||
+    [row.practiceName, row.courseName].filter(Boolean).join(' · ') ||
     fullName ||
     row.username ||
     row.code ||

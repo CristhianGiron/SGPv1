@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          PracticeFormService.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa la lógica de aplicación de los instrumentos de entrevista y observación.
+ */
+
 package com.sgp.systemsgp.service;
 
 import com.sgp.systemsgp.dto.practiceform.CreatePracticeFormOptionRequest;
@@ -146,10 +158,10 @@ public class PracticeFormService {
     public List<PracticeFormResponse> assignedForms(String username) {
 
         return practiceFormRepository
-                .findByTargetAccount_UsernameAndFormKindAndStatusAndDeletedFalseOrderByCreatedAtDesc(
+                .findByTargetAccount_UsernameAndFormKindAndStatusInAndDeletedFalseOrderByCreatedAtDesc(
                         username,
                         PracticeFormKind.INTERVIEW,
-                        PracticeFormStatus.SENT)
+                        List.of(PracticeFormStatus.SENT, PracticeFormStatus.ANSWERED))
                 .stream()
                 .map(form -> mapToResponse(form, false))
                 .toList();
@@ -187,6 +199,7 @@ public class PracticeFormService {
         Account student = getAccount(username);
 
         validateStudentOwnsForm(student, form);
+        PracticeAccessService.requireOperationalEnrollment(form.getEnrollment());
         validateDraftEditable(form);
 
         Enrollment enrollment = getEnrollment(request.getEnrollmentId());
@@ -220,6 +233,7 @@ public class PracticeFormService {
         Account student = getAccount(username);
 
         validateStudentOwnsForm(student, form);
+        PracticeAccessService.requireOperationalEnrollment(form.getEnrollment());
         validateDraftEditable(form);
         validateReadyToSend(form);
 
@@ -239,6 +253,7 @@ public class PracticeFormService {
         Account student = getAccount(username);
 
         validateStudentOwnsForm(student, source);
+        PracticeAccessService.requireOperationalEnrollment(source.getEnrollment());
 
         StudentPracticeForm copy = StudentPracticeForm.builder()
                 .enrollment(source.getEnrollment())
@@ -272,6 +287,7 @@ public class PracticeFormService {
         boolean draft = Boolean.TRUE.equals(request.getDraft());
 
         validateCanRespond(form, respondent);
+        PracticeAccessService.requireOperationalEnrollment(form.getEnrollment());
         validateCanReceiveResponse(form, draft);
 
         Map<Long, PracticeFormAnswerRequest> answersByQuestion = indexAnswerRequests(request.getAnswers(), draft);
@@ -331,13 +347,9 @@ public class PracticeFormService {
         Account student = getAccount(username);
 
         validateStudentOwnsForm(student, form);
+        PracticeAccessService.requireOperationalEnrollment(form.getEnrollment());
 
         StudentPracticeFormQuestion question = findQuestion(form, questionId);
-
-        if (question.getType() != PracticeFormQuestionType.OPEN_TEXT) {
-            throw new BadRequestException(
-                    "Solo las preguntas abiertas admiten interpretación manual");
-        }
 
         question.setStudentInterpretation(normalizeText(request.getInterpretation()));
 
@@ -419,6 +431,8 @@ public class PracticeFormService {
             throw new BadRequestException(
                     "Solo se pueden crear formularios para inscripciones aprobadas");
         }
+        PracticeAccessService.requireOperationalEnrollment(enrollment);
+
 
     }
 
@@ -889,7 +903,7 @@ public class PracticeFormService {
         }
     }
 
-    private StudentPracticeFormAnswer buildAnswer(
+private StudentPracticeFormAnswer buildAnswer(
             StudentPracticeFormResponse response,
             StudentPracticeFormQuestion question,
             PracticeFormAnswerRequest request) {
@@ -922,7 +936,9 @@ public class PracticeFormService {
             return answer;
         }
 
-        List<String> selectedOptions = normalizeSelectedOptions(request.getSelectedOptions());
+        // CORREGIDO: Ahora manejamos Set<String> para ser compatibles con la nueva entidad
+        // Si normalizeSelectedOptions ya devuelve un Set, puedes quitar el "new HashSet<>(...)"
+        Set<String> selectedOptions = new HashSet<>(normalizeSelectedOptions(request.getSelectedOptions()));
         validateSelectedOptions(question, selectedOptions);
         answer.setSelectedOptions(selectedOptions);
 
@@ -1019,9 +1035,9 @@ public class PracticeFormService {
         return new ArrayList<>(uniqueOptions);
     }
 
-    private void validateSelectedOptions(
+   private void validateSelectedOptions(
             StudentPracticeFormQuestion question,
-            List<String> selectedOptions) {
+            Set<String> selectedOptions) { // <- CAMBIADO AQUÍ: List por Set
 
         if (selectedOptions.isEmpty()) {
             if (question.isRequired()) {
@@ -1277,7 +1293,7 @@ public class PracticeFormService {
             case SINGLE_CHOICE, MULTIPLE_CHOICE -> mapChoiceTabulation(question, answers);
             case YES_NO -> mapYesNoTabulation(question, answers);
             case SCALE -> mapNumericTabulation(question, answers, true);
-            case NUMBER -> mapNumericTabulation(question, answers, false);
+            case NUMBER -> mapNumericTabulation(question, answers, true);
             case OPEN_TEXT -> PracticeFormQuestionTabulationResponse.builder()
                     .questionId(question.getId())
                     .tabulable(false)

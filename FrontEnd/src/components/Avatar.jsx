@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          Avatar.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa el componente Avatar de la interfaz del SGP.
+ */
+
 import { useEffect, useState } from 'react';
 import { apiBlob } from '../api/client';
 import { initialsFromProfile } from '../utils/format';
@@ -91,7 +103,7 @@ export function Avatar({ profile, token, size = 'md', className = '' }) {
     return (
       <img
         alt={profile?.username || 'Usuario'}
-        className={`${sizes[size]} rounded-full object-cover ring-2 ring-panel dark:ring-surface-soft ${className}`}
+        className={`sgp-avatar aspect-square flex-none ${sizes[size]} rounded-full object-cover ring-2 ring-panel dark:ring-surface-soft ${className}`}
         onError={() => setFailed(true)}
         src={source}
       />
@@ -101,7 +113,7 @@ export function Avatar({ profile, token, size = 'md', className = '' }) {
 
   return (
     <div
-      className={`${sizes[size]} grid place-items-center rounded-full font-semibold text-inverse ring-2 ring-panel shadow-card dark:ring-surface-soft ${className}`}
+      className={`sgp-avatar aspect-square flex-none ${sizes[size]} grid place-items-center rounded-full font-semibold text-inverse ring-2 ring-panel shadow-card dark:ring-surface-soft ${className}`}
       style={{ backgroundColor: fallbackColor }}
     >
       {initials}

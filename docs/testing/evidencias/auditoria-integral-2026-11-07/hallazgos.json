@@ -1,0 +1,126 @@
+{
+  "date": "2026-11-07",
+  "applicationChanges": "No production behavior modified; audit evidence and test maintenance only",
+  "findings": [
+    {
+      "id": "F01",
+      "severity": "P0 condicional",
+      "status": "reproducido",
+      "title": "Flyway no resuelve las migraciones del perfil de producción",
+      "roles": "Administración y operación",
+      "observed": "Found more than one migration with version 2; el inventario también duplica V3, V4 y V12.",
+      "impact": "El arranque con Flyway habilitado queda bloqueado. Desarrollo y pruebas lo ocultan al deshabilitarlo.",
+      "change": "Reconciliar versiones con flyway_schema_history y validar instalación limpia y actualización en MySQL aislado.",
+      "evidence": "backend-probes.json",
+      "source": "BackEnd/src/main/resources/application-prod.properties:4"
+    },
+    {
+      "id": "F02",
+      "severity": "P1",
+      "status": "reproducido",
+      "title": "La API acepta escrituras sobre prácticas archivadas",
+      "roles": "Estudiante; tutor institucional; administración",
+      "observed": "POST de asistencia y PUT de planificación devuelven 200 tras concluir y archivar la práctica.",
+      "impact": "Los registros históricos pueden cambiar aunque la interfaz los presenta como consulta.",
+      "change": "Aplicar una validación operacional compartida en toda mutación, además de la autorización del usuario.",
+      "evidence": "backend-probes.json",
+      "source": "BackEnd/src/main/java/com/sgp/systemsgp/service/DidacticPlanService.java:350; PracticeScheduleService.java:185"
+    },
+    {
+      "id": "F03",
+      "severity": "P1",
+      "status": "reproducido",
+      "title": "Se crea una planificación con el paralelo inactivo",
+      "roles": "Estudiante; tutor institucional",
+      "observed": "POST /api/didactic-plans acepta una inscripción APPROVED con course.active=false y devuelve 200.",
+      "impact": "Aparecen nuevos registros operativos en un ámbito deshabilitado.",
+      "change": "Exigir práctica aprobada, no archivada y paralelo activo/no eliminado en el backend.",
+      "evidence": "backend-probes.json",
+      "source": "BackEnd/src/main/java/com/sgp/systemsgp/service/DidacticPlanService.java:263"
+    },
+    {
+      "id": "F04",
+      "severity": "P1",
+      "status": "reproducido",
+      "title": "Se registra asistencia fuera de las fechas del horario",
+      "roles": "Tutor institucional; estudiante; dirección",
+      "observed": "Horario 02–09/11/2026 acepta asistencia PRESENT del 04/01/2027 con 120 minutos.",
+      "impact": "Fechas y tiempos quedan asociados a una jornada que no los comprende.",
+      "change": "Validar attendanceDate contra startDate/endDate del horario, además del día y las horas.",
+      "evidence": "backend-probes.json",
+      "source": "BackEnd/src/main/java/com/sgp/systemsgp/service/PracticeScheduleService.java:607"
+    },
+    {
+      "id": "F05",
+      "severity": "P2",
+      "status": "reproducido",
+      "title": "Se guarda texto presentado como fotografía PNG",
+      "roles": "Estudiante; revisores de evidencias",
+      "observed": "Un multipart con nombre texto.png, MIME image/png y bytes de texto recibe 200.",
+      "impact": "Se crean evidencias almacenadas que no se pueden visualizar como imagen.",
+      "change": "Comprobar el contenido real y los límites de decodificación; mantener MIME y formato coherentes.",
+      "evidence": "backend-probes.json",
+      "source": "BackEnd/src/main/java/com/sgp/systemsgp/service/PracticePhotoService.java:348"
+    },
+    {
+      "id": "F06",
+      "severity": "P2",
+      "status": "reproducido",
+      "title": "Vaciar períodos no elimina el valor guardado de la planificación",
+      "roles": "Autores de planificaciones",
+      "observed": "Después de guardar periods=4, PUT con periods=null responde todavía periods=4. El frontend envía null al vaciar el campo.",
+      "impact": "El valor anterior reaparece al recargar aunque el usuario intentó borrarlo.",
+      "change": "Definir actualización de nulos/omisiones y conservar el cero con ?? en vez de || al cargar el formulario.",
+      "evidence": "backend-probes.json",
+      "source": "FrontEnd/src/pages/DidacticPlansPage.jsx:637; BackEnd/src/main/java/com/sgp/systemsgp/service/DidacticPlanService.java:393"
+    },
+    {
+      "id": "F07",
+      "severity": "P1",
+      "status": "reproducido",
+      "title": "Listados y búsquedas quedan limitados a los primeros 200 registros",
+      "roles": "Administración; usuarios de selectores paginados",
+      "observed": "Con 205 cuentas en la API se muestra 200 de 200 y no se encuentra Persona 205. La búsqueda vacía dice que no hay usuarios registrados.",
+      "impact": "Usuarios existentes desaparecen de la gestión y los contadores son incompletos.",
+      "change": "Paginar y buscar en servidor usando totalElements; diferenciar sin coincidencias de sin registros.",
+      "evidence": "limite-listados.json",
+      "source": "FrontEnd/src/pages/AccountsPage.jsx:67; InstitutionsPage.jsx:122; CoursesPage.jsx:133; config/resources.js:58"
+    },
+    {
+      "id": "F08",
+      "severity": "P2",
+      "status": "reproducido",
+      "title": "El acceso flotante cubre parte de un aviso largo de error en móvil",
+      "roles": "Estudiante",
+      "observed": "En 360 px, claro y oscuro, el botón de accesibilidad cubre el borde inferior izquierdo del aviso.",
+      "impact": "Se mantiene una colisión visual; poder arrastrar el botón es una mitigación manual.",
+      "change": "Reservar zona para elementos flotantes o evitar colisiones por defecto con avisos y acciones críticas.",
+      "evidence": "aviso-error/resultado.json",
+      "source": "FrontEnd/src/components/accessibility/AccessibilityWidget.css; FrontEnd/src/styles/academic.css"
+    },
+    {
+      "id": "F09",
+      "severity": "P1",
+      "status": "reproducido",
+      "title": "El visor de fotografías pierde el control del foco y deja bloqueado el desplazamiento",
+      "roles": "Usuarios del visor de evidencias",
+      "observed": "El diálogo no tiene nombre ni captura el foco. Abrir accesibilidad y pulsar Escape cierra ambos diálogos; quedan cero diálogos visibles y overflow:hidden en body/html. Reproducido en 390 y 1440 px.",
+      "impact": "El teclado puede actuar sobre contenido del fondo y la página queda sin desplazamiento hasta recuperar su estado o recargar.",
+      "change": "Unificar el visor con useDialogFocus/Modal, nombrarlo y cerrar solo el diálogo superior, restaurando foco y bloqueo de scroll.",
+      "evidence": "visor-modales.json",
+      "source": "FrontEnd/src/pages/PhotosPage.jsx:747–839"
+    },
+    {
+      "id": "F10",
+      "severity": "P2",
+      "status": "reproducido",
+      "title": "La casilla Activo de los catálogos carece de nombre accesible",
+      "roles": "Administración",
+      "observed": "En Agregar grados y Agregar paralelos, a 390 y 1440 px, el checkbox no tiene label asociado, aria-label ni aria-labelledby.",
+      "impact": "El lector de pantalla no identifica la casilla y pulsar el texto visual no la activa.",
+      "change": "Asociar el control con su etiqueta y ampliar su área de interacción; verificar todos los checkbox de ResourceInput.",
+      "evidence": "contextos-modales.json",
+      "source": "FrontEnd/src/components/ResourceCrud.jsx:391–399; components/ui/FormControls.jsx:18–32"
+    }
+  ]
+}

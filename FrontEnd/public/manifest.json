@@ -1,7 +1,15 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "SGP",
+  "name": "SGP · Sistema de Gestión de Prácticas",
+  "lang": "es-EC",
+  "description": "Planificación, seguimiento y evaluación de prácticas preprofesionales · Universidad Nacional de Loja.",
   "icons": [
+    {
+      "src": "sgp-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
     {
       "src": "favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",
@@ -20,6 +28,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
+  "theme_color": "#12385b",
   "background_color": "#ffffff"
 }

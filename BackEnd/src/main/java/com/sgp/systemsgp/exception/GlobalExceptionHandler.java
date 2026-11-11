@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          GlobalExceptionHandler.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Define el tratamiento de errores de el módulo Global Exception Handler.
+ */
+
 package com.sgp.systemsgp.exception;
 
 import com.sgp.systemsgp.dto.error.ErrorResponse;
@@ -30,6 +42,12 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+        @ExceptionHandler(org.springframework.web.server.ResponseStatusException.class)
+        public org.springframework.http.ResponseEntity<ErrorResponse> handleStatus(org.springframework.web.server.ResponseStatusException ex) {
+                return org.springframework.http.ResponseEntity.status(ex.getStatusCode())
+                        .body(build(ex.getStatusCode().value(), "Solicitud no completada", ex.getReason()));
+        }
+
         /*
          * VALIDACIONES DTO
          */
@@ -45,6 +63,11 @@ public class GlobalExceptionHandler {
                                 .status(400)
 
                                 .error("Error de validación")
+
+                                .fieldErrors(ex.getBindingResult().getFieldErrors().stream().collect(Collectors.toMap(
+                                                org.springframework.validation.FieldError::getField,
+                                                error -> error.getDefaultMessage() == null ? "Revisa este dato" : error.getDefaultMessage(),
+                                                (first, duplicate) -> first, java.util.LinkedHashMap::new)))
 
                                 .message(ex.getBindingResult()
                                                 .getAllErrors()

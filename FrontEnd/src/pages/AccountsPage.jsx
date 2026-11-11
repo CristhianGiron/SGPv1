@@ -1,3 +1,18 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          AccountsPage.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Presenta la administración de cuentas, roles y estado de acceso al sistema.
+ */
+
+import { fetchAllPages } from '../utils/pagination';
+import { WorkflowCard } from '../components/ui/WorkflowCard';
+import { useInstitutionalContext } from '../contexts/InstitutionalContext';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Ban, CheckCircle2, Lock, RefreshCw, Unlock, UserPlus } from 'lucide-react';
 import { apiRequest, toQuery, unwrapPage } from '../api/client';
@@ -37,6 +52,7 @@ const INITIAL_FORM = {
 };
 
 export function AccountsPage() {
+  const defaults = useInstitutionalContext();
   const { token } = useAuth();
   const confirm = useConfirm();
   const [rows, setRows] = useState([]);
@@ -49,7 +65,8 @@ export function AccountsPage() {
     academicCycle: '',
     institution: '',
   });
-  const [activeView, setActiveView] = useState('list');
+  const [activeView, setActiveView] = useState('roles');
+  const [selectedAccountId, setSelectedAccountId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
@@ -59,8 +76,8 @@ export function AccountsPage() {
     setError('');
 
     try {
-      const payload = await apiRequest(
-        `/api/account/search${toQuery({ page: 0, size: 200 })}`,
+      const payload = await fetchAllPages(apiRequest,
+        `/api/account${toQuery({ page: 0, size: 200 })}`,
         { token }
       );
       setRows(unwrapPage(payload));
@@ -104,8 +121,8 @@ export function AccountsPage() {
 
   async function runAction(path, confirmation) {
     const accepted = await confirm(confirmation || {
-      title: 'Confirmar accion',
-      description: 'Esta accion modificara el acceso de la cuenta seleccionada.',
+      title: 'Confirmar acción',
+      description: 'Esta acción modificara el acceso de la cuenta seleccionada.',
       confirmLabel: 'Confirmar',
       tone: 'warning',
     });
@@ -176,7 +193,7 @@ export function AccountsPage() {
                   title: row.locked ? 'Desbloquear usuario' : 'Bloquear usuario',
                   description: row.locked
                     ? 'La cuenta podra volver a operar segun sus permisos.'
-                    : 'La cuenta quedara bloqueada hasta que sea desbloqueada.',
+                    : 'La cuenta quedará bloqueada hasta que sea desbloqueada.',
                   details: joinText(row.names, row.lastNames) || row.username,
                   confirmLabel: row.locked ? 'Desbloquear' : 'Bloquear',
                   tone: row.locked ? 'warning' : 'danger',
@@ -200,31 +217,53 @@ export function AccountsPage() {
     [filters, rows]
   );
 
+  const selectedAccount = rows.find(row => String(row.id) === String(selectedAccountId));
+  const renderAccountActions = columns.find(column => column.key === 'actions').render;
+  const accountColumns = columns.filter(column => column.key !== 'roles' || !filters.role || filteredRows.some(row => (row.roles || []).some(role => role !== filters.role))).map(column => column.key === 'actions' ? { ...column, header: 'Abrir cuenta', render: row => <SecondaryButton onClick={() => { setSelectedAccountId(row.id); setActiveView('detail'); }}>Abrir {row.username}</SecondaryButton> } : column);
+  if (activeView === 'roles') return <>
+    <PageHeader title="Gestionar usuarios" description="Selecciona el tipo de usuario y después abre una cuenta para consultar sus datos y gestionar su acceso." />
+    {error && <Alert tone="error">{error}</Alert>}
+    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">{ROLES.map(role => <WorkflowCard key={role} title={formatRole(role)} description={loading || error ? 'Consultar cuentas de este rol.' : `${rows.filter(row => (row.roles || []).includes(role)).length} cuenta(s) cargada(s)`} onClick={() => { setFilters(current => ({ ...current, role })); setActiveView('list'); }} />)}</div>
+    <SecondaryButton onClick={loadAccounts}>Actualizar usuarios</SecondaryButton>
+  </>;
+  if (activeView === 'detail') return <>
+    <SecondaryButton onClick={() => setActiveView('list')}>Volver a usuarios</SecondaryButton>
+    <PageHeader title={selectedAccount ? joinText(selectedAccount.names, selectedAccount.lastNames) || selectedAccount.username : 'Cuenta no disponible'} description="Consulta los datos de esta cuenta antes de cambiar su acceso al sistema." />
+    {error && <Alert tone="error">{error}</Alert>}{message && <Alert tone="success">{message}</Alert>}
+    {selectedAccount && <SectionCard title="Cuenta seleccionada"><dl className="grid gap-4 sm:grid-cols-2">{[['Usuario', selectedAccount.username], ['Roles', (selectedAccount.roles || []).map(formatRole).join(', ')], ['Correo institucional', selectedAccount.institutionalEmail], ['Institución', selectedAccount.institution], ['Carrera', selectedAccount.career], ['Ciclo', selectedAccount.academicCycle]].map(([label, value]) => <div key={label}><dt className="text-xs text-muted">{label}</dt><dd className="mt-1 break-words text-sm text-heading">{value || 'Sin asignar'}</dd></div>)}</dl><div className="mt-5 flex flex-wrap items-center gap-3"><StatusBadge status={selectedAccount.enabled} /><span className="text-sm text-body">{selectedAccount.locked ? 'Cuenta bloqueada' : 'Cuenta sin bloqueo'}</span>{renderAccountActions(selectedAccount)}</div></SectionCard>}
+  </>;
+
   return (
     <>
       <PageHeader
-        eyebrow="Administracion"
-        title="Usuarios"
-        description="Crea usuarios y controla si pueden ingresar al sistema."
-        action={
-          <SecondaryButton icon={RefreshCw} loading={loading} onClick={loadAccounts} type="button">
-            Actualizar
-          </SecondaryButton>
-        }
+        eyebrow="Administración"
+        title={filters.role ? formatRole(filters.role) : "Usuarios"}
+        description="Abre una cuenta para gestionar su acceso, o crea una cuenta del tipo seleccionado."
       />
 
+      <SecondaryButton onClick={() => setActiveView('roles')}>Volver a tipos de usuario</SecondaryButton>
       {error && <Alert tone="error">{error}</Alert>}
       {message && <Alert tone="success">{message}</Alert>}
 
       <>
           <FilterPanel
             activeCount={countActiveFilters(filters, ['query'])}
+            action={
+              <div className="flex flex-wrap items-center gap-2">
+                <SecondaryButton className="!w-auto" icon={RefreshCw} loading={loading} onClick={loadAccounts} type="button">
+                  Actualizar
+                </SecondaryButton>
+                <PrimaryButton className="!w-auto" icon={UserPlus} onClick={() => { setForm({ ...INITIAL_FORM, role: filters.role || INITIAL_FORM.role, facultyId: defaults.facultyId || '', careerId: defaults.careerId || '' }); setActiveView('create'); }} type="button">
+                  Crear usuario
+                </PrimaryButton>
+              </div>
+            }
             hasActiveFilters={countActiveFilters(filters) > 0}
             onClear={() => setFilters({ query: '', role: '', enabled: '', locked: '', academicCycle: '', institution: '' })}
             search={(
               <Field label="Buscar">
                 <Input
-                  placeholder="Usuario, nombre, cedula, correo o institucion"
+                  placeholder="Usuario, nombre, cédula, correo o institución"
                   type="search"
                   value={filters.query}
                   onChange={(event) => setFilters((current) => ({ ...current, query: event.target.value }))}
@@ -267,7 +306,7 @@ export function AccountsPage() {
                   <option value="false">Desbloqueados</option>
                 </Select>
               </Field>
-              <Field label="Ciclo academico">
+              <Field label="Ciclo académico">
                 <Select
                   value={filters.academicCycle}
                   onChange={(event) => setFilters((current) => ({ ...current, academicCycle: event.target.value }))}
@@ -280,7 +319,7 @@ export function AccountsPage() {
                   ))}
                 </Select>
               </Field>
-              <Field label="Institucion">
+              <Field label="Institución">
                 <Select
                   value={filters.institution}
                   onChange={(event) => setFilters((current) => ({ ...current, institution: event.target.value }))}
@@ -295,17 +334,10 @@ export function AccountsPage() {
               </Field>
           </FilterPanel>
 
-          <SectionCard
-            title="Usuarios"
-            action={
-              <PrimaryButton icon={UserPlus} onClick={() => setActiveView('create')} type="button">
-                Crear usuario
-              </PrimaryButton>
-            }
-          >
+          <SectionCard title="Usuarios">
             <DataTable
-              columns={columns}
-              emptyText="Aun no hay usuarios registrados."
+              columns={accountColumns}
+              emptyText={Object.values(filters).some(Boolean) ? "No se encontraron usuarios para esta búsqueda." : "Aún no hay usuarios registrados."}
               loading={loading}
               rows={filteredRows}
             />
@@ -313,7 +345,7 @@ export function AccountsPage() {
         </>
 
       <Modal
-        description="Registra la cuenta y vuelve al listado sin cambiar de pagina."
+        description="Registra la cuenta y vuelve al listado sin cambiar de página."
         maxWidth="max-w-5xl"
         onClose={() => setActiveView('list')}
         open={activeView === 'create'}
@@ -325,10 +357,10 @@ export function AccountsPage() {
             ['password', 'Contraseña inicial'],
             ['names', 'Nombres'],
             ['lastNames', 'Apellidos'],
-            ['cedula', 'Cedula'],
+            ['cedula', 'Cédula'],
             ['institutionalEmail', 'Correo institucional'],
-            ['phone', 'Telefono'],
-            ['address', 'Direccion'],
+            ['phone', 'Teléfono'],
+            ['address', 'Dirección'],
           ].map(([name, label]) => (
             <Field key={name} label={label}>
               {name === 'password' ? (
@@ -378,7 +410,7 @@ export function AccountsPage() {
                 />
               </Field>
               {accountRoleUsesAcademicCycle(form.role) && (
-                <Field label="Ciclo academico">
+                <Field label="Ciclo académico">
                   <EntitySelect
                     disabled={!form.careerId}
                     path={ENTITY_RELATIONS.academicCycleId.path}
@@ -409,7 +441,7 @@ export function AccountsPage() {
                   <EntitySelect
                     disabled={!form.institutionId}
                     path={ENTITY_RELATIONS.gradeId.path}
-                    placeholder={form.institutionId ? ENTITY_RELATIONS.gradeId.placeholder : 'Selecciona primero una institucion educativa'}
+                    placeholder={form.institutionId ? ENTITY_RELATIONS.gradeId.placeholder : 'Selecciona primero una institución educativa'}
                     value={form.gradeId}
                     rowFilter={(row) => hasMatchingId(row.institutionId, form.institutionId)}
                     onChange={(value) => setFormField('gradeId', value)}
@@ -508,7 +540,7 @@ function accountRoleUsesInstitution(role) {
 }
 
 function accountInstitutionLabel(role) {
-  return accountRoleUsesSchoolInstitution(role) ? 'Institucion educativa' : 'Universidad';
+  return accountRoleUsesSchoolInstitution(role) ? 'Institución educativa' : 'Universidad';
 }
 
 function accountInstitutionPlaceholder(role) {

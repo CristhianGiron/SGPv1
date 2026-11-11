@@ -1,3 +1,16 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          ActionMenu.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa el componente ActionMenu de la interfaz del SGP.
+ */
+
+import { resolveActionIntent } from '../../utils/actionIntent';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { MoreVertical } from 'lucide-react';
@@ -14,7 +27,8 @@ export function ActionMenu({ actions, label = 'Acciones' }) {
   const ref = useRef(null);
   const popoverRef = useRef(null);
   const rafRef = useRef(null);
-  const portalRoot = getPortalRoot();
+  // Keep menus above their dialog panel and inside its keyboard focus boundary.
+  const portalRoot = ref.current?.closest('[role="dialog"]') || getPortalRoot();
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -118,6 +132,7 @@ export function ActionMenu({ actions, label = 'Acciones' }) {
         className="grid h-10 w-10 place-items-center rounded-full border border-accent bg-transparent text-primary transition-colors hover:border-primary hover:bg-primary hover:text-inverse focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 dark:border-line dark:bg-surface dark:text-ink dark:hover:border-accent dark:hover:bg-hover-soft dark:hover:text-accent-strong"
         aria-haspopup="menu"
         aria-expanded={open}
+        title={label}
         onClick={() => setOpen((current) => !current)}
       >
         <MoreVertical aria-hidden="true" size={18} />
@@ -135,16 +150,22 @@ export function ActionMenu({ actions, label = 'Acciones' }) {
             style={popoverStyle}
           >
             {actions.map((action, index) => (
-              <button
+              <span
                 key={action.key ?? `${action.label}-${index}`}
-                type="button"
-                className="flex w-full items-center gap-3 bg-transparent px-4 py-3 text-left text-sm font-medium text-body transition-colors hover:bg-primary hover:text-inverse disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:bg-transparent disabled:hover:text-body dark:text-ink dark:hover:bg-hover-soft dark:hover:text-accent-strong dark:disabled:hover:text-ink"
-                disabled={action.disabled}
-                onClick={() => handleAction(action)}
+                title={action.title || action.disabledReason || ''}
               >
-                {action.icon && <action.icon aria-hidden="true" size={16} />}
-                <span>{action.label}</span>
-              </button>
+                <button
+                  type="button"
+                  data-intent={resolveActionIntent(action.label, action.intent || action.tone)}
+                  className="sgp-action-menu-item flex w-full items-center gap-3 bg-transparent px-4 py-3 text-left text-sm font-medium text-body transition-colors hover:bg-primary hover:text-inverse disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:bg-transparent disabled:hover:text-body dark:text-ink dark:hover:bg-hover-soft dark:hover:text-accent-strong dark:disabled:hover:text-ink"
+                  disabled={action.disabled}
+                  onClick={() => handleAction(action)}
+                  title={action.title || action.disabledReason || ''}
+                >
+                  {action.icon && <action.icon aria-hidden="true" size={16} />}
+                  <span>{action.label}</span>
+                </button>
+              </span>
             ))}
           </div>,
           portalRoot

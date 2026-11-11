@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          Enrollment.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Representa los datos persistentes de las inscripciones y prácticas asignadas.
+ */
+
 package com.sgp.systemsgp.model;
 
 import jakarta.persistence.*;
@@ -12,7 +24,7 @@ import com.sgp.systemsgp.enums.EnrollmentStatus;
 @Table(name = "enrollments", uniqueConstraints = {
         @UniqueConstraint(columnNames = {
                 "account_id",
-                "course_id"
+                "practice_id"
         })
 })
 @Getter
@@ -39,6 +51,10 @@ public class Enrollment {
     @ManyToOne
     @JoinColumn(name = "course_id")
     private Course course;
+
+    @ManyToOne
+    @JoinColumn(name = "practice_id")
+    private PracticeOffering practice;
 
     /*
      * Grupo asignado dentro del curso para gestionar tutor institucional.

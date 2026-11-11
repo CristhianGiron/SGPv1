@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          LocationsPage.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Presenta los catálogos de ubicación geográfica utilizados por el sistema.
+ */
+
 import { useCallback, useEffect, useState } from 'react';
 import { Eye, Plus, RefreshCw } from 'lucide-react';
 import { apiRequest } from '../api/client';
@@ -95,7 +107,7 @@ export function LocationsPage() {
       }));
       await refreshAfterCreate(kind, body);
       setActiveView('list');
-      setMessage('Ubicacion creada correctamente.');
+      setMessage('Ubicación creada correctamente.');
     } catch (requestError) {
       setError(requestError.message);
     } finally {
@@ -140,7 +152,7 @@ export function LocationsPage() {
 
   const simpleColumns = [
     { key: 'id', header: 'ID' },
-    { key: 'code', header: 'Codigo' },
+    { key: 'code', header: 'Código' },
     { key: 'name', header: 'Nombre' },
   ];
   const activeConfig = {
@@ -183,18 +195,18 @@ export function LocationsPage() {
       ancestorLabel: 'Provincia',
       ancestorPath: ENTITY_RELATIONS.provinceId.path,
       parentField: 'cantonId',
-      parentLabel: 'Canton',
+      parentLabel: 'Cantón',
       parentDisabled: (form) => !form.provinceId,
       parentPath: (form) =>
         form.provinceId ? `/api/locations/provinces/${form.provinceId}/cantons` : '',
       parentPlaceholder: (form) =>
-        form.provinceId ? 'Seleccionar canton' : 'Selecciona primero una provincia',
+        form.provinceId ? 'Seleccionar cantón' : 'Selecciona primero una provincia',
       listControl: (
-        <Field label="Canton para consultar">
+        <Field label="Cantón para consultar">
           <div className="flex gap-2">
             <EntitySelect
               rows={cantons}
-              placeholder="Seleccionar canton"
+              placeholder="Seleccionar cantón"
               value={cantonId}
               onChange={setCantonId}
             />
@@ -210,14 +222,10 @@ export function LocationsPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Catalogo territorial"
+        eyebrow="Catálogo territorial"
         title="Territorio"
         description="Administra provincias, cantones y parroquias para asociar instituciones correctamente."
-        action={
-          <SecondaryButton icon={RefreshCw} loading={loading} onClick={refreshActiveKind} type="button">
-            Actualizar
-          </SecondaryButton>
-        }
+
       />
 
       {error && <Alert tone="error">{error}</Alert>}
@@ -248,6 +256,7 @@ export function LocationsPage() {
         columns={simpleColumns}
         control={activeConfig.listControl}
         loading={loading}
+        onRefresh={refreshActiveKind}
         onCreate={() => setActiveView('form')}
         rows={activeConfig.rows}
         title={activeConfig.title}
@@ -272,21 +281,19 @@ function LocationListPanel({
   control,
   loading,
   onCreate,
+  onRefresh,
 }) {
   return (
     <SectionCard
       title={title}
-      action={
-        <PrimaryButton icon={Plus} onClick={onCreate} type="button">
-          Agregar
-        </PrimaryButton>
-      }
+
     >
       <div className="space-y-4">
         {control}
         <DataTable
+          toolbarActions={<><PrimaryButton icon={Plus} onClick={onCreate}>Agregar</PrimaryButton><SecondaryButton icon={RefreshCw} loading={loading} onClick={onRefresh}>Actualizar</SecondaryButton></>}
           columns={columns}
-          emptyText={`Aun no hay ${title.toLowerCase()} registrados.`}
+          emptyText={`Aún no hay ${title.toLowerCase()} registrados.`}
           enableFilters
           loading={loading}
           rows={rows}
@@ -325,7 +332,7 @@ function LocationFormPanel({ config, loading, open, onClose, onCreate, onField }
       title={`Agregar ${title.toLowerCase()}`}
     >
       <div className="grid gap-3 md:grid-cols-2">
-        <Field label="Codigo">
+        <Field label="Código">
           <Input value={form.code || ''} onChange={(event) => onField('code', event.target.value)} />
         </Field>
         <Field label="Nombre">
@@ -357,7 +364,7 @@ function LocationFormPanel({ config, loading, open, onClose, onCreate, onField }
       <div className="mt-4">
         <ActionBar>
           <PrimaryButton icon={Plus} loading={loading} onClick={onCreate} type="button">
-            Guardar ubicacion
+            Guardar ubicación
           </PrimaryButton>
         </ActionBar>
       </div>

@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          CourseService.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa la lógica de aplicación de los paralelos académicos.
+ */
+
 package com.sgp.systemsgp.service;
 
 import com.sgp.systemsgp.dto.course.CourseResponse;
@@ -45,6 +57,7 @@ public class CourseService {
     private final AccountRepository accountRepository;
     private final SubjectRepository subjectRepository;
     private final AcademicCycleRepository academicCycleRepository;
+    private final com.sgp.systemsgp.repository.CourseStudentMembershipRepository courseStudentMembershipRepository;
 
     @Transactional
     public CourseResponse createCourse(
@@ -339,7 +352,7 @@ public class CourseService {
     public void lock(String username, Long id) {
 
         Course course = getCourse(id);
-        validateCourseManagerCanManage(course, getAccount(username));
+        validateEnrollmentPeriodManager(course, getAccount(username));
         course.setLocked(true);
         courseRepository.save(course);
     }
@@ -348,7 +361,7 @@ public class CourseService {
     public void unlock(String username, Long id) {
 
         Course course = getCourse(id);
-        validateCourseManagerCanManage(course, getAccount(username));
+        validateEnrollmentPeriodManager(course, getAccount(username));
         course.setLocked(false);
         courseRepository.save(course);
     }
@@ -400,7 +413,7 @@ public class CourseService {
                                 locked,
                                 institutionalTutor,
                                 practiceTutor,
-                                getDirectorCareerId(account)),
+                                getDirectorCareerId(account)).and(CourseSpecification.visibleTo(account)),
                         pageable)
                 .map(this::mapToResponse);
     }
@@ -467,6 +480,15 @@ public class CourseService {
             throw new BadRequestException(
                     "La asignatura seleccionada está inactiva");
         }
+    }
+
+    private void validateEnrollmentPeriodManager(Course course, Account account) {
+        if (hasRole(account, RoleName.ROLE_ADMIN)) return;
+        if (hasRole(account, RoleName.ROLE_DIRECTOR_PRACTICAS)) {
+            validateDirectorCanManageCourse(course, account);
+            return;
+        }
+        validatePracticeTutorCanManage(course, account);
     }
 
     private void validateCourseManagerCanManage(
@@ -555,7 +577,14 @@ public class CourseService {
                     && directorCareer.getId().equals(courseCareer.getId());
         }
 
-        return true;
+        if (hasRole(account, RoleName.ROLE_TUTOR_PRACTICAS)) {
+            return course.getPracticeTutor() != null && course.getPracticeTutor().getId().equals(account.getId());
+        }
+        if (hasRole(account, RoleName.ROLE_ESTUDIANTE)) {
+            return course.isActive() && !course.isLocked()
+                    && courseStudentMembershipRepository.existsByCourse_IdAndStudent_IdAndActiveTrue(course.getId(),account.getId());
+        }
+        return false;
     }
 
     private Long getDirectorCareerId(Account account) {
@@ -848,6 +877,7 @@ public class CourseService {
         Subject subject = resolveCourseSubject(course);
 
         return CourseResponse.builder()
+                .coverImageUrl(EntityImageService.coverUrl(course))
                 .id(course.getId())
                 .name(course.getName())
                 .description(course.getDescription())

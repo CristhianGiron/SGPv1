@@ -1,27 +1,38 @@
-import { useEffect, useMemo, useState } from "react";
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          RegisterPublic.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Presenta el registro público de estudiantes y sus datos de acceso.
+ */
+
+import { ModuleTab, ModuleTabs } from '../components/ui/ModuleTabs';
+import { InstitutionalAuthLayout } from '../components/InstitutionalAuthLayout';
+import { useInstitutionalContext } from "../contexts/InstitutionalContext";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import {
+  ArrowLeft,
+  ArrowRight,
   CheckCircle2,
-  Fingerprint,
-  FileCheck2,
   GraduationCap,
   IdCard,
   ImagePlus,
   Landmark,
   LockKeyhole,
-  LogIn,
   Mail,
   MapPin,
   Phone,
-  Search,
-  ShieldCheck,
   User,
   UserPlus,
 } from "lucide-react";
 import { apiRequest, unwrapPage } from "../api/client";
 import { Alert } from "../components/ui/Alert";
-import { Input, PasswordInput } from "../components/ui/FormControls";
-import { PrimaryButton } from "../components/ui/ActionBar";
-import { ThemeToggle } from "../components/ui/ThemeToggle";
+import { Field, Input, PasswordInput } from "../components/ui/FormControls";
+import { PrimaryButton, SecondaryButton } from "../components/ui/ActionBar";
 import { useAuth } from "../auth/AuthContext";
 import { setHashRoute } from "../utils/routes";
 
@@ -34,27 +45,9 @@ const REGISTRATION_ROLES = [
       "Registra tu acceso y vincula tu cuenta a la facultad, carrera y ciclo académico correspondiente.",
     relation: "academicCycle",
   },
-  {
-    id: "ROLE_TUTOR_INSTITUCIONAL",
-    label: "Tutor institucional",
-    title: "Crear cuenta de tutor institucional",
-    description:
-      "Registra tu acceso como tutor institucional vinculado al paralelo de una escuela o colegio.",
-    relation: "gradeParallel",
-    institutionKind: "educational",
-    institutionLabel: "Institución educativa",
-    institutionPlaceholder: "Seleccionar escuela o colegio",
-    institutionSearchPlaceholder: "Buscar escuela o colegio",
-  },
-  {
-    id: "ROLE_TUTOR_PRACTICAS",
-    label: "Tutor de prácticas",
-    title: "Crear cuenta de tutor de prácticas",
-    description:
-      "Registra tu acceso como tutor académico vinculado al paralelo universitario que gestionas.",
-    relation: "course",
-  },
 ];
+
+const REGISTRATION_STEPS = ['Datos personales', 'Cuenta', 'Información académica'];
 
 const initialForm = {
   username: "",
@@ -65,6 +58,7 @@ const initialForm = {
   institutionalEmail: "",
   phone: "",
   address: "",
+  universityId: "",
   facultyId: "",
   careerId: "",
   academicCycleId: "",
@@ -75,9 +69,16 @@ const initialForm = {
 };
 
 export function RegisterStudentPage() {
-  const [activeRole, setActiveRole] = useState(REGISTRATION_ROLES[0].id);
+  const institutionDefaults = useInstitutionalContext();
+  const activeRole = REGISTRATION_ROLES[0].id;
   const [form, setForm] = useState(initialForm);
   const [file, setFile] = useState(null);
+  const [step, setStep] = useState(0);
+  const [lastVisitedStep, setLastVisitedStep] = useState(0);
+  const formRef = useRef(null);
+  const focusFrame = useRef(null);
+  const wizardId = useId();
+  useEffect(() => () => cancelAnimationFrame(focusFrame.current), []);
   const [academicCycles, setAcademicCycles] = useState([]);
   const [courses, setCourses] = useState([]);
   const [educationalInstitutions, setEducationalInstitutions] = useState([]);
@@ -98,8 +99,8 @@ export function RegisterStudentPage() {
   );
 
   const facultyRows = useMemo(
-    () => buildFacultyRowsFromCycles(academicCycles),
-    [academicCycles],
+    () => buildFacultyRowsFromCycles(academicCycles.filter((cycle) => !form.universityId || hasMatchingId(cycle.institutionId, form.universityId))),
+    [academicCycles, form.universityId],
   );
 
   const careerRows = useMemo(
@@ -155,23 +156,8 @@ export function RegisterStudentPage() {
       setCatalogError("");
 
       try {
-        const [
-          cyclePayload,
-          coursePayload,
-          schoolPayload,
-          collegePayload,
-          gradePayload,
-          gradeParallelPayload,
-        ] =
-          await Promise.all([
-            apiRequest("/api/public/academic-cycles"),
-            apiRequest("/api/public/courses"),
-            apiRequest("/api/public/institutions?type=ESCUELA&size=100"),
-            apiRequest("/api/public/institutions?type=COLEGIO&size=100"),
-            apiRequest("/api/public/grades"),
-            apiRequest("/api/public/grade-parallels"),
-          ]);
-
+        const cyclePayload = await apiRequest("/api/public/academic-cycles");
+        const coursePayload = [], schoolPayload = [], collegePayload = [], gradePayload = [], gradeParallelPayload = [];
         if (active) {
           setAcademicCycles(
             Array.isArray(cyclePayload)
@@ -213,6 +199,15 @@ export function RegisterStudentPage() {
     };
   }, []);
 
+  useEffect(() => {
+    setForm((current) => {
+      if (current.universityId || current.facultyId || current.careerId || current.academicCycleId) return current;
+      const ownCycles = academicCycles.filter((cycle) => hasMatchingId(cycle.careerId, institutionDefaults.careerId));
+      if (!ownCycles.length) return current;
+      return { ...current, universityId: String(institutionDefaults.universityId || ownCycles[0].institutionId || ''), facultyId: String(ownCycles[0].facultyId || ''), careerId: String(ownCycles[0].careerId || '') };
+    });
+  }, [institutionDefaults, academicCycles]);
+
   function handleChange(event) {
     const { name, value } = event.target;
 
@@ -222,27 +217,43 @@ export function RegisterStudentPage() {
     }));
   }
 
-  function changeRole(roleId) {
-    if (roleId === activeRole) return;
+  function showStep(nextStep, invalidControl, focusPanel = true) {
+    setStep(nextStep);
+    setLastVisitedStep(current => Math.max(current, nextStep));
+    cancelAnimationFrame(focusFrame.current);
+    focusFrame.current = requestAnimationFrame(() => {
+      if (invalidControl?.isConnected) invalidControl.reportValidity();
+      else if (focusPanel) formRef.current?.querySelector(`[data-registration-step="${nextStep}"]`)?.focus();
+    });
+  }
 
-    setActiveRole(roleId);
-    setError("");
-    setSuccess("");
+  function validateSteps(through) {
+    for (let index = 0; index <= through; index += 1) {
+      const panel = formRef.current?.querySelector(`[data-registration-step="${index}"]`);
+      const invalid = [...(panel?.querySelectorAll('input,select,textarea') || [])]
+        .find(control => !control.disabled && !control.checkValidity());
+      if (invalid) {
+        showStep(index, invalid);
+        return false;
+      }
+    }
+    return true;
+  }
 
-    setForm((current) => ({
-      ...current,
-      facultyId: "",
-      careerId: "",
-      academicCycleId: "",
-      courseId: "",
-      institutionId: "",
-      gradeId: "",
-      gradeParallelId: "",
-    }));
+  function selectStep(nextStep) {
+    if (loading || nextStep === step) return;
+    if (nextStep > step && !validateSteps(nextStep - 1)) return;
+    showStep(nextStep, null, false);
   }
 
   async function handleSubmit(event) {
     event.preventDefault();
+    if (loading || !validateSteps(step)) return;
+    if (step < REGISTRATION_STEPS.length - 1) {
+      showStep(step + 1);
+      return;
+    }
+    if (catalogLoading || catalogError) return;
     setLoading(true);
     setError("");
     setSuccess("");
@@ -271,230 +282,34 @@ export function RegisterStudentPage() {
   }
 
   return (
-    <main className="register-page relative min-h-dvh overflow-x-hidden bg-page text-heading dark:bg-page dark:text-heading">
-      <style>{`
-        @media (min-width: 1024px) {
-          .register-viewport {
-            min-height: 100dvh;
-            height: 100dvh;
-          }
-
-          .register-layout {
-            height: min(760px, calc(100dvh - 3rem));
-          }
-
-          .register-side-card,
-          .register-form-card {
-            height: 100%;
-          }
-
-          .register-form-scroll {
-            max-height: 100%;
-            overflow-y: auto;
-            scrollbar-width: thin;
-            scrollbar-color: color-mix(in srgb, var(--color-primary) 35%, transparent) transparent;
-          }
-
-          .register-form-scroll::-webkit-scrollbar {
-            width: 8px;
-          }
-
-          .register-form-scroll::-webkit-scrollbar-thumb {
-            background: color-mix(in srgb, var(--color-primary) 28%, transparent);
-            border-radius: 999px;
-          }
-
-          .register-form-scroll::-webkit-scrollbar-track {
-            background: transparent;
-          }
-        }
-
-        @media (min-width: 1024px) and (max-height: 780px) {
-          .register-layout {
-            height: calc(100dvh - 2.25rem);
-          }
-
-          .register-side-card,
-          .register-form-card {
-            padding: 1.35rem !important;
-          }
-
-          .register-hero-title {
-            font-size: clamp(1.65rem, 2.4vw, 2.25rem) !important;
-          }
-
-          .register-hero-text,
-          .register-credential-text {
-            font-size: 0.78rem !important;
-            line-height: 1.55 !important;
-          }
-
-          .register-credential {
-            padding: 1rem !important;
-          }
-
-          .register-form-header {
-            padding-bottom: 1rem !important;
-            margin-bottom: 1rem !important;
-          }
-
-          .register-section {
-            padding: 0.85rem !important;
-            margin-bottom: 0.85rem !important;
-          }
-        }
-      `}</style>
-
-      <div className="sgp-auth-color-bar absolute inset-x-0 top-0 z-20 h-1.5" />
-
-      <div className="fixed right-5 top-5 z-50 md:right-6 md:top-6">
-        <ThemeToggle />
-      </div>
-
-      <div
-        aria-hidden="true"
-        className="absolute left-[-10rem] top-[-10rem] h-[30rem] w-[30rem] rounded-full bg-primary/18 blur-3xl dark:bg-primary-soft"
-      />
-
-      <div
-        aria-hidden="true"
-        className="absolute bottom-[-12rem] right-[-12rem] h-[34rem] w-[34rem] rounded-full bg-accent/18 blur-3xl dark:bg-accent-soft"
-      />
-
-      <div aria-hidden="true" className="sgp-dot-grid absolute inset-0 opacity-[0.22] dark:opacity-[0.1]" />
-
-      <div className="register-viewport relative mx-auto flex w-full max-w-7xl items-center px-5 py-6 lg:px-8">
-        <section className="register-layout grid w-full items-stretch gap-8 lg:grid-cols-[0.9fr_1.35fr]">
-          <aside className="register-side-card relative hidden overflow-hidden rounded-[2rem] border border-inverse/70 bg-panel/82 p-8 shadow-soft backdrop-blur-xl dark:border-line dark:bg-surface/75 lg:grid lg:grid-rows-[auto_minmax(0,1fr)_auto]">
-            <div
-              aria-hidden="true"
-              className="absolute right-0 top-0 h-40 w-40 rounded-bl-[6rem] bg-accent-soft dark:bg-accent-soft"
-            />
-
-            <div
-              aria-hidden="true"
-              className="absolute bottom-[-5rem] right-[-4rem] h-64 w-64 rounded-full bg-accent/10 blur-3xl"
-            />
-
-            <div aria-hidden="true" className="sgp-dot-grid absolute inset-0 opacity-[0.2] dark:opacity-[0.08]" />
-
-            <div className="relative z-10">
-              <div className="flex items-center gap-4">
-                <div className="grid h-16 w-16 place-items-center rounded-2xl bg-primary text-lg font-semibold text-inverse shadow-card">
-                  UNL
-                </div>
-
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-body dark:text-ink">
-                    Universidad Nacional de Loja
-                  </p>
-                  <p className="mt-1 text-lg font-semibold text-heading dark:text-heading">
-                    Sistema de Gestión de Prácticas
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="relative z-10 flex min-h-0 flex-col justify-center py-8">
-              <p className="inline-flex w-fit rounded-full border border-accent/25 bg-accent-soft px-4 py-2 text-xs font-semibold uppercase tracking-wide text-accent-strong dark:border-accent/30 dark:bg-accent-soft dark:text-accent-strong">
-                Registro público
-              </p>
-
-              <h1 className="register-hero-title mt-6 max-w-[13ch] text-[clamp(2rem,3vw,3rem)] font-semibold leading-[1.04] tracking-tight text-primary dark:text-heading">
-                Crea tu acceso institucional.
-              </h1>
-
-              <p className="register-hero-text mt-4 max-w-md text-[15px] leading-7 text-body dark:text-ink">
-                Registra tu perfil, vincula tu rol académico y accede al sistema
-                de seguimiento de prácticas preprofesionales.
-              </p>
-            </div>
-
-            <RegisterCredential />
-          </aside>
-
-          <form
-            onSubmit={handleSubmit}
-            className="register-form-card relative flex min-h-[calc(100dvh-3rem)] overflow-hidden rounded-[2rem] border border-inverse/80 bg-panel/92 p-5 shadow-soft backdrop-blur-xl dark:border-line dark:bg-surface/90 sm:p-6 lg:min-h-0 lg:p-8"
-          >
-            <div
-              aria-hidden="true"
-              className="absolute right-0 top-0 h-32 w-32 rounded-bl-[5rem] bg-accent-soft dark:bg-accent-soft"
-            />
-
-            <div
-              aria-hidden="true"
-              className="absolute bottom-0 left-0 h-24 w-24 rounded-tr-[4rem] bg-primary/5 dark:bg-primary-soft"
-            />
-
-            <div className="register-form-scroll relative z-10 w-full pr-1">
-              <header className="register-form-header mb-5 border-b border-line pb-5 dark:border-line">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-3">
-                      <div className="grid h-12 w-12 place-items-center rounded-2xl bg-card-d text-inverse shadow-card">
-                        <UserPlus size={22} />
-                      </div>
-
-                      <p className="inline-flex rounded-full border border-accent/25 bg-accent-soft px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-accent dark:border-accent/30 dark:bg-accent-soft dark:text-accent-strong">
-                        Registro autorizado
-                      </p>
-                    </div>
-
-                    <div key={activeRole} className="animate-role-slide">
-                      <h2 className="mt-5 text-[2rem] font-semibold tracking-tight text-heading dark:text-heading">
-                        {roleConfig.title}
-                      </h2>
-
-                      <p className="mt-2 max-w-2xl text-sm leading-6 text-body dark:text-ink">
-                        {roleConfig.description}
-                      </p>
-
-                    </div>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setHashRoute("");
-                    }}
-                    className="hidden shrink-0 items-center gap-2 rounded-full border border-line bg-panel px-4 py-2 text-sm font-medium text-body transition hover:border-primary/30 hover:text-primary dark:border-line dark:bg-page dark:text-ink dark:hover:text-info-strong sm:inline-flex"
-                  >
-                    <LogIn size={16} />
-                    Iniciar sesión
-                  </button>
-                </div>
-
-                <div className="mt-5 grid gap-2 md:grid-cols-3" role="tablist">
-                  {REGISTRATION_ROLES.map((role) => (
-                    <button
-                      aria-selected={activeRole === role.id}
-                      className={[
-                        "rounded-2xl border px-3 py-2.5 text-sm font-semibold transition",
-                        activeRole === role.id
-                          ? "border-accent bg-accent text-inverse shadow-lg shadow-accent/20"
-                          : "border-line bg-panel/80 text-body hover:border-primary/30 hover:text-primary dark:border-line dark:bg-page dark:text-ink dark:hover:border-accent dark:hover:text-heading",
-                      ].join(" ")}
-                      key={role.id}
-                      onClick={() => changeRole(role.id)}
-                      role="tab"
-                      type="button"
-                    >
-                      {role.label}
-                    </button>
-                  ))}
-                </div>
-              </header>
-
-              {catalogError && (
-                <div className="mb-4">
-                  <Alert tone="error">{catalogError}</Alert>
-                </div>
-              )}
-
-              <CompactSection title="Datos personales">
+    <InstitutionalAuthLayout className="institutional-register" titleId="register-title"
+      skipTarget={`${wizardId}-panel-${step}`} skipLabel="Ir al formulario de registro"
+      serviceName={<>Registro de<br />estudiantes</>}
+      helpTitle="Registro de cuenta"
+      helpDescription="Crea tu cuenta de estudiante y selecciona tu universidad, facultad, carrera y ciclo académico. El personal institucional y los tutores reciben sus cuentas desde administración."
+      supportText="Si necesitas ayuda para registrarte, contacta con la administración del sistema.">
+      <section className="login-card" aria-labelledby="register-title">
+        <div className="login-card-heading">
+          <h1 id="register-title">{roleConfig.title}</h1>
+          <p className="register-description">{roleConfig.description}</p>
+        </div>
+        <form ref={formRef} noValidate onSubmit={handleSubmit} aria-label="Registro de estudiante" aria-busy={loading || undefined}>
+          <div className="register-progress">
+            <p className="register-step-count" role="status">Paso {step + 1} de {REGISTRATION_STEPS.length}</p>
+            <ModuleTabs className="register-step-tabs" aria-label="Pasos del registro">
+              {REGISTRATION_STEPS.map((label, index) => <ModuleTab key={label} active={step === index}
+                id={`${wizardId}-tab-${index}`} aria-controls={`${wizardId}-panel-${index}`}
+                disabled={loading || index > lastVisitedStep} onClick={() => selectStep(index)}>
+                <span className="register-step-number" aria-hidden="true">{index + 1}</span>{label}
+              </ModuleTab>)}
+            </ModuleTabs>
+          </div>
+          <fieldset className="register-fields" disabled={loading}>
+            {catalogError && <Alert tone="error">{catalogError}</Alert>}
+              <CompactSection title="Datos personales" panelIndex={0} activeStep={step} wizardId={wizardId}>
                 <IconField icon={User} label="Nombres">
                   <StyledInput
+                    id="register-names"
                     name="names"
                     value={form.names}
                     onChange={handleChange}
@@ -544,7 +359,7 @@ export function RegisterStudentPage() {
                 </div>
               </CompactSection>
 
-              <CompactSection title="Cuenta académica">
+              <CompactSection title="Cuenta académica" panelIndex={1} activeStep={step} wizardId={wizardId}>
                 <IconField icon={Mail} label="Correo institucional">
                   <StyledInput
                     name="institutionalEmail"
@@ -577,13 +392,28 @@ export function RegisterStudentPage() {
                   />
                 </IconField>
 
+              </CompactSection>
+              <CompactSection title="Información académica" panelIndex={2} activeStep={step} wizardId={wizardId}>
                 <SlideRoleContent activeRole={activeRole}>
                   {(roleConfig.relation === "academicCycle" ||
                     roleConfig.relation === "course") && (
                     <>
                       <SearchableSelect
+                        icon={Landmark}
+                        label="Universidad"
+                        loading={catalogLoading}
+                        rows={dedupeById(academicCycles.filter((cycle) => cycle.institutionId).map((cycle) => ({ id: cycle.institutionId, name: cycle.institution })))}
+                        value={form.universityId}
+                        onChange={(value) => setForm((current) => ({ ...current, universityId: value, facultyId: '', careerId: '', academicCycleId: '' }))}
+                        placeholder="Seleccionar universidad"
+                        searchPlaceholder="Buscar universidad"
+                        getOptionLabel={(row) => row.name}
+                        required
+                      />
+                      <SearchableSelect
                         icon={GraduationCap}
                         label="Facultad"
+                        disabled={!form.universityId}
                         loading={catalogLoading}
                         rows={facultyRows}
                         value={form.facultyId}
@@ -755,93 +585,28 @@ export function RegisterStudentPage() {
                     </>
                   )}
                 </SlideRoleContent>
+                <div className="md:col-span-2"><ProfileImagePicker file={file} onChange={setFile} /></div>
               </CompactSection>
 
-              <div className="mb-4 grid gap-3 grid-cols-1 lg:grid-cols-[1fr_210px] lg:items-end">
-                <ProfileImagePicker file={file} onChange={setFile} />
 
-                <PrimaryButton
-                  className="h-12 w-full rounded-xl bg-primary font-medium text-primary-strong shadow-lg shadow-primary/20 transition hover:-translate-y-0.5 hover:bg-primary-strong dark:bg-accent dark:shadow-soft dark:hover:bg-accent-strong"
-                  icon={UserPlus}
-                  loading={loading}
-                  type="submit"
-                >
-                  {loading ? "Registrando..." : "Crear cuenta"}
-                </PrimaryButton>
-              </div>
-
-              {error && (
-                <div className="mt-3">
-                  <Alert tone="error">{error}</Alert>
-                </div>
-              )}
-
-              {success && (
-                <div className="mt-3 flex items-center gap-2 rounded-xl border border-success bg-success-soft px-4 py-3 text-sm font-semibold text-success-strong dark:border-success/40 dark:bg-success-soft dark:text-success-strong">
-                  <CheckCircle2 size={18} />
-                  {success}
-                </div>
-              )}
-
-              <p className="mt-4 text-center text-xs text-body dark:text-ink">
-                ¿Ya tienes una cuenta?{" "}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setHashRoute("");
-                  }}
-                  className="font-medium text-primary transition hover:text-accent dark:text-body dark:hover:text-accent-strong"
-                >
-                  Iniciar sesión
-                </button>
-              </p>
+            {error && <Alert tone="error">{error}</Alert>}
+            {success && <p className="register-success" role="status"><CheckCircle2 aria-hidden="true" size={18} />{success}</p>}
+            <div className="register-navigation">
+              {step > 0 && <SecondaryButton className="register-previous" icon={ArrowLeft} onClick={() => showStep(step - 1)} type="button">Anterior</SecondaryButton>}
+              <PrimaryButton className="login-submit" icon={step === 2 ? UserPlus : ArrowRight} loading={loading} type="submit"
+                disabled={step === 2 && (catalogLoading || Boolean(catalogError))}
+                style={{'--action-ink':'var(--login-button)','--action-color':'var(--login-button)','--action-on-solid':'#fff'}}>
+                {loading ? "Registrando..." : step === 2 ? "Crear cuenta" : "Siguiente"}
+              </PrimaryButton>
             </div>
-          </form>
-        </section>
-      </div>
-    </main>
-  );
-}
-
-function RegisterCredential() {
-  return (
-    <div className="relative z-10">
-      <div className="register-credential relative rotate-[-1deg] overflow-hidden rounded-[2rem] border border-line bg-primary p-5 text-inverse shadow-soft">
-        <div aria-hidden="true" className="absolute inset-0 bg-inverse/5" />
-
-        <div
-          aria-hidden="true"
-          className="absolute -right-16 -top-16 h-52 w-52 rounded-full bg-accent/45 blur-2xl"
-        />
-
-        <div className="relative flex items-start justify-between gap-5">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-inverse/55">
-              Credencial de registro
-            </p>
-
-            <h2 className="mt-3 max-w-xs text-[1.5rem] font-semibold leading-tight">
-              Perfil académico institucional
-            </h2>
-
-            <p className="register-credential-text mt-2 max-w-xs text-[13px] leading-6 text-inverse/65">
-              Tus datos permiten identificar tu rol dentro del proceso de
-              prácticas.
-            </p>
-          </div>
-
-          <div className="grid h-14 w-14 shrink-0 place-items-center rounded-3xl border border-inverse/20 bg-panel/10 backdrop-blur">
-            <Fingerprint size={29} className="text-inverse/85" />
-          </div>
+          </fieldset>
+        </form>
+        <div className="login-registration">
+          <p>¿Ya tienes una cuenta?</p>
+          <button type="button" disabled={loading} onClick={() => setHashRoute("")}>Iniciar sesión</button>
         </div>
-
-        <div className="relative mt-5 grid grid-cols-3 gap-3">
-          <AccessPill icon={GraduationCap} label="Rol" />
-          <AccessPill icon={FileCheck2} label="Perfil" />
-          <AccessPill icon={ShieldCheck} label="Acceso" />
-        </div>
-      </div>
-    </div>
+      </section>
+    </InstitutionalAuthLayout>
   );
 }
 
@@ -865,7 +630,7 @@ function ProfileImagePicker({ file, onChange }) {
         Foto de perfil opcional
       </p>
 
-      <label className="group flex min-h-20 cursor-pointer items-center gap-4 rounded-2xl border border-dashed border-line bg-field-hover p-3 transition hover:border-accent hover:bg-accent-soft dark:border-line dark:bg-surface-soft/70 dark:hover:border-accent dark:hover:bg-accent-soft">
+      <label className="register-profile-picker group flex min-h-20 cursor-pointer items-center gap-4 rounded-2xl border border-dashed border-line bg-field-hover p-3 transition focus-within:ring-2 focus-within:ring-focus-soft hover:border-accent hover:bg-accent-soft dark:border-line dark:bg-surface-soft/70 dark:hover:border-accent dark:hover:bg-accent-soft">
         <span className="relative grid h-14 w-14 shrink-0 place-items-center overflow-hidden rounded-2xl border border-line bg-panel text-accent-strong shadow-sm dark:border-line dark:bg-page dark:text-accent-strong">
           {previewUrl ? (
             <img
@@ -893,24 +658,11 @@ function ProfileImagePicker({ file, onChange }) {
         <input
           accept="image/jpeg,image/png,image/webp"
           type="file"
-          className="hidden"
+          aria-label="Foto de perfil"
+          className="sr-only"
           onChange={(event) => onChange(event.target.files?.[0] || null)}
         />
       </label>
-    </div>
-  );
-}
-
-function AccessPill({ icon: Icon, label }) {
-  return (
-    <div className="flex min-w-0 items-center gap-2 rounded-2xl border border-inverse/15 bg-panel/10 px-3 py-3 backdrop-blur">
-      <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-panel text-primary">
-        <Icon size={16} />
-      </span>
-
-      <span className="truncate text-[10px] font-semibold uppercase tracking-wide text-inverse/75">
-        {label}
-      </span>
     </div>
   );
 }
@@ -1023,46 +775,32 @@ function dedupeById(rows) {
 
 function SlideRoleContent({ activeRole, children }) {
   return (
-    <div className="relative overflow-hidden md:col-span-2">
-      <div key={activeRole} className="animate-role-slide">
+    <div className="min-w-0 md:col-span-2">
+      <div key={activeRole} className="grid gap-4 md:grid-cols-2">
         {children}
       </div>
     </div>
   );
 }
 
-function CompactSection({ title, children }) {
+function CompactSection({ title, children, panelIndex, activeStep, wizardId }) {
   return (
-    <section className="register-section mb-4 rounded-2xl border border-line bg-field-hover/80 p-3.5 dark:border-line dark:bg-surface-soft/70">
-      <h3 className="mb-3 px-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-body dark:text-ink">
+    <section className="register-section" role="tabpanel" tabIndex={-1} hidden={activeStep !== panelIndex}
+      id={`${wizardId}-panel-${panelIndex}`} aria-labelledby={`${wizardId}-tab-${panelIndex}`} data-registration-step={panelIndex}>
+      <h2 className="register-section-title">
         {title}
-      </h3>
+      </h2>
 
       <div className="grid gap-3 md:grid-cols-2">{children}</div>
     </section>
   );
 }
 
-function IconField({ icon: Icon, label, children }) {
-  return (
-    <div>
-      <p className="mb-2 text-xs font-medium text-body dark:text-ink">
-        {label}
-      </p>
-
-      <div className="relative">
-        <span className="pointer-events-none absolute left-3 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-lg bg-panel text-body shadow-sm dark:bg-page dark:text-ink">
-          <Icon size={14} />
-        </span>
-
-        {children}
-      </div>
-    </div>
-  );
+function IconField({ label, children }) {
+  return <Field label={label}>{children}</Field>;
 }
 
 function SearchableSelect({
-  icon: Icon,
   label,
   loading,
   rows,
@@ -1075,6 +813,7 @@ function SearchableSelect({
   disabled = false,
 }) {
   const [query, setQuery] = useState("");
+  const selectId = useId();
 
   const options = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -1090,33 +829,25 @@ function SearchableSelect({
 
   return (
     <div>
-      <p className="mb-2 text-xs font-medium text-body dark:text-ink">
-        {label}
-      </p>
+      <label htmlFor={selectId} className="mb-2 block text-xs font-medium text-body dark:text-ink">{label}</label>
 
       <div className="space-y-2">
-        <div className="relative">
-          <span className="pointer-events-none absolute left-3 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-lg bg-panel text-body shadow-sm dark:bg-page dark:text-ink">
-            <Search size={14} />
-          </span>
-
+        {(rows.length > 6 || query) && <div className="relative">
           <StyledInput
+            aria-label={`Buscar ${label.toLowerCase()}`}
             disabled={loading || disabled}
             onChange={(event) => setQuery(event.target.value)}
             placeholder={loading ? "Cargando registros..." : searchPlaceholder}
             type="search"
             value={query}
           />
-        </div>
+        </div>}
 
         <div className="relative">
-          <span className="pointer-events-none absolute left-3 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-lg bg-panel text-body shadow-sm dark:bg-page dark:text-ink">
-            <Icon size={14} />
-          </span>
-
           <select
+            id={selectId}
             className={[
-              "h-11 w-full rounded-xl border border-line bg-panel py-2.5 pl-11 pr-4 text-sm",
+              "h-11 w-full rounded-xl border border-line bg-panel py-2.5 px-3 text-sm",
               "text-heading shadow-sm outline-none transition",
               "focus:border-focus focus:bg-panel focus:ring-2 focus:ring-focus-soft",
               "dark:border-line dark:bg-page dark:text-heading dark:focus:border-accent dark:focus:bg-page dark:focus:ring-focus-soft",
@@ -1153,33 +884,12 @@ function SearchableSelect({
 }
 
 function StyledInput(props) {
-  return (
-    <Input
-      {...props}
-      className={[
-        "h-11 w-full rounded-xl border border-line bg-panel py-2.5 pl-11 pr-4 text-sm",
-        "text-heading placeholder:text-muted",
-        "shadow-sm outline-none transition",
-        "focus:border-focus focus:bg-panel focus:ring-2 focus:ring-focus-soft",
-        "dark:border-line dark:bg-page dark:text-heading dark:placeholder:text-muted dark:focus:border-accent dark:focus:bg-page dark:focus:ring-focus-soft",
-        props.className || "",
-      ].join(" ")}
-    />
-  );
+  return <Input {...props} />;
 }
 
 function StyledPasswordInput(props) {
-  return (
-    <PasswordInput
-      {...props}
-      className={[
-        "h-11 w-full rounded-xl border border-line bg-panel py-2.5 pl-11 pr-12 text-sm",
-        "text-heading placeholder:text-muted",
-        "shadow-sm outline-none transition",
-        "focus:border-focus focus:bg-panel focus:ring-2 focus:ring-focus-soft",
-        "dark:border-line dark:bg-page dark:text-heading dark:placeholder:text-muted dark:focus:border-accent dark:focus:bg-page dark:focus:ring-focus-soft",
-        props.className || "",
-      ].join(" ")}
-    />
-  );
+  return <PasswordInput {...props} />;
 }
+
+StyledInput.fieldControl = true;
+StyledPasswordInput.fieldControl = true;

@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          CreateSubjectRequest.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Define los datos de entrada para las asignaturas.
+ */
+
 package com.sgp.systemsgp.dto.subject;
 
 import jakarta.validation.constraints.*;
@@ -51,6 +63,8 @@ public class CreateSubjectRequest {
 
     @AssertTrue(message = "Debe seleccionar un paralelo universitario o un paralelo institucional, pero no ambos")
     public boolean isAcademicReferenceValid() {
-        return (courseId == null) != (gradeParallelId == null || gradeId != null);
+        boolean hasUniversityReference = academicCycleId != null || courseId != null;
+        boolean hasSchoolReference = gradeId != null || gradeParallelId != null;
+        return hasUniversityReference ^ hasSchoolReference;
     }
 }

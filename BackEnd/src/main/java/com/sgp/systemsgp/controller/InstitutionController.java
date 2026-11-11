@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          InstitutionController.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Expone las operaciones HTTP relacionadas con las instituciones.
+ */
+
 package com.sgp.systemsgp.controller;
 
 import com.sgp.systemsgp.dto.institution.*;
@@ -22,15 +34,16 @@ import org.springframework.web.bind.annotation.*;
 public class InstitutionController {
 
     private final InstitutionService institutionService;
+    private final com.sgp.systemsgp.service.AcademicCatalogAccess academicAccess;
 
     /*
      * CREAR INSTITUCIÓN
      */
-    @PostMapping
-
-    @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR_PRACTICAS')")
+    @PostMapping(consumes = "application/json")
+    @PreAuthorize("@institutionCatalogAccess.canCreate(authentication.name, #request.type)")
 
     public InstitutionResponse create(
+            Authentication authentication,
 
             @Valid
             @RequestBody
@@ -44,10 +57,10 @@ public class InstitutionController {
      * OBTENER POR ID
      */
     @GetMapping("/{id}")
-
-    @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR_PRACTICAS')")
+    @PreAuthorize("@institutionCatalogAccess.canRead(authentication.name, #id)")
 
     public InstitutionResponse getById(
+            Authentication authentication,
             @PathVariable Long id
     ) {
 
@@ -68,7 +81,7 @@ public class InstitutionController {
 
         return institutionService.getAll(
                 isAdmin(authentication),
-                pageable);
+                pageable, visibleUniversity(authentication));
     }
 
     /*
@@ -124,8 +137,13 @@ public class InstitutionController {
 
                 acceptsInterns,
 
-                pageable
+                pageable, visibleUniversity(authentication)
         );
+    }
+
+    private Long visibleUniversity(Authentication authentication) {
+        var scope = academicAccess.scope(authentication.getName());
+        return scope.admin() ? null : scope.universityId() != null ? scope.universityId() : -1L;
     }
 
     private boolean isAdmin(Authentication authentication) {
@@ -138,11 +156,11 @@ public class InstitutionController {
     /*
      * ACTUALIZAR
      */
-    @PatchMapping("/{id}")
-
-    @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR_PRACTICAS')")
+    @PatchMapping(value = "/{id}", consumes = "application/json")
+    @PreAuthorize("@institutionCatalogAccess.canManage(authentication.name, #id, #request.type)")
 
     public InstitutionResponse update(
+            Authentication authentication,
 
             @PathVariable Long id,
 
@@ -159,9 +177,10 @@ public class InstitutionController {
      */
     @PatchMapping("/{id}/disable")
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR_PRACTICAS')")
+    @PreAuthorize("@institutionCatalogAccess.canManage(authentication.name, #id)")
 
     public void disable(
+            Authentication authentication,
             @PathVariable Long id
     ) {
 
@@ -173,9 +192,10 @@ public class InstitutionController {
      */
     @PatchMapping("/{id}/enable")
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR_PRACTICAS')")
+    @PreAuthorize("@institutionCatalogAccess.canManage(authentication.name, #id)")
 
     public void enable(
+            Authentication authentication,
             @PathVariable Long id
     ) {
 
@@ -187,9 +207,10 @@ public class InstitutionController {
      */
     @DeleteMapping("/{id}")
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR_PRACTICAS')")
+    @PreAuthorize("@institutionCatalogAccess.canManage(authentication.name, #id)")
 
     public void delete(
+            Authentication authentication,
             @PathVariable Long id
     ) {
 
@@ -201,9 +222,10 @@ public class InstitutionController {
      */
     @PatchMapping("/{id}/restore")
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR_PRACTICAS')")
+    @PreAuthorize("@institutionCatalogAccess.canManage(authentication.name, #id)")
 
     public void restore(
+            Authentication authentication,
             @PathVariable Long id
     ) {
 

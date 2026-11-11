@@ -1,0 +1,103 @@
+[
+  {
+    "username": "demo2026.valentina.jaramillo",
+    "login": true,
+    "passwordChangeRequired": false,
+    "checks": [
+      {
+        "path": "/api/enrollments/me",
+        "count": 1,
+        "states": [
+          "PENDING"
+        ],
+        "archived": 0
+      },
+      {
+        "path": "/api/activity-plans/me/summary",
+        "count": 0,
+        "states": [],
+        "archived": 0
+      }
+    ]
+  },
+  {
+    "username": "demo2026.isabela.samaniego",
+    "login": true,
+    "passwordChangeRequired": false,
+    "checks": [
+      {
+        "path": "/api/enrollments/me",
+        "count": 1,
+        "states": [
+          "APPROVED"
+        ],
+        "archived": 0
+      },
+      {
+        "path": "/api/activity-plans/me/summary",
+        "count": 1,
+        "states": [
+          "SUBMITTED"
+        ],
+        "archived": 0
+      }
+    ]
+  },
+  {
+    "username": "demo2026.david.alvarado",
+    "login": true,
+    "passwordChangeRequired": false,
+    "checks": [
+      {
+        "path": "/api/enrollments/me",
+        "count": 1,
+        "states": [
+          "COMPLETED"
+        ],
+        "archived": 1
+      },
+      {
+        "path": "/api/activity-plans/me/summary",
+        "count": 1,
+        "states": [
+          "APPROVED"
+        ],
+        "archived": 0
+      }
+    ]
+  },
+  {
+    "username": "demo2026.elena.benitez",
+    "login": true,
+    "passwordChangeRequired": false,
+    "checks": [
+      {
+        "path": "/api/practice-schedules/managed",
+        "count": 5,
+        "states": [],
+        "archived": 0
+      }
+    ]
+  },
+  {
+    "username": "demo2026.teresa.cabrera",
+    "login": true,
+    "passwordChangeRequired": false,
+    "checks": [
+      {
+        "path": "/api/practice-forms/assigned",
+        "count": 3,
+        "states": [
+          "SENT"
+        ],
+        "archived": 0
+      },
+      {
+        "path": "/api/practice-schedules/institution-review",
+        "count": 10,
+        "states": [],
+        "archived": 0
+      }
+    ]
+  }
+]

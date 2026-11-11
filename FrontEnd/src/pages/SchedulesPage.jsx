@@ -1,6 +1,22 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          SchedulesPage.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Presenta las jornadas de prácticas y los registros de asistencia según los permisos de cada usuario.
+ */
+
+import { AgendaView } from '../components/ui/AgendaView';
+import { ModuleTab, ModuleTabs } from '../components/ui/ModuleTabs';
+import { usePracticeRequest } from '../contexts/PracticeWorkspaceContext';
+import { workflowCopy } from '../config/roleExperience';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { summarizeAttendances } from '../utils/practiceIndicators';
 import { CalendarClock, Clock3, RefreshCw } from 'lucide-react';
-import { apiRequest } from '../api/client';
 import { useAuth } from '../auth/AuthContext';
 import { Alert } from '../components/ui/Alert';
 import { SecondaryButton } from '../components/ui/ActionBar';
@@ -25,20 +41,20 @@ const DAY_ORDER = [
 const DAY_LABELS = {
   MONDAY: 'Lunes',
   TUESDAY: 'Martes',
-  WEDNESDAY: 'Miercoles',
+  WEDNESDAY: 'Miércoles',
   THURSDAY: 'Jueves',
   FRIDAY: 'Viernes',
-  SATURDAY: 'Sabado',
+  SATURDAY: 'Sábado',
   SUNDAY: 'Domingo',
 };
 
-const ASSISTED_STATUSES = new Set(['PRESENT', 'LATE']);
 
 export function SchedulesPage() {
   const { roles } = useAuth();
+  const [view, setView] = useState('records');
   const isStudent = roles.includes('ROLE_ESTUDIANTE');
   const canOperateSchedules =
-    roles.includes('ROLE_TUTOR_INSTITUCIONAL') || roles.includes('ROLE_DIRECTORA_INSTITUCION');
+    roles.includes('ROLE_TUTOR_INSTITUCIONAL');
   const canFilterSchedules = !isStudent || canOperateSchedules;
 
   if (isStudent && !canOperateSchedules) {
@@ -50,16 +66,33 @@ export function SchedulesPage() {
       <PageHeader
         eyebrow="Asistencia"
         title="Jornadas y asistencias"
-        description="Organiza jornadas y registra la asistencia de estudiantes."
+        description={workflowCopy('schedules', roles)}
+        helpText={workflowCopy('schedules', roles)}
       />
-      <EndpointConsole enableListFilters={canFilterSchedules} modules={SCHEDULE_MODULES} />
+      <ModuleTabs><ModuleTab active={view==='agenda'} onClick={() => setView('agenda')}>Agenda semanal</ModuleTab><ModuleTab active={view==='records'} onClick={() => setView('records')}>Gestión y registros</ModuleTab></ModuleTabs>
+      {view==='agenda' ? <ManagedAgenda roles={roles} /> : <EndpointConsole enableListFilters={canFilterSchedules} modules={SCHEDULE_MODULES} />}
     </>
   );
 }
 
+function ManagedAgenda({ roles }) {
+ const apiRequest = usePracticeRequest();
+ const { token } = useAuth();
+ const [schedules,setSchedules] = useState(null), [error,setError] = useState(''), [retry,setRetry] = useState(0);
+ const path = roles.includes('ROLE_TUTOR_INSTITUCIONAL') ? '/api/practice-schedules/managed' : roles.includes('ROLE_DIRECTORA_INSTITUCION') ? '/api/practice-schedules/institution-review' : '/api/practice-schedules/review';
+ useEffect(() => {
+  let active=true;setError('');setSchedules(null);
+  apiRequest(path,{token}).then(rows => {if(active) setSchedules(Array.isArray(rows) ? rows : []);}).catch(error => {if(active) setError(error.message);});
+  return () => {active=false;};
+ },[apiRequest,token,path,retry]);
+ return <SectionCard title="Agenda semanal" action={<SecondaryButton onClick={() => setRetry(value => value+1)}>Actualizar agenda</SecondaryButton>}>{error ? <Alert tone="error">{error}</Alert> : schedules ? <AgendaView schedules={schedules} /> : <p role="status">Cargando jornadas…</p>}</SectionCard>;
+}
+
 function StudentScheduleView() {
+  const apiRequest = usePracticeRequest();
   const { token } = useAuth();
   const [schedules, setSchedules] = useState([]);
+  const [view,setView] = useState('agenda');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -75,7 +108,7 @@ function StudentScheduleView() {
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, [token, apiRequest]);
 
   useEffect(() => {
     loadSchedules();
@@ -101,14 +134,16 @@ function StudentScheduleView() {
 
       <SectionCard title="Resumen">
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
-          <Metric icon={Clock3} label="Tiempo asistido" value={formatMinutes(summary.assistedMinutes)} />
-          <Metric label="Asistencias" value={summary.presentCount} />
-          <Metric label="Atrasos" value={summary.lateCount} />
-          <Metric label="Faltas" value={summary.absentCount} />
-          <Metric label="Justificadas" value={summary.justifiedCount} />
+          <Metric icon={Clock3} label="Tiempo asistido" value={loading || error ? '—' : formatMinutes(summary.assistedMinutes)} />
+          <Metric label="Asistencias" value={loading || error ? '—' : summary.presentCount} />
+          <Metric label="Atrasos" value={loading || error ? '—' : summary.lateCount} />
+          <Metric label="Faltas" value={loading || error ? '—' : summary.absentCount} />
+          <Metric label="Justificadas" value={loading || error ? '—' : summary.justifiedCount} />
         </div>
       </SectionCard>
 
+      <ModuleTabs><ModuleTab active={view==='agenda'} onClick={() => setView('agenda')}>Agenda semanal</ModuleTab><ModuleTab active={view==='records'} onClick={() => setView('records')}>Jornadas y asistencias</ModuleTab></ModuleTabs>
+      {view==='agenda' ? <SectionCard title="Agenda semanal">{loading ? <p role="status">Cargando jornadas…</p> : !error && <AgendaView schedules={schedules} />}</SectionCard> : <>
       <div className="space-y-5">
         {loading && !schedules.length ? (
           <SectionCard title="Jornadas programadas">
@@ -131,7 +166,7 @@ function StudentScheduleView() {
           ))
         ) : (
           <SectionCard title="Jornadas programadas">
-            <EmptyState text="Aun no tienes jornadas registradas." />
+            <EmptyState text="Aún no tienes jornadas registradas." />
           </SectionCard>
         )}
       </div>
@@ -147,6 +182,7 @@ function StudentScheduleView() {
           rows={attendances}
         />
       </SectionCard>
+      </>}
     </>
   );
 }
@@ -167,7 +203,7 @@ function ScheduleMatrix({ periods }) {
   const timeRows = buildTimeRows(periods);
 
   if (!timeRows.length) {
-    return <EmptyState text="No hay periodos registrados" />;
+    return <EmptyState text="No hay períodos registrados" />;
   }
 
   return (
@@ -217,7 +253,7 @@ function ScheduleMatrix({ periods }) {
 
 const attendanceColumns = [
   { key: 'attendanceDate', header: 'Fecha', render: (row) => formatLocalDate(row.attendanceDate) },
-  { key: 'day', header: 'Dia', render: (row) => DAY_LABELS[row.scheduledDayOfWeek] || '-' },
+  { key: 'day', secondary: true, header: 'Día', render: (row) => DAY_LABELS[row.scheduledDayOfWeek] || '-' },
   { key: 'courseName', header: 'Paralelo' },
   {
     key: 'scheduledTime',
@@ -231,7 +267,7 @@ const attendanceColumns = [
   },
   { key: 'status', header: 'Estado', render: (row) => <StatusBadge status={row.status} /> },
   { key: 'totalMinutes', header: 'Tiempo', render: (row) => formatMinutes(row.totalMinutes) },
-  { key: 'observations', header: 'Observaciones', render: (row) => row.observations || '-' },
+  { key: 'observations', secondary: true, header: 'Observaciones', render: (row) => row.observations || '-' },
 ];
 
 function flattenAttendances(schedules) {
@@ -243,41 +279,6 @@ function flattenAttendances(schedules) {
       }))
     )
     .sort((left, right) => compareDates(right.attendanceDate, left.attendanceDate));
-}
-
-function summarizeAttendances(attendances) {
-  return attendances.reduce(
-    (summary, attendance) => {
-      if (attendance.status === 'PRESENT') {
-        summary.presentCount += 1;
-      }
-
-      if (attendance.status === 'LATE') {
-        summary.lateCount += 1;
-      }
-
-      if (attendance.status === 'ABSENT') {
-        summary.absentCount += 1;
-      }
-
-      if (attendance.status === 'JUSTIFIED') {
-        summary.justifiedCount += 1;
-      }
-
-      if (ASSISTED_STATUSES.has(attendance.status)) {
-        summary.assistedMinutes += Number(attendance.totalMinutes || 0);
-      }
-
-      return summary;
-    },
-    {
-      assistedMinutes: 0,
-      presentCount: 0,
-      lateCount: 0,
-      absentCount: 0,
-      justifiedCount: 0,
-    }
-  );
 }
 
 function buildTimeRows(periods) {

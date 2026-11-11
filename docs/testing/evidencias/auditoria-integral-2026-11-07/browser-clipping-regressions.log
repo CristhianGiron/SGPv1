@@ -1,0 +1,21 @@
+{
+  "checks": 24,
+  "errors": [
+    {
+      "theme": "light",
+      "width": 360,
+      "scenario": "error",
+      "problems": [
+        "Notice border covered by sgp-a11y-launcher"
+      ]
+    },
+    {
+      "theme": "dark",
+      "width": 360,
+      "scenario": "error",
+      "problems": [
+        "Notice border covered by sgp-a11y-launcher"
+      ]
+    }
+  ]
+}

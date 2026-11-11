@@ -1,0 +1,54 @@
+{
+  "mode": "Chrome; API simulada",
+  "checks": [
+    {
+      "theme": "light",
+      "width": 360,
+      "filteredNameVisible": true,
+      "openRecord": true,
+      "overflow": false,
+      "body": "NombreMaría MuñozActivoUsuariomariaAbrir maria"
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "filteredNameVisible": true,
+      "openRecord": true,
+      "overflow": false,
+      "body": "NombreMaría MuñozActivoUsuariomariaAbrir maria"
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "filteredNameVisible": true,
+      "openRecord": true,
+      "overflow": false,
+      "body": "mariaMaría MuñozActivoAbrir maria"
+    },
+    {
+      "theme": "dark",
+      "width": 360,
+      "filteredNameVisible": true,
+      "openRecord": true,
+      "overflow": false,
+      "body": "NombreMaría MuñozActivoUsuariomariaAbrir maria"
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "filteredNameVisible": true,
+      "openRecord": true,
+      "overflow": false,
+      "body": "NombreMaría MuñozActivoUsuariomariaAbrir maria"
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "filteredNameVisible": true,
+      "openRecord": true,
+      "overflow": false,
+      "body": "mariaMaría MuñozActivoAbrir maria"
+    }
+  ],
+  "errors": []
+}

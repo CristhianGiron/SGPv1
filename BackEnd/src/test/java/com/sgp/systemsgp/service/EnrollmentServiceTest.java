@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          EnrollmentServiceTest.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Comprueba el comportamiento de las inscripciones y prácticas asignadas mediante pruebas de regresión.
+ */
+
 package com.sgp.systemsgp.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -53,6 +65,15 @@ class EnrollmentServiceTest {
     @Mock
     private PracticeAuditService practiceAuditService;
 
+    @Mock
+    private PracticeCompletionService practiceCompletionService;
+
+    @Mock
+    private CourseMembershipService courseMembershipService;
+
+    @Mock
+    private com.sgp.systemsgp.repository.PracticeOfferingRepository practiceOfferingRepository;
+
     private EnrollmentService enrollmentService;
 
     @BeforeEach
@@ -68,7 +89,10 @@ class EnrollmentServiceTest {
                 subjectRepository,
                 notificationService,
                 practiceAuditService,
-                new PracticeAccessService());
+                new PracticeAccessService(),
+                practiceCompletionService,
+                courseMembershipService,
+                practiceOfferingRepository);
     }
 
     @Test
@@ -116,28 +140,10 @@ class EnrollmentServiceTest {
     }
 
     @Test
-    void cancelRejectsNonPendingEnrollment() {
-
-        Enrollment enrollment = Enrollment.builder()
-                .id(1L)
-                .account(Account.builder()
-                        .username("ana")
-                        .build())
-                .course(course())
-                .status(EnrollmentStatus.APPROVED)
-                .build();
-
-        when(enrollmentRepository.findById(1L))
-                .thenReturn(Optional.of(enrollment));
-        when(accountRepository.findByUsernameAndDeletedFalse("admin"))
-                .thenReturn(Optional.of(admin()));
-
+    void studentCancellationIsRetiredEvenForPendingEnrollment() {
         assertThatThrownBy(() -> enrollmentService.cancel(1L, "ana"))
-                .isInstanceOf(BadRequestException.class)
-                .hasMessage("Solo puedes cancelar inscripciones pendientes");
-
-        verify(enrollmentRepository, never())
-                .delete(any(Enrollment.class));
+                .isInstanceOf(org.springframework.security.access.AccessDeniedException.class);
+        verify(enrollmentRepository, never()).delete(any(Enrollment.class));
     }
 
     @Test

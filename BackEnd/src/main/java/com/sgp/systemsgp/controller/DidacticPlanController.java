@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          DidacticPlanController.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Expone las operaciones HTTP relacionadas con las planificaciones didácticas.
+ */
+
 package com.sgp.systemsgp.controller;
 
 import com.sgp.systemsgp.dto.didacticplan.DidacticPlanRecommendationRequest;
@@ -91,6 +103,29 @@ public class DidacticPlanController {
             @Valid @RequestBody DidacticPlanRecommendationRequest request) {
 
         return didacticPlanService.addRecommendations(id, authentication.getName(), request);
+    }
+
+    @PatchMapping("/{id}/return")
+    @PreAuthorize("hasAnyRole('TUTOR_PRACTICAS','DIRECTOR_PRACTICAS')")
+    public DidacticPlanResponse returnPlan(Authentication a,@PathVariable Long id,
+            @Valid @RequestBody com.sgp.systemsgp.dto.didacticplan.ReturnDidacticPlanRequest request) {
+        return didacticPlanService.returnInstitutionalPlan(id,a.getName(),request);
+    }
+    @GetMapping("/{id}/revisions")
+    @PreAuthorize("hasAnyRole('ESTUDIANTE','TUTOR_INSTITUCIONAL','TUTOR_PRACTICAS','DIRECTOR_PRACTICAS','ADMIN')")
+    public List<com.sgp.systemsgp.dto.didacticplan.DidacticPlanRevisionSummary> revisions(Authentication a,@PathVariable Long id) {
+        return didacticPlanService.revisions(id,a.getName());
+    }
+    @GetMapping("/{id}/revisions/{revisionId}")
+    @PreAuthorize("hasAnyRole('ESTUDIANTE','TUTOR_INSTITUCIONAL','TUTOR_PRACTICAS','DIRECTOR_PRACTICAS','ADMIN')")
+    public DidacticPlanResponse revision(Authentication a,@PathVariable Long id,@PathVariable Long revisionId) {
+        return didacticPlanService.revision(id,revisionId,a.getName());
+    }
+    @GetMapping("/{id}/revisions/{revisionId}/pdf")
+    @PreAuthorize("hasAnyRole('ESTUDIANTE','TUTOR_INSTITUCIONAL','TUTOR_PRACTICAS','DIRECTOR_PRACTICAS','ADMIN')")
+    public ResponseEntity<byte[]> revisionPdf(Authentication a,@PathVariable Long id,@PathVariable Long revisionId) {
+        var pdf=didacticPlanService.revisionPdf(id,revisionId,a.getName());
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF).body(pdf.content());
     }
 
     @PostMapping(value = "/{id}/pdf", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

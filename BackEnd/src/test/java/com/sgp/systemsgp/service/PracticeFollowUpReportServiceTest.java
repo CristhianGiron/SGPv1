@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          PracticeFollowUpReportServiceTest.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Comprueba el comportamiento de el seguimiento de prácticas (L.5) mediante pruebas de regresión.
+ */
+
 package com.sgp.systemsgp.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -69,7 +81,8 @@ class PracticeFollowUpReportServiceTest {
                 enrollmentRepository,
                 accountRepository,
                 institutionRepository,
-                new PdfExportService());
+                new PdfExportService(),
+                new PracticeAccessService());
     }
 
     @Test
@@ -197,7 +210,7 @@ class PracticeFollowUpReportServiceTest {
 
         assertThat(pdfText(pdf))
                 .contains("REPORTE DE SEGUIMIENTO DE")
-                .contains("PRACTICA PREPROFESIONAL")
+                .contains("PRÁCTICA PREPROFESIONAL")
                 .contains("ACTIVIDADES SUPERVISADAS")
                 .contains("Actividades supervisadas");
     }

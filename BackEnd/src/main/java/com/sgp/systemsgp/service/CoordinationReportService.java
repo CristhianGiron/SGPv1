@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          CoordinationReportService.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa la lógica de aplicación de el módulo Coordination Report Service.
+ */
+
 package com.sgp.systemsgp.service;
 
 import com.sgp.systemsgp.dto.report.CoordinationMetricResponse;
@@ -5,10 +17,12 @@ import com.sgp.systemsgp.dto.report.CoordinationReportResponse;
 import com.sgp.systemsgp.dto.report.CourseApprovalReportResponse;
 import com.sgp.systemsgp.dto.report.DocumentTypeStatusReportResponse;
 import com.sgp.systemsgp.dto.report.ReviewTimeReportResponse;
-import com.sgp.systemsgp.model.ActivityPlan;
-import com.sgp.systemsgp.model.CompletedActivityRecord;
-import com.sgp.systemsgp.model.FinalReport;
-import com.sgp.systemsgp.model.PracticeReport;
+import com.sgp.systemsgp.model.Account;
+import com.sgp.systemsgp.model.Course;
+import com.sgp.systemsgp.enums.RoleName;
+import com.sgp.systemsgp.exception.NotFoundException;
+import com.sgp.systemsgp.repository.AccountRepository;
+import org.springframework.security.access.AccessDeniedException;
 import com.sgp.systemsgp.repository.ActivityPlanRepository;
 import com.sgp.systemsgp.repository.CompletedActivityRecordRepository;
 import com.sgp.systemsgp.repository.FinalReportRepository;
@@ -41,9 +55,17 @@ public class CoordinationReportService {
     private final FinalReportRepository finalReportRepository;
     private final CompletedActivityRecordRepository completedActivityRecordRepository;
 
-    public CoordinationReportResponse coordinationReport() {
+    private final AccountRepository accountRepository;
+    private final PracticeAccessService practiceAccessService;
 
-        List<ReviewDocumentSnapshot> documents = loadDocuments();
+    public CoordinationReportResponse coordinationReport(String username) {
+        Account viewer = accountRepository.findByUsernameAndDeletedFalse(username)
+                .orElseThrow(() -> new NotFoundException("Cuenta no encontrada"));
+        if (!practiceAccessService.isAdmin(viewer)
+                && !practiceAccessService.hasRole(viewer, RoleName.ROLE_DIRECTOR_PRACTICAS)) {
+            throw new AccessDeniedException("No puedes consultar el reporte de coordinación");
+        }
+        List<ReviewDocumentSnapshot> documents = loadDocuments(viewer);
 
         long pending = countByStatus(documents, STATUS_SUBMITTED);
         long needsCorrection = countByStatus(documents, STATUS_NEEDS_CORRECTION);
@@ -68,14 +90,14 @@ public class CoordinationReportService {
                 .build();
     }
 
-    private List<ReviewDocumentSnapshot> loadDocuments() {
+    private List<ReviewDocumentSnapshot> loadDocuments(Account viewer) {
 
         List<ReviewDocumentSnapshot> documents = new ArrayList<>();
 
         activityPlanRepository.findByDeletedFalse().forEach(plan -> documents.add(
                 new ReviewDocumentSnapshot(
                         "Plan de actividades",
-                        courseName(plan.getCourse() != null ? plan.getCourse().getName() : null),
+                        plan.getCourse(),
                         plan.getStudent() != null ? plan.getStudent().getUsername() : null,
                         plan.getStatus() != null ? plan.getStatus().name() : STATUS_DRAFT,
                         plan.getSubmittedAt(),
@@ -84,7 +106,7 @@ public class CoordinationReportService {
         practiceReportRepository.findByDeletedFalse().forEach(report -> documents.add(
                 new ReviewDocumentSnapshot(
                         "Informe de practicas",
-                        courseName(report.getCourse() != null ? report.getCourse().getName() : null),
+                        report.getCourse(),
                         report.getStudent() != null ? report.getStudent().getUsername() : null,
                         report.getStatus() != null ? report.getStatus().name() : STATUS_DRAFT,
                         report.getSubmittedAt(),
@@ -93,7 +115,7 @@ public class CoordinationReportService {
         finalReportRepository.findByDeletedFalse().forEach(report -> documents.add(
                 new ReviewDocumentSnapshot(
                         "Informe final",
-                        courseName(report.getCourse() != null ? report.getCourse().getName() : null),
+                        report.getCourse(),
                         report.getStudent() != null ? report.getStudent().getUsername() : null,
                         report.getStatus() != null ? report.getStatus().name() : STATUS_DRAFT,
                         report.getSubmittedAt(),
@@ -102,13 +124,16 @@ public class CoordinationReportService {
         completedActivityRecordRepository.findByDeletedFalse().forEach(record -> documents.add(
                 new ReviewDocumentSnapshot(
                         "Actividades cumplidas",
-                        courseName(record.getCourse() != null ? record.getCourse().getName() : null),
+                        record.getCourse(),
                         record.getStudent() != null ? record.getStudent().getUsername() : null,
                         record.getStatus() != null ? record.getStatus().name() : STATUS_DRAFT,
                         record.getSubmittedAt(),
                         record.getApprovedAt())));
 
-        return documents;
+        return documents.stream()
+                .filter(document -> practiceAccessService.isAdmin(viewer)
+                        || practiceAccessService.isDirectorForCourse(document.course(), viewer))
+                .toList();
     }
 
     private List<DocumentTypeStatusReportResponse> buildDocumentsByType(
@@ -135,15 +160,17 @@ public class CoordinationReportService {
     private List<CourseApprovalReportResponse> buildApprovalsByCourse(
             List<ReviewDocumentSnapshot> documents) {
 
-        Map<String, List<ReviewDocumentSnapshot>> byCourse = new LinkedHashMap<>();
+        Map<CourseKey, List<ReviewDocumentSnapshot>> byCourse = new LinkedHashMap<>();
         documents.forEach(document -> byCourse
-                .computeIfAbsent(document.courseName(), ignored -> new ArrayList<>())
+                .computeIfAbsent(new CourseKey(document.course() != null ? document.course().getId() : null,
+                        courseName(document.course() != null ? document.course().getName() : null)), ignored -> new ArrayList<>())
                 .add(document));
 
         return byCourse.entrySet()
                 .stream()
                 .map(entry -> CourseApprovalReportResponse.builder()
-                        .courseName(entry.getKey())
+                        .courseId(entry.getKey().id())
+                        .courseName(entry.getKey().name())
                         .pending(countByStatus(entry.getValue(), STATUS_SUBMITTED))
                         .needsCorrection(countByStatus(entry.getValue(), STATUS_NEEDS_CORRECTION))
                         .approved(countByStatus(entry.getValue(), STATUS_APPROVED))
@@ -184,7 +211,7 @@ public class CoordinationReportService {
             String label,
             Double value) {
 
-        return metric(key, label, value != null ? String.valueOf(value) : "0");
+        return metric(key, label, value != null ? String.valueOf(value) : "—");
     }
 
     private CoordinationMetricResponse metric(
@@ -236,7 +263,8 @@ public class CoordinationReportService {
 
     private Double reviewHours(ReviewDocumentSnapshot document) {
 
-        if (document.submittedAt() == null || document.approvedAt() == null) {
+        if (!STATUS_APPROVED.equals(document.status())
+                || document.submittedAt() == null || document.approvedAt() == null) {
             return null;
         }
 
@@ -256,9 +284,11 @@ public class CoordinationReportService {
         return value != null && !value.isBlank() ? value : "Sin curso";
     }
 
+    private record CourseKey(Long id, String name) {}
+
     private record ReviewDocumentSnapshot(
             String documentType,
-            String courseName,
+            Course course,
             String studentUsername,
             String status,
             LocalDateTime submittedAt,

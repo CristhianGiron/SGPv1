@@ -1,4 +1,20 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          FinalReportController.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Expone las operaciones HTTP relacionadas con el informe del tutor institucional (L.3).
+ */
+
 package com.sgp.systemsgp.controller;
+import org.springframework.http.MediaType;
+import org.springframework.http.CacheControl;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sgp.systemsgp.dto.finalreport.CreateFinalReportRequest;
 import com.sgp.systemsgp.dto.document.ReviewableDocumentSummaryResponse;
@@ -31,7 +47,48 @@ public class FinalReportController {
 
     private final FinalReportService finalReportService;
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('ESTUDIANTE')")
+    public FinalReportResponse createWithLetterhead(Authentication authentication,
+            @Valid @RequestPart("data") CreateFinalReportRequest data,
+            @RequestPart(value = "image", required = false) MultipartFile image) {
+        return finalReportService.create(authentication.getName(), data, image);
+    }
+
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('ESTUDIANTE')")
+    public FinalReportResponse updateWithLetterhead(Authentication authentication, @PathVariable Long id,
+            @Valid @RequestPart("data") UpdateFinalReportRequest data,
+            @RequestPart(value = "image", required = false) MultipartFile image) {
+        return finalReportService.update(id, authentication.getName(), data, image);
+    }
+
+    @PatchMapping(value = "/{id}/institutional-section", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('TUTOR_INSTITUCIONAL')")
+    public FinalReportResponse updateInstitutionalSectionWithLetterhead(Authentication authentication, @PathVariable Long id,
+            @Valid @RequestPart("data") UpdateFinalReportInstitutionalSectionRequest data,
+            @RequestPart(value = "image", required = false) MultipartFile image) {
+        return finalReportService.updateInstitutionalSection(id, authentication.getName(), data, image);
+    }
+
+    @PutMapping(value = "/{id}/letterhead", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('TUTOR_INSTITUCIONAL')")
+    public FinalReportResponse attachLegacyLetterhead(Authentication authentication, @PathVariable Long id,
+            @RequestPart("image") MultipartFile image) {
+        return finalReportService.attachLegacyLetterhead(id, authentication.getName(), image);
+    }
+
+    @GetMapping("/{id}/letterhead")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<byte[]> letterhead(Authentication authentication, @PathVariable Long id) {
+        var file = finalReportService.letterhead(id, authentication.getName());
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType(file.contentType()))
+                .cacheControl(CacheControl.noStore())
+                .header("X-Content-Type-Options", "nosniff").body(file.data());
+    }
+
+
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ESTUDIANTE')")
     public FinalReportResponse create(
             Authentication authentication,
@@ -134,6 +191,12 @@ public class FinalReportController {
                 authentication.getName());
     }
 
+    @GetMapping("/{id}/pdf/preview")
+    @PreAuthorize("hasAnyRole('ESTUDIANTE','TUTOR_PRACTICAS','TUTOR_INSTITUCIONAL','DIRECTOR_PRACTICAS','ADMIN')")
+    public ResponseEntity<byte[]> previewPdf(Authentication authentication, @PathVariable Long id) {
+        return PdfResponseFactory.inline(finalReportService.previewPdf(id, authentication.getName()));
+    }
+
     @GetMapping("/{id}/pdf")
     @PreAuthorize("hasAnyRole('ESTUDIANTE','TUTOR_PRACTICAS','TUTOR_INSTITUCIONAL','DIRECTOR_PRACTICAS','ADMIN')")
     public ResponseEntity<byte[]> exportPdf(
@@ -147,7 +210,7 @@ public class FinalReportController {
                 "L.3. Informe Tutor Institucional.pdf");
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ESTUDIANTE')")
     public FinalReportResponse update(
             Authentication authentication,
@@ -171,7 +234,7 @@ public class FinalReportController {
                 authentication.getName());
     }
 
-    @PatchMapping("/{id}/institutional-section")
+    @PatchMapping(value = "/{id}/institutional-section", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('TUTOR_INSTITUCIONAL')")
     public FinalReportResponse updateInstitutionalSection(
             Authentication authentication,

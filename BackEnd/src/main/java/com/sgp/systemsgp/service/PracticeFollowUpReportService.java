@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          PracticeFollowUpReportService.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Implementa la lógica de aplicación de el seguimiento de prácticas (L.5).
+ */
+
 package com.sgp.systemsgp.service;
 
 import com.sgp.systemsgp.dto.practicefollowup.CreatePracticeFollowUpReportRequest;
@@ -43,6 +55,7 @@ public class PracticeFollowUpReportService {
     private final AccountRepository accountRepository;
     private final InstitutionRepository institutionRepository;
     private final PdfExportService pdfExportService;
+    private final PracticeAccessService practiceAccessService;
 
     @Transactional
     public PracticeFollowUpReportResponse create(
@@ -162,13 +175,13 @@ public class PracticeFollowUpReportService {
                         response.getPracticeType(),
                         response.getStudentFullName(),
                         response.getStudentIdentification(),
-                        response.getCourseName(),
-                        response.getAcademicPeriod(),
+                        DocumentPdfData.cycle(report.getCourse(), report.getStudent()),
+                        DocumentPdfData.period(report.getCourse()) != null ? DocumentPdfData.period(report.getCourse()) : response.getAcademicPeriod(),
                         response.getDevelopmentMode(),
                         response.getTotalMinutes(),
                         response.getDeliveryDate(),
                         accountFullName(report.getReportedBy()),
-                        "DOCENTE TUTOR DE PRACTICAS",
+                        DocumentPdfData.tutorRole(report.getCourse()),
                         followUpSessions(response.getSessions())));
     }
 
@@ -182,6 +195,7 @@ public class PracticeFollowUpReportService {
         Account tutor = getAccount(username);
 
         validatePracticeTutorCanManage(report.getCourse(), tutor);
+        PracticeAccessService.requireOperationalEnrollment(report.getEnrollment());
 
         if (request.getEducationalInstitutionId() != null) {
             Institution institution = resolveEducationalInstitution(
@@ -241,6 +255,8 @@ public class PracticeFollowUpReportService {
             throw new BadRequestException(
                     "Solo se puede crear seguimiento de una inscripcion aprobada");
         }
+        PracticeAccessService.requireOperationalEnrollment(enrollment);
+
 
         if (!isActiveCourseEnrollment(enrollment)) {
             throw new BadRequestException(
@@ -276,7 +292,7 @@ public class PracticeFollowUpReportService {
         if (report.getStudent().getId().equals(account.getId())
                 || isAssignedPracticeTutor(report, account)
                 || hasRole(account, RoleName.ROLE_ADMIN)
-                || hasRole(account, RoleName.ROLE_DIRECTOR_PRACTICAS)) {
+                || practiceAccessService.isDirectorForCourse(report.getCourse(), account)) {
             return;
         }
 
@@ -397,6 +413,7 @@ public class PracticeFollowUpReportService {
         copyStudentSnapshot(report, report.getStudent());
         copyCoursePracticeType(report);
 
+        if (report.getAcademicPeriod() == null) report.setAcademicPeriod(request.getAcademicPeriod());
         report.setDevelopmentMode(request.getDevelopmentMode());
         report.setDeliveryDate(request.getDeliveryDate());
 
@@ -448,9 +465,8 @@ public class PracticeFollowUpReportService {
             report.setStudentPhone(person.getPhone());
         }
 
-        if (student.getAcademicCycle() != null) {
-            report.setAcademicPeriod(student.getAcademicCycle().getName());
-        }
+        String period = DocumentPdfData.period(report.getCourse());
+        if (period != null) report.setAcademicPeriod(period);
     }
 
     private void replaceSessions(

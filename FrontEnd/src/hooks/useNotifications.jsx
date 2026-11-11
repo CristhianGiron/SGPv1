@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          useNotifications.jsx
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Gestiona el estado y la integración de useNotifications en la interfaz React.
+ */
+
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { apiRequest, getApiBaseUrl } from '../api/client';
 import { useAuth } from '../auth/AuthContext';
@@ -9,6 +21,8 @@ export function useNotifications() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const socketRef = useRef(null);
+  const notificationStateRef = useRef(new Map());
+  const sourceRef = useRef(Symbol('notifications'));
   const socketOpenedRef = useRef(false);
 
   const buildWebSocketUrl = useCallback(() => {
@@ -45,7 +59,9 @@ export function useNotifications() {
         apiRequest('/api/notifications/me/count', { token }),
       ]);
 
-      setNotifications(Array.isArray(items) ? items : []);
+      const loaded = Array.isArray(items) ? items : [];
+      notificationStateRef.current = new Map(loaded.map((item) => [item.id, item]));
+      setNotifications(loaded);
       setUnreadCount(Number(countPayload?.count || 0));
     } catch (err) {
       setError(err?.message || 'No se pudieron cargar las notificaciones');
@@ -53,6 +69,14 @@ export function useNotifications() {
       setLoading(false);
     }
   }, [token]);
+
+  useEffect(() => {
+    function syncNotifications(event) {
+      if (event.detail !== sourceRef.current) loadNotifications();
+    }
+    window.addEventListener('sgp-notifications-changed', syncNotifications);
+    return () => window.removeEventListener('sgp-notifications-changed', syncNotifications);
+  }, [loadNotifications]);
 
   useEffect(() => {
     if (!token) {
@@ -68,7 +92,6 @@ export function useNotifications() {
     }
 
     const webSocketUrl = buildWebSocketUrl();
-    console.debug('Notification WebSocket URL', webSocketUrl);
 
     let ws;
     try {
@@ -91,8 +114,11 @@ export function useNotifications() {
       try {
         const payload = JSON.parse(event.data);
         if (payload && payload.id) {
+          const previous = notificationStateRef.current.get(payload.id);
+          const delta = (payload.read ? 0 : 1) - (previous && !previous.read ? 1 : 0);
+          notificationStateRef.current.set(payload.id, payload);
           setNotifications((current) => [payload, ...current.filter((item) => item.id !== payload.id)]);
-          setUnreadCount((current) => current + (payload.read ? 0 : 1));
+          setUnreadCount((current) => Math.max(0, current + delta));
         }
       } catch (err) {
         console.warn('Error parsing notification websocket payload', err);
@@ -134,23 +160,15 @@ export function useNotifications() {
           method: 'PATCH',
           token,
         });
-        const wasUnread = notifications.some((item) => item.id === id && !item.read);
-
-        setNotifications((current) =>
-          current.map((item) =>
-            item.id === updated.id ? { ...item, read: true } : item,
-          ),
-        );
-        if (wasUnread) {
-          setUnreadCount((current) => Math.max(0, current - 1));
-        }
+        await loadNotifications();
+        window.dispatchEvent(new CustomEvent('sgp-notifications-changed', { detail: sourceRef.current }));
         return updated;
       } catch (err) {
         setError(err?.message || 'No se pudo marcar la notificación como leída');
         return null;
       }
     },
-    [notifications, token],
+    [loadNotifications, token],
   );
 
   const markAllAsRead = useCallback(async () => {
@@ -163,14 +181,12 @@ export function useNotifications() {
         method: 'PATCH',
         token,
       });
-      setNotifications((current) =>
-        current.map((item) => ({ ...item, read: true })),
-      );
-      setUnreadCount(0);
+      await loadNotifications();
+      window.dispatchEvent(new CustomEvent('sgp-notifications-changed', { detail: sourceRef.current }));
     } catch (err) {
       setError(err?.message || 'No se pudieron marcar todas las notificaciones como leídas');
     }
-  }, [token]);
+  }, [loadNotifications, token]);
 
   return {
     notifications,

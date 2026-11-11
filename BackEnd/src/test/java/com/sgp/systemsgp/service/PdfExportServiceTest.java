@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          PdfExportServiceTest.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Comprueba el comportamiento de los documentos PDF mediante pruebas de regresión.
+ */
+
 package com.sgp.systemsgp.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -129,6 +141,30 @@ class PdfExportServiceTest {
 
         assertThat(request.getScheduledActivities())
                 .isEqualTo("Observacion de clase");
+    }
+
+    @Test
+    void spanishAccentsAndPunctuationSurvivePdfExportIncludingPastedCombiningMarks() {
+        String original = "¡Sí! ¿Qué ocurrió? María Muñoz, Íñigo, pedagogía y lingüística: áéíóú ÁÉÍÓÚ ñ Ñ ü Ü. “Educación” — año 2026…";
+        String pasted = java.text.Normalizer.normalize(original, java.text.Normalizer.Form.NFD);
+        byte[] pdf = pdfExportService.createPdf("Plan de actividades", List.of(
+                pdfExportService.section("Información general", List.of(pdfExportService.field("Estudiante", pasted))),
+                pdfExportService.sectionWithTables("Actividades", List.of(), List.of(pdfExportService.weekTable(List.of(
+                        pdfExportService.weekRow(1, LocalDate.of(2026, 11, 4), LocalDate.of(2026, 11, 7), "Actividad", pasted)))))));
+        String text = pdfText(pdf).replaceAll("\\s+", " ");
+        assertThat(text).contains("María Muñoz", "Íñigo", "pedagogía", "lingüística", "áéíóú", "ÁÉÍÓÚ", "ñ Ñ ü Ü", "¿Qué ocurrió?", "¡Sí!", "“Educación”", "— año 2026…", "MIÉRCOLES", "SÁBADO");
+        assertThat(text).doesNotContain("Mu?oz", "ocurri?", "MIERCOLES", "SABADO");
+    }
+
+    @Test
+    void spanishCharactersAlsoSurviveLandscapeTables() {
+        String text = "Observación, evaluación, educación y acompañamiento: año, niño, pingüino. ¿Sí? ¡Qué bien!";
+        byte[] pdf = pdfExportService.createCompletedActivityRecordPdf(new PdfExportService.PdfCompletedActivityRecord(
+                "Institución de Educación Básica", "OBSERVACION", "María Muñoz", "1100000000", "Quinto", "noviembre 2026", "PRESENCIAL", 60,
+                LocalDate.of(2026, 11, 4), "María Muñoz", "Íñigo Peñafiel", List.of(new PdfExportService.PdfCompletedActivityEntry(
+                        LocalDate.of(2026, 11, 4), java.time.LocalTime.of(8, 0), java.time.LocalTime.of(9, 0), 60,
+                        java.text.Normalizer.normalize(text, java.text.Normalizer.Form.NFD), "https://ejemplo.test/evidencia"))));
+        assertThat(pdfText(pdf).replaceAll("\\s+", " ")).contains("María Muñoz", "Íñigo Peñafiel", "Observación", "evaluación", "año, niño, pingüino.");
     }
 
     private String pdfText(byte[] pdf) {

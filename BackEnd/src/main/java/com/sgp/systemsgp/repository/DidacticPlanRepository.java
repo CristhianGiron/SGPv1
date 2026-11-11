@@ -1,3 +1,15 @@
+/*
+ * @institucion   Universidad Nacional de Loja
+ * @carrera       Pedagogía de las Ciencias Experimentales - Informática
+ * @asignatura    Programación Web
+ * @docente       Johnny H. Sánchez L.
+ * @proyecto      Sistema de Gestión de Prácticas (SGP)
+ * @estudiante    Cristhian Hipólito Girón Chamba (cristhian.giron@unl.edu.ec)
+ * @file          DidacticPlanRepository.java
+ * @fecha         2026-11-09 11:08:16
+ * @nota          Define las consultas de persistencia para las planificaciones didácticas.
+ */
+
 package com.sgp.systemsgp.repository;
 
 import com.sgp.systemsgp.model.DidacticPlan;
@@ -8,6 +20,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface DidacticPlanRepository extends JpaRepository<DidacticPlan, Long> {
+    @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
+    @org.springframework.data.jpa.repository.Query("select p from DidacticPlan p where p.id=:id and p.deleted=false")
+    Optional<DidacticPlan> findForUpdate(@org.springframework.data.repository.query.Param("id") Long id);
+
 
     @EntityGraph(attributePaths = {
             "enrollment",

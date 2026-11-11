@@ -1,0 +1,18 @@
+{
+  "date": "2026-11-07",
+  "frontendTests": 183,
+  "backendBaselineTests": 142,
+  "diagnosticProbes": 7,
+  "realHttpChecks": 4,
+  "baseRoleRoutes": 113,
+  "baseViewportStates": 226,
+  "additionalContexts": 20,
+  "tabStates": 284,
+  "dialogObservations": 150,
+  "browserObservations": 1182,
+  "confirmedFindings": 10,
+  "baselineBrowserScripts": 18,
+  "reviewedPassingScripts": 17,
+  "browserScriptWithRealVisualIssue": "browser-clipping-regressions.cjs",
+  "applicationBehaviorChanged": false
+}
